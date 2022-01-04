@@ -1,6 +1,6 @@
 package io.tofpu.speedbridge2.domain.handler;
 
-import io.tofpu.speedbridge2.domain.island.Island;
+import io.tofpu.speedbridge2.domain.Island;
 
 import java.util.HashMap;
 import java.util.Map;
