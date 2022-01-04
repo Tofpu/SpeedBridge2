@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class GamePlayer {
+public final class GamePlayer {
     private static final Map<UUID, GamePlayer> GAME_PLAYER_MAP = new HashMap<>();
     private final Player player;
 

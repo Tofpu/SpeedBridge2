@@ -4,6 +4,7 @@ import io.tofpu.speedbridge2.domain.GameIsland;
 import io.tofpu.speedbridge2.domain.GamePlayer;
 import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.handler.IslandHandler;
+import io.tofpu.speedbridge2.domain.repository.IslandRepository;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -12,8 +13,14 @@ public final class IslandService {
     public static final IslandService INSTANCE = new IslandService();
 
     private final IslandHandler islandHandler;
+    private final IslandRepository islandRepository;
     public IslandService() {
         this.islandHandler = new IslandHandler();
+        this.islandRepository = new IslandRepository();
+    }
+
+    public void load() {
+        this.islandHandler.load(this.islandRepository.loadIslands());
     }
 
     public Island createIsland(final int slot) {
