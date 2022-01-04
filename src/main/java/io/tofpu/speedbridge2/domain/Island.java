@@ -15,7 +15,7 @@ public final class Island {
     }
 
     public Map.Entry<GamePlayer, GameIsland> generateGame(final Player player) {
-        final GamePlayer gamePlayer = new GamePlayer(player);
+        final GamePlayer gamePlayer = GamePlayer.of(player);
         final GameIsland gameIsland = new GameIsland(this.slot, gamePlayer);
 
         this.islandMap.put(gamePlayer, gameIsland);

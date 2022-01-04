@@ -29,6 +29,6 @@ public final class IslandService {
     }
 
     public GameIsland findGameByPlayer(final Player player, final Island island) {
-        return findGameByPlayer(new GamePlayer(player), island);
+        return findGameByPlayer(GamePlayer.of(player), island);
     }
 }
