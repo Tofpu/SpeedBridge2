@@ -1,0 +1,5 @@
+name: SpeedBridge 2
+version: '${project.version}'
+main: io.tofpu.speedbridge2.SpeedBridge2
+authors: [ Tofpu ]
+website: https://tofpu.me
