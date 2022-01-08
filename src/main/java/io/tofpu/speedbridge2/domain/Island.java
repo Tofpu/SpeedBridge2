@@ -9,9 +9,8 @@ import java.util.Map;
 
 public final class Island {
     private final int slot;
-    private String category;
-
     private final Map<GamePlayer, GameIsland> islandMap = new HashMap<>();
+    private String category;
 
     public Island(final int slot, final String category) {
         this.slot = slot;

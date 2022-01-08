@@ -13,7 +13,6 @@ import java.util.concurrent.ExecutionException;
 import static io.tofpu.speedbridge2.database.util.DatabaseUtil.runAsync;
 
 public final class IslandRepository {
-
     public CompletableFuture<Map<Integer, Island>> loadIslands() {
         return runAsync(() -> {
             List<Island> islands;

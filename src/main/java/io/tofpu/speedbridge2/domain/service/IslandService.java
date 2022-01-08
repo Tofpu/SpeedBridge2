@@ -15,6 +15,7 @@ public final class IslandService {
 
     private final IslandHandler islandHandler;
     private final IslandRepository islandRepository;
+
     public IslandService() {
         this.islandHandler = new IslandHandler();
         this.islandRepository = new IslandRepository();
@@ -38,12 +39,12 @@ public final class IslandService {
         return island.generateGame(player);
     }
 
-    public GameIsland findGameByPlayer(final GamePlayer gamePlayer, final Island island) {
-        return island.findGameByPlayer(gamePlayer);
-    }
-
     public GameIsland findGameByPlayer(final Player player, final Island island) {
         return findGameByPlayer(GamePlayer.of(player), island);
+    }
+
+    public GameIsland findGameByPlayer(final GamePlayer gamePlayer, final Island island) {
+        return island.findGameByPlayer(gamePlayer);
     }
 
     public Island deleteIsland(final int slot) {

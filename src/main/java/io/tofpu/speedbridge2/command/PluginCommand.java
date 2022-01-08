@@ -1,15 +1,10 @@
 package io.tofpu.speedbridge2.command;
 
 import io.tofpu.speedbridge2.database.Databases;
-import io.tofpu.speedbridge2.database.IslandDatabase;
-import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.service.IslandService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class PluginCommand implements CommandExecutor {
 
@@ -34,10 +29,11 @@ public class PluginCommand implements CommandExecutor {
                 sender.sendMessage(service.getAllIslands().toString());
                 break;
             case "data":
-                Databases.ISLAND_DATABASE.getStoredIslands().whenComplete((islands, throwable) -> {
-                    sender.sendMessage("here's your database stored islands");
-                    sender.sendMessage(islands.toString());
-                });
+                Databases.ISLAND_DATABASE.getStoredIslands()
+                        .whenComplete((islands, throwable) -> {
+                            sender.sendMessage("here's your database stored islands");
+                            sender.sendMessage(islands.toString());
+                        });
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + args[0]);

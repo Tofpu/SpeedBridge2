@@ -10,8 +10,6 @@ public final class SpeedBridgePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        getDataFolder().mkdirs();
-
         DatabaseManager.load(this).thenRun(() -> {
             final IslandService service = IslandService.INSTANCE;
             service.load();

@@ -6,11 +6,11 @@ public class DatabaseTable {
     private final String[] columns;
     private final String sql;
 
-    public static DatabaseTable of(final String table, final String ...columns) {
+    public static DatabaseTable of(final String table, final String... columns) {
         return new DatabaseTable(table, columns);
     }
 
-    private DatabaseTable(final String table, final String ...columns) {
+    private DatabaseTable(final String table, final String... columns) {
         this.table = table;
         this.columns = columns;
         this.sql = String.format(CREATE_TABLE, table, formatColumns(columns));

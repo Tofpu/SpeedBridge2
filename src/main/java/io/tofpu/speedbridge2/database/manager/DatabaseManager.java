@@ -29,15 +29,20 @@ public class DatabaseManager {
                 e.printStackTrace();
             }
 
-            final HikariConfig config = new HikariConfig();
-            final File file = new File(plugin.getDataFolder(), "data.db");
+            final File parentFolder = plugin.getDataFolder();
+            if (!parentFolder.exists()) {
+                parentFolder.mkdir();
+            }
+
+            final File databaseFile = new File(plugin.getDataFolder(), "data.db");
             try {
-                file.createNewFile();
+                databaseFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            config.setJdbcUrl("jdbc:sqlite:" + file);
+            final HikariConfig config = new HikariConfig();
+            config.setJdbcUrl("jdbc:sqlite:" + databaseFile);
             config.setUsername("test");
             config.setPassword("test");
             config.addDataSourceProperty("cachePrepStmts", "true");
@@ -45,7 +50,7 @@ public class DatabaseManager {
             config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
             config.setConnectionTestQuery("SELECT 1;");
 
-            dataSource = new HikariDataSource(config);
+            DatabaseManager.dataSource = new HikariDataSource(config);
 
             loadTables();
         });
@@ -58,7 +63,7 @@ public class DatabaseManager {
         for (final String table : TABLE_QUEUE) {
             try (final DatabaseQuery query = new DatabaseQuery(table)) {
                 query.execute();
-                System.out.println("Executed " + table + " table initiation!");
+                System.out.println("Attempted to create " + table + " table!");
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
