@@ -1,28 +1,20 @@
 package io.tofpu.speedbridge2.domain;
 
-import io.ebean.Model;
 import org.bukkit.entity.Player;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
-@Entity
-@Table(name = "islands")
-public final class Island extends Model {
-
-    @Id
+public final class Island {
     private final int slot;
+    private String category;
 
-    @Transient
     private final Map<GamePlayer, GameIsland> islandMap = new HashMap<>();
 
-    public Island(final int slot) {
+    public Island(final int slot, final String category) {
         this.slot = slot;
+        this.category = category;
     }
 
     public Map.Entry<GamePlayer, GameIsland> generateGame(final Player player) {
@@ -41,12 +33,21 @@ public final class Island extends Model {
         return slot;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Island{");
         sb.append("slot=").append(slot);
+        sb.append(", category='").append(category).append('\'');
         sb.append(", islandMap=").append(islandMap);
         sb.append('}');
         return sb.toString();
+    }
+
+    public void setCategory(final String anotherCategory) {
+        this.category = anotherCategory;
     }
 }

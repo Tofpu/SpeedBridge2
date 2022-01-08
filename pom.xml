@@ -26,15 +26,6 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
-
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>io.ebean</groupId>
-                            <artifactId>querybean-generator</artifactId>
-                            <version>12.12.1</version>
-                        </path>
-                        <!-- other annotation processors -->
-                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
@@ -49,22 +40,19 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.xerial</pattern>
+                                    <shadedPattern>io.tofpu.speedbridge2.lib.sqlite</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>javax.persistence</pattern>
+                                    <shadedPattern>io.tofpu.speedbridge2.lib.javax</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>io.repaint.maven</groupId>
-                <artifactId>tiles-maven-plugin</artifactId>
-                <version>2.19</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <tiles>
-                        <!-- other tiles ... -->
-                        <tile>io.ebean.tile:enhancement:12.12.1</tile>
-                    </tiles>
-                </configuration>
             </plugin>
         </plugins>
         <resources>
@@ -95,13 +83,6 @@
         </dependency>
 
         <dependency>
-            <groupId>io.ebean</groupId>
-            <artifactId>ebean-test</artifactId>
-            <version>12.12.1</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.36.0.3</version>
@@ -109,9 +90,9 @@
         </dependency>
 
         <dependency>
-            <groupId>io.ebean</groupId>
-            <artifactId>ebean</artifactId>
-            <version>12.12.1</version>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>4.0.3</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

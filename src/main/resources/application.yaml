@@ -1,6 +1,0 @@
-## SQLite setup - In memory
-datasource:
-  db:
-    username:
-    password:
-    url: jdbc:sqlite:mem:speedbridge2

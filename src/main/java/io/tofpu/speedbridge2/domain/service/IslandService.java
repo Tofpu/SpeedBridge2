@@ -7,6 +7,7 @@ import io.tofpu.speedbridge2.domain.handler.IslandHandler;
 import io.tofpu.speedbridge2.domain.repository.IslandRepository;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.Map;
 
 public final class IslandService {
@@ -37,5 +38,13 @@ public final class IslandService {
 
     public GameIsland findGameByPlayer(final Player player, final Island island) {
         return findGameByPlayer(GamePlayer.of(player), island);
+    }
+
+    public Island deleteIsland(final int slot) {
+        return this.islandHandler.deleteIsland(slot);
+    }
+
+    public Collection<Island> getAllIslands() {
+        return this.islandHandler.getIslands();
     }
 }
