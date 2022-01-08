@@ -20,6 +20,10 @@ public class PluginCommand implements CommandExecutor {
                 service.createIsland(Integer.parseInt(args[1]));
                 sender.sendMessage("created island on " + args[1] + " slot!");
                 break;
+            case "change":
+                service.findIslandBy(Integer.parseInt(args[1])).setCategory(args[2]);
+                sender.sendMessage("updated island");
+                break;
             case "delete":
                 service.deleteIsland(Integer.parseInt(args[1]));
                 sender.sendMessage("deleted island on " + args[1] + " slot");

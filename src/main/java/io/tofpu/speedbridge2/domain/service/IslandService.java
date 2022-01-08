@@ -28,6 +28,10 @@ public final class IslandService {
         return this.islandHandler.createIsland(slot);
     }
 
+    public Island findIslandBy(final int slot) {
+        return this.islandHandler.findIslandBy(slot);
+    }
+
     public Map.Entry<GamePlayer, GameIsland> generateGame(final Player player, final Island island) {
         return island.generateGame(player);
     }

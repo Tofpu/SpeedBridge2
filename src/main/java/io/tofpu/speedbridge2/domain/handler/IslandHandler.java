@@ -25,6 +25,10 @@ public final class IslandHandler {
         return island;
     }
 
+    public Island findIslandBy(final int slot) {
+        return this.islands.get(slot);
+    }
+
     public Island deleteIsland(final int slot) {
         final Island island = this.islands.remove(slot);
 

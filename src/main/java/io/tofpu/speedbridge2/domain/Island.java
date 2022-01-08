@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain;
 
+import io.tofpu.speedbridge2.database.Databases;
 import org.bukkit.entity.Player;
 
 import java.util.AbstractMap;
@@ -29,6 +30,15 @@ public final class Island {
         return this.islandMap.get(gamePlayer);
     }
 
+    public void setCategory(final String anotherCategory) {
+        this.category = anotherCategory;
+        update();
+    }
+
+    private void update() {
+        Databases.ISLAND_DATABASE.update(this);
+    }
+
     public int getSlot() {
         return slot;
     }
@@ -45,9 +55,5 @@ public final class Island {
         sb.append(", islandMap=").append(islandMap);
         sb.append('}');
         return sb.toString();
-    }
-
-    public void setCategory(final String anotherCategory) {
-        this.category = anotherCategory;
     }
 }

@@ -24,6 +24,18 @@ public class IslandDatabase extends Database {
         }
     }
 
+    public void update(final Island island) {
+        try (final DatabaseQuery query = new DatabaseQuery("UPDATE islands SET category = ? WHERE slot = ?")) {
+            query.setString(1, island.getCategory());
+            System.out.println("island category: " + island.getCategory());
+            query.setInt(2, island.getSlot());
+
+            query.execute();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
     public void delete(final int slot) {
         try (final DatabaseQuery query = new DatabaseQuery("DELETE FROM islands WHERE slot = ?")) {
             query.setInt(1, slot);
