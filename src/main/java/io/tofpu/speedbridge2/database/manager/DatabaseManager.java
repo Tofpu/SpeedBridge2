@@ -3,8 +3,7 @@ package io.tofpu.speedbridge2.database.manager;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.tofpu.speedbridge2.database.Databases;
-import io.tofpu.speedbridge2.database.IslandDatabase;
-import io.tofpu.speedbridge2.database.util.DatabaseQuery;
+import io.tofpu.speedbridge2.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.database.wrapper.DatabaseTable;
 import org.bukkit.plugin.Plugin;
 
@@ -14,37 +13,42 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
+
+import static io.tofpu.speedbridge2.database.util.DatabaseUtil.runAsync;
 
 public class DatabaseManager {
     private static final Queue<String> TABLE_QUEUE = new LinkedList<>();
     private static HikariDataSource dataSource;
 
-    public static void load(final Plugin plugin) {
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+    public static CompletableFuture<Void> load(final Plugin plugin) {
+        return runAsync(() -> {
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
 
-        final HikariConfig config = new HikariConfig();
-        final File file = new File(plugin.getDataFolder(), "data.db");
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            final HikariConfig config = new HikariConfig();
+            final File file = new File(plugin.getDataFolder(), "data.db");
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        config.setJdbcUrl("jdbc:sqlite:" + file);
-        config.setUsername("test");
-        config.setPassword("test");
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        config.setConnectionTestQuery("SELECT 1;");
+            config.setJdbcUrl("jdbc:sqlite:" + file);
+            config.setUsername("test");
+            config.setPassword("test");
+            config.addDataSourceProperty("cachePrepStmts", "true");
+            config.addDataSourceProperty("prepStmtCacheSize", "250");
+            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+            config.setConnectionTestQuery("SELECT 1;");
 
-        dataSource = new HikariDataSource(config);
+            dataSource = new HikariDataSource(config);
 
-        loadTables();
+            loadTables();
+        });
     }
 
     private static void loadTables() {

@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class PluginCommand implements CommandExecutor {
 
@@ -33,10 +34,10 @@ public class PluginCommand implements CommandExecutor {
                 sender.sendMessage(service.getAllIslands().toString());
                 break;
             case "data":
-                final List<Island> islands = Databases.ISLAND_DATABASE.getStoredIslands();
-
-                sender.sendMessage("here's your database stored islands");
-                sender.sendMessage(islands.toString());
+                Databases.ISLAND_DATABASE.getStoredIslands().whenComplete((islands, throwable) -> {
+                    sender.sendMessage("here's your database stored islands");
+                    sender.sendMessage(islands.toString());
+                });
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + args[0]);

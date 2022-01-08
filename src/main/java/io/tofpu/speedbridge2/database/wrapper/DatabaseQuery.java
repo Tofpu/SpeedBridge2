@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.database.util;
+package io.tofpu.speedbridge2.database.wrapper;
 
 import io.tofpu.speedbridge2.database.manager.DatabaseManager;
 

@@ -12,10 +12,10 @@ public final class SpeedBridgePlugin extends JavaPlugin {
         // Plugin startup logic
         getDataFolder().mkdirs();
 
-        DatabaseManager.load(this);
-
-        final IslandService service = IslandService.INSTANCE;
-        service.load();
+        DatabaseManager.load(this).thenRun(() -> {
+            final IslandService service = IslandService.INSTANCE;
+            service.load();
+        });
 
         getCommand("bridge").setExecutor(new PluginCommand());
     }

@@ -21,7 +21,9 @@ public final class IslandService {
     }
 
     public void load() {
-        this.islandHandler.load(this.islandRepository.loadIslands());
+        this.islandRepository.loadIslands().whenComplete((islandMap, throwable) -> {
+            this.islandHandler.load(islandMap);
+        });
     }
 
     public Island createIsland(final int slot) {
