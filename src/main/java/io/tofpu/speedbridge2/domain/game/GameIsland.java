@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.domain;
+package io.tofpu.speedbridge2.domain.game;
 
 public final class GameIsland {
     private final int slot;

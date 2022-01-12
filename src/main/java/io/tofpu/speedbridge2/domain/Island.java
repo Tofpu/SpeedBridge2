@@ -1,6 +1,8 @@
 package io.tofpu.speedbridge2.domain;
 
 import io.tofpu.speedbridge2.database.Databases;
+import io.tofpu.speedbridge2.domain.game.GameIsland;
+import io.tofpu.speedbridge2.domain.game.GamePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.AbstractMap;
@@ -9,6 +11,7 @@ import java.util.Map;
 
 public final class Island {
     private final int slot;
+    private final IslandSchematic islandSchematic = new IslandSchematic();
     private final Map<GamePlayer, GameIsland> islandMap = new HashMap<>();
     private String category;
 
@@ -40,6 +43,10 @@ public final class Island {
 
     public int getSlot() {
         return slot;
+    }
+
+    public IslandSchematic getIslandSchematic() {
+        return islandSchematic;
     }
 
     public String getCategory() {

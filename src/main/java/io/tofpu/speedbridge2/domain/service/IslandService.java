@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2.domain.service;
 
-import io.tofpu.speedbridge2.domain.GameIsland;
-import io.tofpu.speedbridge2.domain.GamePlayer;
+import io.tofpu.speedbridge2.domain.game.GameIsland;
+import io.tofpu.speedbridge2.domain.game.GamePlayer;
 import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.handler.IslandHandler;
 import io.tofpu.speedbridge2.domain.repository.IslandRepository;

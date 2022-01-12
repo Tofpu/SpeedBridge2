@@ -14,13 +14,14 @@ import static io.tofpu.speedbridge2.database.util.DatabaseUtil.runAsync;
 
 public class IslandDatabase extends Database {
     IslandDatabase() {
-        super(DatabaseTable.of("islands", "slot NOT NULL PRIMARY KEY", "category TEXT"));
+        super(DatabaseTable.of("islands", "slot NOT NULL PRIMARY KEY", "category TEXT", "schematicName TEXT"));
     }
 
     public CompletableFuture<Void> insert(final Island island) {
-        return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO islands VALUES (?, ?)", databaseQuery -> {
+        return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO islands VALUES (?, ?, ?)", databaseQuery -> {
             databaseQuery.setInt(1, island.getSlot());
             databaseQuery.setString(2, island.getCategory());
+            databaseQuery.setString(3, island.getIslandSchematic().getSchematicName());
         });
     }
 
@@ -29,6 +30,8 @@ public class IslandDatabase extends Database {
             databaseQuery.setString(1, island.getCategory());
             System.out.println("island category: " + island.getCategory());
             databaseQuery.setInt(2, island.getSlot());
+            System.out.println("island schematic: " + island.getIslandSchematic().getSchematicName());
+            databaseQuery.setString(3, island.getIslandSchematic().getSchematicName());
         });
     }
 

@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.domain;
+package io.tofpu.speedbridge2.domain.game;
 
 import org.bukkit.entity.Player;
 
