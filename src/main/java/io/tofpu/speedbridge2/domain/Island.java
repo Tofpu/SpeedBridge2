@@ -12,6 +12,7 @@ import java.util.Map;
 public final class Island {
     private final int slot;
     private final IslandSchematic islandSchematic = new IslandSchematic();
+
     private final Map<GamePlayer, GameIsland> islandMap = new HashMap<>();
     private String category;
 
@@ -21,8 +22,11 @@ public final class Island {
     }
 
     public Map.Entry<GamePlayer, GameIsland> generateGame(final Player player) {
+        if (islandSchematic.getSchematicClipboard() == null) {
+            return null;
+        }
         final GamePlayer gamePlayer = GamePlayer.of(player);
-        final GameIsland gameIsland = new GameIsland(this.slot, gamePlayer);
+        final GameIsland gameIsland = new GameIsland(this, gamePlayer);
 
         this.islandMap.put(gamePlayer, gameIsland);
         return new AbstractMap.SimpleImmutableEntry<>(gamePlayer, gameIsland);

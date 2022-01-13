@@ -2,22 +2,27 @@ package io.tofpu.speedbridge2.domain;
 
 import com.sk89q.worldedit.LocalConfiguration;
 import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.BuiltInClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.util.io.file.FilenameException;
 import org.bukkit.Bukkit;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public final class IslandSchematic {
     private String schematicName;
-    private ClipboardFormat schematicClipboard;
+    private Clipboard schematicClipboard;
 
     public IslandSchematic() {}
     public IslandSchematic(final String schematicName) {
-        this.schematicName = schematicName;
-        selectSchematic(schematicName);
+        if (selectSchematic(schematicName)) {
+            this.schematicName = schematicName;
+        }
     }
 
     public boolean selectSchematic(final String schematicName) {
@@ -35,7 +40,13 @@ public final class IslandSchematic {
         }
 
         if (file != null) {
-            this.schematicClipboard = ClipboardFormats.findByFile(file);
+            final ClipboardFormat clipboardFormat = ClipboardFormats.findByFile(file);
+            try (ClipboardReader reader = clipboardFormat.getReader(new FileInputStream(file))) {
+                this.schematicClipboard = reader.read();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             Bukkit.getLogger().info("successfully set the island's schematic");
         } else {
             Bukkit.getLogger().info(schematicName + " cannot be found as a schematic");
@@ -48,7 +59,7 @@ public final class IslandSchematic {
         return schematicName;
     }
 
-    public ClipboardFormat getSchematicClipboard() {
+    public Clipboard getSchematicClipboard() {
         return schematicClipboard;
     }
 }
