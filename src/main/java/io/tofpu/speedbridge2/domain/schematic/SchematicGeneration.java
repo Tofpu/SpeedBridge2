@@ -55,6 +55,9 @@ public final class SchematicGeneration {
             final double[] positions = {100 * (SCHEMATIC_PLOTS.size() + 100), 100, 100};
 
             selectedPlot = new SchematicPlot(gameIsland.getIsland());
+
+            // reserving the plot to player
+            selectedPlot.reservePlot(gameIsland);
             try {
                 // attempt to generate the plot
                 selectedPlot.generatePlot(world, positions);
@@ -65,10 +68,10 @@ public final class SchematicGeneration {
 
             // adding the plot for future use
             SCHEMATIC_PLOTS.add(selectedPlot);
+        } else {
+            // reserving the plot to player
+            selectedPlot.reservePlot(gameIsland);
         }
-
-        // reserving the plot to player
-        selectedPlot.reservePlot(gameIsland);
         return true;
     }
 

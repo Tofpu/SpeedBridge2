@@ -1,10 +1,10 @@
 package io.tofpu.speedbridge2.domain.schematic;
 
 import com.sk89q.worldedit.*;
+import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.entity.Player;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.session.ClipboardHolder;
@@ -37,10 +37,8 @@ public final class SchematicPlot {
                 .getEditSessionFactory()
                 .getEditSession((com.sk89q.worldedit.world.World) bukkitWorld, -1);
 
-        final LocalSession session = WorldEdit.getInstance().getSession((Player) gameIsland.getGamePlayer().getPlayer());
-        final ClipboardHolder clipboardHolder = session.getClipboard();
-        final Operation operation = clipboardHolder
-                .createPaste(editSession, worldData)
+        final ClipboardHolder clipboardHolder = new ClipboardHolder(island.getSchematicClipboard(), worldData);
+        final Operation operation = clipboardHolder.createPaste(editSession, worldData)
                 .to(new BlockVector(positions[0], positions[1], positions[2]))
                 .ignoreAirBlocks(true)
                 .build();
