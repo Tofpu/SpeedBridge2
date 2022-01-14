@@ -22,6 +22,16 @@ public class PluginCommand implements CommandExecutor {
                 }
                 sender.sendMessage("created island on " + args[1] + " slot");
                 break;
+            case "select":
+                final Island island1 = service.findIslandBy(Integer.parseInt(args[1]));
+                final boolean foundSchematic = island1.getIslandSchematic().selectSchematic(args[2]);
+
+                if (foundSchematic) {
+                    sender.sendMessage("you have successfully selected a schematic");
+                } else {
+                    sender.sendMessage("the schematic couldn't be found");
+                }
+                break;
             case "change":
                 island = service.findIslandBy(Integer.parseInt(args[1]));
                 if (island == null) {

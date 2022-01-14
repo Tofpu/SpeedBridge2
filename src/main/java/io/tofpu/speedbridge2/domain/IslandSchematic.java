@@ -1,18 +1,18 @@
 package io.tofpu.speedbridge2.domain;
 
+import com.sk89q.jnbt.NBTInputStream;
 import com.sk89q.worldedit.LocalConfiguration;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.BuiltInClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.util.io.file.FilenameException;
+import com.sk89q.worldedit.extent.clipboard.io.SchematicReader;
+import com.sk89q.worldedit.world.registry.WorldData;
 import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.zip.GZIPInputStream;
 
 public final class IslandSchematic {
     private String schematicName;
@@ -28,31 +28,32 @@ public final class IslandSchematic {
     public boolean selectSchematic(final String schematicName) {
         final LocalConfiguration configuration = WorldEdit.getInstance()
                 .getConfiguration();
-        final File directory = WorldEdit.getInstance().getWorkingDirectoryPath(configuration.saveDir).toFile();
-//        final Actor actor = new BukkitPlayer(player);
+        final File directory = Bukkit.getPluginManager()
+                .getPlugin("WorldEdit")
+                .getDataFolder()
+                .toPath()
+                .resolve(configuration.saveDir)
+                .toFile();
 
-        File file = null;
-        try {
-            file = WorldEdit.getInstance().getSafeOpenFile(null, directory, schematicName, BuiltInClipboardFormat.SPONGE_SCHEMATIC.getPrimaryFileExtension(),
-                    ClipboardFormats.getFileExtensionArray());
-        } catch (FilenameException e) {
-            e.printStackTrace();
-        }
+        System.out.println("worldedit's directory: " + directory);
+        final File file = directory.toPath().resolve(schematicName + ".schem").toFile();
 
-        if (file != null) {
-            final ClipboardFormat clipboardFormat = ClipboardFormats.findByFile(file);
-            try (ClipboardReader reader = clipboardFormat.getReader(new FileInputStream(file))) {
-                this.schematicClipboard = reader.read();
+        if (file.exists()) {
+            NBTInputStream nbtStream;
+            try {
+                nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(file)));
+                final ClipboardReader reader = new SchematicReader(nbtStream);
+                this.schematicClipboard = reader.read(null);
+
+                Bukkit.getLogger().info("successfully set the island's schematic");
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            Bukkit.getLogger().info("successfully set the island's schematic");
         } else {
             Bukkit.getLogger().info(schematicName + " cannot be found as a schematic");
         }
 
-        return file != null && file.exists();
+        return file.exists();
     }
 
     public String getSchematicName() {
