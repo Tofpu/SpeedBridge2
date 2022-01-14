@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.domain;
+package io.tofpu.speedbridge2.domain.schematic;
 
 import com.sk89q.worldedit.WorldEditException;
 import io.tofpu.speedbridge2.domain.game.GameIsland;

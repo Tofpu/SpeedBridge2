@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.domain;
+package io.tofpu.speedbridge2.domain.schematic;
 
 import com.sk89q.jnbt.NBTInputStream;
 import com.sk89q.worldedit.LocalConfiguration;
@@ -6,7 +6,6 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.extent.clipboard.io.SchematicReader;
-import com.sk89q.worldedit.world.registry.WorldData;
 import org.bukkit.Bukkit;
 
 import java.io.File;

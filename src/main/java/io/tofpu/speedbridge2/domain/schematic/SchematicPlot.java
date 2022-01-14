@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.domain;
+package io.tofpu.speedbridge2.domain.schematic;
 
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
@@ -8,6 +8,7 @@ import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.registry.WorldData;
+import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import org.bukkit.World;
 

@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2.domain;
 import io.tofpu.speedbridge2.database.Databases;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
+import io.tofpu.speedbridge2.domain.schematic.IslandSchematic;
 import org.bukkit.entity.Player;
 
 import java.util.AbstractMap;

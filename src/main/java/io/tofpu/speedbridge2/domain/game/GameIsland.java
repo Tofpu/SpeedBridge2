@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2.domain.game;
 
 import io.tofpu.speedbridge2.domain.Island;
-import io.tofpu.speedbridge2.domain.SchematicGeneration;
+import io.tofpu.speedbridge2.domain.schematic.SchematicGeneration;
 
 public final class GameIsland {
     private final Island island;

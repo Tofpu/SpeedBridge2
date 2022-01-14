@@ -2,7 +2,7 @@ package io.tofpu.speedbridge2.plugin;
 
 import io.tofpu.speedbridge2.command.PluginCommand;
 import io.tofpu.speedbridge2.database.manager.DatabaseManager;
-import io.tofpu.speedbridge2.domain.SchematicGeneration;
+import io.tofpu.speedbridge2.domain.schematic.SchematicGeneration;
 import io.tofpu.speedbridge2.domain.service.IslandService;
 import org.bukkit.plugin.java.JavaPlugin;
 
