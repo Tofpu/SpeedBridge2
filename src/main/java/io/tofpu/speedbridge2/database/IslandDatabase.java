@@ -21,17 +21,19 @@ public class IslandDatabase extends Database {
         return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO islands VALUES (?, ?, ?)", databaseQuery -> {
             databaseQuery.setInt(1, island.getSlot());
             databaseQuery.setString(2, island.getCategory());
-            databaseQuery.setString(3, island.getIslandSchematic().getSchematicName());
+            databaseQuery.setString(3, island.getSchematicName());
         });
     }
 
     public CompletableFuture<Void> update(final Island island) {
-        return DatabaseUtil.databaseQueryExecute("UPDATE islands SET category = ? WHERE slot = ?", databaseQuery -> {
-            databaseQuery.setString(1, island.getCategory());
+        return DatabaseUtil.databaseQueryExecute("UPDATE islands SET category = ?, schematicName = ? WHERE slot = ?", databaseQuery -> {
             System.out.println("island category: " + island.getCategory());
-            databaseQuery.setInt(2, island.getSlot());
-            System.out.println("island schematic: " + island.getIslandSchematic().getSchematicName());
-            databaseQuery.setString(3, island.getIslandSchematic().getSchematicName());
+            databaseQuery.setString(1, island.getCategory());
+
+            System.out.println("island schematic: " + island.getSchematicName());
+            databaseQuery.setString(2, island.getSchematicName());
+
+            databaseQuery.setInt(3, island.getSlot());
         });
     }
 
@@ -49,7 +51,9 @@ public class IslandDatabase extends Database {
                 DatabaseUtil.databaseQuery("SELECT * FROM islands", resultSet -> {
                     try {
                         while (resultSet.next()) {
-                            islands.add(new Island(resultSet.getInt(1), resultSet.getString(2)));
+                            final Island island = new Island(resultSet.getInt(1), resultSet.getString(2));
+                            island.selectSchematic(resultSet.getString(3));
+                            islands.add(island);
                         }
                     } catch (SQLException exception) {
                         exception.printStackTrace();

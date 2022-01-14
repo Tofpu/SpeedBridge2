@@ -35,7 +35,7 @@ public final class IslandSchematic {
                 .toFile();
 
         System.out.println("worldedit's directory: " + directory);
-        final File file = directory.toPath().resolve(schematicName + ".schem").toFile();
+        final File file = directory.toPath().resolve(schematicName + ".schematic").toFile();
 
         if (file.exists()) {
             NBTInputStream nbtStream;
@@ -48,6 +48,8 @@ public final class IslandSchematic {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            this.schematicName = schematicName;
         } else {
             Bukkit.getLogger().info(schematicName + " cannot be found as a schematic");
         }
@@ -61,5 +63,14 @@ public final class IslandSchematic {
 
     public Clipboard getSchematicClipboard() {
         return schematicClipboard;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("IslandSchematic{");
+        sb.append("schematicName='").append(schematicName).append('\'');
+        sb.append(", schematicClipboard=").append(schematicClipboard);
+        sb.append('}');
+        return sb.toString();
     }
 }

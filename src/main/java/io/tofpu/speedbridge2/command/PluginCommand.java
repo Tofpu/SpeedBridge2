@@ -6,6 +6,7 @@ import io.tofpu.speedbridge2.domain.service.IslandService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class PluginCommand implements CommandExecutor {
 
@@ -24,13 +25,17 @@ public class PluginCommand implements CommandExecutor {
                 break;
             case "select":
                 final Island island1 = service.findIslandBy(Integer.parseInt(args[1]));
-                final boolean foundSchematic = island1.getIslandSchematic().selectSchematic(args[2]);
+                final boolean foundSchematic = island1.selectSchematic(args[2]);
 
                 if (foundSchematic) {
                     sender.sendMessage("you have successfully selected a schematic");
                 } else {
                     sender.sendMessage("the schematic couldn't be found");
                 }
+                break;
+            case "join":
+                final Island selectedIsland = service.findIslandBy(Integer.parseInt(args[1]));
+                selectedIsland.generateGame((Player) sender);
                 break;
             case "change":
                 island = service.findIslandBy(Integer.parseInt(args[1]));

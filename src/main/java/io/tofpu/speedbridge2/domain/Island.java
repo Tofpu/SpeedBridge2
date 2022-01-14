@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain;
 
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import io.tofpu.speedbridge2.database.Databases;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
@@ -42,16 +43,29 @@ public final class Island {
         update();
     }
 
+    public boolean selectSchematic(final String schematicName) {
+        final boolean successful = this.islandSchematic.selectSchematic(schematicName);
+        // if the operation was successful, update the database
+        if (successful) {
+            update();
+        }
+        return successful;
+    }
+
+    public String getSchematicName() {
+        return this.islandSchematic.getSchematicName();
+    }
+
+    public Clipboard getSchematicClipboard() {
+        return this.islandSchematic.getSchematicClipboard();
+    }
+
     private void update() {
         Databases.ISLAND_DATABASE.update(this);
     }
 
     public int getSlot() {
         return slot;
-    }
-
-    public IslandSchematic getIslandSchematic() {
-        return islandSchematic;
     }
 
     public String getCategory() {
@@ -62,8 +76,9 @@ public final class Island {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Island{");
         sb.append("slot=").append(slot);
-        sb.append(", category='").append(category).append('\'');
+        sb.append(", islandSchematic=").append(islandSchematic);
         sb.append(", islandMap=").append(islandMap);
+        sb.append(", category='").append(category).append('\'');
         sb.append('}');
         return sb.toString();
     }

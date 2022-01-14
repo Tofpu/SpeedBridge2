@@ -4,12 +4,15 @@ import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.entity.Player;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.registry.WorldData;
 import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 
 public final class SchematicPlot {
@@ -20,11 +23,13 @@ public final class SchematicPlot {
 
     public SchematicPlot(final Island island) {
         this.island = island;
-        this.schematicPlot = island.getIslandSchematic().getSchematicClipboard();
+        this.schematicPlot = island.getSchematicClipboard();
     }
 
     public void generatePlot(final World world, double[] positions) throws WorldEditException {
         // possibly make this operation async?
+        Bukkit.getLogger().info("generating plot!");
+
         final BukkitWorld bukkitWorld = new BukkitWorld(world);
         final WorldData worldData = bukkitWorld.getWorldData();
 
@@ -32,7 +37,7 @@ public final class SchematicPlot {
                 .getEditSessionFactory()
                 .getEditSession((com.sk89q.worldedit.world.World) bukkitWorld, -1);
 
-        final LocalSession session = WorldEdit.getInstance().getSession((Player) null);
+        final LocalSession session = WorldEdit.getInstance().getSession((Player) gameIsland.getGamePlayer().getPlayer());
         final ClipboardHolder clipboardHolder = session.getClipboard();
         final Operation operation = clipboardHolder
                 .createPaste(editSession, worldData)
@@ -41,10 +46,14 @@ public final class SchematicPlot {
                 .build();
 
         Operations.completeLegacy(operation);
+
+        Bukkit.getLogger().info("teleporting player now!");
+        gameIsland.getGamePlayer().getPlayer().teleport(new Location(world, positions[0], positions[1], positions[2]));
     }
 
     public void reservePlot(final GameIsland gameIsland) {
         this.gameIsland = gameIsland;
+//        gameIsland.getGamePlayer().getPlayer().teleport(new Location(world, positions[0], positions[1], positions[2]))
     }
 
     public void freePlot() {
