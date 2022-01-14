@@ -2,12 +2,13 @@ package io.tofpu.speedbridge2.domain;
 
 import com.sk89q.worldedit.WorldEditException;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
-import io.tofpu.speedbridge2.domain.game.GamePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.plugin.Plugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -19,13 +20,19 @@ public final class SchematicGeneration {
     private World world;
     private SchematicGeneration() {}
 
-    public void load() {
+    public void load(final Plugin plugin) {
         World world = Bukkit.getWorld("speedbridge2");
         if (world == null) {
             world = Bukkit.createWorld(WorldCreator.name("speedbridge2")
                     .generator(new EmptyChunkGenerator()));
         }
         this.world = world;
+
+        final File bridgeWorld = new File(plugin.getDataFolder().getParentFile(), "speedbridge2");
+        // if the bridge world exists, delete it on exit
+        if (bridgeWorld.exists()) {
+            bridgeWorld.deleteOnExit();
+        }
     }
 
     public boolean reservePlot(final GameIsland gameIsland) {

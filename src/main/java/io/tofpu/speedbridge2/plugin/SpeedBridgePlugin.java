@@ -16,7 +16,7 @@ public final class SpeedBridgePlugin extends JavaPlugin {
             service.load();
         });
 
-        SchematicGeneration.INSTANCE.load();
+        SchematicGeneration.INSTANCE.load(this);
 
         getCommand("bridge").setExecutor(new PluginCommand());
     }
