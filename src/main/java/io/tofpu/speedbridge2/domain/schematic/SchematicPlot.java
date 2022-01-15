@@ -1,6 +1,8 @@
 package io.tofpu.speedbridge2.domain.schematic;
 
 import com.sk89q.worldedit.*;
+import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.blocks.BlockMaterial;
 import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
@@ -13,7 +15,10 @@ import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 
 public final class SchematicPlot {
     private final Island island;
@@ -44,6 +49,22 @@ public final class SchematicPlot {
                 .build();
 
         Operations.completeLegacy(operation);
+
+        final Clipboard clipboard = clipboardHolder.getClipboard();
+        for (double x = clipboard.getMinimumPoint().getX(); x <= clipboard.getMaximumPoint().getX(); x++) {
+            for (double y = clipboard.getMinimumPoint().getY(); y <= clipboard.getMaximumPoint().getY(); y++) {
+                for (double z = clipboard.getMinimumPoint().getZ(); z <= clipboard.getMaximumPoint().getZ(); z++) {
+                    final BaseBlock block = clipboard.getLazyBlock(new BlockVector(x, y, z));
+                    // temporally
+                    final Material material = Material.getMaterial(block.getId());
+                    if (material == Material.AIR) {
+                        continue;
+                    }
+
+                    Bukkit.broadcastMessage(material + " (" + x + ", " + y + ", " + z + ")");
+                }
+            }
+        }
 
         Bukkit.getLogger().info("teleporting player now!");
         gameIsland.getGamePlayer().getPlayer().teleport(new Location(world, positions[0], positions[1], positions[2]));
