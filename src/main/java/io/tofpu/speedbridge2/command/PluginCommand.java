@@ -16,6 +16,7 @@ public class PluginCommand implements CommandExecutor {
     public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
         final IslandService service = IslandService.INSTANCE;
 
+        GamePlayer gamePlayer;
         Island island;
         switch (args[0]) {
             case "create":
@@ -36,11 +37,16 @@ public class PluginCommand implements CommandExecutor {
                 }
                 break;
             case "join":
+                gamePlayer = GamePlayer.of((Player) sender);
+                if (gamePlayer.isPlaying()) {
+                    sender.sendMessage("you already joined an island");
+                    return false;
+                }
                 island = service.findIslandBy(Integer.parseInt(args[1]));
                 island.generateGame((Player) sender);
                 break;
             case "leave":
-                final GamePlayer gamePlayer = GamePlayer.of((Player) sender);
+                gamePlayer = GamePlayer.of((Player) sender);
                 if (!gamePlayer.isPlaying()) {
                     sender.sendMessage("you're not playing");
                     return false;
