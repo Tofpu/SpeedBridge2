@@ -24,14 +24,25 @@ public final class Island {
     }
 
     public Map.Entry<GamePlayer, GameIsland> generateGame(final Player player) {
+        // if a schematic cannot be found, return null
         if (islandSchematic.getSchematicClipboard() == null) {
             return null;
         }
+
         final GamePlayer gamePlayer = GamePlayer.of(player);
         final GameIsland gameIsland = new GameIsland(this, gamePlayer);
 
         this.islandMap.put(gamePlayer, gameIsland);
         return new AbstractMap.SimpleImmutableEntry<>(gamePlayer, gameIsland);
+    }
+
+    public void leaveGame(final GamePlayer gamePlayer) {
+        final GameIsland gameIsland = this.islandMap.remove(gamePlayer);
+        if (gameIsland == null) {
+            return;
+        }
+
+        gameIsland.leaveGame();
     }
 
     public GameIsland findGameByPlayer(final GamePlayer gamePlayer) {

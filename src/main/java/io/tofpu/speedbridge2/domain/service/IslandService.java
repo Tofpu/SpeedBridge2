@@ -39,6 +39,12 @@ public final class IslandService {
         return island.generateGame(player);
     }
 
+//    public GameIsland findGameByPlayer(final Player player) {
+//        final GamePlayer gamePlayer = GamePlayer.of(player);
+//
+//        return findGameByPlayer(GamePlayer.of(player), island);
+//    }
+
     public GameIsland findGameByPlayer(final Player player, final Island island) {
         return findGameByPlayer(GamePlayer.of(player), island);
     }

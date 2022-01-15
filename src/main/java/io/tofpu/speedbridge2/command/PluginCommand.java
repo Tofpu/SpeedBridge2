@@ -2,6 +2,8 @@ package io.tofpu.speedbridge2.command;
 
 import io.tofpu.speedbridge2.database.Databases;
 import io.tofpu.speedbridge2.domain.Island;
+import io.tofpu.speedbridge2.domain.game.GameIsland;
+import io.tofpu.speedbridge2.domain.game.GamePlayer;
 import io.tofpu.speedbridge2.domain.service.IslandService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,8 +26,8 @@ public class PluginCommand implements CommandExecutor {
                 sender.sendMessage("created island on " + args[1] + " slot");
                 break;
             case "select":
-                final Island island1 = service.findIslandBy(Integer.parseInt(args[1]));
-                final boolean foundSchematic = island1.selectSchematic(args[2]);
+                island = service.findIslandBy(Integer.parseInt(args[1]));
+                final boolean foundSchematic = island.selectSchematic(args[2]);
 
                 if (foundSchematic) {
                     sender.sendMessage("you have successfully selected a schematic");
@@ -34,8 +36,17 @@ public class PluginCommand implements CommandExecutor {
                 }
                 break;
             case "join":
-                final Island selectedIsland = service.findIslandBy(Integer.parseInt(args[1]));
-                selectedIsland.generateGame((Player) sender);
+                island = service.findIslandBy(Integer.parseInt(args[1]));
+                island.generateGame((Player) sender);
+                break;
+            case "leave":
+                final GamePlayer gamePlayer = GamePlayer.of((Player) sender);
+                if (!gamePlayer.isPlaying()) {
+                    sender.sendMessage("you're not playing");
+                    return false;
+                }
+                island = service.findIslandBy(gamePlayer.getIslandSlot());
+                island.leaveGame(gamePlayer);
                 break;
             case "change":
                 island = service.findIslandBy(Integer.parseInt(args[1]));

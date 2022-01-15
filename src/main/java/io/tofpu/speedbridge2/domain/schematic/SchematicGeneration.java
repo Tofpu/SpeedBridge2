@@ -1,7 +1,9 @@
 package io.tofpu.speedbridge2.domain.schematic;
 
 import com.sk89q.worldedit.WorldEditException;
+import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
+import io.tofpu.speedbridge2.domain.game.GamePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -40,6 +42,7 @@ public final class SchematicGeneration {
             Bukkit.getLogger().severe("The SpeedBridge2 world cannot be found! cancelled player's request to reserve a plot.");
             return false;
         }
+        final Island island = gameIsland.getIsland();
         SchematicPlot selectedPlot = null;
 
         for (final SchematicPlot schematicPlot : SCHEMATIC_PLOTS) {
@@ -54,7 +57,7 @@ public final class SchematicGeneration {
         if (selectedPlot == null) {
             final double[] positions = {100 * (SCHEMATIC_PLOTS.size() + 100), 100, 100};
 
-            selectedPlot = new SchematicPlot(gameIsland.getIsland());
+            selectedPlot = new SchematicPlot(island);
 
             // reserving the plot to player
             selectedPlot.reservePlot(gameIsland);
@@ -72,6 +75,35 @@ public final class SchematicGeneration {
             // reserving the plot to player
             selectedPlot.reservePlot(gameIsland);
         }
+
+        final GamePlayer gamePlayer = gameIsland.getGamePlayer();
+
+        // setting the player island slot
+        gamePlayer.setIslandSlot(island.getSlot());
+        // teleports the player to plot
+        gamePlayer.teleport(selectedPlot);
+
+        return true;
+    }
+
+    public boolean freePlot(final GameIsland gameIsland) {
+        SchematicPlot selectedPlot = null;
+
+        for (final SchematicPlot schematicPlot : SCHEMATIC_PLOTS) {
+            // if a plot's island equals to island, select the plot and break the loop
+            if (schematicPlot.getGameIsland().equals(gameIsland)) {
+                selectedPlot = schematicPlot;
+                break;
+            }
+        }
+
+        if (selectedPlot == null) {
+            return false;
+        }
+
+        // free the plot for other players
+        selectedPlot.freePlot();
+
         return true;
     }
 

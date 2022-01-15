@@ -1,11 +1,11 @@
 package io.tofpu.speedbridge2.domain.schematic;
 
-import com.sk89q.worldedit.*;
+import com.sk89q.worldedit.BlockVector;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.blocks.BaseBlock;
-import com.sk89q.worldedit.blocks.BlockMaterial;
-import com.sk89q.worldedit.bukkit.BukkitPlayer;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
@@ -14,17 +14,18 @@ import com.sk89q.worldedit.world.registry.WorldData;
 import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 
 public final class SchematicPlot {
     private final Island island;
     private final Clipboard schematicPlot;
 
     private GameIsland gameIsland;
+    private World world;
+    private double x;
+    private double y;
+    private double z;
 
     public SchematicPlot(final Island island) {
         this.island = island;
@@ -32,6 +33,11 @@ public final class SchematicPlot {
     }
 
     public void generatePlot(final World world, double[] positions) throws WorldEditException {
+        this.world = world;
+        this.x = positions[0];
+        this.y = positions[1];
+        this.z = positions[2];
+
         // possibly make this operation async?
         Bukkit.getLogger().info("generating plot!");
 
@@ -44,7 +50,7 @@ public final class SchematicPlot {
 
         final ClipboardHolder clipboardHolder = new ClipboardHolder(island.getSchematicClipboard(), worldData);
         final Operation operation = clipboardHolder.createPaste(editSession, worldData)
-                .to(new BlockVector(positions[0], positions[1], positions[2]))
+                .to(new BlockVector(x, y, z))
                 .ignoreAirBlocks(true)
                 .build();
 
@@ -65,14 +71,10 @@ public final class SchematicPlot {
                 }
             }
         }
-
-        Bukkit.getLogger().info("teleporting player now!");
-        gameIsland.getGamePlayer().getPlayer().teleport(new Location(world, positions[0], positions[1], positions[2]));
     }
 
     public void reservePlot(final GameIsland gameIsland) {
         this.gameIsland = gameIsland;
-//        gameIsland.getGamePlayer().getPlayer().teleport(new Location(world, positions[0], positions[1], positions[2]))
     }
 
     public void freePlot() {
@@ -85,6 +87,26 @@ public final class SchematicPlot {
 
     public int getSlot() {
         return this.island.getSlot();
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getZ() {
+        return z;
+    }
+
+    public GameIsland getGameIsland() {
+        return gameIsland;
     }
 
     public Clipboard getSchematicPlot() {
