@@ -1,6 +1,5 @@
 package io.tofpu.speedbridge2.domain;
 
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import io.tofpu.speedbridge2.database.Databases;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
@@ -11,9 +10,8 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class Island {
+public final class Island extends IslandSchematic {
     private final int slot;
-    private final IslandSchematic islandSchematic = new IslandSchematic();
 
     private final Map<GamePlayer, GameIsland> islandMap = new HashMap<>();
     private String category;
@@ -25,7 +23,7 @@ public final class Island {
 
     public Map.Entry<GamePlayer, GameIsland> generateGame(final Player player) {
         // if a schematic cannot be found, return null
-        if (islandSchematic.getSchematicClipboard() == null) {
+        if (getSchematicClipboard() == null) {
             return null;
         }
 
@@ -55,20 +53,12 @@ public final class Island {
     }
 
     public boolean selectSchematic(final String schematicName) {
-        final boolean successful = this.islandSchematic.selectSchematic(schematicName);
+        final boolean successful = super.selectSchematic(schematicName);
         // if the operation was successful, update the database
         if (successful) {
             update();
         }
         return successful;
-    }
-
-    public String getSchematicName() {
-        return this.islandSchematic.getSchematicName();
-    }
-
-    public Clipboard getSchematicClipboard() {
-        return this.islandSchematic.getSchematicClipboard();
     }
 
     private void update() {
@@ -87,7 +77,6 @@ public final class Island {
     public String toString() {
         final StringBuilder sb = new StringBuilder("Island{");
         sb.append("slot=").append(slot);
-        sb.append(", islandSchematic=").append(islandSchematic);
         sb.append(", islandMap=").append(islandMap);
         sb.append(", category='").append(category).append('\'');
         sb.append('}');

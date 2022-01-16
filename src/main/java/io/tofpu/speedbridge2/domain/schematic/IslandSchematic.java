@@ -13,18 +13,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 
-public final class IslandSchematic {
+public class IslandSchematic {
     private String schematicName;
     private Clipboard schematicClipboard;
 
     public IslandSchematic() {}
-    public IslandSchematic(final String schematicName) {
-        if (selectSchematic(schematicName)) {
-            this.schematicName = schematicName;
-        }
-    }
 
-    public boolean selectSchematic(final String schematicName) {
+    protected boolean selectSchematic(final String schematicName) {
         final LocalConfiguration configuration = WorldEdit.getInstance()
                 .getConfiguration();
         final File directory = Bukkit.getPluginManager()
