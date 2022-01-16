@@ -12,6 +12,9 @@ public final class GameIsland {
         this.island = island;
         this.gamePlayer = gamePlayer;
 
+        // setting the player's queue to true
+        this.gamePlayer.startQueue();
+
         SchematicManager.INSTANCE.reservePlot(this);
     }
 

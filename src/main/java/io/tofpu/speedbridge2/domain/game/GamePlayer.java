@@ -12,6 +12,7 @@ public final class GamePlayer {
     private static final Map<UUID, GamePlayer> GAME_PLAYER_MAP = new HashMap<>();
     private final Player player;
 
+    private boolean queue;
     private int islandSlot;
 
     public static GamePlayer of(final Player player) {
@@ -24,6 +25,18 @@ public final class GamePlayer {
 
     public void setIslandSlot(final int islandSlot) {
         this.islandSlot = islandSlot;
+    }
+
+    public void startQueue() {
+        this.queue = true;
+    }
+
+    public void resetQueue() {
+        this.queue = false;
+    }
+
+    public boolean isInQueue() {
+        return queue;
     }
 
     public boolean isPlaying() {

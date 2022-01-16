@@ -2,7 +2,6 @@ package io.tofpu.speedbridge2.command;
 
 import io.tofpu.speedbridge2.database.Databases;
 import io.tofpu.speedbridge2.domain.Island;
-import io.tofpu.speedbridge2.domain.game.GameIsland;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
 import io.tofpu.speedbridge2.domain.service.IslandService;
 import org.bukkit.command.Command;
@@ -38,10 +37,15 @@ public class PluginCommand implements CommandExecutor {
                 break;
             case "join":
                 gamePlayer = GamePlayer.of((Player) sender);
-                if (gamePlayer.isPlaying()) {
-                    sender.sendMessage("you already joined an island");
+
+                if (gamePlayer.isInQueue()) {
+                    gamePlayer.getPlayer().sendMessage("you're already in a queue");
+                    return false;
+                } else if (gamePlayer.isPlaying()) {
+                    gamePlayer.getPlayer().sendMessage("you're already playing");
                     return false;
                 }
+
                 island = service.findIslandBy(Integer.parseInt(args[1]));
                 island.generateGame((Player) sender);
                 break;
