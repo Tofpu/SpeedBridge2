@@ -1,29 +1,23 @@
 package io.tofpu.speedbridge2.plugin;
 
-import io.tofpu.speedbridge2.command.PluginCommand;
-import io.tofpu.speedbridge2.database.manager.DatabaseManager;
-import io.tofpu.speedbridge2.domain.schematic.SchematicManager;
-import io.tofpu.speedbridge2.domain.service.IslandService;
+import io.tofpu.speedbridge2.SpeedBridge;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class SpeedBridgePlugin extends JavaPlugin {
+    private final SpeedBridge speedBridge;
+
+    public SpeedBridgePlugin() {
+        this.speedBridge = new SpeedBridge(this);
+    }
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
-        DatabaseManager.load(this).thenRun(() -> {
-            final IslandService service = IslandService.INSTANCE;
-            service.load();
-        });
-
-        SchematicManager.INSTANCE.load(this);
-
-        getCommand("bridge").setExecutor(new PluginCommand());
+        speedBridge.load();
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        DatabaseManager.shutdown();
+        speedBridge.shutdown();
     }
 }
