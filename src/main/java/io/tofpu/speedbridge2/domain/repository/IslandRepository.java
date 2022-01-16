@@ -15,12 +15,11 @@ import static io.tofpu.speedbridge2.database.util.DatabaseUtil.runAsync;
 public final class IslandRepository {
     public CompletableFuture<Map<Integer, Island>> loadIslands() {
         return runAsync(() -> {
-            List<Island> islands;
+            final List<Island> islands = new ArrayList<>();
             try {
-                islands = Databases.ISLAND_DATABASE.getStoredIslands().get();
+                islands.addAll(Databases.ISLAND_DATABASE.getStoredIslands().get());
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
-                islands = new ArrayList<>();
             }
 
             System.out.println("loaded islands:");

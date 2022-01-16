@@ -86,8 +86,4 @@ public class DatabaseManager {
         }
         return null;
     }
-
-    public static HikariDataSource getDataSource() {
-        return dataSource;
-    }
 }
