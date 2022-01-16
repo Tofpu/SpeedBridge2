@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2.domain.game;
 
 import io.tofpu.speedbridge2.domain.Island;
-import io.tofpu.speedbridge2.domain.schematic.SchematicGeneration;
+import io.tofpu.speedbridge2.domain.schematic.SchematicManager;
 import org.bukkit.Bukkit;
 
 public final class GameIsland {
@@ -12,7 +12,7 @@ public final class GameIsland {
         this.island = island;
         this.gamePlayer = gamePlayer;
 
-        SchematicGeneration.INSTANCE.reservePlot(this);
+        SchematicManager.INSTANCE.reservePlot(this);
     }
 
     public void leaveGame() {
@@ -20,7 +20,7 @@ public final class GameIsland {
         gamePlayer.getPlayer().teleport(Bukkit.getWorld("world").getSpawnLocation());
 
         // free the plot
-        SchematicGeneration.INSTANCE.freePlot(this);
+        SchematicManager.INSTANCE.freePlot(this);
 
         // set the player's game to -1, as they're leaving the island
         gamePlayer.setIslandSlot(-1);

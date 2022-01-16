@@ -21,23 +21,24 @@ public final class SchematicPlot {
     private final Island island;
     private final Clipboard schematicPlot;
 
-    private GameIsland gameIsland;
-    private World world;
-    private double x;
-    private double y;
-    private double z;
+    private final World world;
+    private final double x;
+    private final double y;
+    private final double z;
 
-    public SchematicPlot(final Island island) {
+    private final PlotState plotState;
+
+    public SchematicPlot(final Island island, final World world, double[] positions) {
         this.island = island;
         this.schematicPlot = island.getSchematicClipboard();
-    }
-
-    public void generatePlot(final World world, double[] positions) throws WorldEditException {
         this.world = world;
         this.x = positions[0];
         this.y = positions[1];
         this.z = positions[2];
+        this.plotState = new PlotState();
+    }
 
+    public void generatePlot() throws WorldEditException {
         // possibly make this operation async?
         Bukkit.getLogger().info("generating plot!");
 
@@ -74,19 +75,7 @@ public final class SchematicPlot {
     }
 
     public void reservePlot(final GameIsland gameIsland) {
-        this.gameIsland = gameIsland;
-    }
-
-    public void freePlot() {
-        this.gameIsland = null;
-    }
-
-    public boolean isPlotFree() {
-        return gameIsland == null;
-    }
-
-    public int getSlot() {
-        return this.island.getSlot();
+        this.plotState.reservePlotWith(gameIsland);
     }
 
     public World getWorld() {
@@ -106,7 +95,15 @@ public final class SchematicPlot {
     }
 
     public GameIsland getGameIsland() {
-        return gameIsland;
+        return plotState.getGameIsland();
+    }
+
+    public void freePlot() {
+        plotState.freePlot();
+    }
+
+    public boolean isPlotFree() {
+        return plotState.isPlotFree();
     }
 
     public Clipboard getSchematicPlot() {

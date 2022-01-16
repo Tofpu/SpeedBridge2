@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.domain.schematic;
+package io.tofpu.speedbridge2.domain;
 
 import com.sk89q.jnbt.NBTInputStream;
 import com.sk89q.worldedit.LocalConfiguration;
@@ -57,7 +57,7 @@ public class IslandSchematic {
     }
 
     public Clipboard getSchematicClipboard() {
-        return schematicClipboard;
+        return this.schematicClipboard;
     }
 
     @Override

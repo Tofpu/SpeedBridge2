@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public final class SchematicGeneration {
-    public static final SchematicGeneration INSTANCE = new SchematicGeneration();
+public final class SchematicManager {
+    public static final SchematicManager INSTANCE = new SchematicManager();
     private static final List<SchematicPlot> SCHEMATIC_PLOTS = new ArrayList<>();
 
     private World world;
-    private SchematicGeneration() {}
+    private SchematicManager() {}
 
     public void load(final Plugin plugin) {
         World world = Bukkit.getWorld("speedbridge2");
@@ -57,13 +57,13 @@ public final class SchematicGeneration {
         if (selectedPlot == null) {
             final double[] positions = {100 * (SCHEMATIC_PLOTS.size() + 100), 100, 100};
 
-            selectedPlot = new SchematicPlot(island);
+            selectedPlot = new SchematicPlot(island, world, positions);
 
             // reserving the plot to player
             selectedPlot.reservePlot(gameIsland);
             try {
                 // attempt to generate the plot
-                selectedPlot.generatePlot(world, positions);
+                selectedPlot.generatePlot();
             } catch (WorldEditException e) {
                 e.printStackTrace();
                 return false;

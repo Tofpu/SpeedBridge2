@@ -3,8 +3,8 @@ package io.tofpu.speedbridge2.domain.handler;
 import io.tofpu.speedbridge2.database.Databases;
 import io.tofpu.speedbridge2.domain.Island;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +44,6 @@ public final class IslandHandler {
     }
 
     public Collection<Island> getIslands() {
-        return new ArrayList<>(this.islands.values());
+        return Collections.unmodifiableCollection(this.islands.values());
     }
 }
