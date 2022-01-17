@@ -4,15 +4,25 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.Region;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
-import io.tofpu.speedbridge2.domain.schematic.IslandPlot;
 import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
-public class IslandRegionListener extends GameListener {
+public class IslandProtectionListener extends GameListener {
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerMove(final PlayerMoveEvent event) {
+    public void onBlockBreak(final BlockBreakEvent event) {
+        final GamePlayer gamePlayer = GamePlayer.of(event.getPlayer());
+        if (!gamePlayer.isPlaying()) {
+            return;
+        }
+
+        // TODO: check if the block broken was placed by a player here...
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onBlockPlaceEvent(final BlockPlaceEvent event) {
         final GamePlayer gamePlayer = GamePlayer.of(event.getPlayer());
         if (!gamePlayer.isPlaying()) {
             return;
@@ -20,15 +30,15 @@ public class IslandRegionListener extends GameListener {
         final GameIsland gameIsland = gamePlayer.getCurrentGame();
         final Region region = gameIsland.getIsland().getSchematicClipboard().getRegion();
 
-        final Location location = event.getTo();
+        final Location location = event.getBlockPlaced().getLocation();
         final boolean isInRegion = region.contains(new Vector(location.getX(), location.getY(), location.getZ()));
 
-        // if the player is not in the region, teleport them back to the island location
+        // if the block placement was outside of the island's region, prevent the block placement
         if (!isInRegion) {
-            final IslandPlot islandPlot = gameIsland.getIslandPlot();
-            event.setTo(new Location(islandPlot.getWorld(), islandPlot.getX(), islandPlot.getY(), islandPlot.getZ()));
-
-            // TODO: reset the blocks & timer here...
+            event.setCancelled(true);
+            return;
         }
+
+        // TODO: otherwise, add the block to the GamePlayer object
     }
 }

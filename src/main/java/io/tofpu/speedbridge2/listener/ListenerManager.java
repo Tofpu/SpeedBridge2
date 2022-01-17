@@ -1,5 +1,7 @@
 package io.tofpu.speedbridge2.listener;
 
+import io.tofpu.speedbridge2.listener.island.IslandProtectionListener;
+import io.tofpu.speedbridge2.listener.island.IslandRegionListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -10,6 +12,11 @@ import java.util.List;
 
 public final class ListenerManager {
     private static final List<Listener> LISTENERS = new ArrayList<>();
+
+    static {
+        new IslandRegionListener();
+        new IslandProtectionListener();
+    }
 
     public static void add(final Listener listener) {
         LISTENERS.add(listener);
