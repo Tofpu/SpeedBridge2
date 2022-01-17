@@ -2,15 +2,15 @@ package io.tofpu.speedbridge2.domain.game;
 
 import io.tofpu.speedbridge2.domain.schematic.IslandPlot;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public final class GamePlayer {
     private static final Map<UUID, GamePlayer> GAME_PLAYER_MAP = new HashMap<>();
     private final Player player;
+    private final List<Location> blockLocations;
 
     private boolean queue;
     private GameIsland currentGame;
@@ -21,10 +21,19 @@ public final class GamePlayer {
 
     private GamePlayer(final Player player) {
         this.player = player;
+        this.blockLocations = new ArrayList<>();
     }
 
     public void setCurrentGame(final GameIsland gameIsland) {
         this.currentGame = gameIsland;
+    }
+
+    public void addBlock(final Block block) {
+        this.blockLocations.add(block.getLocation());
+    }
+
+    public void removeBlock(final Block block) {
+        this.blockLocations.add(block.getLocation());
     }
 
     public void startQueue() {

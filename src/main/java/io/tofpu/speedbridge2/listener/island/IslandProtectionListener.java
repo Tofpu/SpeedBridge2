@@ -17,8 +17,8 @@ public class IslandProtectionListener extends GameListener {
         if (!gamePlayer.isPlaying()) {
             return;
         }
-
-        // TODO: check if the block broken was placed by a player here...
+        
+        gamePlayer.removeBlock(event.getBlock());
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -39,6 +39,6 @@ public class IslandProtectionListener extends GameListener {
             return;
         }
 
-        // TODO: otherwise, add the block to the GamePlayer object
+        gamePlayer.addBlock(event.getBlockPlaced());
     }
 }
