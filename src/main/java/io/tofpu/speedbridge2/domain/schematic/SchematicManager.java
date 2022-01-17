@@ -37,12 +37,10 @@ public final class SchematicManager {
         }
     }
 
-    public boolean reservePlot(final GameIsland gameIsland) {
+    public SchematicPlot reservePlot(final GameIsland gameIsland) {
         if (world == null) {
-            // reset the player's queue
-            gameIsland.getGamePlayer().resetQueue();
             Bukkit.getLogger().severe("The SpeedBridge2 world cannot be found! cancelled player's request to reserve a plot.");
-            return false;
+            return null;
         }
 
         final Island island = gameIsland.getIsland();
@@ -69,10 +67,7 @@ public final class SchematicManager {
                 selectedPlot.generatePlot();
             } catch (WorldEditException e) {
                 e.printStackTrace();
-                return false;
-            } finally {
-                // finally, reset the player's queue
-                gameIsland.getGamePlayer().resetQueue();
+                return null;
             }
 
             // adding the plot for future use
@@ -85,11 +80,11 @@ public final class SchematicManager {
         final GamePlayer gamePlayer = gameIsland.getGamePlayer();
 
         // setting the player island slot
-        gamePlayer.setIslandSlot(island.getSlot());
+        gamePlayer.setCurrentGame(gameIsland);
         // teleports the player to plot
         gamePlayer.teleport(selectedPlot);
 
-        return true;
+        return selectedPlot;
     }
 
     public boolean freePlot(final GameIsland gameIsland) {

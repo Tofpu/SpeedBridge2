@@ -55,7 +55,7 @@ public class PluginCommand implements CommandExecutor {
                     sender.sendMessage("you're not playing");
                     return false;
                 }
-                island = service.findIslandBy(gamePlayer.getIslandSlot());
+                island = gamePlayer.getCurrentGame().getIsland();
                 island.leaveGame(gamePlayer);
                 break;
             case "change":

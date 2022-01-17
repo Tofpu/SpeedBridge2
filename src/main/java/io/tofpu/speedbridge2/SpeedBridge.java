@@ -4,6 +4,7 @@ import io.tofpu.speedbridge2.command.PluginCommand;
 import io.tofpu.speedbridge2.database.manager.DatabaseManager;
 import io.tofpu.speedbridge2.domain.schematic.SchematicManager;
 import io.tofpu.speedbridge2.domain.service.IslandService;
+import io.tofpu.speedbridge2.listener.ListenerManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpeedBridge {
@@ -20,6 +21,7 @@ public class SpeedBridge {
         });
 
         SchematicManager.INSTANCE.load(javaPlugin);
+        ListenerManager.registerAll(javaPlugin);
 
         javaPlugin.getCommand("bridge").setExecutor(new PluginCommand());
     }

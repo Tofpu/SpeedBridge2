@@ -13,7 +13,7 @@ public final class GamePlayer {
     private final Player player;
 
     private boolean queue;
-    private int islandSlot;
+    private GameIsland currentGame;
 
     public static GamePlayer of(final Player player) {
         return GAME_PLAYER_MAP.computeIfAbsent(player.getUniqueId(), uuid -> new GamePlayer(player));
@@ -23,8 +23,8 @@ public final class GamePlayer {
         this.player = player;
     }
 
-    public void setIslandSlot(final int islandSlot) {
-        this.islandSlot = islandSlot;
+    public void setCurrentGame(final GameIsland gameIsland) {
+        this.currentGame = gameIsland;
     }
 
     public void startQueue() {
@@ -40,11 +40,11 @@ public final class GamePlayer {
     }
 
     public boolean isPlaying() {
-        return islandSlot != -1;
+        return currentGame != null;
     }
 
-    public int getIslandSlot() {
-        return islandSlot;
+    public GameIsland getCurrentGame() {
+        return currentGame;
     }
 
     public Player getPlayer() {

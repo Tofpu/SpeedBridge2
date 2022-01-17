@@ -2,11 +2,13 @@ package io.tofpu.speedbridge2.domain.game;
 
 import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.schematic.SchematicManager;
+import io.tofpu.speedbridge2.domain.schematic.SchematicPlot;
 import org.bukkit.Bukkit;
 
 public final class GameIsland {
     private final Island island;
     private final GamePlayer gamePlayer;
+    private final SchematicPlot islandPlot;
 
     public GameIsland(final Island island, final GamePlayer gamePlayer) {
         this.island = island;
@@ -15,7 +17,10 @@ public final class GameIsland {
         // setting the player's queue to true
         this.gamePlayer.startQueue();
 
-        SchematicManager.INSTANCE.reservePlot(this);
+        this.islandPlot = SchematicManager.INSTANCE.reservePlot(this);
+
+        // reset the player's queue
+        this.gamePlayer.resetQueue();
     }
 
     public void leaveGame() {
@@ -25,8 +30,8 @@ public final class GameIsland {
         // free the plot
         SchematicManager.INSTANCE.freePlot(this);
 
-        // set the player's game to -1, as they're leaving the island
-        gamePlayer.setIslandSlot(-1);
+        // set the player's game to null, as they're leaving the island
+        gamePlayer.setCurrentGame(null);
     }
 
     public Island getIsland() {
@@ -35,5 +40,9 @@ public final class GameIsland {
 
     public GamePlayer getGamePlayer() {
         return gamePlayer;
+    }
+
+    public SchematicPlot getIslandPlot() {
+        return islandPlot;
     }
 }
