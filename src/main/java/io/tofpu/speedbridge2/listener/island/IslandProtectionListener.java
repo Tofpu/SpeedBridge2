@@ -17,7 +17,7 @@ public class IslandProtectionListener extends GameListener {
         if (!gamePlayer.isPlaying()) {
             return;
         }
-        
+
         gamePlayer.removeBlock(event.getBlock());
     }
 

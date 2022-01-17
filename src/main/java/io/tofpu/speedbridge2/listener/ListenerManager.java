@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.listener;
 
 import io.tofpu.speedbridge2.listener.island.IslandProtectionListener;
 import io.tofpu.speedbridge2.listener.island.IslandRegionListener;
+import io.tofpu.speedbridge2.listener.island.IslandResetListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -16,6 +17,7 @@ public final class ListenerManager {
     static {
         new IslandRegionListener();
         new IslandProtectionListener();
+        new IslandResetListener();
     }
 
     public static void add(final Listener listener) {
