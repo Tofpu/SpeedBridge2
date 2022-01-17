@@ -1,6 +1,6 @@
 package io.tofpu.speedbridge2.domain.game;
 
-import io.tofpu.speedbridge2.domain.schematic.SchematicPlot;
+import io.tofpu.speedbridge2.domain.schematic.IslandPlot;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -51,7 +51,7 @@ public final class GamePlayer {
         return player;
     }
 
-    public void teleport(final SchematicPlot selectedPlot) {
+    public void teleport(final IslandPlot selectedPlot) {
         if (player == null) {
             return;
         }

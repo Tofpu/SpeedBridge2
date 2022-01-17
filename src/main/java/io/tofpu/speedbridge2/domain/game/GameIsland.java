@@ -2,13 +2,13 @@ package io.tofpu.speedbridge2.domain.game;
 
 import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.schematic.SchematicManager;
-import io.tofpu.speedbridge2.domain.schematic.SchematicPlot;
+import io.tofpu.speedbridge2.domain.schematic.IslandPlot;
 import org.bukkit.Bukkit;
 
 public final class GameIsland {
     private final Island island;
     private final GamePlayer gamePlayer;
-    private final SchematicPlot islandPlot;
+    private final IslandPlot islandPlot;
 
     public GameIsland(final Island island, final GamePlayer gamePlayer) {
         this.island = island;
@@ -42,7 +42,7 @@ public final class GameIsland {
         return gamePlayer;
     }
 
-    public SchematicPlot getIslandPlot() {
+    public IslandPlot getIslandPlot() {
         return islandPlot;
     }
 }

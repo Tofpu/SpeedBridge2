@@ -17,7 +17,7 @@ import java.util.Random;
 
 public final class SchematicManager {
     public static final SchematicManager INSTANCE = new SchematicManager();
-    private static final List<SchematicPlot> SCHEMATIC_PLOTS = new ArrayList<>();
+    private static final List<IslandPlot> SCHEMATIC_PLOTS = new ArrayList<>();
 
     private World world;
     private SchematicManager() {}
@@ -37,19 +37,19 @@ public final class SchematicManager {
         }
     }
 
-    public SchematicPlot reservePlot(final GameIsland gameIsland) {
+    public IslandPlot reservePlot(final GameIsland gameIsland) {
         if (world == null) {
             Bukkit.getLogger().severe("The SpeedBridge2 world cannot be found! cancelled player's request to reserve a plot.");
             return null;
         }
 
         final Island island = gameIsland.getIsland();
-        SchematicPlot selectedPlot = null;
+        IslandPlot selectedPlot = null;
 
-        for (final SchematicPlot schematicPlot : SCHEMATIC_PLOTS) {
+        for (final IslandPlot islandPlot : SCHEMATIC_PLOTS) {
             // if a free plot was found, select the plot and break the loop
-            if (schematicPlot.isPlotFree()) {
-                selectedPlot = schematicPlot;
+            if (islandPlot.isPlotFree()) {
+                selectedPlot = islandPlot;
                 break;
             }
         }
@@ -58,7 +58,7 @@ public final class SchematicManager {
         if (selectedPlot == null) {
             final double[] positions = {100 * (SCHEMATIC_PLOTS.size() + 100), 100, 100};
 
-            selectedPlot = new SchematicPlot(island, world, positions);
+            selectedPlot = new IslandPlot(island, world, positions);
 
             // reserving the plot to player
             selectedPlot.reservePlot(gameIsland);
@@ -88,12 +88,12 @@ public final class SchematicManager {
     }
 
     public boolean freePlot(final GameIsland gameIsland) {
-        SchematicPlot selectedPlot = null;
+        IslandPlot selectedPlot = null;
 
-        for (final SchematicPlot schematicPlot : SCHEMATIC_PLOTS) {
+        for (final IslandPlot islandPlot : SCHEMATIC_PLOTS) {
             // if a plot's island equals to island, select the plot and break the loop
-            if (schematicPlot.getGameIsland().equals(gameIsland)) {
-                selectedPlot = schematicPlot;
+            if (islandPlot.getGameIsland().equals(gameIsland)) {
+                selectedPlot = islandPlot;
                 break;
             }
         }

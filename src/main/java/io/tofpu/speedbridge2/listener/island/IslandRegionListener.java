@@ -4,7 +4,7 @@ import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.Region;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
-import io.tofpu.speedbridge2.domain.schematic.SchematicPlot;
+import io.tofpu.speedbridge2.domain.schematic.IslandPlot;
 import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -25,7 +25,7 @@ public class IslandRegionListener extends GameListener {
 
         // if the player is not in the region, teleport them back to the island location
         if (!isInRegion) {
-            final SchematicPlot islandPlot = gameIsland.getIslandPlot();
+            final IslandPlot islandPlot = gameIsland.getIslandPlot();
             event.setTo(new Location(islandPlot.getWorld(), islandPlot.getX(), islandPlot.getY(), islandPlot.getZ()));
         }
     }

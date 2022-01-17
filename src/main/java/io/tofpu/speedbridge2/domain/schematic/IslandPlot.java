@@ -17,7 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 
-public final class SchematicPlot {
+public final class IslandPlot {
     private final Island island;
     private final Clipboard schematicPlot;
 
@@ -28,7 +28,7 @@ public final class SchematicPlot {
 
     private final PlotState plotState;
 
-    public SchematicPlot(final Island island, final World world, double[] positions) {
+    public IslandPlot(final Island island, final World world, double[] positions) {
         this.island = island;
         this.schematicPlot = island.getSchematicClipboard();
         this.world = world;
