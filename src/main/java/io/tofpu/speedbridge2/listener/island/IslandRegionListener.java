@@ -10,7 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-public class IslandRegionListener extends GameListener {
+public final class IslandRegionListener extends GameListener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerMove(final PlayerMoveEvent event) {
         final GamePlayer gamePlayer = GamePlayer.of(event.getPlayer());

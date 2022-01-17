@@ -10,7 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-public class IslandProtectionListener extends GameListener {
+public final class IslandProtectionListener extends GameListener {
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(final BlockBreakEvent event) {
         final GamePlayer gamePlayer = GamePlayer.of(event.getPlayer());

@@ -7,7 +7,7 @@ import io.tofpu.speedbridge2.domain.service.IslandService;
 import io.tofpu.speedbridge2.listener.ListenerManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class SpeedBridge {
+public final class SpeedBridge {
     private final JavaPlugin javaPlugin;
 
     public SpeedBridge(final JavaPlugin javaPlugin) {
