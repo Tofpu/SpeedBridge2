@@ -1,20 +1,17 @@
 package io.tofpu.speedbridge2.domain.schematic;
 
-import com.sk89q.worldedit.BlockVector;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.WorldEdit;
-import com.sk89q.worldedit.WorldEditException;
-import com.sk89q.worldedit.blocks.BaseBlock;
+import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.registry.WorldData;
 import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.World;
 
 public final class IslandPlot {
@@ -26,6 +23,9 @@ public final class IslandPlot {
     private final double y;
     private final double z;
 
+    private final Vector minPoint;
+    private final Vector maxPoint;
+
     private final PlotState plotState;
 
     public IslandPlot(final Island island, final World world, double[] positions) {
@@ -35,6 +35,17 @@ public final class IslandPlot {
         this.x = positions[0];
         this.y = positions[1];
         this.z = positions[2];
+
+        this.minPoint = schematicPlot.getRegion()
+                .getMinimumPoint()
+                .subtract(schematicPlot.getOrigin())
+                .add(new Vector(x, y, z));
+
+        this.maxPoint = schematicPlot.getRegion()
+                .getMaximumPoint()
+                .subtract(schematicPlot.getOrigin())
+                .add(new Vector(x, y, z));
+
         this.plotState = new PlotState();
     }
 
@@ -56,22 +67,6 @@ public final class IslandPlot {
                 .build();
 
         Operations.completeLegacy(operation);
-
-        final Clipboard clipboard = clipboardHolder.getClipboard();
-        for (double x = clipboard.getMinimumPoint().getX(); x <= clipboard.getMaximumPoint().getX(); x++) {
-            for (double y = clipboard.getMinimumPoint().getY(); y <= clipboard.getMaximumPoint().getY(); y++) {
-                for (double z = clipboard.getMinimumPoint().getZ(); z <= clipboard.getMaximumPoint().getZ(); z++) {
-                    final BaseBlock block = clipboard.getLazyBlock(new BlockVector(x, y, z));
-                    // temporally
-                    final Material material = Material.getMaterial(block.getId());
-                    if (material == Material.AIR) {
-                        continue;
-                    }
-
-                    Bukkit.broadcastMessage(material + " (" + x + ", " + y + ", " + z + ")");
-                }
-            }
-        }
     }
 
     public void reservePlot(final GameIsland gameIsland) {
@@ -92,6 +87,18 @@ public final class IslandPlot {
 
     public double getZ() {
         return z;
+    }
+
+    public Vector getMaxPoint() {
+        return maxPoint;
+    }
+
+    public Vector getMinPoint() {
+        return minPoint;
+    }
+
+    public Region region() {
+        return new CuboidRegion(minPoint, maxPoint);
     }
 
     public GameIsland getGameIsland() {

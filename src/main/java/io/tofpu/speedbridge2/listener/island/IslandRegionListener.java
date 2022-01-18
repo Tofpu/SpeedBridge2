@@ -1,6 +1,8 @@
 package io.tofpu.speedbridge2.listener.island;
 
 import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.bukkit.BukkitUtil;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
@@ -18,15 +20,23 @@ public final class IslandRegionListener extends GameListener {
             return;
         }
         final GameIsland gameIsland = gamePlayer.getCurrentGame();
-        final Region region = gameIsland.getIsland().getSchematicClipboard().getRegion();
+        final IslandPlot islandPlot = gameIsland.getIslandPlot();
+        final Region region = islandPlot.region();
+
+        System.out.println("location: " + region);
 
         final Location location = event.getTo();
-        final boolean isInRegion = region.contains(new Vector(location.getX(), location.getY(), location.getZ()));
+        final Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
+
+        //        final Vector minVector = region.expand();
+
+        final boolean isInRegion = CuboidRegion.makeCuboid(region).contains(vector);
+        System.out.println("is in the region: " + isInRegion);
 
         // if the player is not in the region, teleport them back to the island location
         if (!isInRegion) {
-            final IslandPlot islandPlot = gameIsland.getIslandPlot();
-            event.setTo(new Location(islandPlot.getWorld(), islandPlot.getX(), islandPlot.getY(), islandPlot.getZ()));
+            event.setTo(new Location(islandPlot.getWorld(), islandPlot.getX(), islandPlot.getY(), islandPlot
+                    .getZ()));
 
             // TODO: reset the blocks & timer here...
         }
