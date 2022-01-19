@@ -27,7 +27,7 @@ public final class Island extends IslandSchematic {
         }
 
         final GamePlayer gamePlayer = GamePlayer.of(player);
-        final GameIsland gameIsland = new GameIsland(this, gamePlayer);
+        final GameIsland gameIsland = GameIsland.of(this, gamePlayer);
 
         this.islandMap.put(gamePlayer, gameIsland);
         return new AbstractMap.SimpleImmutableEntry<>(gamePlayer, gameIsland);

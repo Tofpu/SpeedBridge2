@@ -1,17 +1,20 @@
 package io.tofpu.speedbridge2.domain.game;
 
 import io.tofpu.speedbridge2.domain.Island;
-import io.tofpu.speedbridge2.domain.schematic.SchematicManager;
 import io.tofpu.speedbridge2.domain.schematic.IslandPlot;
+import io.tofpu.speedbridge2.domain.schematic.SchematicManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 
 public final class GameIsland {
     private final Island island;
     private final GamePlayer gamePlayer;
     private final IslandPlot islandPlot;
 
-    public GameIsland(final Island island, final GamePlayer gamePlayer) {
+    public static GameIsland of(final Island island, final GamePlayer gamePlayer) {
+        return new GameIsland(island, gamePlayer);
+    }
+
+    private GameIsland(final Island island, final GamePlayer gamePlayer) {
         this.island = island;
         this.gamePlayer = gamePlayer;
 
