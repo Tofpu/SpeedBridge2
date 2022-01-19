@@ -70,6 +70,7 @@ public class DatabaseQuery implements AutoCloseable {
         if (this.preparedStatement == null) {
             return;
         }
+        this.preparedStatement.getConnection().close();
         this.preparedStatement.close();
     }
 }
