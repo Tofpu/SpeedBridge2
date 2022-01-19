@@ -13,8 +13,8 @@ public final class GamePlayer {
     private final Player player;
     private final List<Location> blockLocations;
 
-    private boolean queue;
-    private GameIsland currentGame;
+    private boolean queue = false;
+    private GameIsland currentGame = null;
 
     public static GamePlayer of(final Player player) {
         return GAME_PLAYER_MAP.computeIfAbsent(player.getUniqueId(), uuid -> new GamePlayer(player));
