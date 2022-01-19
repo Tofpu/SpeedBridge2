@@ -49,6 +49,7 @@ public final class SchematicManager {
         for (final IslandPlot islandPlot : SCHEMATIC_PLOTS) {
             // if a free plot was found, select the plot and break the loop
             if (islandPlot.isPlotFree()) {
+                System.out.println("found a free plot!");
                 selectedPlot = islandPlot;
                 break;
             }
@@ -56,6 +57,8 @@ public final class SchematicManager {
 
         // if the plot was not found, create our own & add it to our plots collection
         if (selectedPlot == null) {
+            System.out.println("no free plot available, creating our own!");
+
             final double[] positions = {100 * (SCHEMATIC_PLOTS.size() + 100), 100, 100};
 
             selectedPlot = new IslandPlot(island, world, positions);
@@ -93,6 +96,7 @@ public final class SchematicManager {
         for (final IslandPlot islandPlot : SCHEMATIC_PLOTS) {
             // if a plot's island equals to island, select the plot and break the loop
             if (islandPlot.getGameIsland().equals(gameIsland)) {
+                System.out.println("found the same game island!");
                 selectedPlot = islandPlot;
                 break;
             }

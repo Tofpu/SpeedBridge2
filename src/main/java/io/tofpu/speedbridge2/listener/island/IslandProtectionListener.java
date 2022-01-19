@@ -22,6 +22,7 @@ public final class IslandProtectionListener extends GameListener {
 
         // if the player haven't placed this block, return
         if (!gamePlayer.hasPlaced(block)) {
+            event.setCancelled(true);
             return;
         }
 

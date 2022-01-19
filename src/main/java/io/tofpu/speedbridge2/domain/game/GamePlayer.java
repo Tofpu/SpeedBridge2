@@ -77,4 +77,9 @@ public final class GamePlayer {
     public boolean hasPlaced(final Block block) {
         return this.blockLocations.contains(block.getLocation());
     }
+
+    public GamePlayer remove() {
+        GAME_PLAYER_MAP.remove(this.getPlayer().getUniqueId());
+        return this;
+    }
 }

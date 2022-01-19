@@ -14,7 +14,7 @@ public final class PlotState {
     }
 
     public boolean isPlotFree() {
-        return gameIsland != null;
+        return gameIsland == null;
     }
 
     public GameIsland getGameIsland() {

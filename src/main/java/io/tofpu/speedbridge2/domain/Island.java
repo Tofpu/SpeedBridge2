@@ -39,6 +39,9 @@ public final class Island extends IslandSchematic {
             return;
         }
 
+        // remove the game player
+        gamePlayer.remove();
+        // reset the game island
         gameIsland.resetGame();
     }
 
