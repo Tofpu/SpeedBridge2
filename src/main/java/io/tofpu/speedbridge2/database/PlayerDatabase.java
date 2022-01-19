@@ -44,6 +44,20 @@ public final class PlayerDatabase extends Database {
         });
     }
 
+    public CompletableFuture<Void> update(final UUID uuid, final Score score) {
+        return DatabaseUtil.databaseQueryExecute("UPDATE scores SET islandSlot = ?, score = ? WHERE uid = ?", databaseQuery -> {
+            System.out.println("player uid: " + uuid.toString());
+
+            System.out.println("player score island: " + score.getScoredOn());
+            databaseQuery.setInt(1, score.getScoredOn());
+
+            System.out.println("player score: " + score.getScore());
+            databaseQuery.setLong(2, score.getScore());
+
+            databaseQuery.setString(3, uuid.toString());
+        });
+    }
+
     public CompletableFuture<Void> update(final BridgePlayer player) {
         final List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
         System.out.println("player uid: " + player.getPlayerUid());

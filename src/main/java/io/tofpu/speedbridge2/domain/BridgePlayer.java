@@ -40,8 +40,15 @@ public final class BridgePlayer {
     }
 
     public Score setNewScore(final Score score) {
+        // if our score map contains the island, update the score
+        if (this.scoreMap.containsKey(score.getScoredOn())) {
+            Databases.PLAYER_DATABASE.update(this.playerUid, score);
+        } else {
+            // otherwise, insert the score
+            Databases.PLAYER_DATABASE.insert(this.playerUid, score);
+        }
+
         this.scoreMap.put(score.getScoredOn(), score);
-        Databases.PLAYER_DATABASE.insert(this.playerUid, score);
         return score;
     }
 
