@@ -1,32 +1,39 @@
 package io.tofpu.speedbridge2.command;
 
 import io.tofpu.speedbridge2.database.Databases;
+import io.tofpu.speedbridge2.domain.BridgePlayer;
 import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
 import io.tofpu.speedbridge2.domain.service.IslandService;
+import io.tofpu.speedbridge2.domain.service.PlayerService;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class PluginCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
-        final IslandService service = IslandService.INSTANCE;
+        final IslandService islandService = IslandService.INSTANCE;
+        final PlayerService playerService = PlayerService.INSTANCE;
 
         GamePlayer gamePlayer;
         Island island;
+        UUID uuid;
+        BridgePlayer bridgePlayer;
         switch (args[0]) {
             case "create":
-                if (service.createIsland(Integer.parseInt(args[1])) == null) {
+                if (islandService.createIsland(Integer.parseInt(args[1])) == null) {
                     sender.sendMessage(args[1] + " island already exists");
                     return false;
                 }
                 sender.sendMessage("created island on " + args[1] + " slot");
                 break;
             case "select":
-                island = service.findIslandBy(Integer.parseInt(args[1]));
+                island = islandService.findIslandBy(Integer.parseInt(args[1]));
                 final boolean foundSchematic = island.selectSchematic(args[2]);
 
                 if (foundSchematic) {
@@ -46,7 +53,7 @@ public class PluginCommand implements CommandExecutor {
                     return false;
                 }
 
-                island = service.findIslandBy(Integer.parseInt(args[1]));
+                island = islandService.findIslandBy(Integer.parseInt(args[1]));
                 island.generateGame((Player) sender);
                 break;
             case "leave":
@@ -59,7 +66,7 @@ public class PluginCommand implements CommandExecutor {
                 island.leaveGame(gamePlayer);
                 break;
             case "change":
-                island = service.findIslandBy(Integer.parseInt(args[1]));
+                island = islandService.findIslandBy(Integer.parseInt(args[1]));
                 if (island == null) {
                     sender.sendMessage(args[1] + " island cannot be found");
                     return false;
@@ -67,8 +74,22 @@ public class PluginCommand implements CommandExecutor {
                 island.setCategory(args[2]);
                 sender.sendMessage("updated island");
                 break;
+            case "setscore":
+                uuid = ((Player) sender).getUniqueId();
+                bridgePlayer = playerService.get(uuid);
+
+                bridgePlayer.setScoreIfLower(Integer.parseInt(args[1]), Long.parseLong(args[2]));
+                sender.sendMessage("successfully set your score!");
+                break;
+            case "showscore":
+                uuid = ((Player) sender).getUniqueId();
+                bridgePlayer = playerService.get(uuid);
+
+                sender.sendMessage("your score is: " + bridgePlayer.findScoreBy(Integer.parseInt(args[1]))
+                        .getScore());
+                break;
             case "delete":
-                if (service.deleteIsland(Integer.parseInt(args[1])) == null) {
+                if (islandService.deleteIsland(Integer.parseInt(args[1])) == null) {
                     sender.sendMessage(args[1] + " island cannot be found");
                     return false;
                 }
@@ -76,13 +97,20 @@ public class PluginCommand implements CommandExecutor {
                 break;
             case "islands":
                 sender.sendMessage("here's your locally stored islands");
-                sender.sendMessage(service.getAllIslands().toString());
+                sender.sendMessage(islandService.getAllIslands().toString());
                 break;
             case "data":
                 Databases.ISLAND_DATABASE.getStoredIslands()
                         .whenComplete((islands, throwable) -> {
                             sender.sendMessage("here's your database stored islands");
                             sender.sendMessage(islands.toString());
+                        })
+                        .thenRun(() -> {
+                            Databases.PLAYER_DATABASE.getStoredPlayers()
+                                    .whenComplete((bridgePlayers, throwable) -> {
+                                        sender.sendMessage("here's your database stored players");
+                                        sender.sendMessage(bridgePlayers.toString());
+                                    });
                         });
                 break;
             default:

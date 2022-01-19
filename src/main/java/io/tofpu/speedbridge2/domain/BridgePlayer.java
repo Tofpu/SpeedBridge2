@@ -61,4 +61,13 @@ public final class BridgePlayer {
     public Iterable<? extends Score> getScores() {
         return this.scoreMap.values();
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("BridgePlayer{");
+        sb.append("playerUid=").append(playerUid);
+        sb.append(", scoreMap=").append(scoreMap);
+        sb.append('}');
+        return sb.toString();
+    }
 }

@@ -30,4 +30,13 @@ public final class Score implements Comparable<Score> {
         }
         return -1;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Score{");
+        sb.append("scoredOn=").append(scoredOn);
+        sb.append(", score=").append(score);
+        sb.append('}');
+        return sb.toString();
+    }
 }
