@@ -42,7 +42,7 @@ public final class Island extends IslandSchematic {
         // remove the game player
         gamePlayer.remove();
         // reset the game island
-        gameIsland.resetGame();
+        gameIsland.remove();
     }
 
     public GameIsland findGameByPlayer(final GamePlayer gamePlayer) {

@@ -4,6 +4,7 @@ import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.schematic.IslandPlot;
 import io.tofpu.speedbridge2.domain.schematic.SchematicManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 public final class GameIsland {
     private final Island island;
@@ -28,6 +29,15 @@ public final class GameIsland {
     }
 
     public void resetGame() {
+        this.gamePlayer.teleport(islandPlot);
+
+        gamePlayer.resetBlocks();
+        gamePlayer.resetTimer();
+
+        this.gamePlayer.getPlayer().sendMessage("reset the island!");
+    }
+
+    public void remove() {
         // TODO: change this
         gamePlayer.getPlayer().teleport(Bukkit.getWorld("world").getSpawnLocation());
 

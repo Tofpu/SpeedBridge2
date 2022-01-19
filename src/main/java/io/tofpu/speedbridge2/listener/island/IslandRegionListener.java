@@ -1,7 +1,6 @@
 package io.tofpu.speedbridge2.listener.island;
 
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitUtil;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
@@ -23,20 +22,13 @@ public final class IslandRegionListener extends GameListener {
         final IslandPlot islandPlot = gameIsland.getIslandPlot();
         final Region region = islandPlot.region();
 
-        System.out.println("location: " + region);
-
         final Location location = event.getTo();
         final Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
 
         final boolean isInRegion = CuboidRegion.makeCuboid(region).contains(vector);
-        System.out.println("is in the region: " + isInRegion);
 
         if (!isInRegion) {
-            event.setTo(new Location(islandPlot.getWorld(), islandPlot.getX(), islandPlot.getY(), islandPlot
-                    .getZ()));
-
-            // TODO: reset the timer here...
-            gamePlayer.resetBlocks();
+            gameIsland.resetGame();
         }
     }
 }

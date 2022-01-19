@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.listener;
 
+import io.tofpu.speedbridge2.listener.game.IslandInteractionListener;
 import io.tofpu.speedbridge2.listener.island.IslandProtectionListener;
 import io.tofpu.speedbridge2.listener.island.IslandRegionListener;
 import io.tofpu.speedbridge2.listener.island.IslandResetListener;
@@ -18,6 +19,8 @@ public final class ListenerManager {
         new IslandRegionListener();
         new IslandProtectionListener();
         new IslandResetListener();
+
+        new IslandInteractionListener();
     }
 
     public static void add(final Listener listener) {

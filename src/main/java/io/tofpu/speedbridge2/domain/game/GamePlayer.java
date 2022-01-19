@@ -15,6 +15,7 @@ public final class GamePlayer {
 
     private boolean queue = false;
     private GameIsland currentGame = null;
+    private long timer = -1;
 
     public static GamePlayer of(final Player player) {
         return GAME_PLAYER_MAP.computeIfAbsent(player.getUniqueId(), uuid -> new GamePlayer(player));
@@ -71,11 +72,28 @@ public final class GamePlayer {
         if (player == null) {
             return;
         }
-        player.teleport(new Location(selectedPlot.getWorld(), selectedPlot.getX(), selectedPlot.getY(), selectedPlot.getZ()));
+        player.teleport(new Location(selectedPlot.getWorld(), selectedPlot.getX(), selectedPlot
+                .getY(), selectedPlot.getZ()));
     }
 
     public boolean hasPlaced(final Block block) {
         return this.blockLocations.contains(block.getLocation());
+    }
+
+    public long startTimer() {
+        return this.timer = System.nanoTime();
+    }
+
+    public long getTimer() {
+        return this.timer;
+    }
+
+    public void resetTimer() {
+        this.timer = -1;
+    }
+
+    public boolean hasTimerStarted() {
+        return this.timer != -1;
     }
 
     public GamePlayer remove() {
