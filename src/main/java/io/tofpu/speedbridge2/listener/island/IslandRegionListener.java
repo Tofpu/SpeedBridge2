@@ -28,17 +28,15 @@ public final class IslandRegionListener extends GameListener {
         final Location location = event.getTo();
         final Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
 
-        //        final Vector minVector = region.expand();
-
         final boolean isInRegion = CuboidRegion.makeCuboid(region).contains(vector);
         System.out.println("is in the region: " + isInRegion);
 
-        // if the player is not in the region, teleport them back to the island location
         if (!isInRegion) {
             event.setTo(new Location(islandPlot.getWorld(), islandPlot.getX(), islandPlot.getY(), islandPlot
                     .getZ()));
 
-            // TODO: reset the blocks & timer here...
+            // TODO: reset the timer here...
+            gamePlayer.resetBlocks();
         }
     }
 }
