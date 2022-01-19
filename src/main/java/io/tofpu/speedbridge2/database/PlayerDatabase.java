@@ -29,6 +29,21 @@ public final class PlayerDatabase extends Database {
         });
     }
 
+    public CompletableFuture<Void> insert(final UUID uuid, final Score score) {
+        return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO scores VALUES " +
+                "(?, ?, ?)", databaseQuery -> {
+            System.out.println("player uid: " + uuid.toString());
+            databaseQuery.setString(1, uuid.toString());
+
+            System.out.println("player score island: " + score.getScoredOn());
+            databaseQuery.setInt(2, score.getScoredOn());
+
+            System.out.println("player score: " + score.getScore());
+            databaseQuery.setLong(3, score.getScore());
+
+        });
+    }
+
     public CompletableFuture<Void> update(final BridgePlayer player) {
         final List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
         System.out.println("player uid: " + player.getPlayerUid());
@@ -59,11 +74,14 @@ public final class PlayerDatabase extends Database {
             final List<BridgePlayer> bridgePlayers = new ArrayList<>();
 
             try {
+                System.out.println("attempting to load all the players");
                 DatabaseUtil.databaseQuery("SELECT * FROM players", resultSet -> {
                     try {
                         while (resultSet.next()) {
                             final BridgePlayer bridgePlayer = BridgePlayer.of(UUID.fromString(resultSet
                                     .getString(1)));
+
+                            System.out.println("found another player! " + bridgePlayer.getPlayerUid());
 
                             bridgePlayers.add(bridgePlayer);
                         }
@@ -86,6 +104,7 @@ public final class PlayerDatabase extends Database {
                                 while (set.next()) {
                                     final Score score = Score.of(set.getInt(2), set
                                             .getLong(3));
+                                    System.out.println("found new score! " + score);
                                     bridgePlayer.setInternalNewScore(score);
                                 }
                             }

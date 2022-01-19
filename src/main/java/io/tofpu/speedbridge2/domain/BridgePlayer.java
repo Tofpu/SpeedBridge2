@@ -41,7 +41,7 @@ public final class BridgePlayer {
 
     public Score setNewScore(final Score score) {
         this.scoreMap.put(score.getScoredOn(), score);
-        Databases.PLAYER_DATABASE.update(this);
+        Databases.PLAYER_DATABASE.insert(this.playerUid, score);
         return score;
     }
 
