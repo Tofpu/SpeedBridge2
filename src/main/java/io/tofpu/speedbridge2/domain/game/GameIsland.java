@@ -4,6 +4,7 @@ import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.schematic.SchematicManager;
 import io.tofpu.speedbridge2.domain.schematic.IslandPlot;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 public final class GameIsland {
     private final Island island;
@@ -23,9 +24,12 @@ public final class GameIsland {
         this.gamePlayer.resetQueue();
     }
 
-    public void leaveGame() {
+    public void resetGame() {
         // TODO: change this
         gamePlayer.getPlayer().teleport(Bukkit.getWorld("world").getSpawnLocation());
+
+        // remove the blocks
+        gamePlayer.resetBlocks();
 
         // free the plot
         SchematicManager.INSTANCE.freePlot(this);

@@ -39,7 +39,7 @@ public final class Island extends IslandSchematic {
             return;
         }
 
-        gameIsland.leaveGame();
+        gameIsland.resetGame();
     }
 
     public GameIsland findGameByPlayer(final GamePlayer gamePlayer) {

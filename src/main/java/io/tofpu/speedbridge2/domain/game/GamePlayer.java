@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.domain.game;
 
 import io.tofpu.speedbridge2.domain.schematic.IslandPlot;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -36,6 +37,12 @@ public final class GamePlayer {
         this.blockLocations.add(block.getLocation());
     }
 
+    public void resetBlocks() {
+        for (final Location blockLocation : this.blockLocations) {
+            blockLocation.getBlock().setType(Material.AIR);
+        }
+    }
+
     public void startQueue() {
         this.queue = true;
     }
@@ -65,5 +72,9 @@ public final class GamePlayer {
             return;
         }
         player.teleport(new Location(selectedPlot.getWorld(), selectedPlot.getX(), selectedPlot.getY(), selectedPlot.getZ()));
+    }
+
+    public boolean hasPlaced(final Block block) {
+        return this.blockLocations.contains(block.getLocation());
     }
 }
