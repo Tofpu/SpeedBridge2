@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain;
 
+import io.tofpu.speedbridge2.database.Databases;
 import io.tofpu.speedbridge2.domain.misc.Score;
 
 import java.util.HashMap;
@@ -33,8 +34,14 @@ public final class BridgePlayer {
         return newScore;
     }
 
+    public Score setInternalNewScore(final Score score) {
+        this.scoreMap.put(score.getScoredOn(), score);
+        return score;
+    }
+
     public Score setNewScore(final Score score) {
         this.scoreMap.put(score.getScoredOn(), score);
+        Databases.PLAYER_DATABASE.update(this);
         return score;
     }
 
@@ -49,5 +56,9 @@ public final class BridgePlayer {
 
     public UUID getPlayerUid() {
         return playerUid;
+    }
+
+    public Iterable<? extends Score> getScores() {
+        return this.scoreMap.values();
     }
 }

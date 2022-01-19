@@ -38,6 +38,15 @@ public class DatabaseQuery implements AutoCloseable {
         return this;
     }
 
+    public DatabaseQuery setLong(final int index, final long l) {
+        try {
+            this.preparedStatement.setLong(index, l);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return this;
+    }
+
     public boolean execute() {
         try {
             return this.preparedStatement.execute();
