@@ -101,6 +101,10 @@ public final class IslandPlot {
         return new CuboidRegion(minPoint, maxPoint);
     }
 
+    public Island getIsland() {
+        return island;
+    }
+
     public GameIsland getGameIsland() {
         return islandPlotState.getGameIsland();
     }
