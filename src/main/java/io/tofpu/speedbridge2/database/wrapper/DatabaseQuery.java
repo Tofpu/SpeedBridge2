@@ -73,4 +73,13 @@ public class DatabaseQuery implements AutoCloseable {
         this.preparedStatement.getConnection().close();
         this.preparedStatement.close();
     }
+
+    public DatabaseQuery setDouble(final int index, final double score) {
+        try {
+            this.preparedStatement.setDouble(index, score);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return this;
+    }
 }

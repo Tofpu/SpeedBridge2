@@ -87,6 +87,8 @@ public final class SchematicManager {
         // teleports the player to plot
         gamePlayer.teleport(selectedPlot);
 
+        gameIsland.onJoin();
+
         return selectedPlot;
     }
 

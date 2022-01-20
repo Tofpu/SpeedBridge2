@@ -20,7 +20,7 @@ public final class BridgePlayer {
         this.scoreMap = new HashMap<>();
     }
 
-    public Score setScoreIfLower(final int islandSlot, final long score) {
+    public Score setScoreIfLower(final int islandSlot, final double score) {
         final Score currentScore = this.scoreMap.get(islandSlot);
         final Score newScore = Score.of(islandSlot, score);
 

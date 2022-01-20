@@ -39,7 +39,7 @@ public final class PlayerDatabase extends Database {
             databaseQuery.setInt(2, score.getScoredOn());
 
             System.out.println("player score: " + score.getScore());
-            databaseQuery.setLong(3, score.getScore());
+            databaseQuery.setDouble(3, score.getScore());
 
         });
     }
@@ -52,7 +52,7 @@ public final class PlayerDatabase extends Database {
             databaseQuery.setInt(1, score.getScoredOn());
 
             System.out.println("player score: " + score.getScore());
-            databaseQuery.setLong(2, score.getScore());
+            databaseQuery.setDouble(2, score.getScore());
 
             databaseQuery.setString(3, uuid.toString());
         });
@@ -68,7 +68,7 @@ public final class PlayerDatabase extends Database {
                 databaseQuery.setInt(1, score.getScoredOn());
 
                 System.out.println("player score: " + score.getScore());
-                databaseQuery.setLong(2, score.getScore());
+                databaseQuery.setDouble(2, score.getScore());
 
                 databaseQuery.setString(3, player.getPlayerUid().toString());
             });
