@@ -14,8 +14,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.concurrent.TimeUnit;
-
 public final class GameInteractionListener extends GameListener {
 
     @EventHandler
