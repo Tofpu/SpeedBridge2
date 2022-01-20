@@ -3,7 +3,6 @@ package io.tofpu.speedbridge2.domain;
 import io.tofpu.speedbridge2.database.Databases;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
-import org.bukkit.entity.Player;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
@@ -20,7 +19,7 @@ public final class Island extends IslandSchematic {
         this.category = category;
     }
 
-    public Map.Entry<GamePlayer, GameIsland> generateGame(final Player player) {
+    public Map.Entry<GamePlayer, GameIsland> generateGame(final BridgePlayer player) {
         // if a schematic cannot be found, return null
         if (getSchematicClipboard() == null) {
             return null;
@@ -28,16 +27,19 @@ public final class Island extends IslandSchematic {
 
         final GamePlayer gamePlayer = GamePlayer.of(player);
         final GameIsland gameIsland = GameIsland.of(this, gamePlayer);
+        player.setGamePlayer(gamePlayer);
 
         this.islandMap.put(gamePlayer, gameIsland);
         return new AbstractMap.SimpleImmutableEntry<>(gamePlayer, gameIsland);
     }
 
-    public void leaveGame(final GamePlayer gamePlayer) {
+    public void leaveGame(final BridgePlayer bridgePlayer) {
+        final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
         final GameIsland gameIsland = this.islandMap.remove(gamePlayer);
         if (gameIsland == null) {
             return;
         }
+        bridgePlayer.setGamePlayer(null);
 
         // remove the game player
         gamePlayer.remove();

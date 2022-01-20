@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.domain.handler;
 
 import io.tofpu.speedbridge2.database.Databases;
 import io.tofpu.speedbridge2.domain.BridgePlayer;
+import io.tofpu.speedbridge2.domain.game.GamePlayer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,5 +21,9 @@ public final class PlayerHandler {
             Databases.PLAYER_DATABASE.insert(bridgePlayer);
             return bridgePlayer;
         });
+    }
+
+    public BridgePlayer remove(final UUID uniqueId) {
+        return this.playerMap.remove(uniqueId);
     }
 }

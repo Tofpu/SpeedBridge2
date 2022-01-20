@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.service;
 
+import io.tofpu.speedbridge2.domain.BridgePlayer;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
 import io.tofpu.speedbridge2.domain.Island;
@@ -35,11 +36,12 @@ public final class IslandService {
         return this.islandHandler.findIslandBy(slot);
     }
 
-    public Map.Entry<GamePlayer, GameIsland> generateGame(final Player player, final Island island) {
+    public Map.Entry<GamePlayer, GameIsland> generateGame(final BridgePlayer player,
+            final Island island) {
         return island.generateGame(player);
     }
 
-    public GameIsland findGameByPlayer(final Player player, final Island island) {
+    public GameIsland findGameByPlayer(final BridgePlayer player, final Island island) {
         return findGameByPlayer(GamePlayer.of(player), island);
     }
 

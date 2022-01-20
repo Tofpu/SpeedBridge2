@@ -18,11 +18,12 @@ public final class GameInteractionListener extends GameListener {
 
     @EventHandler
     private void onBlockPlace(final BlockPlaceEvent event) {
-        final GamePlayer gamePlayer = GamePlayer.of(event.getPlayer());
-
-        if (!gamePlayer.isPlaying()) {
+        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
+                .getUniqueId());
+        if (!bridgePlayer.isPlaying()) {
             return;
         }
+        final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
 
         if (gamePlayer.hasTimerStarted()) {
             final ItemStack itemStack = event.getItemInHand();
@@ -41,8 +42,9 @@ public final class GameInteractionListener extends GameListener {
         }
 
         final Player player = event.getPlayer();
-        final GamePlayer gamePlayer = GamePlayer.of(event.getPlayer());
-        if (!gamePlayer.isPlaying() || !gamePlayer.hasTimerStarted()) {
+        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(player.getUniqueId());
+        final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
+        if (!bridgePlayer.isPlaying() || gamePlayer.hasTimerStarted()) {
             return;
         }
 
@@ -53,7 +55,6 @@ public final class GameInteractionListener extends GameListener {
         final double seconds = (double) (capturedAt - startedAt) / 1_000_000_000;
         final Score score = new Score(island.getSlot(), seconds);
 
-        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(player.getUniqueId());
         bridgePlayer.setScoreIfLower(island.getSlot(), score.getScore());
 
         player.sendMessage("you scored " + BridgeUtil.toFormattedScore(score.getScore()) + " seconds!");

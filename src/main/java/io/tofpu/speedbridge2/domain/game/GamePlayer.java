@@ -1,27 +1,28 @@
 package io.tofpu.speedbridge2.domain.game;
 
+import io.tofpu.speedbridge2.domain.BridgePlayer;
 import io.tofpu.speedbridge2.domain.schematic.IslandPlot;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 
 public final class GamePlayer {
     private static final Map<UUID, GamePlayer> GAME_PLAYER_MAP = new HashMap<>();
-    private final Player player;
+    private final BridgePlayer player;
     private final List<Location> blockLocations;
 
     private boolean queue = false;
     private GameIsland currentGame = null;
     private long timer = -1;
 
-    public static GamePlayer of(final Player player) {
-        return GAME_PLAYER_MAP.computeIfAbsent(player.getUniqueId(), uuid -> new GamePlayer(player));
+    public static GamePlayer of(final BridgePlayer player) {
+        return GAME_PLAYER_MAP.computeIfAbsent(player.getPlayerUid(),
+                uuid -> new GamePlayer(player));
     }
 
-    private GamePlayer(final Player player) {
+    private GamePlayer(final BridgePlayer player) {
         this.player = player;
         this.blockLocations = new ArrayList<>();
     }
@@ -56,15 +57,11 @@ public final class GamePlayer {
         return queue;
     }
 
-    public boolean isPlaying() {
-        return currentGame != null;
-    }
-
     public GameIsland getCurrentGame() {
         return currentGame;
     }
 
-    public Player getPlayer() {
+    public BridgePlayer getBridgePlayer() {
         return player;
     }
 
@@ -72,7 +69,8 @@ public final class GamePlayer {
         if (player == null) {
             return;
         }
-        player.teleport(new Location(selectedPlot.getWorld(), selectedPlot.getX(), selectedPlot
+        player.getPlayer().teleport(new Location(selectedPlot.getWorld(), selectedPlot.getX(),
+                selectedPlot
                 .getY(), selectedPlot.getZ()));
     }
 
@@ -97,7 +95,7 @@ public final class GamePlayer {
     }
 
     public GamePlayer remove() {
-        GAME_PLAYER_MAP.remove(this.getPlayer().getUniqueId());
+        GAME_PLAYER_MAP.remove(this.getBridgePlayer().getPlayerUid());
         return this;
     }
 }

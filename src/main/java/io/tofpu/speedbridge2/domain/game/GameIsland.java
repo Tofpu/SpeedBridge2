@@ -31,7 +31,7 @@ public final class GameIsland {
     }
 
     public void onJoin() {
-        gamePlayer.getPlayer().getInventory().setItem(0, new ItemStack(Material.WOOL,
+        gamePlayer.getBridgePlayer().getPlayer().getInventory().setItem(0, new ItemStack(Material.WOOL,
                 64));
     }
 
@@ -41,14 +41,15 @@ public final class GameIsland {
 
         this.gamePlayer.teleport(islandPlot);
 
-        gamePlayer.getPlayer().getInventory().setItem(0, new ItemStack(Material.WOOL,
+        gamePlayer.getBridgePlayer().getPlayer().getInventory().setItem(0,
+                new ItemStack(Material.WOOL,
                 64));
 
-        this.gamePlayer.getPlayer().sendMessage("the island has been reset");
+        this.gamePlayer.getBridgePlayer().getPlayer().sendMessage("the island has been reset");
     }
 
     public void remove() {
-        final Player player = gamePlayer.getPlayer();
+        final Player player = gamePlayer.getBridgePlayer().getPlayer();
 
         // TODO: change this
         player.getInventory().clear();

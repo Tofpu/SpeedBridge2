@@ -2,8 +2,10 @@ package io.tofpu.speedbridge2.listener.island;
 
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.Region;
+import io.tofpu.speedbridge2.domain.BridgePlayer;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
+import io.tofpu.speedbridge2.domain.service.PlayerService;
 import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -14,10 +16,12 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public final class IslandProtectionListener extends GameListener {
     @EventHandler(ignoreCancelled = true)
     private void onBlockBreak(final BlockBreakEvent event) {
-        final GamePlayer gamePlayer = GamePlayer.of(event.getPlayer());
-        if (!gamePlayer.isPlaying()) {
+        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
+                .getUniqueId());
+        if (!bridgePlayer.isPlaying()) {
             return;
         }
+        final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
         final Block block = event.getBlock();
 
         // if the player haven't placed this block, return
@@ -31,10 +35,12 @@ public final class IslandProtectionListener extends GameListener {
 
     @EventHandler(ignoreCancelled = true)
     private void onBlockPlaceEvent(final BlockPlaceEvent event) {
-        final GamePlayer gamePlayer = GamePlayer.of(event.getPlayer());
-        if (!gamePlayer.isPlaying()) {
+        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
+                .getUniqueId());
+        if (!bridgePlayer.isPlaying()) {
             return;
         }
+        final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
         final GameIsland gameIsland = gamePlayer.getCurrentGame();
         final Region region = gameIsland.getIslandPlot().region();
 

@@ -1,23 +1,35 @@
 package io.tofpu.speedbridge2.domain;
 
 import io.tofpu.speedbridge2.database.Databases;
+import io.tofpu.speedbridge2.domain.game.GamePlayer;
 import io.tofpu.speedbridge2.domain.misc.Score;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public final class BridgePlayer {
+public class BridgePlayer {
     private final UUID playerUid;
     private final Map<Integer, Score> scoreMap;
 
-    public static BridgePlayer of (UUID playerUid) {
+    private final Player player;
+    private GamePlayer gamePlayer;
+
+    public static BridgePlayer of(UUID playerUid) {
         return new BridgePlayer(playerUid);
     }
 
-    private BridgePlayer(final UUID playerUid) {
+    protected BridgePlayer(final UUID playerUid) {
         this.playerUid = playerUid;
         this.scoreMap = new HashMap<>();
+
+        if (playerUid != null) {
+            this.player = Bukkit.getPlayer(playerUid);
+        } else {
+            this.player = null;
+        }
     }
 
     public Score setScoreIfLower(final int islandSlot, final double score) {
@@ -57,6 +69,14 @@ public final class BridgePlayer {
         return setNewScore(score);
     }
 
+    public void setGamePlayer(final GamePlayer gamePlayer) {
+        this.gamePlayer = gamePlayer;
+    }
+
+    public boolean isPlaying() {
+        return gamePlayer != null;
+    }
+
     public Score findScoreBy(final int islandSlot) {
         return scoreMap.get(islandSlot);
     }
@@ -69,6 +89,10 @@ public final class BridgePlayer {
         return this.scoreMap.values();
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("BridgePlayer{");
@@ -76,5 +100,9 @@ public final class BridgePlayer {
         sb.append(", scoreMap=").append(scoreMap);
         sb.append('}');
         return sb.toString();
+    }
+
+    public GamePlayer getGamePlayer() {
+        return gamePlayer;
     }
 }
