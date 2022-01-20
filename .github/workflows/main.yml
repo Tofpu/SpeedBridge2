@@ -17,9 +17,8 @@ jobs:
         with:
           java-version: '8'
           distribution: 'adopt'
-      - run: mvn --batch-mode --update-snapshots verify
-      - run: mkdir staging && cp target/SpeedBridge-2.jar staging
+      - run: mvn clean install
       - uses: actions/upload-artifact@v2
         with:
           name: Package
-          path: staging/SpeedBridge-2.jar
+          path: target/SpeedBridge-2.jar
