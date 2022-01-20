@@ -4,7 +4,7 @@
 </div>
 
 ## BETA VERSION
-If you'd like to get your hands on the beta version of SpeedBridge v2, download it at [Nightly](https://nightly.link/Tofpu/SpeedBridge2/workflows/main/main).
+If you'd like to get your hands on the beta version of SpeedBridge v2, download it at [Nightly](https://speedbridge.tofpu.me/download).
 
 ## CONTRIBUTE 
 If you'd like to contribute to the project, please contact me on discord before doing so.
