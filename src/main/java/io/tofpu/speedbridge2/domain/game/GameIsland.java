@@ -36,15 +36,15 @@ public final class GameIsland {
     }
 
     public void resetGame() {
-        this.gamePlayer.teleport(islandPlot);
-
         gamePlayer.resetBlocks();
         gamePlayer.resetTimer();
+
+        this.gamePlayer.teleport(islandPlot);
 
         gamePlayer.getPlayer().getInventory().setItem(0, new ItemStack(Material.WOOL,
                 64));
 
-        this.gamePlayer.getPlayer().sendMessage("reset the island!");
+        this.gamePlayer.getPlayer().sendMessage("the island has been reset");
     }
 
     public void remove() {
