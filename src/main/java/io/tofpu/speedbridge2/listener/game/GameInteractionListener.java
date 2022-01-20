@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.concurrent.TimeUnit;
 
-public final class IslandInteractionListener extends GameListener {
+public final class GameInteractionListener extends GameListener {
 
     @EventHandler
     private void onBlockPlace(final BlockPlaceEvent event) {

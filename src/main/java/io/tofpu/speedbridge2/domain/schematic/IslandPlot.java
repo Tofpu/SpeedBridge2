@@ -26,7 +26,7 @@ public final class IslandPlot {
     private final Vector minPoint;
     private final Vector maxPoint;
 
-    private final PlotState plotState;
+    private final IslandPlotState islandPlotState;
 
     public IslandPlot(final Island island, final World world, double[] positions) {
         this.island = island;
@@ -46,7 +46,7 @@ public final class IslandPlot {
                 .subtract(schematicPlot.getOrigin())
                 .add(new Vector(x, y, z));
 
-        this.plotState = new PlotState();
+        this.islandPlotState = new IslandPlotState();
     }
 
     public void generatePlot() throws WorldEditException {
@@ -70,7 +70,7 @@ public final class IslandPlot {
     }
 
     public void reservePlot(final GameIsland gameIsland) {
-        this.plotState.reservePlotWith(gameIsland);
+        this.islandPlotState.reservePlotWith(gameIsland);
     }
 
     public World getWorld() {
@@ -102,15 +102,15 @@ public final class IslandPlot {
     }
 
     public GameIsland getGameIsland() {
-        return plotState.getGameIsland();
+        return islandPlotState.getGameIsland();
     }
 
     public void freePlot() {
-        plotState.freePlot();
+        islandPlotState.freePlot();
     }
 
     public boolean isPlotFree() {
-        return plotState.isPlotFree();
+        return islandPlotState.isPlotFree();
     }
 
     public Clipboard getSchematicPlot() {

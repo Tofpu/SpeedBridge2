@@ -2,7 +2,7 @@ package io.tofpu.speedbridge2.domain.schematic;
 
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 
-public final class PlotState {
+public final class IslandPlotState {
     private GameIsland gameIsland;
 
     public void reservePlotWith(final GameIsland gameIsland) {

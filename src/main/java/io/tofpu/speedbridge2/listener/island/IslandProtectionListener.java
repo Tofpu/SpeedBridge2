@@ -38,8 +38,6 @@ public final class IslandProtectionListener extends GameListener {
         final GameIsland gameIsland = gamePlayer.getCurrentGame();
         final Region region = gameIsland.getIslandPlot().region();
 
-        System.out.println("location: " + region.toString());
-
         final Location location = event.getBlockPlaced().getLocation();
         final boolean isInRegion = region.contains(new Vector(location.getX(), location.getY(), location.getZ()));
 
