@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public final class IslandResetListener extends GameListener {
     @EventHandler
-    public void onPlayerQuit(final PlayerQuitEvent event) {
+    private void onPlayerQuit(final PlayerQuitEvent event) {
         final GamePlayer gamePlayer = GamePlayer.of(event.getPlayer());
         if (!gamePlayer.isPlaying()) {
             return;

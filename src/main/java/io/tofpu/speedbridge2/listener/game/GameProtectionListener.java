@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 
 public final class GameProtectionListener extends GameListener {
     @EventHandler
-    public void onItemDrop(final PlayerDropItemEvent event) {
+    private void onItemDrop(final PlayerDropItemEvent event) {
         final GamePlayer gamePlayer = GamePlayer.of(event.getPlayer());
 
         if (!gamePlayer.isPlaying()) {
@@ -21,7 +21,7 @@ public final class GameProtectionListener extends GameListener {
     }
 
     @EventHandler
-    public void onEntityDamage(final EntityDamageEvent event) {
+    private void onEntityDamage(final EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) {
             return;
         }

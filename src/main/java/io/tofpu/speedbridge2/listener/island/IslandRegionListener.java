@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public final class IslandRegionListener extends GameListener {
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerMove(final PlayerMoveEvent event) {
+    private void onPlayerMove(final PlayerMoveEvent event) {
         final GamePlayer gamePlayer = GamePlayer.of(event.getPlayer());
         if (!gamePlayer.isPlaying()) {
             return;

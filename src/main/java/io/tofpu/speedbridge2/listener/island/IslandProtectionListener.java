@@ -13,7 +13,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 
 public final class IslandProtectionListener extends GameListener {
     @EventHandler(ignoreCancelled = true)
-    public void onBlockBreak(final BlockBreakEvent event) {
+    private void onBlockBreak(final BlockBreakEvent event) {
         final GamePlayer gamePlayer = GamePlayer.of(event.getPlayer());
         if (!gamePlayer.isPlaying()) {
             return;
@@ -30,7 +30,7 @@ public final class IslandProtectionListener extends GameListener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onBlockPlaceEvent(final BlockPlaceEvent event) {
+    private void onBlockPlaceEvent(final BlockPlaceEvent event) {
         final GamePlayer gamePlayer = GamePlayer.of(event.getPlayer());
         if (!gamePlayer.isPlaying()) {
             return;

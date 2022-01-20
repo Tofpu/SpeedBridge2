@@ -35,7 +35,7 @@ public final class GameInteractionListener extends GameListener {
     }
 
     @EventHandler
-    public void onPlayerInteract(final PlayerInteractEvent event) {
+    private void onPlayerInteract(final PlayerInteractEvent event) {
         if (event.getAction() != Action.PHYSICAL) {
             return;
         }
