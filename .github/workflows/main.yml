@@ -17,8 +17,11 @@ jobs:
         with:
           java-version: '8'
           distribution: 'adopt'
-      - run: mvn clean install
+          
+      - name: Building    
+        run: mvn clean install
+
       - uses: actions/upload-artifact@v2
         with:
-          name: Package
-          path: target/SpeedBridge-2.jar
+          name: SpeedBridge-2
+          path: ${{ github.workspace }}/target/SpeedBridge-2.jar
