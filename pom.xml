@@ -18,6 +18,7 @@
     <url>https://tofpu.me</url>
 
     <build>
+        <finalName>SpeedBridge-2</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
