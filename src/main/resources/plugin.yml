@@ -5,5 +5,3 @@ authors: [ Tofpu ]
 website: https://tofpu.me
 depend:
   - WorldEdit
-commands:
-  bridge:
