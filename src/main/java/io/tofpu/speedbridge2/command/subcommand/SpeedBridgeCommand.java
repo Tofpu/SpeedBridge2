@@ -4,14 +4,23 @@ import cloud.commandframework.annotations.Argument;
 import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.ProxiedBy;
+import com.sk89q.minecraft.util.commands.CommandAlias;
 import io.tofpu.speedbridge2.domain.BridgePlayer;
 import io.tofpu.speedbridge2.domain.EmptyBridgePlayer;
 import io.tofpu.speedbridge2.domain.Island;
+import io.tofpu.speedbridge2.domain.misc.Score;
 import io.tofpu.speedbridge2.domain.service.IslandService;
 import io.tofpu.speedbridge2.util.BridgeUtil;
+import io.tofpu.speedbridge2.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static io.tofpu.speedbridge2.util.MessageUtil.Symbols.ARROW_RIGHT;
+import static io.tofpu.speedbridge2.util.MessageUtil.Symbols.CROSS;
 
 public final class SpeedBridgeCommand {
     private static final String ISLAND_ALREADY_EXISTS = "<red>%s island has already " + "been defined";
@@ -25,6 +34,10 @@ public final class SpeedBridgeCommand {
 
     private static final String ALREADY_IN_A_ISLAND = "<red>You're already in an island";
     private static final String NOT_IN_A_ISLAND = "<red>You're not in an island";
+
+    private static final String SCORE_TITLE_BAR = MessageUtil.CHAT_BAR.substring(0, MessageUtil.CHAT_BAR
+            .length() / 6);
+    private static final String SCORE_TITLE = "<yellow>" + SCORE_TITLE_BAR + "  " + "<gold><bold" + ">YOUR SCORES</bold></gold>" + " " + SCORE_TITLE_BAR;
 
     private final IslandService islandService = IslandService.INSTANCE;
 
@@ -105,11 +118,46 @@ public final class SpeedBridgeCommand {
             message = NOT_IN_A_ISLAND;
         } else {
             message = "";
-            bridgePlayer.getGamePlayer().getCurrentGame().getIsland().leaveGame(bridgePlayer);
+            bridgePlayer.getGamePlayer()
+                    .getCurrentGame()
+                    .getIsland()
+                    .leaveGame(bridgePlayer);
         }
 
         if (!message.isEmpty()) {
             BridgeUtil.sendMessage(player, message);
         }
+    }
+
+    @ProxiedBy("score")
+    @CommandMethod("speedbridge scores")
+    @CommandAlias("speedbridge score")
+    @CommandDescription("Shows a list of your scores")
+    public void onScore(final BridgePlayer bridgePlayer) {
+        final Player player = bridgePlayer.getPlayer();
+        final List<String> scoreList = new ArrayList<>();
+        final String message;
+
+        for (final Score score : bridgePlayer.getScores()) {
+            if (scoreList.isEmpty()) {
+                scoreList.add(SCORE_TITLE);
+            }
+            // Your scores:
+            // Island X scored X seconds;
+            final String formattedScore = " <gold><bold>" + CROSS.getSymbol() + " " + "<reset><yellow>Island " + "<gold>%s</gold>" + " " + ARROW_RIGHT
+                    .getSymbol() + " <gold>%s</gold> seconds";
+            scoreList.add(String.format(formattedScore, score.getScoredOn(), BridgeUtil.toFormattedScore(score
+                    .getScore())));
+        }
+
+        if (scoreList.isEmpty()) {
+            message = "<red>You haven't scored anything yet";
+        } else {
+            scoreList.add(MessageUtil.MENU_BAR);
+
+            message = String.join("\n", scoreList);
+        }
+
+        BridgeUtil.sendMessage(player, message);
     }
 }
