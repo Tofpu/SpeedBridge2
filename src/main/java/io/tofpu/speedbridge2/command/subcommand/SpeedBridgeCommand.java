@@ -6,7 +6,8 @@ import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.ProxiedBy;
 import com.sk89q.minecraft.util.commands.CommandAlias;
 import io.tofpu.speedbridge2.domain.BridgePlayer;
-import io.tofpu.speedbridge2.domain.EmptyBridgePlayer;
+import io.tofpu.speedbridge2.domain.CommonBridgePlayer;
+import io.tofpu.speedbridge2.domain.SenderBridgePlayer;
 import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.misc.Score;
 import io.tofpu.speedbridge2.domain.service.IslandService;
@@ -45,8 +46,8 @@ public final class SpeedBridgeCommand {
     @ProxiedBy("createIsland")
     @CommandMethod("speedbridge create <slot> [schematic]")
     @CommandDescription("Create an island with a defined slot")
-    public void onIslandCreate(final EmptyBridgePlayer player, final @Argument("slot") int slot, final @Argument("schematic") String schematic) {
-        final CommandSender sender = player.getSender();
+    public void onIslandCreate(final CommonBridgePlayer<?> player, final @Argument("slot") int slot, final @Argument("schematic") String schematic) {
+        final CommandSender sender = player.getPlayer();
 
         if (islandService.createIsland(slot) == null) {
             BridgeUtil.sendMessage(sender, String.format(ISLAND_ALREADY_EXISTS, slot + ""));
@@ -73,9 +74,9 @@ public final class SpeedBridgeCommand {
     @ProxiedBy("selectIsland")
     @CommandMethod("speedbridge select <slot> <schematic>")
     @CommandDescription("Select a schematic for a particular slot")
-    public void onIslandSelect(final EmptyBridgePlayer bridgePlayer,
+    public void onIslandSelect(final CommonBridgePlayer<?> bridgePlayer,
             final @Argument("slot") int slot, final @Argument("schematic") String schematic) {
-        final CommandSender sender = bridgePlayer.getSender();
+        final CommandSender sender = bridgePlayer.getPlayer();
         final Island island = islandService.findIslandBy(slot);
         final String message;
         if (island.selectSchematic(schematic)) {
@@ -164,15 +165,15 @@ public final class SpeedBridgeCommand {
 
     @CommandMethod("speedbridge")
     @CommandDescription("Shows a list of commands")
-    public void onNoArgument(final BridgePlayer bridgePlayer) {
-        final Player player = bridgePlayer.getPlayer();
+    public void onNoArgument(final CommonBridgePlayer<?> bridgePlayer) {
+        final CommandSender player = bridgePlayer.getPlayer();
         HelpCommandGenerator.showHelpMessage(player);
     }
 
     @CommandMethod("speedbridge help")
     @CommandDescription("Shows a list of commands")
-    public void onHelpCommand(final BridgePlayer bridgePlayer) {
-        final Player player = bridgePlayer.getPlayer();
+    public void onHelpCommand(final CommonBridgePlayer<?> bridgePlayer) {
+        final CommandSender player = bridgePlayer.getPlayer();
         HelpCommandGenerator.showHelpMessage(player);
     }
 }

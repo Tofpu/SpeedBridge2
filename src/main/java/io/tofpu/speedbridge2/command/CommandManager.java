@@ -9,9 +9,9 @@ import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.meta.CommandMeta;
 import io.tofpu.speedbridge2.command.subcommand.SpeedBridgeCommand;
 import io.tofpu.speedbridge2.domain.BridgePlayer;
-import io.tofpu.speedbridge2.domain.EmptyBridgePlayer;
+import io.tofpu.speedbridge2.domain.CommonBridgePlayer;
+import io.tofpu.speedbridge2.domain.SenderBridgePlayer;
 import io.tofpu.speedbridge2.domain.service.PlayerService;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -19,24 +19,24 @@ import org.bukkit.plugin.Plugin;
 import java.util.function.Function;
 
 public final class CommandManager {
-    private static BukkitCommandManager<BridgePlayer> manager;
+    private static BukkitCommandManager<CommonBridgePlayer> manager;
 
     public static void load(final Plugin plugin) {
-        final Function<CommandTree<BridgePlayer>, CommandExecutionCoordinator<BridgePlayer>> executionCoordinatorFunction = CommandExecutionCoordinator.SimpleCoordinator
+        final Function<CommandTree<CommonBridgePlayer>, CommandExecutionCoordinator<CommonBridgePlayer>> executionCoordinatorFunction = CommandExecutionCoordinator.SimpleCoordinator
                 .simpleCoordinator();
 
-        final Function<CommandSender, BridgePlayer> bridgePlayerFunction = sender -> {
+        final Function<CommandSender, CommonBridgePlayer> bridgePlayerFunction = sender -> {
             if (!(sender instanceof Player)) {
-                return new EmptyBridgePlayer(sender);
+                return new SenderBridgePlayer(sender);
             }
             return PlayerService.INSTANCE.get(((Player) sender).getUniqueId());
         };
 
-        final Function<BridgePlayer, CommandSender> senderToBridgePlayerFunction = sender -> {
-            if (sender instanceof EmptyBridgePlayer) {
-                return ((EmptyBridgePlayer) sender).getSender();
+        final Function<CommonBridgePlayer, CommandSender> senderToBridgePlayerFunction = sender -> {
+            if (sender instanceof SenderBridgePlayer) {
+                return ((SenderBridgePlayer) sender).getSender();
             }
-            return Bukkit.getPlayer(sender.getPlayerUid());
+            return ((BridgePlayer) sender).getPlayer();
         };
 
         try {
@@ -51,9 +51,9 @@ public final class CommandManager {
                 .with(CommandMeta.DESCRIPTION, p.get(StandardParameters.DESCRIPTION, "No description"))
                 .build();
 
-        final AnnotationParser<BridgePlayer> annotationParser = new AnnotationParser<>(
+        final AnnotationParser<CommonBridgePlayer> annotationParser = new AnnotationParser<>(
                 /* Manager */ manager,
-                /* Command sender type */ BridgePlayer.class,
+                /* Command sender type */ CommonBridgePlayer.class,
                 /* Mapper for command meta instances */ commandMetaFunction);
 
         annotationParser.parse(new SpeedBridgeCommand());

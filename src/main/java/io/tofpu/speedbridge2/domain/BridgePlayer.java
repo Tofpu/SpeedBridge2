@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class BridgePlayer {
+public final class BridgePlayer extends CommonBridgePlayer<Player> {
     private final UUID playerUid;
     private final Map<Integer, Score> scoreMap;
 
@@ -89,6 +89,7 @@ public class BridgePlayer {
         return this.scoreMap.values();
     }
 
+    @Override
     public Player getPlayer() {
         return player;
     }
