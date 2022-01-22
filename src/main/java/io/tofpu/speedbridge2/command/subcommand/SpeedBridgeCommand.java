@@ -162,8 +162,14 @@ public final class SpeedBridgeCommand {
         BridgeUtil.sendMessage(player, message);
     }
 
+    @CommandMethod("speedbridge")
+    @CommandDescription("Shows a list of commands")
+    public void onNoArgument(final BridgePlayer bridgePlayer) {
+        final Player player = bridgePlayer.getPlayer();
+        HelpCommandGenerator.showHelpMessage(player);
+    }
+
     @CommandMethod("speedbridge help")
-    @CommandAlias("speedbridge")
     @CommandDescription("Shows a list of commands")
     public void onHelpCommand(final BridgePlayer bridgePlayer) {
         final Player player = bridgePlayer.getPlayer();
