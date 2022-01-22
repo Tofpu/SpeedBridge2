@@ -26,4 +26,11 @@ public final class PlayerHandler {
     public BridgePlayer remove(final UUID uniqueId) {
         return this.playerMap.remove(uniqueId);
     }
+
+    public BridgePlayer internalRefresh(final UUID uniqueId) {
+        final BridgePlayer bridgePlayer = BridgePlayer.of(get(uniqueId));
+        playerMap.put(uniqueId, bridgePlayer);
+
+        return bridgePlayer;
+    }
 }

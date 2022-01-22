@@ -4,6 +4,7 @@ import io.tofpu.speedbridge2.domain.BridgePlayer;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
 import io.tofpu.speedbridge2.domain.handler.PlayerHandler;
 import io.tofpu.speedbridge2.domain.repository.PlayerRepository;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -31,5 +32,9 @@ public final class PlayerService {
 
     public BridgePlayer remove(final UUID uniqueId) {
         return playerHandler.remove(uniqueId);
+    }
+
+    public BridgePlayer internalRefresh(final Player player) {
+        return playerHandler.internalRefresh(player.getUniqueId());
     }
 }

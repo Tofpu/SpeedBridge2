@@ -1,0 +1,17 @@
+package io.tofpu.speedbridge2.listener.general;
+
+import io.tofpu.speedbridge2.domain.service.PlayerService;
+import io.tofpu.speedbridge2.listener.GameListener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerJoinEvent;
+
+public final class PlayerConnectionListener extends GameListener {
+    final PlayerService playerService = PlayerService.INSTANCE;
+
+    @EventHandler
+    private void onPlayerJoin(final PlayerJoinEvent event) {
+        // internally refreshing the BridgePlayer object, to avoid the Player object
+        // from breaking
+        playerService.internalRefresh(event.getPlayer());
+    }
+}

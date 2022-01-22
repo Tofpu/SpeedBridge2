@@ -132,7 +132,7 @@ public final class SpeedBridgeCommand {
     }
 
     @ProxiedBy("score")
-    @CommandMethod("speedbridge scores")
+    @CommandMethod("speedbridge score")
     @CommandAlias("speedbridge score")
     @CommandDescription("Shows a list of your scores")
     public void onScore(final BridgePlayer bridgePlayer) {

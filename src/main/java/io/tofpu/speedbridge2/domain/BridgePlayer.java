@@ -17,8 +17,17 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
     private final Player player;
     private GamePlayer gamePlayer;
 
-    public static BridgePlayer of(UUID playerUid) {
+    public static BridgePlayer of(final BridgePlayer copy) {
+        return new BridgePlayer(copy);
+    }
+
+    public static BridgePlayer of(final UUID playerUid) {
         return new BridgePlayer(playerUid);
+    }
+
+    protected BridgePlayer(final BridgePlayer copy) {
+        this(copy.playerUid);
+        this.scoreMap.putAll(copy.scoreMap);
     }
 
     protected BridgePlayer(final UUID playerUid) {

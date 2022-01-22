@@ -9,7 +9,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public final class IslandResetListener extends GameListener {
     @EventHandler
     private void onPlayerQuit(final PlayerQuitEvent event) {
-        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.remove(event.getPlayer()
+        // TODO: remove the bridge player eventually!
+        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
                 .getUniqueId());
         if (!bridgePlayer.isPlaying()) {
             return;
