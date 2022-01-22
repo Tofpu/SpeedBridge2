@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2;
 
 import io.tofpu.speedbridge2.command.CommandManager;
-import io.tofpu.speedbridge2.command.PluginCommand;
+import io.tofpu.speedbridge2.command.subcommand.HelpCommandGenerator;
 import io.tofpu.speedbridge2.database.manager.DatabaseManager;
 import io.tofpu.speedbridge2.domain.schematic.SchematicManager;
 import io.tofpu.speedbridge2.domain.service.IslandService;
@@ -32,8 +32,7 @@ public final class SpeedBridge {
         ListenerManager.registerAll(javaPlugin);
 
         CommandManager.load(javaPlugin);
-
-        javaPlugin.getCommand("bridge").setExecutor(new PluginCommand());
+        HelpCommandGenerator.generateHelpCommand();
     }
 
     public void shutdown() {

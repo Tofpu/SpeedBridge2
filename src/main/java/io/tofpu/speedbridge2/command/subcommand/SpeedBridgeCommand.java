@@ -37,7 +37,8 @@ public final class SpeedBridgeCommand {
 
     private static final String SCORE_TITLE_BAR = MessageUtil.CHAT_BAR.substring(0, MessageUtil.CHAT_BAR
             .length() / 6);
-    private static final String SCORE_TITLE = "<yellow>" + SCORE_TITLE_BAR + "  " + "<gold><bold" + ">YOUR SCORES</bold></gold>" + " " + SCORE_TITLE_BAR;
+    private static final String SCORE_TITLE = "<yellow>" + SCORE_TITLE_BAR + "  " +
+            "<gold><bold" + "> YOUR SCORES</bold></gold>" + " " + SCORE_TITLE_BAR;
 
     private final IslandService islandService = IslandService.INSTANCE;
 
@@ -159,5 +160,13 @@ public final class SpeedBridgeCommand {
         }
 
         BridgeUtil.sendMessage(player, message);
+    }
+
+    @CommandMethod("speedbridge help")
+    @CommandAlias("speedbridge")
+    @CommandDescription("Shows a list of commands")
+    public void onHelpCommand(final BridgePlayer bridgePlayer) {
+        final Player player = bridgePlayer.getPlayer();
+        HelpCommandGenerator.showHelpMessage(player);
     }
 }
