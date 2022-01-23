@@ -30,6 +30,7 @@ public final class SpeedBridge {
             playerService.load();
         });
         try {
+            DynamicClass.addParameters(javaPlugin);
             DynamicClass.alternativeScan(getClass().getClassLoader(), "io.tofpu" +
                     ".speedbridge2");
         } catch (IOException e) {
