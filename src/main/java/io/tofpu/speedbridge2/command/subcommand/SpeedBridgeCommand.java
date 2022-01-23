@@ -46,7 +46,8 @@ public final class SpeedBridgeCommand {
     @ProxiedBy("createIsland")
     @CommandMethod("speedbridge create <slot> [schematic]")
     @CommandDescription("Create an island with a defined slot")
-    public void onIslandCreate(final CommonBridgePlayer<?> player, final @Argument("slot") int slot, final @Argument("schematic") String schematic) {
+    public void onIslandCreate(final CommonBridgePlayer<?> player, final @Argument(
+            "slot") int slot, final @Argument(value = "schematic") String schematic) {
         final CommandSender sender = player.getPlayer();
 
         if (islandService.createIsland(slot) == null) {
@@ -54,7 +55,7 @@ public final class SpeedBridgeCommand {
             return;
         }
 
-        if (schematic.isEmpty()) {
+        if (schematic == null || schematic.isEmpty()) {
             BridgeUtil.sendMessage(sender, String.format(ISLAND_HAS_BEEN_CREATED, slot + ""));
             return;
         }

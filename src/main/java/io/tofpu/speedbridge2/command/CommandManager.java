@@ -13,6 +13,7 @@ import io.tofpu.speedbridge2.domain.CommonBridgePlayer;
 import io.tofpu.speedbridge2.domain.SenderBridgePlayer;
 import io.tofpu.speedbridge2.domain.service.PlayerService;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -26,18 +27,14 @@ public final class CommandManager {
                 .simpleCoordinator();
 
         final Function<CommandSender, CommonBridgePlayer> bridgePlayerFunction = sender -> {
-            if (!(sender instanceof Player)) {
+            if (sender instanceof ConsoleCommandSender) {
                 return new SenderBridgePlayer(sender);
             }
-            return PlayerService.INSTANCE.get(((Player) sender).getUniqueId());
+            final Player player = (Player) sender;
+            return PlayerService.INSTANCE.get(player.getUniqueId());
         };
 
-        final Function<CommonBridgePlayer, CommandSender> senderToBridgePlayerFunction = sender -> {
-            if (sender instanceof SenderBridgePlayer) {
-                return ((SenderBridgePlayer) sender).getSender();
-            }
-            return ((BridgePlayer) sender).getPlayer();
-        };
+        final Function<CommonBridgePlayer, CommandSender> senderToBridgePlayerFunction = CommonBridgePlayer::getPlayer;
 
         try {
             manager = new BukkitCommandManager<>(plugin, executionCoordinatorFunction, bridgePlayerFunction, senderToBridgePlayerFunction);
