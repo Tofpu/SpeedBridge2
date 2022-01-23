@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.listener.game;
 
+import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.domain.BridgePlayer;
 import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
@@ -14,6 +15,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+@AutoRegister
 public final class GameInteractionListener extends GameListener {
 
     @EventHandler

@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2.listener.island;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
+import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.domain.BridgePlayer;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
@@ -13,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+@AutoRegister
 public final class IslandRegionListener extends GameListener {
     @EventHandler(ignoreCancelled = true)
     private void onPlayerMove(final PlayerMoveEvent event) {

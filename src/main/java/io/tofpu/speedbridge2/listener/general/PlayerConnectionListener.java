@@ -1,10 +1,12 @@
 package io.tofpu.speedbridge2.listener.general;
 
+import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.domain.service.PlayerService;
 import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+@AutoRegister
 public final class PlayerConnectionListener extends GameListener {
     final PlayerService playerService = PlayerService.INSTANCE;
 

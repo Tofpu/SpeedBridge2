@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2.listener.game;
 
+import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.domain.BridgePlayer;
-import io.tofpu.speedbridge2.domain.game.GamePlayer;
 import io.tofpu.speedbridge2.domain.service.PlayerService;
 import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.entity.Player;
@@ -10,6 +10,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
+@AutoRegister
 public final class GameProtectionListener extends GameListener {
     @EventHandler
     private void onItemDrop(final PlayerDropItemEvent event) {

@@ -1,11 +1,13 @@
 package io.tofpu.speedbridge2.listener.island;
 
+import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.domain.BridgePlayer;
 import io.tofpu.speedbridge2.domain.service.PlayerService;
 import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+@AutoRegister
 public final class IslandResetListener extends GameListener {
     @EventHandler
     private void onPlayerQuit(final PlayerQuitEvent event) {

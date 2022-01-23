@@ -1,14 +1,16 @@
 package io.tofpu.speedbridge2;
 
+import io.tofpu.dynamicclass.DynamicClass;
 import io.tofpu.speedbridge2.command.CommandManager;
 import io.tofpu.speedbridge2.command.subcommand.HelpCommandGenerator;
 import io.tofpu.speedbridge2.database.manager.DatabaseManager;
 import io.tofpu.speedbridge2.domain.schematic.SchematicManager;
 import io.tofpu.speedbridge2.domain.service.IslandService;
 import io.tofpu.speedbridge2.domain.service.PlayerService;
-import io.tofpu.speedbridge2.listener.ListenerManager;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.IOException;
 
 public final class SpeedBridge {
     private final JavaPlugin javaPlugin;
@@ -27,9 +29,14 @@ public final class SpeedBridge {
             final PlayerService playerService = PlayerService.INSTANCE;
             playerService.load();
         });
+        try {
+            DynamicClass.alternativeScan(getClass().getClassLoader(), "io.tofpu" +
+                    ".speedbridge2");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         SchematicManager.INSTANCE.load(javaPlugin);
-        ListenerManager.registerAll(javaPlugin);
 
         CommandManager.load(javaPlugin);
         HelpCommandGenerator.generateHelpCommand();
