@@ -7,7 +7,6 @@ import cloud.commandframework.annotations.ProxiedBy;
 import com.sk89q.minecraft.util.commands.CommandAlias;
 import io.tofpu.speedbridge2.domain.BridgePlayer;
 import io.tofpu.speedbridge2.domain.CommonBridgePlayer;
-import io.tofpu.speedbridge2.domain.SenderBridgePlayer;
 import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.misc.Score;
 import io.tofpu.speedbridge2.domain.service.IslandService;
@@ -24,17 +23,24 @@ import static io.tofpu.speedbridge2.util.MessageUtil.Symbols.ARROW_RIGHT;
 import static io.tofpu.speedbridge2.util.MessageUtil.Symbols.CROSS;
 
 public final class SpeedBridgeCommand {
-    private static final String ISLAND_ALREADY_EXISTS = "<red>%s island has already " + "been defined";
-    private static final String ISLAND_HAS_BEEN_CREATED = "<gold>%s island has been created";
+    private static final String ERROR = "<red>" + MessageUtil.Symbols.WARNING.getSymbol() + " ";
+
+    private static final String ISLAND_ALREADY_EXISTS =
+            ERROR + "Island %s already exists!";
+    private static final String ISLAND_HAS_BEEN_CREATED = "<green>Island %s has been " +
+            "created";
     private static final String ISLAND_HAS_BEEN_CREATED_SCHEMATIC = ISLAND_HAS_BEEN_CREATED + " with %s chosen as a schematic";
 
-    private static final String SELECTED_SCHEMATIC = "<gold>%s island has selected %s " + "as a " + "schematic";
+    private static final String SELECTED_SCHEMATIC = "<green>Island %s has been selected" +
+            " %s " +
+            "as a " + "schematic";
 
-    private static final String INVALID_SCHEMATIC = "<red>%s schematic cannot be found";
-    private static final String INVALID_ISLAND = "<red>%s is not an island";
+    private static final String INVALID_SCHEMATIC = ERROR + "Schematic %s cannot be " +
+            "found";
+    private static final String INVALID_ISLAND = ERROR + "Island %s cannot be found";
 
-    private static final String ALREADY_IN_A_ISLAND = "<red>You're already in an island";
-    private static final String NOT_IN_A_ISLAND = "<red>You're not in an island";
+    private static final String ALREADY_IN_A_ISLAND = ERROR + "You're already in an island";
+    private static final String NOT_IN_A_ISLAND = ERROR + "You're not in an island";
 
     private static final String SCORE_TITLE_BAR = MessageUtil.CHAT_BAR.substring(0, MessageUtil.CHAT_BAR
             .length() / 6);
@@ -63,11 +69,9 @@ public final class SpeedBridgeCommand {
         final Island island = islandService.findIslandBy(slot);
         final String message;
         if (island.selectSchematic(schematic)) {
-            message = String.format(SELECTED_SCHEMATIC, slot + "", schematic);
-            ;
+            message = String.format(ISLAND_HAS_BEEN_CREATED_SCHEMATIC, slot + "", schematic);
         } else {
             message = String.format(INVALID_SCHEMATIC, schematic);
-            ;
         }
         BridgeUtil.sendMessage(sender, message);
     }
@@ -81,7 +85,7 @@ public final class SpeedBridgeCommand {
         final Island island = islandService.findIslandBy(slot);
         final String message;
         if (island.selectSchematic(schematic)) {
-            message = String.format(ISLAND_HAS_BEEN_CREATED_SCHEMATIC, slot + "", schematic);
+            message = String.format(SELECTED_SCHEMATIC, slot + "", schematic);
         } else {
             message = String.format(INVALID_SCHEMATIC, schematic);
         }
