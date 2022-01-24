@@ -154,7 +154,7 @@
         <dependency>
             <groupId>com.github.Tofpu</groupId>
             <artifactId>DynamicClass</artifactId>
-            <version>c22037ede5</version>
+            <version>2ea7dee04c</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.google.guava</groupId>
