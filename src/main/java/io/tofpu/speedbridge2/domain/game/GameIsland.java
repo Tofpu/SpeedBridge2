@@ -5,6 +5,7 @@ import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.schematic.IslandPlot;
 import io.tofpu.speedbridge2.domain.schematic.SchematicManager;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -33,9 +34,15 @@ public final class GameIsland {
 
     public void onJoin() {
         final Player player = gamePlayer.getBridgePlayer().getPlayer();
+
+        player.getInventory().clear();
         player.getInventory().setItem(0, new ItemStack(Material.WOOL,
                 64));
+
+        player.setHealth(20);
         player.setFoodLevel(20);
+
+        player.setGameMode(GameMode.SURVIVAL);
     }
 
     public void resetGame() {
