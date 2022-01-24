@@ -46,7 +46,7 @@ public final class GameInteractionListener extends GameListener {
         final Player player = event.getPlayer();
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(player.getUniqueId());
         final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
-        if (!bridgePlayer.isPlaying() || gamePlayer.hasTimerStarted()) {
+        if (!bridgePlayer.isPlaying() || !gamePlayer.hasTimerStarted()) {
             return;
         }
 

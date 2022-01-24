@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.game;
 
+import io.tofpu.speedbridge2.domain.BridgePlayer;
 import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.schematic.IslandPlot;
 import io.tofpu.speedbridge2.domain.schematic.SchematicManager;
@@ -31,8 +32,10 @@ public final class GameIsland {
     }
 
     public void onJoin() {
-        gamePlayer.getBridgePlayer().getPlayer().getInventory().setItem(0, new ItemStack(Material.WOOL,
+        final Player player = gamePlayer.getBridgePlayer().getPlayer();
+        player.getInventory().setItem(0, new ItemStack(Material.WOOL,
                 64));
+        player.setFoodLevel(20);
     }
 
     public void resetGame() {

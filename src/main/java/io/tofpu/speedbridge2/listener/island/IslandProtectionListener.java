@@ -9,6 +9,7 @@ import io.tofpu.speedbridge2.domain.game.GamePlayer;
 import io.tofpu.speedbridge2.domain.service.PlayerService;
 import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -27,12 +28,11 @@ public final class IslandProtectionListener extends GameListener {
         final Block block = event.getBlock();
 
         // if the player haven't placed this block, return
-        if (!gamePlayer.hasPlaced(block)) {
-            event.setCancelled(true);
-            return;
+        event.setCancelled(true);
+        if (gamePlayer.hasPlaced(block)) {
+            gamePlayer.removeBlock(block);
+            block.setType(Material.AIR);
         }
-
-        gamePlayer.removeBlock(block);
     }
 
     @EventHandler(ignoreCancelled = true)

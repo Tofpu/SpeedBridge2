@@ -50,6 +50,10 @@
                                     <pattern>javax.persistence</pattern>
                                     <shadedPattern>io.tofpu.speedbridge2.lib.javax</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>io.tofpu.dynamicclass</pattern>
+                                    <shadedPattern>io.tofpu.speedbridge2.lib.dynamicclass</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
