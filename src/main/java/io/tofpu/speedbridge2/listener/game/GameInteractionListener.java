@@ -8,6 +8,7 @@ import io.tofpu.speedbridge2.domain.misc.Score;
 import io.tofpu.speedbridge2.domain.service.PlayerService;
 import io.tofpu.speedbridge2.listener.GameListener;
 import io.tofpu.speedbridge2.util.BridgeUtil;
+import io.tofpu.speedbridge2.util.MessageUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -17,6 +18,11 @@ import org.bukkit.inventory.ItemStack;
 
 @AutoRegister
 public final class GameInteractionListener extends GameListener {
+    private static final String STYLE = "<gold>" + MessageUtil.Symbols.CLOCK.getSymbol() + "<yellow> ";
+    private static final String SECOND_STYLE = "<gold>" + MessageUtil.Symbols.STAR.getSymbol() + "<yellow> ";
+
+    private static final String TIME_STARTED = STYLE + "The timer is ticking!";
+    private static final String SCORED = STYLE + "You scored <yellow>%s</yellow> " + "seconds!";
 
     @EventHandler
     private void onBlockPlace(final BlockPlaceEvent event) {
@@ -34,7 +40,7 @@ public final class GameInteractionListener extends GameListener {
         }
 
         gamePlayer.startTimer();
-        event.getPlayer().sendMessage("started timer!");
+        BridgeUtil.sendMessage(event.getPlayer(), TIME_STARTED);
     }
 
     @EventHandler
@@ -59,7 +65,8 @@ public final class GameInteractionListener extends GameListener {
 
         bridgePlayer.setScoreIfLower(island.getSlot(), score.getScore());
 
-        player.sendMessage("you scored " + BridgeUtil.toFormattedScore(score.getScore()) + " seconds!");
+        BridgeUtil.sendMessage(player, String.format(SCORED, BridgeUtil.toFormattedScore(score
+                .getScore())));
 
         gamePlayer.getCurrentGame().resetGame();
     }

@@ -33,6 +33,14 @@ public final class MessageUtil {
          * Returns "❤" symbol
          */
         HEALTH(StringEscapeUtils.unescapeJava("\u2764")),
+        /**  \u1F557
+         * Returns "★" symbol
+         */
+        STAR(StringEscapeUtils.unescapeJava("\u2605")),
+        /**
+         * Returns "★" symbol
+         */
+        CLOCK(StringEscapeUtils.unescapeJava("\u27F3")),
         /**
          * Returns "«" symbol
          */
