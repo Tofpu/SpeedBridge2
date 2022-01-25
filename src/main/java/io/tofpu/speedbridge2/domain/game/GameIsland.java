@@ -1,6 +1,5 @@
 package io.tofpu.speedbridge2.domain.game;
 
-import io.tofpu.speedbridge2.domain.BridgePlayer;
 import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.schematic.IslandPlot;
 import io.tofpu.speedbridge2.domain.schematic.SchematicManager;
@@ -44,14 +43,14 @@ public final class GameIsland {
         player.getInventory().clear();
         player.getInventory().setItem(0, new ItemStack(Material.WOOL,
                 64));
-        
+
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
 
         player.setGameMode(GameMode.SURVIVAL);
     }
 
-    public void resetGame() {
+    public void resetGame(final boolean notify) {
         gamePlayer.resetBlocks();
         gamePlayer.resetTimer();
 
@@ -61,9 +60,15 @@ public final class GameIsland {
 
         player.getInventory().setItem(0,
                 new ItemStack(Material.WOOL,
-                64));
+                        64));
 
-        BridgeUtil.sendMessage(player, ISLAND_RESET);
+        if (notify) {
+            BridgeUtil.sendMessage(player, ISLAND_RESET);
+        }
+    }
+
+    public void resetGame() {
+        resetGame(true);
     }
 
     public void remove() {
@@ -82,6 +87,8 @@ public final class GameIsland {
         // set the player's game to null, as they're leaving the island
         gamePlayer.setCurrentGame(null);
     }
+
+
 
     public Island getIsland() {
         return island;

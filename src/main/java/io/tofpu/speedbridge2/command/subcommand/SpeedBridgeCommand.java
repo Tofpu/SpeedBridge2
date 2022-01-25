@@ -4,7 +4,9 @@ import cloud.commandframework.annotations.Argument;
 import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.ProxiedBy;
+import cloud.commandframework.annotations.injection.RawArgs;
 import com.sk89q.minecraft.util.commands.CommandAlias;
+import io.tofpu.speedbridge2.command.parser.IslandArgument;
 import io.tofpu.speedbridge2.domain.BridgePlayer;
 import io.tofpu.speedbridge2.domain.CommonBridgePlayer;
 import io.tofpu.speedbridge2.domain.Island;
@@ -28,24 +30,29 @@ public final class SpeedBridgeCommand {
     private static final String ISLAND_ALREADY_EXISTS =
             ERROR + "Island %s already exists!";
     private static final String ISLAND_HAS_BEEN_CREATED = "<green>Island %s has been " +
-            "created";
-    private static final String ISLAND_HAS_BEEN_CREATED_SCHEMATIC = ISLAND_HAS_BEEN_CREATED + " with %s chosen as a schematic";
+            "created!";
+    private static final String ISLAND_HAS_BEEN_CREATED_SCHEMATIC =
+            ISLAND_HAS_BEEN_CREATED + " with %s chosen as a schematic!";
 
     private static final String SELECTED_SCHEMATIC = "<green>Island %s has been selected" +
             " %s " +
-            "as a " + "schematic";
+            "as a " + "schematic!";
 
     private static final String INVALID_SCHEMATIC = ERROR + "Schematic %s cannot be " +
-            "found";
-    private static final String INVALID_ISLAND = ERROR + "Island %s cannot be found";
+            "found!";
+    private static final String INVALID_ISLAND = ERROR + "Island %s cannot be found!";
 
-    private static final String ALREADY_IN_A_ISLAND = ERROR + "You're already in an island";
-    private static final String NOT_IN_A_ISLAND = ERROR + "You're not in an island";
+    private static final String ALREADY_IN_A_ISLAND = ERROR + "You're already on an " +
+            "island!";
+    private static final String NOT_IN_A_ISLAND = ERROR + "You're not on an island!";
 
     private static final String SCORE_TITLE_BAR = MessageUtil.CHAT_BAR.substring(0, MessageUtil.CHAT_BAR
             .length() / 6);
     private static final String SCORE_TITLE = "<yellow>" + SCORE_TITLE_BAR + "  " +
             "<gold><bold" + "> YOUR SCORES</bold></gold>" + " " + SCORE_TITLE_BAR;
+
+    private static final String JOINED_AN_ISLAND = "<yellow>You joined the island %s!";
+    private static final String LEFT_AN_ISLAND = "<yellow>You left from island %s!";
 
     private final IslandService islandService = IslandService.INSTANCE;
 
@@ -106,7 +113,7 @@ public final class SpeedBridgeCommand {
         } else if (bridgePlayer.isPlaying()) {
             message = ALREADY_IN_A_ISLAND;
         } else {
-            message = "";
+            message = String.format(JOINED_AN_ISLAND, slot + "");
             island.generateGame(bridgePlayer);
         }
 
@@ -118,17 +125,15 @@ public final class SpeedBridgeCommand {
     @ProxiedBy("leave")
     @CommandMethod("speedbridge leave")
     @CommandDescription("Leave an island")
-    public void onIslandLeave(final BridgePlayer bridgePlayer) {
+    @IslandArgument
+    public void onIslandLeave(final BridgePlayer bridgePlayer, final Island island) {
         final Player player = bridgePlayer.getPlayer();
         final String message;
-        if (!bridgePlayer.isPlaying()) {
+        if (island == null) {
             message = NOT_IN_A_ISLAND;
         } else {
-            message = "";
-            bridgePlayer.getGamePlayer()
-                    .getCurrentGame()
-                    .getIsland()
-                    .leaveGame(bridgePlayer);
+            message = String.format(LEFT_AN_ISLAND, island.getSlot());
+            island.leaveGame(bridgePlayer);
         }
 
         if (!message.isEmpty()) {

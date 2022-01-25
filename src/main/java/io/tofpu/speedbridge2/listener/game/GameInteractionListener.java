@@ -21,8 +21,8 @@ public final class GameInteractionListener extends GameListener {
     private static final String STYLE = "<gold>" + MessageUtil.Symbols.CLOCK.getSymbol() + "<yellow> ";
     private static final String SECOND_STYLE = "<gold>" + MessageUtil.Symbols.STAR.getSymbol() + "<yellow> ";
 
-    private static final String TIME_STARTED = STYLE + "The timer is ticking!";
-    private static final String SCORED = STYLE + "You scored <yellow>%s</yellow> " + "seconds!";
+    private static final String TIME_STARTED = STYLE + "The timer is now ticking!";
+    private static final String SCORED = SECOND_STYLE + "You scored <yellow>%s</yellow> " + "seconds!";
 
     @EventHandler
     private void onBlockPlace(final BlockPlaceEvent event) {
@@ -68,6 +68,6 @@ public final class GameInteractionListener extends GameListener {
         BridgeUtil.sendMessage(player, String.format(SCORED, BridgeUtil.toFormattedScore(score
                 .getScore())));
 
-        gamePlayer.getCurrentGame().resetGame();
+        gamePlayer.getCurrentGame().resetGame(false);
     }
 }
