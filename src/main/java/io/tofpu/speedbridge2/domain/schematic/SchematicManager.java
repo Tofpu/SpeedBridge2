@@ -99,7 +99,8 @@ public final class SchematicManager {
 
         for (final IslandPlot islandPlot : SCHEMATIC_PLOTS) {
             // if a plot's island equals to island, select the plot and break the loop
-            if (islandPlot.getGameIsland().equals(gameIsland)) {
+            final GameIsland island = islandPlot.getGameIsland();
+            if (island != null && island.equals(gameIsland)) {
                 System.out.println("found the identical island plot!");
                 selectedPlot = islandPlot;
                 break;
