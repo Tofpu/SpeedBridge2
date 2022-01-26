@@ -1,14 +1,14 @@
 package io.tofpu.speedbridge2.listener.game;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
-import io.tofpu.speedbridge2.domain.BridgePlayer;
-import io.tofpu.speedbridge2.domain.Island;
-import io.tofpu.speedbridge2.domain.game.GamePlayer;
-import io.tofpu.speedbridge2.domain.misc.Score;
-import io.tofpu.speedbridge2.domain.service.PlayerService;
+import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.domain.island.object.Island;
+import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
+import io.tofpu.speedbridge2.domain.player.misc.Score;
+import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.listener.GameListener;
-import io.tofpu.speedbridge2.util.BridgeUtil;
-import io.tofpu.speedbridge2.util.MessageUtil;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;

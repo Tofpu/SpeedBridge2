@@ -2,8 +2,8 @@ package io.tofpu.speedbridge2.command.subcommand;
 
 import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
-import io.tofpu.speedbridge2.util.BridgeUtil;
-import io.tofpu.speedbridge2.util.MessageUtil;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 

@@ -4,16 +4,15 @@ import cloud.commandframework.annotations.Argument;
 import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.ProxiedBy;
-import cloud.commandframework.annotations.injection.RawArgs;
 import com.sk89q.minecraft.util.commands.CommandAlias;
 import io.tofpu.speedbridge2.command.parser.IslandArgument;
-import io.tofpu.speedbridge2.domain.BridgePlayer;
-import io.tofpu.speedbridge2.domain.CommonBridgePlayer;
-import io.tofpu.speedbridge2.domain.Island;
-import io.tofpu.speedbridge2.domain.misc.Score;
-import io.tofpu.speedbridge2.domain.service.IslandService;
-import io.tofpu.speedbridge2.util.BridgeUtil;
-import io.tofpu.speedbridge2.util.MessageUtil;
+import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.domain.player.object.CommonBridgePlayer;
+import io.tofpu.speedbridge2.domain.island.object.Island;
+import io.tofpu.speedbridge2.domain.player.misc.Score;
+import io.tofpu.speedbridge2.domain.island.IslandService;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,8 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.tofpu.speedbridge2.util.MessageUtil.Symbols.ARROW_RIGHT;
-import static io.tofpu.speedbridge2.util.MessageUtil.Symbols.CROSS;
+import static io.tofpu.speedbridge2.domain.common.util.MessageUtil.Symbols.ARROW_RIGHT;
+import static io.tofpu.speedbridge2.domain.common.util.MessageUtil.Symbols.CROSS;
 
 public final class SpeedBridgeCommand {
     public static final String ERROR =
