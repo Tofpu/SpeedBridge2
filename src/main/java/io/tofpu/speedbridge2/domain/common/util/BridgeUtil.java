@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.domain.common.util;
 
 import io.tofpu.speedbridge2.SpeedBridge;
+import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
@@ -22,6 +23,13 @@ public final class BridgeUtil {
     public static Component sendMessage(final CommandSender sender,
             final Component component) { ;
         SpeedBridge.getAdventure().sender(sender).sendMessage(component);
+        return component;
+    }
+
+    public static Component sendMessage(final BridgePlayer sender,
+            final String content) {
+        final Component component = translateMiniMessage(content);
+        sendMessage(sender.getPlayer(), component);
         return component;
     }
 

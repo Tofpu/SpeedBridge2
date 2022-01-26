@@ -1,0 +1,46 @@
+package io.tofpu.speedbridge2.listener.wrapper;
+
+import io.tofpu.dynamicclass.meta.AutoRegister;
+import io.tofpu.speedbridge2.domain.player.PlayerService;
+import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.listener.GameListener;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+
+@AutoRegister
+public final class SpeedBridgeListener extends GameListener {
+    @EventHandler
+    private void onBlockPlace(final BlockPlaceEvent event) {
+        final EventWrapper<BlockPlaceEvent> eventWrapper = new BlockPlaceEventWrapper(event);
+        if (!eventWrapper.isPlaying()) {
+            return;
+        }
+
+        callEvent(eventWrapper);
+    }
+
+    private void callEvent(final Event event) {
+        Bukkit.getPluginManager()
+                .callEvent(event);
+    }
+
+    @EventHandler
+    private void onPlayerInteract(final PlayerInteractEvent event) {
+        final EventWrapper<PlayerInteractEvent> eventWrapper = new PlayerInteractEventWrapper(event);
+        if (event.getAction() != Action.PHYSICAL || !eventWrapper.isPlaying() ||
+            !eventWrapper.hasTimerStarted()) {
+            return;
+        }
+
+        callEvent(eventWrapper);
+    }
+
+    private BridgePlayer getBridgePlayer(final Player player) {
+        return PlayerService.INSTANCE.get(player.getUniqueId());
+    }
+}
