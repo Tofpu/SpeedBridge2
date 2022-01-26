@@ -10,9 +10,9 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Island extends IslandSchematic {
-    private static final String LEFT_AN_ISLAND = "<yellow>You left from island %s!";
+import static io.tofpu.speedbridge2.domain.common.Message.LEFT_AN_ISLAND;
 
+public class Island extends IslandSchematic {
     private final int slot;
 
     private final Map<GamePlayer, GameIsland> islandMap = new HashMap<>();

@@ -1,17 +1,15 @@
 package io.tofpu.speedbridge2.domain.island.object;
 
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
-import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 
 import java.util.AbstractMap;
 import java.util.Map;
 
-import static io.tofpu.speedbridge2.command.subcommand.SpeedBridgeCommand.ERROR;
+import static io.tofpu.speedbridge2.domain.common.Message.NOT_IN_A_ISLAND;
 
 public class NullIsland extends Island {
-    private static final String NOT_IN_A_ISLAND = ERROR + "You're not on an island!";
-
     public NullIsland() {
         super(-1, "null");
     }

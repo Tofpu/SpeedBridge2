@@ -6,13 +6,13 @@ import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.ProxiedBy;
 import com.sk89q.minecraft.util.commands.CommandAlias;
 import io.tofpu.speedbridge2.command.parser.IslandArgument;
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.domain.player.object.CommonBridgePlayer;
-import io.tofpu.speedbridge2.domain.island.object.Island;
-import io.tofpu.speedbridge2.domain.player.misc.Score;
-import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
+import io.tofpu.speedbridge2.domain.island.IslandService;
+import io.tofpu.speedbridge2.domain.island.object.Island;
+import io.tofpu.speedbridge2.domain.player.misc.Score;
+import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.domain.player.object.CommonBridgePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,39 +21,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.tofpu.speedbridge2.domain.common.Message.*;
 import static io.tofpu.speedbridge2.domain.common.util.MessageUtil.Symbols.ARROW_RIGHT;
 import static io.tofpu.speedbridge2.domain.common.util.MessageUtil.Symbols.CROSS;
 
 public final class SpeedBridgeCommand {
-    public static final String ERROR =
-            "<red>" + MessageUtil.Symbols.WARNING.getSymbol() +
-            " ";
-
-    private static final String ISLAND_ALREADY_EXISTS =
-            ERROR + "Island %s already exists!";
-    private static final String ISLAND_HAS_BEEN_CREATED = "<green>Island %s has been " +
-            "created!";
-    private static final String ISLAND_HAS_BEEN_CREATED_SCHEMATIC =
-            ISLAND_HAS_BEEN_CREATED + " with %s chosen as a schematic!";
-
-    private static final String SELECTED_SCHEMATIC = "<green>Island %s has been selected" +
-            " %s " +
-            "as a " + "schematic!";
-
-    private static final String INVALID_SCHEMATIC = ERROR + "Schematic %s cannot be " +
-            "found!";
-    private static final String INVALID_ISLAND = ERROR + "Island %s cannot be found!";
-
-    private static final String ALREADY_IN_A_ISLAND = ERROR + "You're already on an " +
-            "island!";
-
-    private static final String SCORE_TITLE_BAR = MessageUtil.CHAT_BAR.substring(0, MessageUtil.CHAT_BAR
-            .length() / 6);
-    private static final String SCORE_TITLE = "<yellow>" + SCORE_TITLE_BAR + "  " +
-            "<gold><bold" + "> YOUR SCORES</bold></gold>" + " " + SCORE_TITLE_BAR;
-
-    private static final String JOINED_AN_ISLAND = "<yellow>You joined the island %s!";
-
     private final IslandService islandService = IslandService.INSTANCE;
 
     @ProxiedBy("createIsland")

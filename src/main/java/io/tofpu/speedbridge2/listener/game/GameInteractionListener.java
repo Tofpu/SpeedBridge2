@@ -1,14 +1,13 @@
 package io.tofpu.speedbridge2.listener.game;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.domain.island.object.Island;
-import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
-import io.tofpu.speedbridge2.domain.player.misc.Score;
-import io.tofpu.speedbridge2.domain.player.PlayerService;
-import io.tofpu.speedbridge2.listener.GameListener;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
+import io.tofpu.speedbridge2.domain.island.object.Island;
+import io.tofpu.speedbridge2.domain.player.PlayerService;
+import io.tofpu.speedbridge2.domain.player.misc.Score;
+import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
+import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -16,14 +15,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import static io.tofpu.speedbridge2.domain.common.Message.SCORED;
+import static io.tofpu.speedbridge2.domain.common.Message.TIME_STARTED;
+
 @AutoRegister
 public final class GameInteractionListener extends GameListener {
-    private static final String STYLE = "<gold>" + MessageUtil.Symbols.CLOCK.getSymbol() + "<yellow> ";
-    private static final String SECOND_STYLE = "<gold>" + MessageUtil.Symbols.STAR.getSymbol() + "<yellow> ";
-
-    private static final String TIME_STARTED = STYLE + "The timer is now ticking!";
-    private static final String SCORED = SECOND_STYLE + "You scored <yellow>%s</yellow> " + "seconds!";
-
     @EventHandler
     private void onBlockPlace(final BlockPlaceEvent event) {
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
