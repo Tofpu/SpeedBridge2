@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.listener.wrapper;
 
+import io.tofpu.speedbridge2.domain.island.object.GameIsland;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import org.bukkit.event.Event;
@@ -38,6 +39,10 @@ public class EventWrapper<E extends Event> extends Event {
 
     public GamePlayer getGamePlayer() {
         return bridgePlayer.getGamePlayer();
+    }
+
+    public GameIsland getCurrentGame() {
+        return getGamePlayer().getCurrentGame();
     }
 
     @Override
