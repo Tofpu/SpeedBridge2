@@ -17,6 +17,7 @@ import io.tofpu.speedbridge2.util.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,9 @@ import static io.tofpu.speedbridge2.util.MessageUtil.Symbols.ARROW_RIGHT;
 import static io.tofpu.speedbridge2.util.MessageUtil.Symbols.CROSS;
 
 public final class SpeedBridgeCommand {
-    private static final String ERROR = "<red>" + MessageUtil.Symbols.WARNING.getSymbol() + " ";
+    public static final String ERROR =
+            "<red>" + MessageUtil.Symbols.WARNING.getSymbol() +
+            " ";
 
     private static final String ISLAND_ALREADY_EXISTS =
             ERROR + "Island %s already exists!";
@@ -44,7 +47,6 @@ public final class SpeedBridgeCommand {
 
     private static final String ALREADY_IN_A_ISLAND = ERROR + "You're already on an " +
             "island!";
-    private static final String NOT_IN_A_ISLAND = ERROR + "You're not on an island!";
 
     private static final String SCORE_TITLE_BAR = MessageUtil.CHAT_BAR.substring(0, MessageUtil.CHAT_BAR
             .length() / 6);
@@ -52,7 +54,6 @@ public final class SpeedBridgeCommand {
             "<gold><bold" + "> YOUR SCORES</bold></gold>" + " " + SCORE_TITLE_BAR;
 
     private static final String JOINED_AN_ISLAND = "<yellow>You joined the island %s!";
-    private static final String LEFT_AN_ISLAND = "<yellow>You left from island %s!";
 
     private final IslandService islandService = IslandService.INSTANCE;
 
@@ -126,19 +127,8 @@ public final class SpeedBridgeCommand {
     @CommandMethod("speedbridge leave")
     @CommandDescription("Leave an island")
     @IslandArgument
-    public void onIslandLeave(final BridgePlayer bridgePlayer, final Island island) {
-        final Player player = bridgePlayer.getPlayer();
-        final String message;
-        if (island == null) {
-            message = NOT_IN_A_ISLAND;
-        } else {
-            message = String.format(LEFT_AN_ISLAND, island.getSlot());
-            island.leaveGame(bridgePlayer);
-        }
-
-        if (!message.isEmpty()) {
-            BridgeUtil.sendMessage(player, message);
-        }
+    public void onIslandLeave(final BridgePlayer bridgePlayer, final @NotNull Island island) {
+        island.leaveGame(bridgePlayer);
     }
 
     @ProxiedBy("score")

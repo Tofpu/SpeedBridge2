@@ -3,12 +3,15 @@ package io.tofpu.speedbridge2.domain;
 import io.tofpu.speedbridge2.database.Databases;
 import io.tofpu.speedbridge2.domain.game.GameIsland;
 import io.tofpu.speedbridge2.domain.game.GamePlayer;
+import io.tofpu.speedbridge2.util.BridgeUtil;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class Island extends IslandSchematic {
+public class Island extends IslandSchematic {
+    private static final String LEFT_AN_ISLAND = "<yellow>You left from island %s!";
+
     private final int slot;
 
     private final Map<GamePlayer, GameIsland> islandMap = new HashMap<>();
@@ -39,6 +42,7 @@ public final class Island extends IslandSchematic {
         if (gameIsland == null) {
             return;
         }
+        BridgeUtil.sendMessage(bridgePlayer.getPlayer(), String.format(LEFT_AN_ISLAND, slot));
         bridgePlayer.setGamePlayer(null);
 
         // remove the game player

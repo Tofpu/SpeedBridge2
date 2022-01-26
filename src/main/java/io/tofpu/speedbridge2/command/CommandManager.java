@@ -8,9 +8,11 @@ import cloud.commandframework.bukkit.BukkitCommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.meta.CommandMeta;
 import io.tofpu.speedbridge2.command.parser.GameIslandParser;
-import io.tofpu.speedbridge2.command.parser.GamePlayerParser;
+import io.tofpu.speedbridge2.command.parser.IslandArgument;
 import io.tofpu.speedbridge2.command.parser.IslandParser;
+import io.tofpu.speedbridge2.command.processor.CustomProcessor;
 import io.tofpu.speedbridge2.command.subcommand.SpeedBridgeCommand;
+import io.tofpu.speedbridge2.domain.BridgePlayer;
 import io.tofpu.speedbridge2.domain.CommonBridgePlayer;
 import io.tofpu.speedbridge2.domain.Island;
 import io.tofpu.speedbridge2.domain.SenderBridgePlayer;
@@ -58,20 +60,10 @@ public final class CommandManager {
                 /* Command sender type */ CommonBridgePlayer.class,
                 /* Mapper for command meta instances */ commandMetaFunction);
 
-        //        DynamicClass.addParameters(manager.getParserRegistry());
-        //        DynamicClass.addParameters(manager);
-
-        //        manager.getParserRegistry()
-        //                .registerParserSupplier(TypeToken.get(Island.class),
-        //                        options -> new IslandParser<>());
-
         annotationParser.getParameterInjectorRegistry()
-                .registerInjector(Island.class, (context, annotationAccessor) -> new IslandParser<CommonBridgePlayer>()
-                        .parse(context, annotationAccessor));
-
-        annotationParser.getParameterInjectorRegistry()
-                .registerInjector(GamePlayer.class, (context, annotationAccessor) -> new GamePlayerParser<CommonBridgePlayer>()
-                        .parse(context, annotationAccessor));
+                .registerInjector(Island.class, (context, annotationAccessor) -> {
+                    return new IslandParser<>().parse(context, annotationAccessor);
+                });
 
         annotationParser.getParameterInjectorRegistry()
                 .registerInjector(GameIsland.class, (context, annotationAccessor) -> new GameIslandParser<CommonBridgePlayer>()
