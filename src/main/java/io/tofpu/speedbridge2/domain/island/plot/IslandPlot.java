@@ -16,7 +16,6 @@ import org.bukkit.World;
 
 public final class IslandPlot {
     private final Island island;
-    private final Clipboard schematicPlot;
 
     private final World world;
     private final double x;
@@ -30,7 +29,7 @@ public final class IslandPlot {
 
     public IslandPlot(final Island island, final World world, double[] positions) {
         this.island = island;
-        this.schematicPlot = island.getSchematicClipboard();
+        Clipboard schematicPlot = island.getSchematicClipboard();
         this.world = world;
         this.x = positions[0];
         this.y = positions[1];
@@ -89,14 +88,6 @@ public final class IslandPlot {
         return z;
     }
 
-    public Vector getMaxPoint() {
-        return maxPoint;
-    }
-
-    public Vector getMinPoint() {
-        return minPoint;
-    }
-
     public Region region() {
         return new CuboidRegion(minPoint, maxPoint);
     }
@@ -115,9 +106,5 @@ public final class IslandPlot {
 
     public boolean isPlotFree() {
         return plotState.isPlotFree();
-    }
-
-    public Clipboard getSchematicPlot() {
-        return schematicPlot;
     }
 }

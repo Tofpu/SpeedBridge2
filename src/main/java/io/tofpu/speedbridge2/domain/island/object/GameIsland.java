@@ -88,8 +88,6 @@ public final class GameIsland {
         gamePlayer.setCurrentGame(null);
     }
 
-
-
     public Island getIsland() {
         return island;
     }

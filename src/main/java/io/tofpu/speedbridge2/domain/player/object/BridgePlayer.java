@@ -24,12 +24,12 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
         return new BridgePlayer(playerUid);
     }
 
-    protected BridgePlayer(final BridgePlayer copy) {
+    private BridgePlayer(final BridgePlayer copy) {
         this(copy.playerUid);
         this.scoreMap.putAll(copy.scoreMap);
     }
 
-    protected BridgePlayer(final UUID playerUid) {
+    private BridgePlayer(final UUID playerUid) {
         this.playerUid = playerUid;
         this.scoreMap = new HashMap<>();
 
