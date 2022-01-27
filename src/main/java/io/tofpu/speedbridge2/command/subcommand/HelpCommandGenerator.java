@@ -2,8 +2,10 @@ package io.tofpu.speedbridge2.command.subcommand;
 
 import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
-import io.tofpu.speedbridge2.util.BridgeUtil;
-import io.tofpu.speedbridge2.util.MessageUtil;
+import cloud.commandframework.annotations.Hidden;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
+
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 
@@ -30,7 +32,7 @@ public final class HelpCommandGenerator {
         for (final Method method : declaredMethods) {
             final CommandMethod commandMethod = method.getAnnotation(CommandMethod.class);
             final CommandDescription commandDescription = method.getAnnotation(CommandDescription.class);
-            if (commandMethod == null) {
+            if (commandMethod == null || method.isAnnotationPresent(Hidden.class)) {
                 continue;
             }
 

@@ -1,10 +1,7 @@
 package io.tofpu.speedbridge2.command.subcommand;
 
-import cloud.commandframework.annotations.Argument;
-import cloud.commandframework.annotations.CommandDescription;
-import cloud.commandframework.annotations.CommandMethod;
-import cloud.commandframework.annotations.ProxiedBy;
-import cloud.commandframework.annotations.injection.RawArgs;
+
+import cloud.commandframework.annotations.*;
 import com.sk89q.minecraft.util.commands.CommandAlias;
 import io.tofpu.speedbridge2.command.parser.IslandArgument;
 import io.tofpu.speedbridge2.domain.BridgePlayer;
@@ -84,6 +81,22 @@ public final class SpeedBridgeCommand {
         BridgeUtil.sendMessage(sender, message);
     }
 
+    @ProxiedBy("deleteIsland")
+    @CommandMethod("speedbridge delete <slot>")
+    @CommandDescription("Remove an island")
+    public void onIslandDelete(final CommonBridgePlayer<?> player, final @Argument(
+            "slot") int slot) {
+        final Island island = islandService.deleteIsland(slot);
+
+        final String message;
+        if (island == null) {
+            message = String.format(INVALID_ISLAND, slot + "");
+        } else {
+            message = String.format(DELETED_AN_ISLAND, slot);
+        }
+        BridgeUtil.sendMessage(player, message);
+    }
+
     @ProxiedBy("selectIsland")
     @CommandMethod("speedbridge select <slot> <schematic>")
     @CommandDescription("Select a schematic for a particular slot")
@@ -92,7 +105,10 @@ public final class SpeedBridgeCommand {
         final CommandSender sender = bridgePlayer.getPlayer();
         final Island island = islandService.findIslandBy(slot);
         final String message;
-        if (island.selectSchematic(schematic)) {
+
+        if (island == null) {
+            message = String.format(INVALID_ISLAND, slot + "");
+        } else if (island.selectSchematic(schematic)) {
             message = String.format(SELECTED_SCHEMATIC, slot + "", schematic);
         } else {
             message = String.format(INVALID_SCHEMATIC, schematic);
@@ -164,6 +180,7 @@ public final class SpeedBridgeCommand {
     }
 
     @CommandMethod("speedbridge")
+    @Hidden
     @CommandDescription("Shows a list of commands")
     public void onNoArgument(final CommonBridgePlayer<?> bridgePlayer) {
         final CommandSender player = bridgePlayer.getPlayer();

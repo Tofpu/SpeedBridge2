@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.util;
 
 import io.tofpu.speedbridge2.SpeedBridge;
+import io.tofpu.speedbridge2.domain.player.object.CommonBridgePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.CommandSender;
