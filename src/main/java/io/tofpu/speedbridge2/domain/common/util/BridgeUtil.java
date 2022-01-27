@@ -26,7 +26,7 @@ public final class BridgeUtil {
         return component;
     }
 
-    public static Component sendMessage(final BridgePlayer sender,
+    public static Component sendMessage(final CommonBridgePlayer<?> sender,
             final String content) {
         final Component component = translateMiniMessage(content);
         sendMessage(sender.getPlayer(), component);

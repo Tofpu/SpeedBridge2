@@ -35,11 +35,18 @@ public final class Message {
     public static final String LEFT_AN_ISLAND = "<yellow>You left from island %s!";
     public static final String NOT_IN_A_ISLAND = ERROR + "You're not on an island!";
 
+    public static final String DELETED_AN_ISLAND =
+            "<gold><bold>" + MessageUtil.Symbols.CROSS.getSymbol() + "</bold> " +
+            "<yellow>Island %s has been deleted!";
+
     // from listeners
 
-    public static final String STYLE = "<gold>" + MessageUtil.Symbols.CLOCK.getSymbol() + "<yellow> ";
-    public static final String SECOND_STYLE = "<gold>" + MessageUtil.Symbols.STAR.getSymbol() + "<yellow> ";
+    public static final String STYLE =
+            "<gold>" + MessageUtil.Symbols.CLOCK.getSymbol() + "<yellow> ";
+    public static final String SECOND_STYLE =
+            "<gold>" + MessageUtil.Symbols.STAR.getSymbol() + "<yellow> ";
 
     public static final String TIME_STARTED = STYLE + "The timer is now ticking!";
-    public static final String SCORED = SECOND_STYLE + "You scored <yellow>%s</yellow> " + "seconds!";
+    public static final String SCORED =
+            SECOND_STYLE + "You scored <yellow>%s</yellow> " + "seconds!";
 }
