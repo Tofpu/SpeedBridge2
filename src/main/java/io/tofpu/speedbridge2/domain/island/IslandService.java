@@ -25,8 +25,8 @@ public final class IslandService {
         });
     }
 
-    public Island createIsland(final int slot) {
-        return this.islandHandler.createIsland(slot);
+    public Island createIsland(final int slot, final String category) {
+        return this.islandHandler.createIsland(slot, category);
     }
 
     public Island findIslandBy(final int slot) {

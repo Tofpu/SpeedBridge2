@@ -27,19 +27,26 @@ public final class SpeedBridgeCommand {
     private final IslandService islandService = IslandService.INSTANCE;
 
     @ProxiedBy("createIsland")
-    @CommandMethod("speedbridge create <slot> [schematic]")
+    @CommandMethod("speedbridge create <slot>")
     @CommandDescription("Create an island with a defined slot")
-    public void onIslandCreate(final CommonBridgePlayer<?> player, final @Argument(
-            "slot") int slot, final @Argument(value = "schematic") String schematic) {
+    public void onIslandCreate(final CommonBridgePlayer<?> player, final @Argument("slot")
+            int slot, @Flag("c") String category, final @Flag("s") String schematic) {
         final CommandSender sender = player.getPlayer();
 
-        if (islandService.createIsland(slot) == null) {
-            BridgeUtil.sendMessage(sender, String.format(ISLAND_ALREADY_EXISTS, slot + ""));
+        if (category == null || category.isEmpty()) {
+            // TODO: grab the default category from the settings
+            category = "default";
+        }
+
+        if (islandService.createIsland(slot, category) == null) {
+            BridgeUtil.sendMessage(sender, String.format(ISLAND_ALREADY_EXISTS,
+                    slot + ""));
             return;
         }
 
         if (schematic == null || schematic.isEmpty()) {
-            BridgeUtil.sendMessage(sender, String.format(ISLAND_HAS_BEEN_CREATED, slot + ""));
+            BridgeUtil.sendMessage(sender, String.format(ISLAND_HAS_BEEN_CREATED,
+                    slot + ""));
             return;
         }
 
@@ -55,7 +62,7 @@ public final class SpeedBridgeCommand {
 
     @ProxiedBy("deleteIsland")
     @CommandMethod("speedbridge delete <slot>")
-    @CommandDescription("Remove an island")
+    @CommandDescription("delete an island")
     public void onIslandDelete(final CommonBridgePlayer<?> player, final @Argument(
             "slot") int slot) {
         final Island island = islandService.deleteIsland(slot);
@@ -70,22 +77,50 @@ public final class SpeedBridgeCommand {
     }
 
     @ProxiedBy("selectIsland")
-    @CommandMethod("speedbridge select <slot> <schematic>")
-    @CommandDescription("Select a schematic for a particular slot")
-    public void onIslandSelect(final CommonBridgePlayer<?> bridgePlayer,
-            final @Argument("slot") int slot, final @Argument("schematic") String schematic) {
+    @CommandMethod("speedbridge select <slot>")
+    @CommandDescription("select an island to modify their properties")
+    public void onIslandSelect(final CommonBridgePlayer<?> bridgePlayer, final @Argument("slot")
+            int slot, final @Flag(value = "c", description = "category") String category,
+            final @Flag(value = "s", description = "schematic")
+            String schematic) {
         final CommandSender sender = bridgePlayer.getPlayer();
         final Island island = islandService.findIslandBy(slot);
-        final String message;
 
+        String message = EMPTY_SELECT;
+        boolean successful = false;
         if (island == null) {
             message = String.format(INVALID_ISLAND, slot + "");
-        } else if (island.selectSchematic(schematic)) {
-            message = String.format(SELECTED_SCHEMATIC, slot + "", schematic);
         } else {
-            message = String.format(INVALID_SCHEMATIC, schematic);
+            String selectType = "";
+            if (category != null && !category.isEmpty()) {
+                selectType = "category";
+
+                island.setCategory(category);
+            } else if (schematic != null && !schematic.isEmpty()) {
+                selectType = "schematic";
+
+                successful = island.selectSchematic(schematic);
+            }
+
+            switch (selectType) {
+                case "category":
+                    message = String.format(VALID_SELECT,
+                            slot + "", category, selectType);
+                    break;
+                case "schematic":
+                    if (successful) {
+                        message = String.format(VALID_SELECT,
+                                slot + "", schematic, selectType);
+                        break;
+                    }
+                    message = String.format(INVALID_SCHEMATIC, schematic);
+                    break;
+            }
         }
-        BridgeUtil.sendMessage(sender, message);
+
+        if (!message.isEmpty()) {
+            BridgeUtil.sendMessage(sender, message);
+        }
     }
 
     @ProxiedBy("join")

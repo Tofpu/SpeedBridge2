@@ -14,11 +14,11 @@ public final class Message {
     public static final String ISLAND_HAS_BEEN_CREATED_SCHEMATIC =
             ISLAND_HAS_BEEN_CREATED + " with %s chosen as a schematic!";
 
-    public static final String SELECTED_SCHEMATIC =
-            "<green>Island %s has been selected" + " %s " + "as a " + "schematic!";
+    public static final String VALID_SELECT =
+            "<green>Island %s has been selected" + " \"%s\" " + "as a " + "%s!";
 
     public static final String INVALID_SCHEMATIC =
-            ERROR + "Schematic %s cannot be " + "found!";
+            ERROR + "%s cannot be found as a schematic";
     public static final String INVALID_ISLAND = ERROR + "Island %s cannot be found!";
 
     public static final String ALREADY_IN_A_ISLAND =
@@ -38,6 +38,8 @@ public final class Message {
     public static final String DELETED_AN_ISLAND =
             "<gold><bold>" + MessageUtil.Symbols.CROSS.getSymbol() + "</bold> " +
             "<yellow>Island %s has been deleted!";
+
+    public static final String EMPTY_SELECT = ERROR + "You haven't modified anything...";
 
     // from listeners
 

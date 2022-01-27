@@ -15,11 +15,13 @@ public final class IslandHandler {
         this.islands.putAll(loadedIslands);
     }
 
-    public Island createIsland(final int slot) {
-        final Island island = new Island(slot, "default");
+    public Island createIsland(final int slot, final String category) {
+        final Island island = new Island(slot, category);
+
+        final Island previousIsland = this.islands.putIfAbsent(slot, island);
 
         // if the island didn't exist beforehand, insert the object
-        if (this.islands.putIfAbsent(slot, island) == null) {
+        if (previousIsland == null) {
             Databases.ISLAND_DATABASE.insert(island);
             return island;
         } else {
