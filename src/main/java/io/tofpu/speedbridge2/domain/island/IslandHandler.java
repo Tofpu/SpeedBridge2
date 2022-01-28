@@ -34,6 +34,15 @@ public final class IslandHandler {
         return this.islands.get(slot);
     }
 
+    public Island findIslandBy(final String category) {
+        for (final Island island : this.islands.values()) {
+            if (island.getCategory().equals(category)) {
+                return island;
+            }
+        }
+        return null;
+    }
+
     public Island deleteIsland(final int slot) {
         final Island island = this.islands.remove(slot);
 

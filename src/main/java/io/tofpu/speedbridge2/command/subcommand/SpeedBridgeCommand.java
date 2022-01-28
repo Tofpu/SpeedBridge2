@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static io.tofpu.speedbridge2.domain.common.Message.*;
 import static io.tofpu.speedbridge2.domain.common.util.MessageUtil.Symbols.ARROW_RIGHT;
@@ -124,16 +125,42 @@ public final class SpeedBridgeCommand {
     }
 
     @ProxiedBy("join")
-    @CommandMethod("speedbridge join <slot>")
+    @CommandMethod("speedbridge join [island]")
     @CommandDescription("Join an island")
-    public void onIslandJoin(final BridgePlayer bridgePlayer,
-            final @Argument("slot") int slot) {
+    public void onIslandJoin(final BridgePlayer bridgePlayer, final @Argument("island")
+            String category) {
         final Player player = Bukkit.getPlayer(bridgePlayer.getPlayerUid());
 
-        final Island island = islandService.findIslandBy(slot);
+        // /join 2
+        // /join default
+
+        // /randomjoin
+
+        int slot;
+        try {
+            slot = Integer.parseInt(category);
+        } catch (NumberFormatException exception) {
+            slot = -1;
+        }
+
+        Island island = null;
+        if (slot != -1) {
+            island = islandService.findIslandBy(slot);
+        } else if (category != null && !category.isEmpty()) {
+            island = islandService.findIslandBy(category);
+        }
+
+        if (island != null) {
+            slot = island.getSlot();
+        }
+
         final String message;
         if (island == null) {
-            message = String.format(INVALID_ISLAND, slot + "");
+            if (slot == -1) {
+                message = INVALID_ISLAND_ARGUMENT;
+            } else {
+                message = String.format(INVALID_ISLAND, slot + "");
+            }
         } else if (bridgePlayer.isPlaying()) {
             message = ALREADY_IN_A_ISLAND;
         } else {
@@ -144,6 +171,29 @@ public final class SpeedBridgeCommand {
         if (!message.isEmpty()) {
             BridgeUtil.sendMessage(player, message);
         }
+    }
+
+    @ProxiedBy("randomjoin")
+    @CommandMethod("speedbridge randomjoin")
+    @CommandDescription("Chooses a random island for you")
+    public void onRandomJoin(final BridgePlayer bridgePlayer) {
+        final Optional<Island> optionalIsland =
+                islandService.getAllIslands().stream().parallel().findAny();
+
+        final String message;
+
+        if (bridgePlayer.isPlaying()) {
+            message = ALREADY_IN_A_ISLAND;
+        } else if (!optionalIsland.isPresent()) {
+            message = NO_AVAILABLE_ISLAND;
+        } else {
+            final Island island = optionalIsland.get();
+            island.generateGame(bridgePlayer);
+
+            message = String.format(JOINED_AN_ISLAND, island.getSlot() + "");
+        }
+
+        BridgeUtil.sendMessage(bridgePlayer, message);
     }
 
     @ProxiedBy("leave")

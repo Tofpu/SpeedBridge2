@@ -33,6 +33,10 @@ public final class IslandService {
         return this.islandHandler.findIslandBy(slot);
     }
 
+    public Island findIslandBy(final String category) {
+        return this.islandHandler.findIslandBy(category);
+    }
+
     public Map.Entry<GamePlayer, GameIsland> generateGame(final BridgePlayer player,
             final Island island) {
         return island.generateGame(player);
