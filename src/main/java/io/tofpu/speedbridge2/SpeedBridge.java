@@ -5,8 +5,8 @@ import io.tofpu.speedbridge2.command.CommandManager;
 import io.tofpu.speedbridge2.command.subcommand.HelpCommandGenerator;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.DatabaseManager;
-import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
 import io.tofpu.speedbridge2.domain.island.IslandService;
+import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,6 +30,7 @@ public final class SpeedBridge {
             final PlayerService playerService = PlayerService.INSTANCE;
             playerService.load();
         });
+
         try {
             DynamicClass.addParameters(javaPlugin);
             DynamicClass.alternativeScan(getClass().getClassLoader(), "io.tofpu" +

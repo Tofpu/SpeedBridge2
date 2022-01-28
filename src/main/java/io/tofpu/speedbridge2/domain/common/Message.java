@@ -6,11 +6,17 @@ import io.tofpu.speedbridge2.domain.common.util.ReflectionUtil;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 // the variables are not final due to modern versions of Java not allowing
 // static final's to be modified, and therefore, I'm breaking the conventions! sorry!
 public final class Message {
+    private static final Map<String, Field> FIELD_MAP = new ConcurrentHashMap<>();
+
     @IgnoreMessage
     public static String ERROR = "<red>" + MessageUtil.Symbols.WARNING.getSymbol() + " ";
     @IgnoreMessage
@@ -72,6 +78,22 @@ public final class Message {
     public static String SCORED =
             SECOND_STYLE + "You scored <yellow>%s</yellow> " + "seconds!";
 
+    static {
+        CompletableFuture.runAsync(() -> {
+            for (final Field field : Message.class.getDeclaredFields()) {
+                if (!Modifier.isStatic(field.getModifiers()) || field.isAnnotationPresent(IgnoreMessage.class)) {
+                    continue;
+                }
+
+                if (!field.isAccessible()) {
+                    field.setAccessible(true);
+                }
+
+                FIELD_MAP.put(field.getName(), field);
+            }
+        });
+    }
+
     public static void load(final File directory) {
         final File messages = new File(directory, "messages.yml");
         final boolean exist = messages.exists();
@@ -79,7 +101,8 @@ public final class Message {
         final Class<Message> messageClass = Message.class;
         if (!exist) {
             try (final Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(messages), StandardCharsets.UTF_8));) {
-                for (final String message : ReflectionUtil.toString(messageClass)) {
+                for (final String message : ReflectionUtil.toString(FIELD_MAP,
+                        messageClass)) {
                     writer.write(message);
                     writer.write("\n");
                 }
@@ -97,13 +120,17 @@ public final class Message {
                 final String fieldName = args[0];
                 final String message = args[1].replaceFirst(" ", "");
 
-                final Field field = messageClass.getDeclaredField(fieldName);
+                final Field field = FIELD_MAP.get(fieldName);
+                if (field == null) {
+                    continue;
+                }
+
                 if (!field.isAccessible()) {
                     field.setAccessible(true);
                 }
                 field.set(null, message);
             }
-        } catch (IOException | NoSuchFieldException | IllegalAccessException e) {
+        } catch (IOException | IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
     }
