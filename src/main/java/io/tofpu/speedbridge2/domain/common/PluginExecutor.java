@@ -22,7 +22,7 @@ public final class PluginExecutor implements Executor {
     private final @NotNull ExecutorService executor;
 
     public PluginExecutor() {
-        this.executor = Executors.newSingleThreadExecutor();
+        this.executor = Executors.newCachedThreadPool();
     }
 
     @Override
