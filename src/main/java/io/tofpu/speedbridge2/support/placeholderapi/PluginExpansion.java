@@ -7,6 +7,7 @@ import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -61,7 +62,13 @@ public final class PluginExpansion extends PlaceholderExpansion {
         }
 
         final BridgePlayer bridgePlayer = playerService.get(player.getUniqueId());
+        final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
         switch (params) {
+            case "island_slot":
+                if (gamePlayer == null) {
+                    return "";
+                }
+                return gamePlayer.getCurrentGame().getIsland().getSlot() + "";
             case "best_score":
                 Score bestScore = null;
                 for (final Score score : bridgePlayer.getScores()) {
@@ -72,10 +79,15 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 }
 
                 if (bestScore == null) {
-                    return "";
+                    return Message.INSTANCE.EMPTY_SCORE_FORMAT;
                 }
 
-                return String.format(Message.INSTANCE.BEST_SCORE_FORMAT, BridgeUtil.toFormattedScore(bestScore.getScore()));
+                return BridgeUtil.toFormattedScore(bestScore.getScore());
+            case "timer":
+                if (gamePlayer == null) {
+                    return "";
+                }
+                return (System.nanoTime() - gamePlayer.getTimer() + "");
             case "total_wins":
                 // TODO:
                 return "";

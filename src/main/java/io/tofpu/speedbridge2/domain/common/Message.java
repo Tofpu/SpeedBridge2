@@ -129,7 +129,7 @@ public final class Message {
 
     // placeholders
 
-    public final String BEST_SCORE_FORMAT = SUCCESS + "Your personal score is %s seconds";
+    public final String EMPTY_SCORE_FORMAT = "";
 
     private Message() {
         CompletableFuture.runAsync(() -> {
