@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2;
 import io.tofpu.dynamicclass.DynamicClass;
 import io.tofpu.speedbridge2.command.CommandManager;
 import io.tofpu.speedbridge2.command.subcommand.HelpCommandGenerator;
+import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.DatabaseManager;
 import io.tofpu.speedbridge2.domain.island.IslandService;
@@ -29,6 +30,8 @@ public final class SpeedBridge {
             islandService.load();
             final PlayerService playerService = PlayerService.INSTANCE;
             playerService.load();
+
+            Message.load(javaPlugin.getDataFolder());
         });
 
         try {

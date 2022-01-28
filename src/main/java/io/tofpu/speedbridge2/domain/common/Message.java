@@ -1,37 +1,23 @@
 package io.tofpu.speedbridge2.domain.common;
 
+import io.tofpu.speedbridge2.domain.common.util.FileUtil;
 import io.tofpu.speedbridge2.domain.common.util.IgnoreMessage;
 import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
 import io.tofpu.speedbridge2.domain.common.util.ReflectionUtil;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
-// the variables are not final due to modern versions of Java not allowing
-// static final's to be modified, and therefore, I'm breaking the conventions! sorry!
 public final class Message {
     private static final Map<String, Field> FIELD_MAP = new ConcurrentHashMap<>();
     public static final Message INSTANCE = new Message();
-
-    private Message() {
-        CompletableFuture.runAsync(() -> {
-            for (final Field field : Message.class.getDeclaredFields()) {
-                if (field.isAnnotationPresent(IgnoreMessage.class)) {
-                    continue;
-                }
-
-                if (!field.isAccessible()) {
-                    field.setAccessible(true);
-                }
-
-                FIELD_MAP.put(field.getName(), field);
-            }
-        });
-    }
 
     @IgnoreMessage
     public final String ERROR = "<red>" + MessageUtil.Symbols.WARNING.getSymbol() + " ";
@@ -80,6 +66,54 @@ public final class Message {
     public final String EMPTY_SELECT = ERROR + "You haven't modified anything...";
 
     public final String RELOADED = SUCCESS + "The config has been reloaded!";
+    public final String TEST_RELOADED_MESSAGE = SUCCESS + "The config has been reloaded!";
+
+    public static CompletableFuture<Void> load(final File directory) {
+        final File messageFile = new File(directory, "messages.yml");
+        final boolean fileExists = messageFile.exists();
+
+        System.out.println(FIELD_MAP);
+
+        final Class<Message> messageClass = Message.class;
+        if (!fileExists) {
+            FileUtil.write(messageFile, false, ReflectionUtil.toString(FIELD_MAP, messageClass));
+            return CompletableFuture.completedFuture(null);
+        }
+
+        return CompletableFuture.runAsync(() -> {
+            final List<String> fieldList = new ArrayList<>();
+            try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(messageFile), "UTF8"))) {
+                while (reader.ready()) {
+                    final String input = reader.readLine();
+                    final String[] args = input.split(":");
+
+                    final String fieldName = args[0];
+                    final String message = args[1].replaceFirst(" ", "");
+
+                    final Field field = FIELD_MAP.get(fieldName);
+                    if (field == null) {
+                        continue;
+                    }
+
+                    fieldList.add(fieldName);
+                    field.set(INSTANCE, message);
+                }
+            } catch (IOException | IllegalAccessException e) {
+                throw new IllegalStateException(e);
+            }
+
+            final Map<String, Field> missingFields = new HashMap<>();
+            for (final Map.Entry<String, Field> entry : FIELD_MAP.entrySet()) {
+                if (fieldList.contains(entry.getKey())) {
+                    continue;
+                }
+
+                missingFields.put(entry.getKey(), entry.getValue());
+            }
+
+            FileUtil.write(messageFile, true, ReflectionUtil.toString(missingFields, messageClass));
+        });
+    }
 
     // from listeners
 
@@ -94,43 +128,20 @@ public final class Message {
     public final String SCORED =
             SECOND_STYLE + "You scored <yellow>%s</yellow> " + "seconds!";
 
-    public static CompletableFuture<Void> load(final File directory) {
-        final File messages = new File(directory, "messages.yml");
-        final boolean exist = messages.exists();
-
-        final Class<Message> messageClass = Message.class;
-        if (!exist) {
-            try (final Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(messages), StandardCharsets.UTF_8));) {
-                for (final String message : ReflectionUtil.toString(FIELD_MAP,
-                        messageClass)) {
-                    writer.write(message);
-                    writer.write("\n");
+    private Message() {
+        CompletableFuture.runAsync(() -> {
+            for (final Field field : Message.class.getDeclaredFields()) {
+                if (Modifier.isStatic(field.getModifiers()) || field.isAnnotationPresent(IgnoreMessage.class)) {
+                    continue;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return CompletableFuture.completedFuture(null);
-        }
 
-        return CompletableFuture.runAsync(() -> {
-            try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(messages), "UTF8"))) {
-                while (reader.ready()) {
-                    final String input = reader.readLine();
-                    final String[] args = input.split(":");
-
-                    final String fieldName = args[0];
-                    final String message = args[1].replaceFirst(" ", "");
-
-                    final Field field = FIELD_MAP.get(fieldName);
-                    if (field == null) {
-                        continue;
-                    }
-
-                    field.set(INSTANCE, message);
+                if (!field.isAccessible()) {
+                    field.setAccessible(true);
                 }
-            } catch (IOException | IllegalAccessException e) {
-                throw new IllegalStateException(e);
+
+                FIELD_MAP.put(field.getName(), field);
             }
+            System.out.println(FIELD_MAP);
         });
     }
 }

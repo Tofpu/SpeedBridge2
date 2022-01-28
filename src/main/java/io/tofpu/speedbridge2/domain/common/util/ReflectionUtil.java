@@ -1,5 +1,7 @@
 package io.tofpu.speedbridge2.domain.common.util;
 
+import io.tofpu.speedbridge2.domain.common.Message;
+
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -9,7 +11,7 @@ public final class ReflectionUtil {
 
         for (final Field field : fieldMap.values()) {
             try {
-                final Object object = field.get(null);
+                final Object object = field.get(Message.INSTANCE);
 
                 System.out.println("object: " + object);
                 strings.add(field.getName() + ": " + object);
