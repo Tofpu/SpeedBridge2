@@ -13,7 +13,7 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
     private final UUID playerUid;
     private final Map<Integer, Score> scoreMap;
 
-    private final Player player;
+    private Player player;
     private GamePlayer gamePlayer;
 
     public static BridgePlayer of(final BridgePlayer copy) {
@@ -113,5 +113,13 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
 
     public GamePlayer getGamePlayer() {
         return gamePlayer;
+    }
+
+    public void invalidatePlayer() {
+        this.player = null;
+    }
+
+    public void internalRefresh(final UUID uniqueId) {
+        this.player = Bukkit.getPlayer(uniqueId);
     }
 }

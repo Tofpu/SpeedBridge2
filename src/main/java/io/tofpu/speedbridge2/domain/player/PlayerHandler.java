@@ -27,8 +27,15 @@ public final class PlayerHandler {
     }
 
     public BridgePlayer internalRefresh(final UUID uniqueId) {
-        final BridgePlayer bridgePlayer = BridgePlayer.of(get(uniqueId));
-        playerMap.put(uniqueId, bridgePlayer);
+        final BridgePlayer bridgePlayer = get(uniqueId);
+        bridgePlayer.internalRefresh(uniqueId);
+
+        return bridgePlayer;
+    }
+
+    public BridgePlayer invalidate(final UUID uniqueId) {
+        final BridgePlayer bridgePlayer = get(uniqueId);
+        bridgePlayer.invalidatePlayer();
 
         return bridgePlayer;
     }

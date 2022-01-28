@@ -34,4 +34,8 @@ public final class PlayerService {
     public BridgePlayer internalRefresh(final Player player) {
         return playerHandler.internalRefresh(player.getUniqueId());
     }
+
+    public BridgePlayer invalidate(final Player player) {
+        return playerHandler.invalidate(player.getUniqueId());
+    }
 }
