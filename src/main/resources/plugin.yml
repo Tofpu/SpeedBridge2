@@ -3,5 +3,7 @@ version: '${project.version}'
 main: io.tofpu.speedbridge2.plugin.SpeedBridgePlugin
 authors: [ Tofpu ]
 website: https://tofpu.me
+softdepend:
+  - PlaceholderAPI
 depend:
   - WorldEdit
