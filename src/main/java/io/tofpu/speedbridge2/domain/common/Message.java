@@ -94,7 +94,7 @@ public final class Message {
         });
     }
 
-    public static void load(final File directory) {
+    public static CompletableFuture<Void> load(final File directory) {
         final File messages = new File(directory, "messages.yml");
         final boolean exist = messages.exists();
 
@@ -109,29 +109,31 @@ public final class Message {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return;
+            return CompletableFuture.completedFuture(null);
         }
 
-        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(messages), "UTF8"))) {
-            while (reader.ready()) {
-                final String input = reader.readLine();
-                final String[] args = input.split(":");
+        return CompletableFuture.runAsync(() -> {
+            try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(messages), "UTF8"))) {
+                while (reader.ready()) {
+                    final String input = reader.readLine();
+                    final String[] args = input.split(":");
 
-                final String fieldName = args[0];
-                final String message = args[1].replaceFirst(" ", "");
+                    final String fieldName = args[0];
+                    final String message = args[1].replaceFirst(" ", "");
 
-                final Field field = FIELD_MAP.get(fieldName);
-                if (field == null) {
-                    continue;
+                    final Field field = FIELD_MAP.get(fieldName);
+                    if (field == null) {
+                        continue;
+                    }
+
+                    if (!field.isAccessible()) {
+                        field.setAccessible(true);
+                    }
+                    field.set(null, message);
                 }
-
-                if (!field.isAccessible()) {
-                    field.setAccessible(true);
-                }
-                field.set(null, message);
+            } catch (IOException | IllegalAccessException e) {
+                throw new IllegalStateException(e);
             }
-        } catch (IOException | IllegalAccessException e) {
-            throw new IllegalStateException(e);
-        }
+        });
     }
 }

@@ -247,11 +247,12 @@ public final class SpeedBridgeCommand {
     @CommandDescription("Reloads the config")
     @CommandPermission("speedbridge.reload")
     public void pluginReload(final CommonBridgePlayer<?> player) {
-        Message.load(SpeedBridgePlugin.getPlugin(SpeedBridgePlugin.class).getDataFolder());
-        ConfigurationManager.INSTANCE.reload().whenComplete((unused, throwable) -> {
-           if (player.getPlayer() != null) {
-               BridgeUtil.sendMessage(player, RELOADED);
-           }
+        Message.load(SpeedBridgePlugin.getPlugin(SpeedBridgePlugin.class).getDataFolder()).thenRun(() -> {
+            ConfigurationManager.INSTANCE.reload().whenComplete((unused, throwable) -> {
+                if (player.getPlayer() != null) {
+                    BridgeUtil.sendMessage(player, RELOADED);
+                }
+            });
         });
     }
 
