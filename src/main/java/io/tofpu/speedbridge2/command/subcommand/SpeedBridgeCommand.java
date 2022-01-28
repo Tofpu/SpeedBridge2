@@ -155,7 +155,7 @@ public final class SpeedBridgeCommand {
         }
 
         final String message;
-        if (island == null) {
+        if (island == null || !island.isReady()) {
             if (slot == -1) {
                 message = INVALID_ISLAND_ARGUMENT;
             } else {
@@ -178,7 +178,8 @@ public final class SpeedBridgeCommand {
     @CommandDescription("Chooses a random island for you")
     public void onRandomJoin(final BridgePlayer bridgePlayer) {
         final Optional<Island> optionalIsland =
-                islandService.getAllIslands().stream().parallel().findAny();
+                islandService.getAllIslands().stream().parallel()
+                        .filter(Island::isReady).findAny();
 
         final String message;
 

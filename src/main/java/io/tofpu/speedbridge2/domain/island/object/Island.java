@@ -70,6 +70,10 @@ public class Island extends IslandSchematic {
         return successful;
     }
 
+    public boolean isReady() {
+        return getSchematicClipboard() != null;
+    }
+
     private void update() {
         Databases.ISLAND_DATABASE.update(this);
     }
