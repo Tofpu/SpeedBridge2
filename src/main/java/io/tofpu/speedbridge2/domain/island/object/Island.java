@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.island.object;
 
+import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.island.schematic.IslandSchematic;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
@@ -9,8 +10,6 @@ import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
-
-import static io.tofpu.speedbridge2.domain.common.Message.LEFT_AN_ISLAND;
 
 public class Island extends IslandSchematic {
     private final int slot;
@@ -43,7 +42,9 @@ public class Island extends IslandSchematic {
         if (gameIsland == null) {
             return;
         }
-        BridgeUtil.sendMessage(bridgePlayer.getPlayer(), String.format(LEFT_AN_ISLAND, slot));
+        BridgeUtil.sendMessage(bridgePlayer.getPlayer(),
+                String.format(Message.INSTANCE.LEFT_AN_ISLAND,
+                slot));
         bridgePlayer.setGamePlayer(null);
 
         // remove the game player
