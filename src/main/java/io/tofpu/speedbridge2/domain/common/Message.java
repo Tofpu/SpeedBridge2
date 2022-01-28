@@ -125,10 +125,7 @@ public final class Message {
                     if (field == null) {
                         continue;
                     }
-
-                    if (!field.isAccessible()) {
-                        field.setAccessible(true);
-                    }
+                    
                     field.set(INSTANCE, message);
                 }
             } catch (IOException | IllegalAccessException e) {
