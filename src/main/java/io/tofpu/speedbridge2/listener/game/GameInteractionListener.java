@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.listener.game;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
+import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.player.misc.Score;
@@ -12,9 +13,6 @@ import io.tofpu.speedbridge2.listener.wrapper.wrappers.PlayerInteractEventWrappe
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
-
-import static io.tofpu.speedbridge2.domain.common.Message.SCORED;
-import static io.tofpu.speedbridge2.domain.common.Message.TIME_STARTED;
 
 @AutoRegister
 public final class GameInteractionListener extends GameListener {
@@ -31,7 +29,7 @@ public final class GameInteractionListener extends GameListener {
         }
 
         gamePlayer.startTimer();
-        BridgeUtil.sendMessage(event.getPlayer(), TIME_STARTED);
+        BridgeUtil.sendMessage(event.getPlayer(), Message.INSTANCE.TIME_STARTED);
     }
 
     @EventHandler
@@ -49,7 +47,7 @@ public final class GameInteractionListener extends GameListener {
 
         bridgePlayer.setScoreIfLower(island.getSlot(), score.getScore());
 
-        BridgeUtil.sendMessage(bridgePlayer, String.format(SCORED, BridgeUtil.toFormattedScore(score.getScore())));
+        BridgeUtil.sendMessage(bridgePlayer, String.format(Message.INSTANCE.SCORED, BridgeUtil.toFormattedScore(score.getScore())));
 
         gamePlayer.getCurrentGame().resetGame(false);
     }

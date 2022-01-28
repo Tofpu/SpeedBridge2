@@ -1,13 +1,12 @@
 package io.tofpu.speedbridge2.domain.island.object;
 
+import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 
 import java.util.AbstractMap;
 import java.util.Map;
-
-import static io.tofpu.speedbridge2.domain.common.Message.NOT_IN_A_ISLAND;
 
 public class NullIsland extends Island {
     public NullIsland() {
@@ -21,7 +20,8 @@ public class NullIsland extends Island {
 
     @Override
     public void leaveGame(final BridgePlayer bridgePlayer) {
-        BridgeUtil.sendMessage(bridgePlayer.getPlayer(), NOT_IN_A_ISLAND);
+        BridgeUtil.sendMessage(bridgePlayer.getPlayer(),
+                Message.INSTANCE.NOT_IN_A_ISLAND);
     }
 
     @Override
