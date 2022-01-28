@@ -30,6 +30,7 @@ public final class SpeedBridgeCommand {
     @ProxiedBy("createIsland")
     @CommandMethod("speedbridge create <slot>")
     @CommandDescription("Create an island with a defined slot")
+    @CommandPermission("speedbridge.island.create")
     public void onIslandCreate(final CommonBridgePlayer<?> player, final @Argument("slot")
             int slot, @Flag("c") String category, final @Flag("s") String schematic) {
         final CommandSender sender = player.getPlayer();
@@ -64,6 +65,7 @@ public final class SpeedBridgeCommand {
     @ProxiedBy("deleteIsland")
     @CommandMethod("speedbridge delete <slot>")
     @CommandDescription("delete an island")
+    @CommandPermission("speedbridge.island.delete")
     public void onIslandDelete(final CommonBridgePlayer<?> player, final @Argument(
             "slot") int slot) {
         final Island island = islandService.deleteIsland(slot);
@@ -80,6 +82,7 @@ public final class SpeedBridgeCommand {
     @ProxiedBy("selectIsland")
     @CommandMethod("speedbridge select <slot>")
     @CommandDescription("select an island to modify their properties")
+    @CommandPermission("island.island.select")
     public void onIslandSelect(final CommonBridgePlayer<?> bridgePlayer, final @Argument("slot")
             int slot, final @Flag(value = "c", description = "category") String category,
             final @Flag(value = "s", description = "schematic")
@@ -238,14 +241,16 @@ public final class SpeedBridgeCommand {
     }
 
     @CommandMethod("speedbridge")
-    @Hidden
     @CommandDescription("Shows a list of commands")
+    @CommandPermission("speedbridge.help")
+    @Hidden
     public void onNoArgument(final CommonBridgePlayer<?> bridgePlayer) {
         final CommandSender player = bridgePlayer.getPlayer();
         HelpCommandGenerator.showHelpMessage(player);
     }
 
     @CommandMethod("speedbridge help")
+    @CommandPermission("speedbridge.help")
     @CommandDescription("Shows a list of commands")
     public void onHelpCommand(final CommonBridgePlayer<?> bridgePlayer) {
         final CommandSender player = bridgePlayer.getPlayer();
