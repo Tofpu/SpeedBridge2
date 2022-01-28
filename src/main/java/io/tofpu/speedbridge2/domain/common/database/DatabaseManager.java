@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.domain.common.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
 import org.bukkit.plugin.Plugin;
@@ -14,14 +15,12 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 
-import static io.tofpu.speedbridge2.domain.common.util.DatabaseUtil.runAsync;
-
 public class DatabaseManager {
     private static final Queue<String> TABLE_QUEUE = new LinkedList<>();
     private static HikariDataSource dataSource;
 
     public static CompletableFuture<Void> load(final Plugin plugin) {
-        return runAsync(() -> {
+        return PluginExecutor.runAsync(() -> {
             try {
                 Class.forName("org.sqlite.JDBC");
             } catch (ClassNotFoundException e) {

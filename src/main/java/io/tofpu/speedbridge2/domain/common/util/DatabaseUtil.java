@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.common.util;
 
+import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 
 import java.sql.ResultSet;
@@ -20,7 +21,7 @@ public class DatabaseUtil {
     }
 
     public static CompletableFuture<Void> runAsync(final Runnable runnable) {
-        return CompletableFuture.runAsync(runnable);
+        return PluginExecutor.runAsync(runnable);
     }
 
     public static CompletableFuture<Void> databaseQuery(final String sql, final Consumer<ResultSet> databaseQueryConsumer) {
@@ -36,6 +37,6 @@ public class DatabaseUtil {
     }
 
     public static <T> CompletableFuture<T> runAsync(final Supplier<?> supplier) {
-        return (CompletableFuture<T>) CompletableFuture.supplyAsync(supplier);
+        return (CompletableFuture<T>) PluginExecutor.supply(supplier);
     }
 }
