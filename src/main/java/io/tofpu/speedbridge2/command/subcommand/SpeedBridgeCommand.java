@@ -4,6 +4,7 @@ package io.tofpu.speedbridge2.command.subcommand;
 import cloud.commandframework.annotations.*;
 import com.sk89q.minecraft.util.commands.CommandAlias;
 import io.tofpu.speedbridge2.command.parser.IslandArgument;
+import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
 import io.tofpu.speedbridge2.domain.island.IslandService;
@@ -36,8 +37,8 @@ public final class SpeedBridgeCommand {
         final CommandSender sender = player.getPlayer();
 
         if (category == null || category.isEmpty()) {
-            // TODO: grab the default category from the settings
-            category = "default";
+            category = ConfigurationManager.INSTANCE.getGeneralCategory()
+                    .getDefaultIslandCategory();
         }
 
         if (islandService.createIsland(slot, category) == null) {
@@ -238,6 +239,17 @@ public final class SpeedBridgeCommand {
         }
 
         BridgeUtil.sendMessage(player, message);
+    }
+
+    @CommandMethod("speedbridge reload")
+    @CommandDescription("Reloads the config")
+    @CommandPermission("speedbridge.reload")
+    public void pluginReload(final CommonBridgePlayer<?> player) {
+        ConfigurationManager.INSTANCE.reload().whenComplete((unused, throwable) -> {
+           if (player.getPlayer() != null) {
+               BridgeUtil.sendMessage(player, RELOADED);
+           }
+        });
     }
 
     @CommandMethod("speedbridge")

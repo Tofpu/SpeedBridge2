@@ -50,6 +50,8 @@ public final class Message {
 
     public static final String EMPTY_SELECT = ERROR + "You haven't modified anything...";
 
+    public static final String RELOADED = SUCCESS + "The config has been reloaded!";
+
     // from listeners
 
     public static final String STYLE =
