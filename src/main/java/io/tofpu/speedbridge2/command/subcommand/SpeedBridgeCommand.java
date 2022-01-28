@@ -4,6 +4,7 @@ package io.tofpu.speedbridge2.command.subcommand;
 import cloud.commandframework.annotations.*;
 import com.sk89q.minecraft.util.commands.CommandAlias;
 import io.tofpu.speedbridge2.command.parser.IslandArgument;
+import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
@@ -12,6 +13,7 @@ import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.player.misc.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.CommonBridgePlayer;
+import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -245,6 +247,7 @@ public final class SpeedBridgeCommand {
     @CommandDescription("Reloads the config")
     @CommandPermission("speedbridge.reload")
     public void pluginReload(final CommonBridgePlayer<?> player) {
+        Message.load(SpeedBridgePlugin.getPlugin(SpeedBridgePlugin.class).getDataFolder());
         ConfigurationManager.INSTANCE.reload().whenComplete((unused, throwable) -> {
            if (player.getPlayer() != null) {
                BridgeUtil.sendMessage(player, RELOADED);
