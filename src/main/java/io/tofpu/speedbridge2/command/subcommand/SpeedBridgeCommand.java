@@ -228,7 +228,7 @@ public final class SpeedBridgeCommand {
             // Island X scored X seconds;
             final String formattedScore = " <gold><bold>" + CROSS.getSymbol() + " " + "<reset><yellow>Island " + "<gold>%s</gold>" + " " + ARROW_RIGHT
                     .getSymbol() + " <gold>%s</gold> seconds";
-            scoreList.add(String.format(formattedScore, score.getScoredOn(), BridgeUtil.toFormattedScore(score
+            scoreList.add(String.format(formattedScore, score.getScoredOn(), BridgeUtil.formatNumber(score
                     .getScore())));
         }
 

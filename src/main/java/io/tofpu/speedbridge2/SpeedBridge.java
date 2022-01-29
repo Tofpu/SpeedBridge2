@@ -9,7 +9,9 @@ import io.tofpu.speedbridge2.domain.common.database.DatabaseManager;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
+import io.tofpu.speedbridge2.support.placeholderapi.PluginExpansion;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -40,6 +42,10 @@ public final class SpeedBridge {
                     ".speedbridge2");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new PluginExpansion(javaPlugin);
         }
 
         ConfigurationManager.INSTANCE.load(javaPlugin);

@@ -66,7 +66,6 @@ public final class Message {
     public final String EMPTY_SELECT = ERROR + "You haven't modified anything...";
 
     public final String RELOADED = SUCCESS + "The config has been reloaded!";
-    public final String TEST_RELOADED_MESSAGE = SUCCESS + "The config has been reloaded!";
 
     public static CompletableFuture<Void> load(final File directory) {
         final File messageFile = new File(directory, "messages.yml");
@@ -127,6 +126,10 @@ public final class Message {
     public final String TIME_STARTED = STYLE + "The timer is now ticking!";
     public final String SCORED =
             SECOND_STYLE + "You scored <yellow>%s</yellow> " + "seconds!";
+
+    // placeholders
+
+    public final String EMPTY_SCORE_FORMAT = "";
 
     private Message() {
         CompletableFuture.runAsync(() -> {

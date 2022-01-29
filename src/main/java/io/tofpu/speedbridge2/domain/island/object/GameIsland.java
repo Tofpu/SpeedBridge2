@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.island.object;
 
+import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
@@ -53,8 +54,9 @@ public final class GameIsland {
     public void resetGame(final boolean notify) {
         gamePlayer.resetBlocks();
         gamePlayer.resetTimer();
+        gamePlayer.teleport(islandPlot);
 
-        this.gamePlayer.teleport(islandPlot);
+        gamePlayer.getBridgePlayer().increment(PlayerStatType.TOTAL_TRIES);
 
         final Player player = gamePlayer.getBridgePlayer().getPlayer();
 
