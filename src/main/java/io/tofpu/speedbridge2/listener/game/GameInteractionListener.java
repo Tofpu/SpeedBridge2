@@ -41,15 +41,14 @@ public final class GameInteractionListener extends GameListener {
         final Island island = gamePlayer.getCurrentGame()
                 .getIsland();
         final long startedAt = gamePlayer.getTimer();
-        final long capturedAt = System.nanoTime();
 
-        final double seconds = (double) (capturedAt - startedAt) / 1_000_000_000;
+        final double seconds = BridgeUtil.nanoToSeconds(startedAt);
         final Score score = new Score(island.getSlot(), seconds);
 
         bridgePlayer.setScoreIfLower(island.getSlot(), score.getScore());
         bridgePlayer.increment(PlayerStatType.TOTAL_WINS);
 
-        BridgeUtil.sendMessage(bridgePlayer, String.format(Message.INSTANCE.SCORED, BridgeUtil.toFormattedScore(score.getScore())));
+        BridgeUtil.sendMessage(bridgePlayer, String.format(Message.INSTANCE.SCORED, BridgeUtil.formatNumber(score.getScore())));
 
         gamePlayer.getCurrentGame().resetGame(false);
     }

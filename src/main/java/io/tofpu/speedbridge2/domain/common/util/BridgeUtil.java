@@ -12,7 +12,11 @@ public final class BridgeUtil {
         return new Vector(vector.getX(), vector.getY(), vector.getZ());
     }
 
-    public static String toFormattedScore(final double score) {
+    public static double nanoToSeconds(final long end) {
+        return (double) (System.nanoTime() - end) / 1_000_000_000;
+    }
+
+    public static String formatNumber(final double score) {
         return String.format("%.3f", score);
     }
 

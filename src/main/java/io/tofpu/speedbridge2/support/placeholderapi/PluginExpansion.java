@@ -5,6 +5,7 @@ import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.Score;
+import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -80,18 +81,19 @@ public final class PluginExpansion extends PlaceholderExpansion {
                     return Message.INSTANCE.EMPTY_SCORE_FORMAT;
                 }
 
-                return BridgeUtil.toFormattedScore(bestScore.getScore());
+                return BridgeUtil.formatNumber(bestScore.getScore());
             case "timer":
-                if (gamePlayer == null) {
+                if (gamePlayer == null || !gamePlayer.hasTimerStarted()) {
                     return "";
                 }
-                return (System.nanoTime() - gamePlayer.getTimer() + "");
+                return BridgeUtil.formatNumber(BridgeUtil.nanoToSeconds(gamePlayer.getTimer()));
             case "total_wins":
-                // TODO:
-                return "";
             case "total_tries":
-                // TODO:
-                return "";
+                final PlayerStatType playerStatType = PlayerStatType.match(params);
+                // this shouldn't be null
+                if (playerStatType != null) {
+                    return bridgePlayer.findStatBy(playerStatType).getValue();
+                }
         }
 
         return "";
