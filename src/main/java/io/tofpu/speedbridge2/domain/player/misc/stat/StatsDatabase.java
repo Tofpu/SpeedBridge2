@@ -17,7 +17,7 @@ import static io.tofpu.speedbridge2.domain.common.util.DatabaseUtil.runAsync;
 
 public final class StatsDatabase extends Database {
     public StatsDatabase() {
-        super(DatabaseTable.of("stats", "uid text PRIMARY KEY", "key text NOT NULL", "value text NOT NULL"));
+        super(DatabaseTable.of("stats", "stats_id INTEGER PRIMARY KEY AUTOINCREMENT", "uid text NOT NULL", "key text NOT NULL", "value text NOT NULL"));
 
         // TABLE: TOTAL_WINS
         // UID: AIAIA_AJAJA_AJAJ
@@ -30,7 +30,8 @@ public final class StatsDatabase extends Database {
 
     public CompletableFuture<Void> insert(final PlayerStat playerStat) {
         return DatabaseUtil.databaseQueryExecute(
-                "INSERT OR IGNORE INTO stats VALUES " + "(?, ?, ?)", databaseQuery -> {
+                "INSERT OR IGNORE INTO stats (uid, key, value) VALUES " +
+                "(?, ?, ?)", databaseQuery -> {
                     databaseQuery.setString(1, playerStat.getOwner()
                             .toString());
                     databaseQuery.setString(2, playerStat.getKey());
@@ -39,16 +40,16 @@ public final class StatsDatabase extends Database {
     }
 
     public CompletableFuture<Void> update(final PlayerStat playerStat) {
-        return DatabaseUtil.databaseQueryExecute(
-                "UPDATE stats SET key = ?, value = ? " + "WHERE " +
-                "uid = ?", databaseQuery -> {
-                    databaseQuery.setString(1, playerStat.getKey());
-                    databaseQuery.setString(2, playerStat.getValue());
-                    databaseQuery.setString(3, playerStat.getOwner()
-                            .toString());
+        return DatabaseUtil.databaseQueryExecute("UPDATE stats SET value = ? WHERE " +
+                                                 "uid = ? AND key = ?", databaseQuery -> {
+            databaseQuery.setString(1, playerStat.getValue());
 
-                    System.out.println(playerStat);
-                });
+            databaseQuery.setString(2, playerStat.getOwner()
+                    .toString());
+            databaseQuery.setString(3, playerStat.getKey());
+
+            System.out.println(playerStat);
+        });
     }
 
     public CompletableFuture<Collection<PlayerStat>> getStoredStats(final UUID owner) {
@@ -61,12 +62,12 @@ public final class StatsDatabase extends Database {
 
                     try (final ResultSet resultSet = databaseQuery.executeQuery()) {
                         while (resultSet.next()) {
-                            final PlayerStatType playerStatType = PlayerStatType.match(resultSet.getString(2));
+                            final PlayerStatType playerStatType = PlayerStatType.match(resultSet.getString(3));
 
                             if (playerStatType == null) {
                                 continue;
                             }
-                            final PlayerStat playerStat = PlayerStatType.create(owner, playerStatType, resultSet.getString(3));
+                            final PlayerStat playerStat = PlayerStatType.create(owner, playerStatType, resultSet.getString(4));
                             System.out.println("found stat: " + playerStat);
 
                             playerStats.add(playerStat);

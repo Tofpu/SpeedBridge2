@@ -133,8 +133,6 @@ public final class PlayerDatabase extends Database {
                     final Collection<PlayerStat> playerStats = Databases.STATS_DATABASE.getStoredStats(bridgePlayer.getPlayerUid())
                             .get();
 
-                    System.out.println(bridgePlayer.getPlayerUid() + " stats: " + playerStats);
-
                     for (final PlayerStat playerStat : playerStats) {
                         bridgePlayer.setInternalStat(playerStat);
                     }

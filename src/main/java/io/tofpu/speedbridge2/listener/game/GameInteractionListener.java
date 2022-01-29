@@ -48,8 +48,11 @@ public final class GameInteractionListener extends GameListener {
 
         bridgePlayer.setScoreIfLower(island.getSlot(), score.getScore());
 
+        // for stats
         bridgePlayer.increment(PlayerStatType.TOTAL_WINS);
-        System.out.println(bridgePlayer.findStatBy(PlayerStatType.TOTAL_WINS));
+        bridgePlayer.increment(PlayerStatType.TOTAL_TRIES);
+
+        BridgeUtil.sendMessage(bridgePlayer, bridgePlayer.toString());
 
         BridgeUtil.sendMessage(bridgePlayer, String.format(Message.INSTANCE.SCORED, BridgeUtil.toFormattedScore(score.getScore())));
 

@@ -1,23 +1,23 @@
 package io.tofpu.speedbridge2.domain.player.misc.stat;
 
-import io.tofpu.speedbridge2.domain.player.misc.stat.type.PlayerWinStat;
+import io.tofpu.speedbridge2.domain.player.misc.stat.type.SimplePlayerStat;
 
 import java.util.Locale;
 import java.util.UUID;
 
 public enum PlayerStatType {
-    TOTAL_WINS;
+    TOTAL_WINS, TOTAL_TRIES;
 
-    public static PlayerStat create(final UUID owner,
-            final PlayerStatType playerStatType) {
+    public static PlayerStat create(final UUID owner, final PlayerStatType playerStatType) {
         return create(owner, playerStatType, "0");
     }
 
-    public static PlayerStat create(final UUID owner,
-            final PlayerStatType playerStatType, final String value) {
-        switch (playerStatType.name()){
+    public static PlayerStat create(final UUID owner, final PlayerStatType playerStatType, final String value) {
+        switch (playerStatType.name()) {
             case "TOTAL_WINS":
-                return new PlayerWinStat(owner, Integer.parseInt(value));
+            case "TOTAL_TRIES":
+                return new SimplePlayerStat(playerStatType.name()
+                        .toLowerCase(Locale.ENGLISH), owner, Integer.parseInt(value));
         }
         return null;
     }
@@ -26,6 +26,8 @@ public enum PlayerStatType {
         switch (statType.toUpperCase(Locale.ENGLISH)){
             case "TOTAL_WINS":
                 return PlayerStatType.TOTAL_WINS;
+            case "TOTAL_TRIES":
+                return PlayerStatType.TOTAL_TRIES;
         }
         return null;
     }
