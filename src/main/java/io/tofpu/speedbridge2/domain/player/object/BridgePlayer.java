@@ -2,6 +2,8 @@ package io.tofpu.speedbridge2.domain.player.object;
 
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.player.misc.Score;
+import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStat;
+import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -12,6 +14,7 @@ import java.util.UUID;
 public final class BridgePlayer extends CommonBridgePlayer<Player> {
     private final UUID playerUid;
     private final Map<Integer, Score> scoreMap;
+    private final Map<String, PlayerStat> statsMap;
 
     private Player player;
     private GamePlayer gamePlayer;
@@ -27,11 +30,13 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
     private BridgePlayer(final BridgePlayer copy) {
         this(copy.playerUid);
         this.scoreMap.putAll(copy.scoreMap);
+        this.statsMap.putAll(copy.statsMap);
     }
 
     private BridgePlayer(final UUID playerUid) {
         this.playerUid = playerUid;
         this.scoreMap = new HashMap<>();
+        this.statsMap = new HashMap<>();
 
         if (playerUid != null) {
             this.player = Bukkit.getPlayer(playerUid);
@@ -77,6 +82,21 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
         return setNewScore(score);
     }
 
+    public PlayerStat increment(final PlayerStatType playerStatType) {
+        final PlayerStat playerStat = statsMap.computeIfAbsent(playerStatType.name(), s -> PlayerStatType.create(playerStatType));
+
+        // this shouldn't be null
+        if (playerStat != null) {
+            playerStat.increment();
+        }
+
+        return playerStat;
+    }
+
+    public PlayerStat findStatBy(final PlayerStatType playerStatType) {
+        return statsMap.computeIfAbsent(playerStatType.name(), s -> PlayerStatType.create(playerStatType));
+    }
+
     public void setGamePlayer(final GamePlayer gamePlayer) {
         this.gamePlayer = gamePlayer;
     }
@@ -97,6 +117,10 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
         return this.scoreMap.values();
     }
 
+    public Iterable<? extends PlayerStat> getStats() {
+        return this.statsMap.values();
+    }
+
     @Override
     public Player getPlayer() {
         return player;
@@ -105,8 +129,10 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("BridgePlayer{");
-        sb.append("playerUid=").append(playerUid);
-        sb.append(", scoreMap=").append(scoreMap);
+        sb.append("playerUid=")
+                .append(playerUid);
+        sb.append(", scoreMap=")
+                .append(scoreMap);
         sb.append('}');
         return sb.toString();
     }
