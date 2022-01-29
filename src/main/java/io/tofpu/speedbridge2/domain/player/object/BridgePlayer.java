@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -82,8 +83,13 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
         return setNewScore(score);
     }
 
+    public void setInternalStat(final PlayerStat internalStat) {
+        this.statsMap.put(internalStat.getKey()
+                .toUpperCase(Locale.ENGLISH), internalStat);
+    }
+
     public PlayerStat increment(final PlayerStatType playerStatType) {
-        final PlayerStat playerStat = statsMap.computeIfAbsent(playerStatType.name(), s -> PlayerStatType.create(playerStatType));
+        final PlayerStat playerStat = findStatBy(playerStatType);
 
         // this shouldn't be null
         if (playerStat != null) {
@@ -94,7 +100,13 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
     }
 
     public PlayerStat findStatBy(final PlayerStatType playerStatType) {
-        return statsMap.computeIfAbsent(playerStatType.name(), s -> PlayerStatType.create(playerStatType));
+        return statsMap.computeIfAbsent(playerStatType.name(), s -> {
+            final PlayerStat stat = PlayerStatType.create(getPlayerUid(),
+                    playerStatType);
+            Databases.STATS_DATABASE.insert(stat);
+
+            return stat;
+        });
     }
 
     public void setGamePlayer(final GamePlayer gamePlayer) {
@@ -133,6 +145,12 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
                 .append(playerUid);
         sb.append(", scoreMap=")
                 .append(scoreMap);
+        sb.append(", statsMap=")
+                .append(statsMap);
+        sb.append(", player=")
+                .append(player);
+        sb.append(", gamePlayer=")
+                .append(gamePlayer);
         sb.append('}');
         return sb.toString();
     }

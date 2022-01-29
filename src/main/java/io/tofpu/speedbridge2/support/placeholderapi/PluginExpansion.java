@@ -1,6 +1,5 @@
 package io.tofpu.speedbridge2.support.placeholderapi;
 
-import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.IslandService;
@@ -14,7 +13,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
-@AutoRegister
 public final class PluginExpansion extends PlaceholderExpansion {
     private final Plugin plugin;
     private final PluginDescriptionFile descriptionFile;

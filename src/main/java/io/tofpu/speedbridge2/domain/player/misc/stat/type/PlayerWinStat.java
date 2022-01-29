@@ -1,14 +1,26 @@
 package io.tofpu.speedbridge2.domain.player.misc.stat.type;
 
+import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStat;
 
+import java.util.UUID;
+
 public class PlayerWinStat implements PlayerStat {
+    private final UUID owner;
     private int totalWins = 0;
 
-    public PlayerWinStat() {}
+    public PlayerWinStat(final UUID owner) {
+        this.owner = owner;
+    }
 
-    public PlayerWinStat(final int totalWins) {
+    public PlayerWinStat(final UUID owner, final int totalWins) {
+        this(owner);
         this.totalWins = totalWins;
+    }
+
+    @Override
+    public UUID getOwner() {
+        return this.owner;
     }
 
     @Override
@@ -24,6 +36,7 @@ public class PlayerWinStat implements PlayerStat {
     @Override
     public void increment() {
         totalWins++;
+        Databases.STATS_DATABASE.update(this);
     }
 
     @Override

@@ -1,16 +1,19 @@
 package io.tofpu.speedbridge2.domain.player;
 
-import io.tofpu.speedbridge2.domain.common.database.wrapper.Database;
 import io.tofpu.speedbridge2.domain.common.database.DatabaseManager;
+import io.tofpu.speedbridge2.domain.common.database.Databases;
+import io.tofpu.speedbridge2.domain.common.database.wrapper.Database;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
 import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
 import io.tofpu.speedbridge2.domain.player.misc.Score;
+import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStat;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -117,8 +120,7 @@ public final class PlayerDatabase extends Database {
 
                             try (final ResultSet set = query.executeQuery()) {
                                 while (set.next()) {
-                                    final Score score = Score.of(set.getInt(2), set
-                                            .getLong(3));
+                                    final Score score = Score.of(set.getInt(2), set.getLong(3));
                                     System.out.println("found new score! " + score);
                                     bridgePlayer.setInternalNewScore(score);
                                 }
@@ -127,10 +129,22 @@ public final class PlayerDatabase extends Database {
                             exception.printStackTrace();
                         }
                     }).get();
+
+                    final Collection<PlayerStat> playerStats = Databases.STATS_DATABASE.getStoredStats(bridgePlayer.getPlayerUid())
+                            .get();
+
+                    System.out.println(bridgePlayer.getPlayerUid() + " stats: " + playerStats);
+
+                    for (final PlayerStat playerStat : playerStats) {
+                        bridgePlayer.setInternalStat(playerStat);
+                    }
+
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
+
+            System.out.println("players result: " + bridgePlayers);
 
             return bridgePlayers;
         });
