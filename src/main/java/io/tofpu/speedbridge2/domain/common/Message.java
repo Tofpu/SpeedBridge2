@@ -1,9 +1,6 @@
 package io.tofpu.speedbridge2.domain.common;
 
-import io.tofpu.speedbridge2.domain.common.util.FileUtil;
-import io.tofpu.speedbridge2.domain.common.util.IgnoreMessage;
-import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
-import io.tofpu.speedbridge2.domain.common.util.ReflectionUtil;
+import io.tofpu.speedbridge2.domain.common.util.*;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -71,7 +68,7 @@ public final class Message {
         final File messageFile = new File(directory, "messages.yml");
         final boolean fileExists = messageFile.exists();
 
-        System.out.println(FIELD_MAP);
+        BridgeUtil.debug(String.valueOf(FIELD_MAP));
 
         final Class<Message> messageClass = Message.class;
         if (!fileExists) {

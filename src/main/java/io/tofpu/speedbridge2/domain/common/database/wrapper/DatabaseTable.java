@@ -1,5 +1,7 @@
 package io.tofpu.speedbridge2.domain.common.database.wrapper;
 
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+
 public class DatabaseTable {
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS %s (%s)";
     private final String table;
@@ -15,7 +17,7 @@ public class DatabaseTable {
         this.columns = columns;
         this.sql = String.format(CREATE_TABLE, table, formatColumns(columns));
 
-        System.out.println(sql);
+        BridgeUtil.debug(sql);
     }
 
     public String formatColumns(final String[] columns) {

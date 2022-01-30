@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.domain.player;
 
 import io.tofpu.speedbridge2.domain.common.database.Databases;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 
 import java.util.*;
@@ -19,8 +20,8 @@ public final class PlayerRepository {
                 e.printStackTrace();
             }
 
-            System.out.println("loaded bridgePlayers:");
-            System.out.println(bridgePlayers);
+            BridgeUtil.debug("loaded bridgePlayers:");
+            BridgeUtil.debug(String.valueOf(bridgePlayers));
 
             final Map<UUID, BridgePlayer> playerMap = new HashMap<>();
             if (!bridgePlayers.isEmpty()) {

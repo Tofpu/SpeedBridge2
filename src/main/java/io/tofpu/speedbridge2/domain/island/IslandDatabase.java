@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.domain.island;
 
 import io.tofpu.speedbridge2.domain.common.database.wrapper.Database;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 
@@ -28,10 +29,10 @@ public class IslandDatabase extends Database {
 
     public CompletableFuture<Void> update(final Island island) {
         return DatabaseUtil.databaseQueryExecute("UPDATE islands SET category = ?, schematicName = ? WHERE slot = ?", databaseQuery -> {
-            System.out.println("island category: " + island.getCategory());
+            BridgeUtil.debug("island category: " + island.getCategory());
             databaseQuery.setString(1, island.getCategory());
 
-            System.out.println("island schematic: " + island.getSchematicName());
+            BridgeUtil.debug("island schematic: " + island.getSchematicName());
             databaseQuery.setString(2, island.getSchematicName());
 
             databaseQuery.setInt(3, island.getSlot());

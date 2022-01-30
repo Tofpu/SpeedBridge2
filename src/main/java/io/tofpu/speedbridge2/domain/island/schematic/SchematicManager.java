@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.domain.island.schematic;
 
 import com.sk89q.worldedit.WorldEditException;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.object.GameIsland;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
@@ -69,7 +70,7 @@ public final class SchematicManager {
             // break the loop
             if (islandPlot.getIsland().getSlot() == gameIsland.getIsland()
                     .getSlot() && islandPlot.isPlotFree()) {
-                System.out.println("found a available plot!");
+                BridgeUtil.debug("found a available plot!");
                 selectedPlot = islandPlot;
                 break;
             }
@@ -77,7 +78,7 @@ public final class SchematicManager {
 
         // if the plot was not found, create our own & add it to our plots collection
         if (selectedPlot == null) {
-            System.out.println("no free plot available, creating our own plot!");
+            BridgeUtil.debug("no free plot available, creating our own plot!");
 
             final double[] positions = {100 * (SCHEMATIC_PLOTS.size() + 100), 100, 100};
 
@@ -119,7 +120,7 @@ public final class SchematicManager {
             // if a plot's island equals to island, select the plot and break the loop
             final GameIsland island = islandPlot.getGameIsland();
             if (island != null && island.equals(gameIsland)) {
-                System.out.println("found the identical island plot!");
+                BridgeUtil.debug("found the identical island plot!");
                 selectedPlot = islandPlot;
                 break;
             }

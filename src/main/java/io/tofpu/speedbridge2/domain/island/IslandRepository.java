@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.domain.island;
 
 import io.tofpu.speedbridge2.domain.common.database.Databases;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 
 import java.util.ArrayList;
@@ -22,8 +23,8 @@ public final class IslandRepository {
                 e.printStackTrace();
             }
 
-            System.out.println("loaded islands:");
-            System.out.println(islands);
+            BridgeUtil.debug("loaded islands:");
+            BridgeUtil.debug(String.valueOf(islands));
 
             final Map<Integer, Island> islandMap = new HashMap<>();
             if (!islands.isEmpty()) {

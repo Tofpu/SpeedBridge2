@@ -13,7 +13,7 @@ public final class ReflectionUtil {
             try {
                 final Object object = field.get(Message.INSTANCE);
 
-                System.out.println("object: " + object);
+                BridgeUtil.debug("object: " + object);
                 strings.add(field.getName() + ": " + object);
             } catch (IllegalAccessException ignored) {}
         }

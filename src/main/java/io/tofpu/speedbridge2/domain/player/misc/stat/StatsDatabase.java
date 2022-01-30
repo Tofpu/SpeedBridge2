@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.domain.player.misc.stat;
 
 import io.tofpu.speedbridge2.domain.common.database.wrapper.Database;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
 
 import java.sql.ResultSet;
@@ -18,14 +19,6 @@ import static io.tofpu.speedbridge2.domain.common.util.DatabaseUtil.runAsync;
 public final class StatsDatabase extends Database {
     public StatsDatabase() {
         super(DatabaseTable.of("stats", "stats_id INTEGER PRIMARY KEY AUTOINCREMENT", "uid text NOT NULL", "key text NOT NULL", "value text NOT NULL"));
-
-        // TABLE: TOTAL_WINS
-        // UID: AIAIA_AJAJA_AJAJ
-        // VALUE: 13
-
-        // TABLE: TOTAL_TRIES
-        // UID: AIAIA_AJAJA_AJAJ
-        // VALUE: 16
     }
 
     public CompletableFuture<Void> insert(final PlayerStat playerStat) {
@@ -68,7 +61,7 @@ public final class StatsDatabase extends Database {
                                 continue;
                             }
                             final PlayerStat playerStat = PlayerStatType.create(owner, playerStatType, resultSet.getString(4));
-                            System.out.println("found stat: " + playerStat);
+                            BridgeUtil.debug("found stat: " + playerStat);
 
                             playerStats.add(playerStat);
                         }

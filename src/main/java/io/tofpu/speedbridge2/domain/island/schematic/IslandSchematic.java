@@ -6,6 +6,7 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.extent.clipboard.io.SchematicReader;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -29,7 +30,7 @@ public class IslandSchematic {
                 .resolve(configuration.saveDir)
                 .toFile();
 
-        System.out.println("worldedit's directory: " + directory);
+        BridgeUtil.debug("worldedit's directory: " + directory);
         final File file = directory.toPath().resolve(schematicName + ".schematic").toFile();
 
         if (file.exists()) {
@@ -39,14 +40,14 @@ public class IslandSchematic {
                 final ClipboardReader reader = new SchematicReader(nbtStream);
                 this.schematicClipboard = reader.read(null);
 
-                Bukkit.getLogger().info("successfully set the island's schematic");
+                BridgeUtil.debug("successfully set the island's schematic");
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             this.schematicName = schematicName;
         } else {
-            Bukkit.getLogger().info(schematicName + " cannot be found as a schematic");
+            BridgeUtil.debug(schematicName + " cannot be found as a schematic");
         }
 
         return file.exists();

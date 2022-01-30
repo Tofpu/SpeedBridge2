@@ -1,9 +1,11 @@
 package io.tofpu.speedbridge2.domain.common.util;
 
 import io.tofpu.speedbridge2.SpeedBridge;
+import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.player.object.CommonBridgePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.util.Vector;
 
@@ -42,5 +44,11 @@ public final class BridgeUtil {
         final Component component = translateMiniMessage(content);
         sendMessage(sender, component);
         return component;
+    }
+
+    public static void debug(final String message) {
+        if (ConfigurationManager.INSTANCE.getGeneralCategory().isDebugEnabled()) {
+            Bukkit.getLogger().info("[DEBUG] " + message);
+        }
     }
 }

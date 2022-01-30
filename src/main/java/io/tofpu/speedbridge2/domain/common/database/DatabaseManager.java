@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -61,7 +62,7 @@ public class DatabaseManager {
         for (final String table : TABLE_QUEUE) {
             try (final DatabaseQuery query = new DatabaseQuery(table)) {
                 query.execute();
-                System.out.println("Attempted to create " + table + " table!");
+                BridgeUtil.debug("Attempted to create " + table + " table!");
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
