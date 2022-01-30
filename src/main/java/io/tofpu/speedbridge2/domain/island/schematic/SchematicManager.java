@@ -32,14 +32,14 @@ public final class SchematicManager {
         }
         this.world = world;
 
-        protectWorld(world);
-
         final File bridgeWorld = new File(plugin.getDataFolder()
                 .getParentFile(), "speedbridge2");
         // if the bridge world exists, delete it on exit
         if (bridgeWorld.exists()) {
             bridgeWorld.deleteOnExit();
         }
+
+        protectWorld(world);
     }
 
     private void protectWorld(final @NotNull World world) {
@@ -52,7 +52,6 @@ public final class SchematicManager {
         world.setMonsterSpawnLimit(0);
 
         world.setGameRuleValue("doDaylightCycle", "false");
-        world.setGameRuleValue("DoWeatherCycle", "false");
     }
 
     public IslandPlot reservePlot(final GameIsland gameIsland) {

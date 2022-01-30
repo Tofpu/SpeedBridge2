@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2.listener.general;
 import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.listener.GameListener;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -16,6 +17,9 @@ public final class PlayerConnectionListener extends GameListener {
         // internally refreshing the BridgePlayer object, to avoid the Player object
         // from breaking
         playerService.internalRefresh(event.getPlayer());
+
+        // TODO: replace this with the `/speedbridge lobby` location
+        event.getPlayer().teleport(Bukkit.getWorld("world").getSpawnLocation());
     }
 
     @EventHandler
