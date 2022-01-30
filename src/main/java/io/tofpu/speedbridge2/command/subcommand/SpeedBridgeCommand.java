@@ -30,6 +30,15 @@ import static io.tofpu.speedbridge2.domain.common.util.MessageUtil.Symbols.CROSS
 public final class SpeedBridgeCommand {
     private final IslandService islandService = IslandService.INSTANCE;
 
+    @CommandMethod("speedbridge setlobby")
+    @CommandDescription("Sets the lobby location")
+    @CommandPermission("speedbridge.lobby.set")
+    public void onLobbySet(final BridgePlayer bridgePlayer) {
+        ConfigurationManager.INSTANCE.getLobbyCategory().setLobbyLocation(bridgePlayer.getPlayer().getLocation()).whenComplete((unused, throwable) -> {
+            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.LOBBY_SET_LOCATION);
+        });
+    }
+
     @ProxiedBy("createIsland")
     @CommandMethod("speedbridge create <slot>")
     @CommandDescription("Create an island with a defined slot")

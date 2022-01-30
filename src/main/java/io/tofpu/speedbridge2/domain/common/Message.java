@@ -5,6 +5,7 @@ import io.tofpu.speedbridge2.domain.common.util.*;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,6 +65,8 @@ public final class Message {
 
     public final String RELOADED = SUCCESS + "The config has been reloaded!";
 
+    public final String LOBBY_SET_LOCATION = SUCCESS + "The lobby location has been set!";
+
     public static CompletableFuture<Void> load(final File directory) {
         final File messageFile = new File(directory, "messages.yml");
         final boolean fileExists = messageFile.exists();
@@ -78,7 +81,7 @@ public final class Message {
 
         return CompletableFuture.runAsync(() -> {
             final List<String> fieldList = new ArrayList<>();
-            try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(messageFile), "UTF8"))) {
+            try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(messageFile), StandardCharsets.UTF_8))) {
                 while (reader.ready()) {
                     final String input = reader.readLine();
                     final String[] args = input.split(":");
@@ -141,7 +144,7 @@ public final class Message {
 
                 FIELD_MAP.put(field.getName(), field);
             }
-            System.out.println(FIELD_MAP);
+            BridgeUtil.debug(String.valueOf(FIELD_MAP));
         });
     }
 }

@@ -1,9 +1,11 @@
 package io.tofpu.speedbridge2.listener.general;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
+import io.tofpu.speedbridge2.domain.common.config.category.LobbyCategory;
+import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.listener.GameListener;
-import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -18,8 +20,16 @@ public final class PlayerConnectionListener extends GameListener {
         // from breaking
         playerService.internalRefresh(event.getPlayer());
 
-        // TODO: replace this with the `/speedbridge lobby` location
-        event.getPlayer().teleport(Bukkit.getWorld("world").getSpawnLocation());
+        final LobbyCategory lobbyCategory =
+                ConfigurationManager.INSTANCE.getLobbyCategory();
+
+        // if teleport_on_join is set to true, teleport the player to the lobby location
+        if (lobbyCategory.isTeleportOnJoin()) {
+            final Location location = lobbyCategory.getLobbyLocation();
+            if (location != null) {
+                event.getPlayer().teleport(location);
+            }
+        }
     }
 
     @EventHandler

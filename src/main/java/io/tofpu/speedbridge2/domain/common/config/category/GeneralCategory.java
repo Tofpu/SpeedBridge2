@@ -6,7 +6,6 @@ import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 @ConfigSerializable
 public final class GeneralCategory {
-
     @Setting("show-debug-message")
     @Comment("Useful when debugging")
     private boolean showDebugMessage = false;

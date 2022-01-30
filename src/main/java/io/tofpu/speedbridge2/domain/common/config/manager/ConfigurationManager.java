@@ -1,7 +1,11 @@
 package io.tofpu.speedbridge2.domain.common.config.manager;
 
+import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.config.PluginConfiguration;
 import io.tofpu.speedbridge2.domain.common.config.category.GeneralCategory;
+import io.tofpu.speedbridge2.domain.common.config.category.LobbyCategory;
+import io.tofpu.speedbridge2.domain.common.config.serializer.LocationSerializer;
+import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -28,7 +32,8 @@ public final class ConfigurationManager {
                 .path(plugin.getDataFolder()
                         .toPath()
                         .resolve("config.conf"))
-                .defaultOptions(configurationOptions -> configurationOptions.shouldCopyDefaults(true))
+                .defaultOptions(configurationOptions -> configurationOptions.shouldCopyDefaults(true)
+                        .serializers(builder -> builder.register(Location.class, LocationSerializer.INSTANCE)))
                 .build();
 
         try {
@@ -96,7 +101,22 @@ public final class ConfigurationManager {
         return configuration.getGeneralCategory();
     }
 
+    public LobbyCategory getLobbyCategory() {
+        return configuration.getLobbyCategory();
+    }
+
     public PluginConfiguration getConfiguration() {
         return configuration;
+    }
+
+    public CompletableFuture<Void> update() {
+        return PluginExecutor.runAsync(() -> {
+            try {
+                node.set(PluginConfiguration.class, configuration);
+                loader.save(node);
+            } catch (ConfigurateException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

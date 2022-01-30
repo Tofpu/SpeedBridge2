@@ -58,6 +58,8 @@ public class DatabaseManager {
     private static void loadTables() {
         // a hacky way to call the class's constructor
         Databases.ISLAND_DATABASE.toString();
+        Databases.PLAYER_DATABASE.toString();
+        Databases.STATS_DATABASE.toString();
 
         for (final String table : TABLE_QUEUE) {
             try (final DatabaseQuery query = new DatabaseQuery(table)) {

@@ -1,13 +1,15 @@
 package io.tofpu.speedbridge2.domain.island.object;
 
-import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
-import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
-import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
-import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
+import io.tofpu.speedbridge2.domain.common.config.category.LobbyCategory;
+import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
-import org.bukkit.Bukkit;
+import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
+import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
+import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
+import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -74,11 +76,19 @@ public final class GameIsland {
     }
 
     public void remove() {
-        final Player player = gamePlayer.getBridgePlayer().getPlayer();
+        final Player player = gamePlayer.getBridgePlayer()
+                .getPlayer();
 
-        // TODO: change this
-        player.getInventory().clear();
-        player.teleport(Bukkit.getWorld("world").getSpawnLocation());
+        player.getInventory()
+                .clear();
+
+        final LobbyCategory lobbyCategory = ConfigurationManager.INSTANCE.getLobbyCategory();
+
+        // teleport the player to the lobby location
+        final Location location = lobbyCategory.getLobbyLocation();
+        if (location != null) {
+            player.teleport(location);
+        }
 
         // remove the blocks
         gamePlayer.resetBlocks();
