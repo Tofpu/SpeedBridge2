@@ -25,7 +25,12 @@ public final class IslandService {
         });
     }
 
-    public Island createIsland(final int slot, final String category) {
+    public IslandHandler.IslandCreationResult createIsland(final int slot, final String category,
+            final String schematic) {
+        return this.islandHandler.createIsland(slot, category, schematic);
+    }
+
+    public IslandHandler.IslandCreationResult createIsland(final int slot, final String category) {
         return this.islandHandler.createIsland(slot, category);
     }
 

@@ -15,18 +15,27 @@ public final class IslandHandler {
         this.islands.putAll(loadedIslands);
     }
 
-    public Island createIsland(final int slot, final String category) {
+    public IslandCreationResult createIsland(final int slot, final String category) {
+        return createIsland(slot, category, "");
+    }
+
+    public IslandCreationResult createIsland(final int slot, final String category,
+            final String schematic) {
         final Island island = new Island(slot, category);
 
+        // if the schematic is not empty, and it doesn't exist, return UNKNOWN_SCHEMATIC!
+        if (!schematic.isEmpty() && !island.selectSchematic(schematic)) {
+            return IslandCreationResult.UNKNOWN_SCHEMATIC;
+        }
         final Island previousIsland = this.islands.putIfAbsent(slot, island);
 
         // if the island didn't exist beforehand, insert the object
         if (previousIsland == null) {
             Databases.ISLAND_DATABASE.insert(island);
-            return island;
+            return IslandCreationResult.SUCCESS;
         } else {
-            // otherwise, return null
-            return null;
+            // otherwise, return ISLAND_ALREADY_EXISTS
+            return IslandCreationResult.ISLAND_ALREADY_EXISTS;
         }
     }
 
@@ -56,5 +65,9 @@ public final class IslandHandler {
 
     public Collection<Island> getIslands() {
         return Collections.unmodifiableCollection(this.islands.values());
+    }
+
+    public static enum IslandCreationResult {
+        UNKNOWN_SCHEMATIC, ISLAND_ALREADY_EXISTS, SUCCESS
     }
 }

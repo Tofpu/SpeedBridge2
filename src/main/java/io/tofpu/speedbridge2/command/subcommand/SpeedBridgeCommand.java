@@ -8,6 +8,7 @@ import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
+import io.tofpu.speedbridge2.domain.island.IslandHandler;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.player.misc.Score;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static io.tofpu.speedbridge2.domain.common.Message.*;
+import static io.tofpu.speedbridge2.domain.common.Message.INSTANCE;
 import static io.tofpu.speedbridge2.domain.common.util.MessageUtil.Symbols.ARROW_RIGHT;
 import static io.tofpu.speedbridge2.domain.common.util.MessageUtil.Symbols.CROSS;
 
@@ -40,11 +41,12 @@ public final class SpeedBridgeCommand {
     }
 
     @ProxiedBy("createIsland")
-    @CommandMethod("speedbridge create <slot>")
+    @CommandMethod("speedbridge create <slot> <schematic>")
     @CommandDescription("Create an island with a defined slot")
     @CommandPermission("speedbridge.island.create")
     public void onIslandCreate(final CommonBridgePlayer<?> player, final @Argument("slot")
-            int slot, @Flag("c") String category, final @Flag("s") String schematic) {
+            int slot, final @Argument("schematic") String schematic,
+            @Flag("c") String category) {
         final CommandSender sender = player.getPlayer();
 
         if (category == null || category.isEmpty()) {
@@ -52,24 +54,19 @@ public final class SpeedBridgeCommand {
                     .getDefaultIslandCategory();
         }
 
-        if (islandService.createIsland(slot, category) == null) {
+        final IslandHandler.IslandCreationResult result = islandService.createIsland(slot, category, schematic);
+        if (result == IslandHandler.IslandCreationResult.ISLAND_ALREADY_EXISTS) {
             BridgeUtil.sendMessage(sender, String.format(INSTANCE.ISLAND_ALREADY_EXISTS,
                     slot + ""));
             return;
         }
 
-        if (schematic == null || schematic.isEmpty()) {
-            BridgeUtil.sendMessage(sender, String.format(INSTANCE.ISLAND_HAS_BEEN_CREATED,
-                    slot + ""));
-            return;
-        }
-
-        final Island island = islandService.findIslandBy(slot);
         final String message;
-        if (island.selectSchematic(schematic)) {
-            message = String.format(INSTANCE.ISLAND_HAS_BEEN_CREATED_SCHEMATIC, slot + "", schematic);
-        } else {
+        if (result == IslandHandler.IslandCreationResult.UNKNOWN_SCHEMATIC) {
             message = String.format(INSTANCE.INVALID_SCHEMATIC, schematic);
+        } else {
+            message = String.format(INSTANCE.ISLAND_HAS_BEEN_CREATED_SCHEMATIC,
+                    slot + "", schematic);
         }
         BridgeUtil.sendMessage(sender, message);
     }

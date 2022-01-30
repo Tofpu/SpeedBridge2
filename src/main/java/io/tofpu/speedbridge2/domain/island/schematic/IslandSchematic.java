@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 
 public class IslandSchematic {
-    private String schematicName;
+    private String schematicName = "";
     private Clipboard schematicClipboard;
 
     public IslandSchematic() {}
