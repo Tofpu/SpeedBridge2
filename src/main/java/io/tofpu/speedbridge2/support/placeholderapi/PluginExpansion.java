@@ -84,7 +84,7 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 return BridgeUtil.formatNumber(bestScore.getScore());
             case "timer":
                 if (gamePlayer == null || !gamePlayer.hasTimerStarted()) {
-                    return "";
+                    return "0";
                 }
                 return BridgeUtil.formatNumber(BridgeUtil.nanoToSeconds(gamePlayer.getTimer()));
             case "total_wins":
