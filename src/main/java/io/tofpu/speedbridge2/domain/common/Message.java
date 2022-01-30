@@ -39,7 +39,7 @@ public final class Message {
 
     public final String INVALID_ISLAND_ARGUMENT =
             ERROR + "Invalid argument. Please choose a slot, or an island category" +
-            ". alternatively, you could run the \"/randomjoin\" command.";
+            ".\n" + ERROR + "Alternatively, you could run the \"/randomjoin\" command.";
     public final String INVALID_ISLAND = ERROR + "Island %s cannot be found!";
     public final String NO_AVAILABLE_ISLAND = ERROR + "There is no island available " +
                                               "at the moment... please try again " +
@@ -56,7 +56,7 @@ public final class Message {
             "<yellow>" + SCORE_TITLE_BAR + "  " + "<gold><bold" +
             "> YOUR SCORES</bold></gold>" + " " + SCORE_TITLE_BAR;
 
-    public final String JOINED_AN_ISLAND = SUCCESS + "You joined the " + "island %s!";
+    public final String JOINED_AN_ISLAND = SUCCESS + "You're now on island %s!";
     public final String LEFT_AN_ISLAND = SUCCESS + "You left from island" + " %s!";
     public final String NOT_IN_A_ISLAND = ERROR + "You're not on an island!";
 
