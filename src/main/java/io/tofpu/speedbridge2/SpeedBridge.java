@@ -27,6 +27,8 @@ public final class SpeedBridge {
     public void load() {
         adventure = BukkitAudiences.create(javaPlugin);
 
+        ConfigurationManager.INSTANCE.load(javaPlugin);
+
         DatabaseManager.load(javaPlugin).thenRun(() -> {
             final IslandService islandService = IslandService.INSTANCE;
             islandService.load();
@@ -48,7 +50,6 @@ public final class SpeedBridge {
             new PluginExpansion(javaPlugin);
         }
 
-        ConfigurationManager.INSTANCE.load(javaPlugin);
         SchematicManager.INSTANCE.load(javaPlugin);
         CommandManager.load(javaPlugin);
 
