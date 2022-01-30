@@ -1,8 +1,8 @@
 package io.tofpu.speedbridge2.domain.island.schematic;
 
 import com.sk89q.worldedit.WorldEditException;
-import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.object.GameIsland;
+import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import org.bukkit.Bukkit;
@@ -10,6 +10,7 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,16 +32,33 @@ public final class SchematicManager {
         }
         this.world = world;
 
-        final File bridgeWorld = new File(plugin.getDataFolder().getParentFile(), "speedbridge2");
+        protectWorld(world);
+
+        final File bridgeWorld = new File(plugin.getDataFolder()
+                .getParentFile(), "speedbridge2");
         // if the bridge world exists, delete it on exit
         if (bridgeWorld.exists()) {
             bridgeWorld.deleteOnExit();
         }
     }
 
+    private void protectWorld(final @NotNull World world) {
+        world.setFullTime(1000);
+        world.setWeatherDuration(0);
+        world.setStorm(false);
+        world.setThundering(false);
+        world.setPVP(false);
+        world.setAutoSave(false);
+        world.setMonsterSpawnLimit(0);
+
+        world.setGameRuleValue("doDaylightCycle", "false");
+        world.setGameRuleValue("DoWeatherCycle", "false");
+    }
+
     public IslandPlot reservePlot(final GameIsland gameIsland) {
         if (world == null) {
-            Bukkit.getLogger().severe("The SpeedBridge2 world cannot be found! cancelled player's request to reserve a plot.");
+            Bukkit.getLogger()
+                    .severe("The SpeedBridge2 world cannot be found! cancelled player's request to reserve a plot.");
             return null;
         }
 
