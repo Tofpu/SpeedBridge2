@@ -1,13 +1,15 @@
 <div align="center">
-  <img src="speedbridge-banner-512-noborder.png" alt="SpeedBridge v2 Banner">
   <h1>SpeedBridge v2 Project</h1>
 </div>
 
-## BETA VERSION
-If you'd like to get your hands on the beta version of SpeedBridge v2, download it at [Nightly](https://speedbridge.tofpu.me/download).
+__SpeedBridge v2__ is the second generation of the SpeedBridge project. The initial goal is to take things further where the previous generation couldn't do best.
 
-## CONTRIBUTE 
-If you'd like to contribute to the project, please contact me on discord before doing so.
+You can download the __beta version__ at [here](https://speedbridge.tofpu.me/download).  
+You can join our Discord server at [here](https://discord.gg/rjks6D5Ynq).
 
-## DISCORD
-You can join our discord at https://discord.gg/rjks6D5Ynq
+Features
+---
+- Dynamic Island Creation
+- Database Support (only supports SQLite, MySQL is coming soon)
+- Block Menu  
+...and many more!
