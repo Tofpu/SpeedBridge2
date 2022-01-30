@@ -63,7 +63,7 @@ public final class SpeedBridgeCommand {
 
         final String message;
         if (result == IslandHandler.IslandCreationResult.UNKNOWN_SCHEMATIC) {
-            message = String.format(INSTANCE.INVALID_SCHEMATIC, schematic);
+            message = String.format(INSTANCE.UNKNOWN_SCHEMATIC, schematic);
         } else {
             message = String.format(INSTANCE.ISLAND_HAS_BEEN_CREATED_SCHEMATIC,
                     slot + "", schematic);
@@ -126,7 +126,7 @@ public final class SpeedBridgeCommand {
                                 slot + "", schematic, selectType);
                         break;
                     }
-                    message = String.format(INSTANCE.INVALID_SCHEMATIC, schematic);
+                    message = String.format(INSTANCE.UNKNOWN_SCHEMATIC, schematic);
                     break;
             }
         }

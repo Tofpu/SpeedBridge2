@@ -21,28 +21,29 @@ public final class Message {
     public final String ERROR = "<red>" + MessageUtil.Symbols.WARNING.getSymbol() + " ";
     @IgnoreMessage
     public final String SUCCESS =
-            "<gold><bold>" + MessageUtil.Symbols.CROSS.getSymbol() + "</bold> <yellow>";
+            "<gold><bold>" + MessageUtil.Symbols.ARROW_RIGHT.getSymbol() +
+            "</bold> <yellow>";
 
     public final String ISLAND_ALREADY_EXISTS = ERROR + "Island %s already exists!";
 
     public final String ISLAND_HAS_BEEN_CREATED =
             SUCCESS + "Island %s has been " + "created!";
     public final String ISLAND_HAS_BEEN_CREATED_SCHEMATIC =
-            ISLAND_HAS_BEEN_CREATED + " with %s chosen as a schematic!";
+            ISLAND_HAS_BEEN_CREATED.replaceAll("!", "") + " with \"%s\" chosen as a " +
+            "schematic!";
 
     public final String VALID_SELECT =
             SUCCESS + "Island %s has selected" + " \"%s\" " + "as a " + "%s!";
 
-    public final String INVALID_SCHEMATIC =
-            ERROR + "\"%s\" cannot be found as a schematic";
+    public final String UNKNOWN_SCHEMATIC = ERROR + "Schematic \"%s\" cannot be found";
 
     public final String INVALID_ISLAND_ARGUMENT =
-            ERROR + "You have to insert a " + "slot or a category" +
-            ". or you could run the /randomjoin command.";
+            ERROR + "Invalid argument. Please choose a slot, or an island category" +
+            ". alternatively, you could run the \"/randomjoin\" command.";
     public final String INVALID_ISLAND = ERROR + "Island %s cannot be found!";
     public final String NO_AVAILABLE_ISLAND = ERROR + "There is no island available " +
-                                               "at the moment... please try again " +
-                                               "later!";
+                                              "at the moment... please try again " +
+                                              "later!";
 
     public final String ALREADY_IN_A_ISLAND =
             ERROR + "You're already on an " + "island!";
@@ -75,8 +76,10 @@ public final class Message {
 
         final Class<Message> messageClass = Message.class;
         if (!fileExists) {
-            FileUtil.write(messageFile, false, ReflectionUtil.toString(FIELD_MAP, messageClass));
-            return CompletableFuture.completedFuture(null);
+            return CompletableFuture.runAsync(() -> {
+                FileUtil.write(messageFile, false, ReflectionUtil.toString(FIELD_MAP,
+                        messageClass));
+            });
         }
 
         return CompletableFuture.runAsync(() -> {
