@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2.support.placeholderapi;
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.IslandService;
+import io.tofpu.speedbridge2.domain.leaderboard.Leaderboard;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.Score;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
@@ -94,6 +95,8 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 if (playerStatType != null) {
                     return bridgePlayer.findStatBy(playerStatType).getValue();
                 }
+            case "position":
+                return Leaderboard.INSTANCE.retrieve(player.getUniqueId()).getPosition() + "";
         }
 
         return "";
