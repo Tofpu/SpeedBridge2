@@ -2,27 +2,33 @@ package io.tofpu.speedbridge2.domain.leaderboard;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.leaderboard.loader.BoardLoader;
 import io.tofpu.speedbridge2.domain.leaderboard.loader.IslandLoader;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.GlobalBoardPlayer;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
+import io.tofpu.speedbridge2.domain.player.PlayerService;
+import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 
+import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public final class Leaderboard {
     public static final Leaderboard INSTANCE = new Leaderboard();
 
+    private final Map<Integer, GlobalBoardPlayer> globalMap;
     private final LoadingCache<UUID, GlobalBoardPlayer> playerCache;
     private final LoadingCache<UUID, IslandBoardPlayer> playerIslandCache;
 
     private final ScheduledExecutorService executorService;
 
     private Leaderboard() {
+        this.globalMap = new ConcurrentHashMap<>();
+
         this.playerCache = CacheBuilder.newBuilder()
                 .expireAfterAccess(5, TimeUnit.SECONDS)
                 .build(BoardLoader.INSTANCE);
@@ -41,6 +47,30 @@ public final class Leaderboard {
                     .keySet()) {
                 this.playerCache.refresh(uuid);
             }
+
+            try (final DatabaseQuery databaseQuery = new DatabaseQuery(
+                    "SELECT * FROM " + "scores ORDER BY score " + "LIMIT 10 OFFSET 0")) {
+                final Map<Integer, GlobalBoardPlayer> globalBoardMap = new HashMap<>();
+
+                try (final ResultSet resultSet = databaseQuery.executeQuery()) {
+                    while (resultSet.next()) {
+                        final int position = resultSet.getRow();
+                        final UUID uuid = UUID.fromString(resultSet.getString("uid"));
+                        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uuid);
+
+                        final GlobalBoardPlayer value = new GlobalBoardPlayer(position, bridgePlayer);
+
+                        globalBoardMap.put(position, value);
+                    }
+                }
+                System.out.println(globalBoardMap);
+
+                this.globalMap.clear();
+                this.globalMap.putAll(globalBoardMap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }, 1, 10, TimeUnit.SECONDS);
     }
 
@@ -73,5 +103,12 @@ public final class Leaderboard {
 
     public void shutdown() {
         executorService.shutdownNow();
+    }
+
+    public CompletableFuture<GlobalBoardPlayer> retrieve(final int position) {
+        final GlobalBoardPlayer boardPlayer = globalMap.get(position);
+        System.out.println("position: " + position);
+
+        return CompletableFuture.completedFuture(boardPlayer);
     }
 }

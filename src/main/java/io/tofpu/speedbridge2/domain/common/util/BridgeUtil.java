@@ -6,6 +6,7 @@ import io.tofpu.speedbridge2.domain.player.object.CommonBridgePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.util.Vector;
 
@@ -50,5 +51,9 @@ public final class BridgeUtil {
         if (ConfigurationManager.INSTANCE.getGeneralCategory().isDebugEnabled()) {
             Bukkit.getLogger().info("[DEBUG] " + message);
         }
+    }
+
+    public static String translate(final String replace) {
+        return ChatColor.translateAlternateColorCodes('&', replace);
     }
 }

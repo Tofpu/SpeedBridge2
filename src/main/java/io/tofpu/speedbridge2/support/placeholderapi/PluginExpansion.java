@@ -77,16 +77,17 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 }
                 return BridgeUtil.formatNumber(BridgeUtil.nanoToSeconds(gamePlayer.getTimer()));
             case "position": // %speedbridge_position% returns the player's global position
-                final String[] positionArg = params.split("_");
-
-                if (positionArg.length == 2) {
-                    final CompletableFuture<IslandBoardPlayer.IslandBoard> retrieve = Leaderboard.INSTANCE.retrieve(player.getUniqueId(), Integer.parseInt(positionArg[1]));
+                if (args.length == 2) {
+                    final CompletableFuture<IslandBoardPlayer.IslandBoard> retrieve =
+                            Leaderboard.INSTANCE.retrieve(player.getUniqueId(),
+                                    Integer.parseInt(args[1]));
                     if (!retrieve.isDone()) {
                         return "";
                     }
 
                     try {
-                        return retrieve.get().getPosition() + "";
+                        return retrieve.get()
+                                       .getPosition() + "";
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
@@ -100,10 +101,52 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 }
 
                 try {
-                    return boardRetrieve.get().getPosition() + "";
+                    return boardRetrieve.get()
+                                   .getPosition() + "";
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
+                break;
+            case "leaderboard":
+                if (args.length != 3) {
+                    return "";
+                }
+                final int position = Integer.parseInt(args[2]);
+
+                final CompletableFuture<GlobalBoardPlayer> globalBoard = Leaderboard.INSTANCE.retrieve(position);
+                // if the retrieve process is not immediate, return empty
+                if (!globalBoard.isDone()) {
+                    return "";
+                }
+
+                final GlobalBoardPlayer globalBoardPlayer;
+                try {
+                    globalBoardPlayer = globalBoard.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                    return "";
+                }
+
+                if (globalBoardPlayer == null) {
+                    return "";
+                }
+
+                Score bestScore = null;
+                for (final Score score : globalBoardPlayer.getBridgePlayer().getScores()) {
+                    if (bestScore != null && score.compareTo(bestScore) > 0) {
+                        continue;
+                    }
+                    bestScore = score;
+                }
+
+                if (bestScore == null) {
+                    return "";
+                }
+
+                return BridgeUtil.translate(Message.INSTANCE.LEADERBOARD_FORMAT.replace("%position%",
+                        globalBoardPlayer.getPosition() + "").replace("%name%",
+                        player.getName()).replace("%score%",
+                        BridgeUtil.formatNumber(bestScore.getScore())));
         }
 
         // if the param length is lower than two, don't continue
