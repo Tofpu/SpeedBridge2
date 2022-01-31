@@ -69,38 +69,13 @@ public final class PluginExpansion extends PlaceholderExpansion {
         final BridgePlayer bridgePlayer = playerService.get(player.getUniqueId());
         final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
 
-        switch (params.split("_")[0]) {
-            case "island_slot":
-                if (gamePlayer == null) {
-                    return "";
-                }
-                return gamePlayer.getCurrentGame().getIsland().getSlot() + "";
-            case "best_score":
-                Score bestScore = null;
-                for (final Score score : bridgePlayer.getScores()) {
-                    if (bestScore != null && score.compareTo(bestScore) >= 1) {
-                        continue;
-                    }
-                    bestScore = score;
-                }
-
-                if (bestScore == null) {
-                    return Message.INSTANCE.EMPTY_SCORE_FORMAT;
-                }
-
-                return BridgeUtil.formatNumber(bestScore.getScore());
+        final String[] args = params.split("_");
+        switch (args[0]) {
             case "timer":
                 if (gamePlayer == null || !gamePlayer.hasTimerStarted()) {
                     return "0";
                 }
                 return BridgeUtil.formatNumber(BridgeUtil.nanoToSeconds(gamePlayer.getTimer()));
-            case "total_wins":
-            case "total_tries":
-                final PlayerStatType playerStatType = PlayerStatType.match(params);
-                // this shouldn't be null
-                if (playerStatType != null) {
-                    return bridgePlayer.findStatBy(playerStatType).getValue();
-                }
             case "position": // %speedbridge_position% returns the player's global position
                 final String[] positionArg = params.split("_");
 
@@ -131,6 +106,39 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 }
         }
 
+        // if the param length is lower than two, don't continue
+        if (params.length() < 2) {
+            return "";
+        }
+
+        switch (params) {
+            case "island_slot":
+                if (gamePlayer == null) {
+                    return "";
+                }
+                return gamePlayer.getCurrentGame().getIsland().getSlot() + "";
+            case "best_score":
+                Score bestScore = null;
+                for (final Score score : bridgePlayer.getScores()) {
+                    if (bestScore != null && score.compareTo(bestScore) >= 1) {
+                        continue;
+                    }
+                    bestScore = score;
+                }
+
+                if (bestScore == null) {
+                    return Message.INSTANCE.EMPTY_SCORE_FORMAT;
+                }
+
+                return BridgeUtil.formatNumber(bestScore.getScore());
+            case "total_wins":
+            case "total_tries":
+                final PlayerStatType playerStatType = PlayerStatType.match(params);
+                // this shouldn't be null
+                if (playerStatType != null) {
+                    return bridgePlayer.findStatBy(playerStatType).getValue();
+                }
+        }
         return "";
     }
 }
