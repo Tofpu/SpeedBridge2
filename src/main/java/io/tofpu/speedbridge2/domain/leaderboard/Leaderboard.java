@@ -6,6 +6,7 @@ import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandPlayer;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -28,23 +29,40 @@ public final class Leaderboard {
     }
 
     public void load() {
-        executorService
-                .scheduleWithFixedDelay(() -> {
-                    System.out.println("refreshing!");
-                    for (final UUID uuid : playerCache.asMap()
-                            .keySet()) {
-                        this.playerCache.refresh(uuid);
-                    }
-                }, 1, 10, TimeUnit.SECONDS);
+        executorService.scheduleWithFixedDelay(() -> {
+            System.out.println("refreshing!");
+            for (final UUID uuid : playerCache.asMap()
+                    .keySet()) {
+                this.playerCache.refresh(uuid);
+            }
+        }, 1, 10, TimeUnit.SECONDS);
     }
 
-    public BoardPlayer retrieve(final UUID uniqueId) {
-        return playerCache.getUnchecked(uniqueId);
+    public CompletableFuture<BoardPlayer> retrieve(final UUID uniqueId) {
+        final BoardPlayer player = playerCache.asMap()
+                .get(uniqueId);
+
+        if (player != null) {
+            return CompletableFuture.completedFuture(player);
+        }
+
+        return CompletableFuture.supplyAsync(() -> playerCache.getUnchecked(uniqueId));
     }
 
-    public IslandPlayer.IslandBoard retrieve(final UUID uniqueId, final int islandSlot) {
-        System.out.println("ran the retrieve method: " + uniqueId + " on " + islandSlot);
-        return playerIslandCache.getUnchecked(uniqueId).retrieve(islandSlot);
+    public CompletableFuture<IslandPlayer.IslandBoard> retrieve(final UUID uniqueId, final int islandSlot) {
+        final IslandPlayer player = playerIslandCache.asMap()
+                .get(uniqueId);
+
+        if (player != null) {
+            final CompletableFuture<IslandPlayer.IslandBoard> islandBoard = player.retrieve(islandSlot);
+
+            if (islandBoard.isDone()) {
+                return islandBoard;
+            }
+        }
+
+        return playerIslandCache.getUnchecked(uniqueId)
+                .retrieve(islandSlot);
     }
 
     public void shutdown() {

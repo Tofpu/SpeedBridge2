@@ -4,6 +4,8 @@ import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.leaderboard.Leaderboard;
+import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandPlayer;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.Score;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
@@ -14,6 +16,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public final class PluginExpansion extends PlaceholderExpansion {
     private final Plugin plugin;
@@ -99,18 +104,31 @@ public final class PluginExpansion extends PlaceholderExpansion {
             case "position": // %speedbridge_position% returns the player's global position
                 final String[] positionArg = params.split("_");
 
-                // TODO: TO FUTURE TOFPU
-                // TO MAKE THE PER ISLAND LEADERBOARD WORK
-                // WE MIGHT HAVE TO QUERY THAT SQL TOO
-                // WHEN ATTMPEING TO RETIREVE THE BOARD
-                // OBJECT
-
                 if (positionArg.length == 2) {
-                    return Leaderboard.INSTANCE.retrieve(player.getUniqueId(),
-                            Integer.parseInt(positionArg[1])).getPosition() + "";
+                    final CompletableFuture<IslandPlayer.IslandBoard> retrieve = Leaderboard.INSTANCE.retrieve(player.getUniqueId(), Integer.parseInt(positionArg[1]));
+                    if (!retrieve.isDone()) {
+                        return "";
+                    }
+
+                    try {
+                        return retrieve.get().getPosition() + "";
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    return "";
                 }
 
-                return Leaderboard.INSTANCE.retrieve(player.getUniqueId()).getPosition() + "";
+                final CompletableFuture<BoardPlayer> boardRetrieve = Leaderboard.INSTANCE.retrieve(player.getUniqueId());
+                // if the retrieve process is not immediate, return empty
+                if (!boardRetrieve.isDone()) {
+                    return "";
+                }
+
+                try {
+                    return boardRetrieve.get().getPosition() + "";
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
         }
 
         return "";

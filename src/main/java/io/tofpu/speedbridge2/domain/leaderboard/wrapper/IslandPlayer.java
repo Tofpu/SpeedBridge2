@@ -1,10 +1,12 @@
 package io.tofpu.speedbridge2.domain.leaderboard.wrapper;
 
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class IslandPlayer {
@@ -20,14 +22,13 @@ public final class IslandPlayer {
         this.boardMap = new ConcurrentHashMap<>();
     }
 
-    // TODO: MAKE THIS OPERATION ASYNC
-    public IslandBoard retrieve(final int islandSlot) {
+    public @NotNull CompletableFuture<IslandBoard> retrieve(final int islandSlot) {
         System.out.println("attempting to retrieve board for " + owner);
 
         // TODO: improve this later
         if (boardMap.containsKey(islandSlot)) {
             System.out.println("found existing board " + owner);
-            return boardMap.get(islandSlot);
+            return CompletableFuture.completedFuture(boardMap.get(islandSlot));
         }
 
         System.out.println("attempting to query to database for board for " + owner);
@@ -38,13 +39,13 @@ public final class IslandPlayer {
             try (final ResultSet resultSet = databaseQuery.executeQuery()) {
                 final IslandBoard islandBoard = new IslandBoard(resultSet.getInt(1), islandSlot);
                 boardMap.put(islandSlot, islandBoard);
-                return islandBoard;
+                return CompletableFuture.completedFuture(islandBoard);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return null;
+        return CompletableFuture.completedFuture(null);
     }
 
     public UUID getOwner() {

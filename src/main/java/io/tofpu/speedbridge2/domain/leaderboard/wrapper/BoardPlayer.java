@@ -20,5 +20,14 @@ public final class BoardPlayer {
         return bridgePlayer;
     }
 
-
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("BoardPlayer{");
+        sb.append("position=")
+                .append(position);
+        sb.append(", bridgePlayer=")
+                .append(bridgePlayer);
+        sb.append('}');
+        return sb.toString();
+    }
 }
