@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2.support.placeholderapi;
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.IslandService;
+import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.leaderboard.Leaderboard;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.GlobalBoardPlayer;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
@@ -108,23 +109,35 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 }
                 break;
             case "leaderboard":
-                if (args.length != 3) {
+                if (args.length < 3) {
                     return "";
                 }
+
                 final int position = Integer.parseInt(args[2]);
+                GlobalBoardPlayer globalBoardPlayer = null;
+                if (args[1].equalsIgnoreCase("global")) {
 
-                final CompletableFuture<GlobalBoardPlayer> globalBoard = Leaderboard.INSTANCE.retrieve(position);
-                // if the retrieve process is not immediate, return empty
-                if (!globalBoard.isDone()) {
-                    return "";
-                }
+                    final CompletableFuture<GlobalBoardPlayer> globalBoard = Leaderboard.INSTANCE.retrieve(position);
+                    // if the retrieve process is not immediate, return empty
+                    if (!globalBoard.isDone()) {
+                        return "";
+                    }
 
-                final GlobalBoardPlayer globalBoardPlayer;
-                try {
-                    globalBoardPlayer = globalBoard.get();
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                    return "";
+                    try {
+                        globalBoardPlayer = globalBoard.get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                        return "";
+                    }
+                } else {
+                    final int islandSlot = Integer.parseInt(args[1]);
+                    final Island island = IslandService.INSTANCE.findIslandBy(islandSlot);
+
+                    if (island == null) {
+                        return "";
+                    }
+
+                    globalBoardPlayer = island.retrieveBy(position);
                 }
 
                 if (globalBoardPlayer == null) {
@@ -132,7 +145,8 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 }
 
                 Score bestScore = null;
-                for (final Score score : globalBoardPlayer.getBridgePlayer().getScores()) {
+                for (final Score score : globalBoardPlayer.getBridgePlayer()
+                        .getScores()) {
                     if (bestScore != null && score.compareTo(bestScore) > 0) {
                         continue;
                     }
@@ -144,9 +158,9 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 }
 
                 return BridgeUtil.translate(Message.INSTANCE.LEADERBOARD_FORMAT.replace("%position%",
-                        globalBoardPlayer.getPosition() + "").replace("%name%",
-                        player.getName()).replace("%score%",
-                        BridgeUtil.formatNumber(bestScore.getScore())));
+                                globalBoardPlayer.getPosition() + "")
+                        .replace("%name%", player.getName())
+                        .replace("%score%", BridgeUtil.formatNumber(bestScore.getScore())));
         }
 
         // if the param length is lower than two, don't continue

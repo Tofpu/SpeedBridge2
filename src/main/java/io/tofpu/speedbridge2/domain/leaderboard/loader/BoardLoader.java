@@ -36,7 +36,7 @@ public final class BoardLoader extends CacheLoader<UUID, GlobalBoardPlayer> impl
         try (final DatabaseQuery databaseQuery = new DatabaseQuery(GLOBAL_POSITION)) {
             databaseQuery.setString(1, key.toString());
             try (final ResultSet resultSet = databaseQuery.executeQuery()) {
-                return new GlobalBoardPlayer(resultSet.getInt(1), PlayerService.INSTANCE.get(key));
+                return new GlobalBoardPlayer(resultSet.getInt(1), key, PlayerService.INSTANCE.get(key));
             }
         } catch (Exception e) {
             e.printStackTrace();

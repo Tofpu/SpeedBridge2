@@ -2,24 +2,41 @@ package io.tofpu.speedbridge2.domain.island.object;
 
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.schematic.IslandSchematic;
+import io.tofpu.speedbridge2.domain.leaderboard.wrapper.GlobalBoardPlayer;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
-import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Island extends IslandSchematic {
     private final int slot;
 
+    private final Map<Integer, GlobalBoardPlayer> scoreMap;
     private final Map<GamePlayer, GameIsland> islandMap = new HashMap<>();
     private String category;
 
     public Island(final int slot, final String category) {
         this.slot = slot;
         this.category = category;
+        this.scoreMap = new IslandBoard(slot);
+    }
+
+    public GlobalBoardPlayer retrieveBy(final int position) {
+        return scoreMap.get(position);
+    }
+
+    public GlobalBoardPlayer retrieveBy(final UUID uniqueId) {
+        for (final GlobalBoardPlayer globalBoardPlayer : scoreMap.values()) {
+            if (globalBoardPlayer.getOwner().equals(uniqueId)) {
+                return globalBoardPlayer;
+            }
+        }
+        return null;
     }
 
     public Map.Entry<GamePlayer, GameIsland> generateGame(final BridgePlayer player) {

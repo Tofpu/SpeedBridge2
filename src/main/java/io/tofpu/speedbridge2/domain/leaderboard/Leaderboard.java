@@ -58,7 +58,8 @@ public final class Leaderboard {
                         final UUID uuid = UUID.fromString(resultSet.getString("uid"));
                         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uuid);
 
-                        final GlobalBoardPlayer value = new GlobalBoardPlayer(position, bridgePlayer);
+                        final GlobalBoardPlayer value = new GlobalBoardPlayer(position,
+                                uuid, bridgePlayer);
 
                         globalBoardMap.put(position, value);
                     }
@@ -106,6 +107,13 @@ public final class Leaderboard {
     }
 
     public CompletableFuture<GlobalBoardPlayer> retrieve(final int position) {
+        final GlobalBoardPlayer boardPlayer = globalMap.get(position);
+        System.out.println("position: " + position);
+
+        return CompletableFuture.completedFuture(boardPlayer);
+    }
+
+    public CompletableFuture<GlobalBoardPlayer> retrieve(final int islandSlot, final int position) {
         final GlobalBoardPlayer boardPlayer = globalMap.get(position);
         System.out.println("position: " + position);
 
