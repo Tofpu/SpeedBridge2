@@ -4,8 +4,8 @@ import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.leaderboard.Leaderboard;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandPlayer;
+import io.tofpu.speedbridge2.domain.leaderboard.wrapper.GlobalBoardPlayer;
+import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.Score;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
@@ -80,7 +80,7 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 final String[] positionArg = params.split("_");
 
                 if (positionArg.length == 2) {
-                    final CompletableFuture<IslandPlayer.IslandBoard> retrieve = Leaderboard.INSTANCE.retrieve(player.getUniqueId(), Integer.parseInt(positionArg[1]));
+                    final CompletableFuture<IslandBoardPlayer.IslandBoard> retrieve = Leaderboard.INSTANCE.retrieve(player.getUniqueId(), Integer.parseInt(positionArg[1]));
                     if (!retrieve.isDone()) {
                         return "";
                     }
@@ -93,7 +93,7 @@ public final class PluginExpansion extends PlaceholderExpansion {
                     return "";
                 }
 
-                final CompletableFuture<BoardPlayer> boardRetrieve = Leaderboard.INSTANCE.retrieve(player.getUniqueId());
+                final CompletableFuture<GlobalBoardPlayer> boardRetrieve = Leaderboard.INSTANCE.retrieve(player.getUniqueId());
                 // if the retrieve process is not immediate, return empty
                 if (!boardRetrieve.isDone()) {
                     return "";

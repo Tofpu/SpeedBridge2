@@ -2,12 +2,11 @@ package io.tofpu.speedbridge2.domain.leaderboard.wrapper;
 
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 
-public final class BoardPlayer {
+public final class GlobalBoardPlayer {
     private final int position;
     private final BridgePlayer bridgePlayer;
 
-
-    public BoardPlayer(final int position, final BridgePlayer bridgePlayer) {
+    public GlobalBoardPlayer(final int position, final BridgePlayer bridgePlayer) {
         this.position = position;
         this.bridgePlayer = bridgePlayer;
     }

@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.domain.leaderboard.wrapper;
 
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -9,7 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class IslandPlayer {
+public final class IslandBoardPlayer {
     private static final String ISLAND_POSITION =
             "SELECT 1 + COUNT(*) AS position FROM scores WHERE islandSlot = ? AND score" +
             " < " + "(SELECT score " + "FROM scores WHERE uid = ?)";
@@ -17,21 +18,24 @@ public final class IslandPlayer {
     private final UUID owner;
     private final Map<Integer, IslandBoard> boardMap;
 
-    public IslandPlayer(final UUID owner) {
+    public IslandBoardPlayer(final UUID owner) {
         this.owner = owner;
         this.boardMap = new ConcurrentHashMap<>();
     }
 
     public @NotNull CompletableFuture<IslandBoard> retrieve(final int islandSlot) {
-        System.out.println("attempting to retrieve board for " + owner);
+        BridgeUtil.debug("attempting to retrieve board for " + owner + ", " + islandSlot);
 
-        // TODO: improve this later
-        if (boardMap.containsKey(islandSlot)) {
-            System.out.println("found existing board " + owner);
-            return CompletableFuture.completedFuture(boardMap.get(islandSlot));
+        final IslandBoard cachedValue = boardMap.get(islandSlot);
+        // if the cached value is not null
+        if (cachedValue != null) {
+            // return the cached value
+
+            BridgeUtil.debug("found existing value " + owner + ", " + islandSlot);
+            return CompletableFuture.completedFuture(cachedValue);
         }
 
-        System.out.println("attempting to query to database for board for " + owner);
+        BridgeUtil.debug("attempting to query to database for board for " + owner + ", " + islandSlot);
         try (final DatabaseQuery databaseQuery = new DatabaseQuery(ISLAND_POSITION)) {
             databaseQuery.setInt(1, islandSlot);
             databaseQuery.setString(2, owner.toString());
