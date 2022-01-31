@@ -6,6 +6,7 @@ public final class BoardPlayer {
     private final int position;
     private final BridgePlayer bridgePlayer;
 
+
     public BoardPlayer(final int position, final BridgePlayer bridgePlayer) {
         this.position = position;
         this.bridgePlayer = bridgePlayer;
@@ -18,4 +19,6 @@ public final class BoardPlayer {
     public BridgePlayer getBridgePlayer() {
         return bridgePlayer;
     }
+
+
 }

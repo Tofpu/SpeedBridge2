@@ -63,7 +63,8 @@ public final class PluginExpansion extends PlaceholderExpansion {
 
         final BridgePlayer bridgePlayer = playerService.get(player.getUniqueId());
         final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
-        switch (params) {
+
+        switch (params.split("_")[0]) {
             case "island_slot":
                 if (gamePlayer == null) {
                     return "";
@@ -95,7 +96,20 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 if (playerStatType != null) {
                     return bridgePlayer.findStatBy(playerStatType).getValue();
                 }
-            case "position":
+            case "position": // %speedbridge_position% returns the player's global position
+                final String[] positionArg = params.split("_");
+
+                // TODO: TO FUTURE TOFPU
+                // TO MAKE THE PER ISLAND LEADERBOARD WORK
+                // WE MIGHT HAVE TO QUERY THAT SQL TOO
+                // WHEN ATTMPEING TO RETIREVE THE BOARD
+                // OBJECT
+
+                if (positionArg.length == 2) {
+                    return Leaderboard.INSTANCE.retrieve(player.getUniqueId(),
+                            Integer.parseInt(positionArg[1])).getPosition() + "";
+                }
+
                 return Leaderboard.INSTANCE.retrieve(player.getUniqueId()).getPosition() + "";
         }
 
