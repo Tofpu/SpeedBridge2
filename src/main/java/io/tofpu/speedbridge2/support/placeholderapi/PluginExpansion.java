@@ -113,8 +113,9 @@ public final class PluginExpansion extends PlaceholderExpansion {
                     return "";
                 }
 
+                int islandSlot = -1;
                 final int position = Integer.parseInt(args[2]);
-                GlobalBoardPlayer globalBoardPlayer = null;
+                GlobalBoardPlayer globalBoardPlayer;
                 if (args[1].equalsIgnoreCase("global")) {
 
                     final CompletableFuture<GlobalBoardPlayer> globalBoard = Leaderboard.INSTANCE.retrieve(position);
@@ -130,7 +131,7 @@ public final class PluginExpansion extends PlaceholderExpansion {
                         return "";
                     }
                 } else {
-                    final int islandSlot = Integer.parseInt(args[1]);
+                    islandSlot = Integer.parseInt(args[1]);
                     final Island island = IslandService.INSTANCE.findIslandBy(islandSlot);
 
                     if (island == null) {
@@ -147,6 +148,14 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 Score bestScore = null;
                 for (final Score score : globalBoardPlayer.getBridgePlayer()
                         .getScores()) {
+                    // if the island slot is in effect, and the given score does not
+                    // equal to the slot, continue
+                    if (islandSlot != -1 && islandSlot != score.getScoredOn()) {
+                        continue;
+                    }
+
+                    // if the best score is not null, and the given score is higher or
+                    // equal to the best score, continue
                     if (bestScore != null && score.compareTo(bestScore) > 0) {
                         continue;
                     }

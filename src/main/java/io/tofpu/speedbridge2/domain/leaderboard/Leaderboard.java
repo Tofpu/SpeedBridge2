@@ -49,7 +49,7 @@ public final class Leaderboard {
             }
 
             try (final DatabaseQuery databaseQuery = new DatabaseQuery(
-                    "SELECT * FROM " + "scores ORDER BY score " + "LIMIT 10 OFFSET 0")) {
+                    "SELECT DISTINCT * FROM " + "scores ORDER BY score " + "LIMIT 10 OFFSET 0")) {
                 final Map<Integer, GlobalBoardPlayer> globalBoardMap = new HashMap<>();
 
                 try (final ResultSet resultSet = databaseQuery.executeQuery()) {
@@ -64,7 +64,6 @@ public final class Leaderboard {
                         globalBoardMap.put(position, value);
                     }
                 }
-                System.out.println(globalBoardMap);
 
                 this.globalMap.clear();
                 this.globalMap.putAll(globalBoardMap);

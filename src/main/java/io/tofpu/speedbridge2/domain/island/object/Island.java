@@ -15,24 +15,24 @@ import java.util.UUID;
 
 public class Island extends IslandSchematic {
     private final int slot;
-
-    private final Map<Integer, GlobalBoardPlayer> scoreMap;
     private final Map<GamePlayer, GameIsland> islandMap = new HashMap<>();
     private String category;
+
+    private final Map<Integer, GlobalBoardPlayer> boardMap = new HashMap<>();
 
     public Island(final int slot, final String category) {
         this.slot = slot;
         this.category = category;
-        this.scoreMap = new IslandBoard(slot);
     }
 
     public GlobalBoardPlayer retrieveBy(final int position) {
-        return scoreMap.get(position);
+        return boardMap.get(position);
     }
 
     public GlobalBoardPlayer retrieveBy(final UUID uniqueId) {
-        for (final GlobalBoardPlayer globalBoardPlayer : scoreMap.values()) {
-            if (globalBoardPlayer.getOwner().equals(uniqueId)) {
+        for (final GlobalBoardPlayer globalBoardPlayer : boardMap.values()) {
+            if (globalBoardPlayer.getOwner()
+                    .equals(uniqueId)) {
                 return globalBoardPlayer;
             }
         }
@@ -104,12 +104,23 @@ public class Island extends IslandSchematic {
         return category;
     }
 
+    public void updateBoard(final Map<Integer, GlobalBoardPlayer> newBoardMap) {
+        boardMap.clear();
+        boardMap.putAll(newBoardMap);
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Island{");
-        sb.append("slot=").append(slot);
-        sb.append(", islandMap=").append(islandMap);
-        sb.append(", category='").append(category).append('\'');
+        sb.append("slot=")
+                .append(slot);
+        sb.append(", islandMap=")
+                .append(islandMap);
+        sb.append(", category='")
+                .append(category)
+                .append('\'');
+        sb.append(", boardMap=")
+                .append(boardMap);
         sb.append('}');
         return sb.toString();
     }

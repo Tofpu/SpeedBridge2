@@ -23,30 +23,34 @@ import java.util.concurrent.ExecutionException;
 import static io.tofpu.speedbridge2.domain.common.util.DatabaseUtil.runAsync;
 
 public final class PlayerDatabase extends Database {
+    private static final String[] SCORE_COLUMNS = {"id INTEGER PRIMARY KEY AUTOINCREMENT", "uid text NOT NULL", "island_slot INTEGER NOT NULL", "score REAL NOT NULL"};
+
     public PlayerDatabase() {
         super(DatabaseTable.of("players", "uid text PRIMARY KEY"));
-        DatabaseManager.appendTable(DatabaseTable.of("scores", "uid text PRIMARY KEY", "islandSlot int NOT NULL", "score int NOT NULL"));
+        DatabaseManager.appendTable(DatabaseTable.of("scores", SCORE_COLUMNS));
     }
 
     public CompletableFuture<Void> insert(final BridgePlayer player) {
         return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO players VALUES (?)", databaseQuery -> {
-            databaseQuery.setString(1, player.getPlayerUid().toString());
+            databaseQuery.setString(1, player.getPlayerUid()
+                    .toString());
         });
     }
 
     public CompletableFuture<Void> insert(final UUID uuid, final Score score) {
-        return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO scores VALUES " +
+        return DatabaseUtil.databaseQueryExecute(
+                "INSERT OR IGNORE INTO scores (uid, island_slot, score) VALUES " +
                 "(?, ?, ?)", databaseQuery -> {
-            BridgeUtil.debug("player uid: " + uuid.toString());
-            databaseQuery.setString(1, uuid.toString());
+                    BridgeUtil.debug("player uid: " + uuid.toString());
+                    databaseQuery.setString(1, uuid.toString());
 
-            BridgeUtil.debug("player score island: " + score.getScoredOn());
-            databaseQuery.setInt(2, score.getScoredOn());
+                    BridgeUtil.debug("player score island: " + score.getScoredOn());
+                    databaseQuery.setInt(2, score.getScoredOn());
 
-            BridgeUtil.debug("player score: " + score.getScore());
-            databaseQuery.setDouble(3, score.getScore());
+                    BridgeUtil.debug("player score: " + score.getScore());
+                    databaseQuery.setDouble(3, score.getScore());
 
-        });
+                });
     }
 
     public CompletableFuture<Void> update(final UUID uuid, final Score score) {
@@ -121,7 +125,7 @@ public final class PlayerDatabase extends Database {
 
                             try (final ResultSet set = query.executeQuery()) {
                                 while (set.next()) {
-                                    final Score score = Score.of(set.getInt(2), set.getLong(3));
+                                    final Score score = Score.of(set.getInt(3), set.getDouble(4));
                                     BridgeUtil.debug("found new score! " + score);
                                     bridgePlayer.setInternalNewScore(score);
                                 }
