@@ -1,7 +1,8 @@
 package io.tofpu.speedbridge2.domain.island.object;
 
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.GlobalBoardPlayer;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 
@@ -9,13 +10,15 @@ import java.sql.ResultSet;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public final class IslandQueue {
+public final class IslandBoard {
+    // TODO: CHANGE THE INTERVAL BEFORE PUSH TO MAIN; OPTIONAL - MAKE THIS CUSTOMIZABLE
     public static final long INTERVAL = TimeUnit.SECONDS.toMillis(10);
+
     private static final Queue<Island> ISLAND_QUEUE = new LinkedList<>();
     private static final Timer QUEUE_TIMER = new Timer();
 
     public static void add(final Island island) {
-        System.out.println(island.getSlot() + " has been added to the queue!");
+        BridgeUtil.debug(island.getSlot() + " has been added to the queue!");
         ISLAND_QUEUE.add(island);
     }
 
@@ -27,11 +30,11 @@ public final class IslandQueue {
         QUEUE_TIMER.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("starting the leaderboard update process!");
+                BridgeUtil.debug("starting the leaderboard update process!");
 
                 for (final Island island : ISLAND_QUEUE) {
-                    System.out.println("updating " + island.getSlot() + " now!");
-                    final Map<Integer, GlobalBoardPlayer> boardMap = new HashMap<>();
+                    BridgeUtil.debug("updating " + island.getSlot() + " now!");
+                    final Map<Integer, BoardPlayer> boardMap = new HashMap<>();
 
                     try (final DatabaseQuery databaseQuery = new DatabaseQuery(
                             "SELECT * FROM scores WHERE island_slot = ? ORDER BY " +
@@ -44,14 +47,14 @@ public final class IslandQueue {
                                 final UUID uuid = UUID.fromString(resultSet.getString("uid"));
                                 final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uuid);
 
-                                final GlobalBoardPlayer value = new GlobalBoardPlayer(position, uuid, bridgePlayer);
+                                final BoardPlayer value = new BoardPlayer(position, uuid, bridgePlayer);
 
                                 boardMap.put(position, value);
                             }
                         }
 
-                        System.out.println("successfully updated " + island.getSlot() + " island!");
-                        System.out.println(boardMap);
+                        BridgeUtil.debug("successfully updated " + island.getSlot() + " island!");
+                        BridgeUtil.debug(String.valueOf(boardMap));
                         island.updateBoard(boardMap);
                     } catch (Exception e) {
                         e.printStackTrace();

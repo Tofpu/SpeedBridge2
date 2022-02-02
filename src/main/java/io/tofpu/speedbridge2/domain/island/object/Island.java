@@ -3,8 +3,9 @@ package io.tofpu.speedbridge2.domain.island.object;
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.island.schematic.IslandSchematic;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.GlobalBoardPlayer;
+import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 
@@ -18,22 +19,22 @@ public class Island extends IslandSchematic {
     private final Map<GamePlayer, GameIsland> islandMap = new HashMap<>();
     private String category;
 
-    private final Map<Integer, GlobalBoardPlayer> boardMap = new HashMap<>();
+    private final Map<Integer, BoardPlayer> boardMap = new HashMap<>();
 
     public Island(final int slot, final String category) {
         this.slot = slot;
         this.category = category;
     }
 
-    public GlobalBoardPlayer retrieveBy(final int position) {
+    public BoardPlayer retrieveBy(final int position) {
         return boardMap.get(position);
     }
 
-    public GlobalBoardPlayer retrieveBy(final UUID uniqueId) {
-        for (final GlobalBoardPlayer globalBoardPlayer : boardMap.values()) {
-            if (globalBoardPlayer.getOwner()
+    public BoardPlayer retrieveBy(final UUID uniqueId) {
+        for (final BoardPlayer boardPlayer : boardMap.values()) {
+            if (boardPlayer.getOwner()
                     .equals(uniqueId)) {
-                return globalBoardPlayer;
+                return boardPlayer;
             }
         }
         return null;
@@ -104,7 +105,7 @@ public class Island extends IslandSchematic {
         return category;
     }
 
-    public void updateBoard(final Map<Integer, GlobalBoardPlayer> newBoardMap) {
+    public void updateBoard(final Map<Integer, BoardPlayer> newBoardMap) {
         boardMap.clear();
         boardMap.putAll(newBoardMap);
     }

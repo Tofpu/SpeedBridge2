@@ -2,7 +2,7 @@ package io.tofpu.speedbridge2.domain.island;
 
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.island.object.Island;
-import io.tofpu.speedbridge2.domain.island.object.IslandQueue;
+import io.tofpu.speedbridge2.domain.island.object.IslandBoard;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -14,7 +14,7 @@ public final class IslandHandler {
 
     public void load(final Map<Integer, Island> loadedIslands) {
         for (final Island island : loadedIslands.values()) {
-            IslandQueue.add(island);
+            IslandBoard.add(island);
         }
         this.islands.putAll(loadedIslands);
     }
@@ -36,7 +36,7 @@ public final class IslandHandler {
         // if the island didn't exist beforehand, insert the object
         if (previousIsland == null) {
             Databases.ISLAND_DATABASE.insert(island);
-            IslandQueue.add(island);
+            IslandBoard.add(island);
 
             return IslandCreationResult.SUCCESS;
         } else {
@@ -64,7 +64,7 @@ public final class IslandHandler {
         // if the island is not null, wipe said island & return deleted island!
         if (island != null) {
             Databases.ISLAND_DATABASE.delete(slot);
-            IslandQueue.remove(island);
+            IslandBoard.remove(island);
 
             return island;
         }

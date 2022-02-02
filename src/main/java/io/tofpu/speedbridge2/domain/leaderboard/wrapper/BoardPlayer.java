@@ -4,12 +4,12 @@ import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 
 import java.util.UUID;
 
-public final class GlobalBoardPlayer {
+public final class BoardPlayer {
     private final int position;
     private final UUID owner;
     private final BridgePlayer bridgePlayer;
 
-    public GlobalBoardPlayer(final int position, final UUID owner, final BridgePlayer bridgePlayer) {
+    public BoardPlayer(final int position, final UUID owner, final BridgePlayer bridgePlayer) {
         this.position = position;
         this.owner = owner;
         this.bridgePlayer = bridgePlayer;

@@ -3,7 +3,7 @@ package io.tofpu.speedbridge2.listener.island;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.regions.Region;
 import io.tofpu.dynamicclass.meta.AutoRegister;
-import io.tofpu.speedbridge2.domain.island.object.GameIsland;
+import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import io.tofpu.speedbridge2.listener.GameListener;
 import io.tofpu.speedbridge2.listener.wrapper.wrappers.BlockBreakEventWrapper;

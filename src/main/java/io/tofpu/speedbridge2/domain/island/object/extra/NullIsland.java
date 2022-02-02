@@ -1,7 +1,8 @@
-package io.tofpu.speedbridge2.domain.island.object;
+package io.tofpu.speedbridge2.domain.island.object.extra;
 
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 

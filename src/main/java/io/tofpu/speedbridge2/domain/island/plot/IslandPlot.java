@@ -10,7 +10,7 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.registry.WorldData;
 import io.tofpu.speedbridge2.domain.island.object.Island;
-import io.tofpu.speedbridge2.domain.island.object.GameIsland;
+import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 

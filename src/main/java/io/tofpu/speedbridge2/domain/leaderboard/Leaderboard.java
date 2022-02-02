@@ -6,22 +6,20 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.leaderboard.loader.BoardLoader;
 import io.tofpu.speedbridge2.domain.leaderboard.loader.IslandLoader;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.GlobalBoardPlayer;
+import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 
 import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.*;
 
 public final class Leaderboard {
     public static final Leaderboard INSTANCE = new Leaderboard();
 
-    private final Map<Integer, GlobalBoardPlayer> globalMap;
-    private final LoadingCache<UUID, GlobalBoardPlayer> playerCache;
+    private final Map<Integer, BoardPlayer> globalMap;
+    private final LoadingCache<UUID, BoardPlayer> playerCache;
     private final LoadingCache<UUID, IslandBoardPlayer> playerIslandCache;
 
     private final ScheduledExecutorService executorService;
@@ -49,18 +47,30 @@ public final class Leaderboard {
             }
 
             try (final DatabaseQuery databaseQuery = new DatabaseQuery(
-                    "SELECT DISTINCT * FROM " + "scores ORDER BY score " + "LIMIT 10 OFFSET 0")) {
-                final Map<Integer, GlobalBoardPlayer> globalBoardMap = new HashMap<>();
+                    "SELECT DISTINCT * FROM scores ORDER BY score")) {
+                final List<UUID> uuidList = new ArrayList<>();
+                final Map<Integer, BoardPlayer> globalBoardMap = new HashMap<>();
 
                 try (final ResultSet resultSet = databaseQuery.executeQuery()) {
                     while (resultSet.next()) {
-                        final int position = resultSet.getRow();
+                        // if we reached the 10 limit, break the loop
+                        if (globalBoardMap.size() == 10) {
+                            break;
+                        }
+
                         final UUID uuid = UUID.fromString(resultSet.getString("uid"));
+                        // if we already have the given uuid, continue through the loop!
+                        if (uuidList.contains(uuid)) {
+                            continue;
+                        }
+
+                        final int position = resultSet.getRow();
                         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uuid);
 
-                        final GlobalBoardPlayer value = new GlobalBoardPlayer(position,
+                        final BoardPlayer value = new BoardPlayer(position,
                                 uuid, bridgePlayer);
 
+                        uuidList.add(uuid);
                         globalBoardMap.put(position, value);
                     }
                 }
@@ -74,8 +84,8 @@ public final class Leaderboard {
         }, 1, 10, TimeUnit.SECONDS);
     }
 
-    public CompletableFuture<GlobalBoardPlayer> retrieve(final UUID uniqueId) {
-        final GlobalBoardPlayer player = playerCache.asMap()
+    public CompletableFuture<BoardPlayer> retrieve(final UUID uniqueId) {
+        final BoardPlayer player = playerCache.asMap()
                 .get(uniqueId);
 
         if (player != null) {
@@ -105,15 +115,8 @@ public final class Leaderboard {
         executorService.shutdownNow();
     }
 
-    public CompletableFuture<GlobalBoardPlayer> retrieve(final int position) {
-        final GlobalBoardPlayer boardPlayer = globalMap.get(position);
-        System.out.println("position: " + position);
-
-        return CompletableFuture.completedFuture(boardPlayer);
-    }
-
-    public CompletableFuture<GlobalBoardPlayer> retrieve(final int islandSlot, final int position) {
-        final GlobalBoardPlayer boardPlayer = globalMap.get(position);
+    public CompletableFuture<BoardPlayer> retrieve(final int position) {
+        final BoardPlayer boardPlayer = globalMap.get(position);
         System.out.println("position: " + position);
 
         return CompletableFuture.completedFuture(boardPlayer);

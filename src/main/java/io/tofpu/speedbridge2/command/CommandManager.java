@@ -13,7 +13,7 @@ import io.tofpu.speedbridge2.command.subcommand.SpeedBridgeCommand;
 import io.tofpu.speedbridge2.domain.player.object.CommonBridgePlayer;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.player.object.SenderBridgePlayer;
-import io.tofpu.speedbridge2.domain.island.object.GameIsland;
+import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;

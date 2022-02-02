@@ -5,7 +5,7 @@ import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.leaderboard.Leaderboard;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.GlobalBoardPlayer;
+import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.Score;
@@ -95,7 +95,7 @@ public final class PluginExpansion extends PlaceholderExpansion {
                     return "";
                 }
 
-                final CompletableFuture<GlobalBoardPlayer> boardRetrieve = Leaderboard.INSTANCE.retrieve(player.getUniqueId());
+                final CompletableFuture<BoardPlayer> boardRetrieve = Leaderboard.INSTANCE.retrieve(player.getUniqueId());
                 // if the retrieve process is not immediate, return empty
                 if (!boardRetrieve.isDone()) {
                     return "";
@@ -115,17 +115,17 @@ public final class PluginExpansion extends PlaceholderExpansion {
 
                 int islandSlot = -1;
                 final int position = Integer.parseInt(args[2]);
-                GlobalBoardPlayer globalBoardPlayer;
+                BoardPlayer boardPlayer;
                 if (args[1].equalsIgnoreCase("global")) {
 
-                    final CompletableFuture<GlobalBoardPlayer> globalBoard = Leaderboard.INSTANCE.retrieve(position);
+                    final CompletableFuture<BoardPlayer> globalBoard = Leaderboard.INSTANCE.retrieve(position);
                     // if the retrieve process is not immediate, return empty
                     if (!globalBoard.isDone()) {
                         return "";
                     }
 
                     try {
-                        globalBoardPlayer = globalBoard.get();
+                        boardPlayer = globalBoard.get();
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                         return "";
@@ -138,15 +138,15 @@ public final class PluginExpansion extends PlaceholderExpansion {
                         return "";
                     }
 
-                    globalBoardPlayer = island.retrieveBy(position);
+                    boardPlayer = island.retrieveBy(position);
                 }
 
-                if (globalBoardPlayer == null) {
+                if (boardPlayer == null) {
                     return "";
                 }
 
                 Score bestScore = null;
-                for (final Score score : globalBoardPlayer.getBridgePlayer()
+                for (final Score score : boardPlayer.getBridgePlayer()
                         .getScores()) {
                     // if the island slot is in effect, and the given score does not
                     // equal to the slot, continue
@@ -167,7 +167,7 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 }
 
                 return BridgeUtil.translate(Message.INSTANCE.LEADERBOARD_FORMAT.replace("%position%",
-                                globalBoardPlayer.getPosition() + "")
+                                boardPlayer.getPosition() + "")
                         .replace("%name%", player.getName())
                         .replace("%score%", BridgeUtil.formatNumber(bestScore.getScore())));
         }
