@@ -3,8 +3,7 @@ package io.tofpu.speedbridge2.domain.island.object;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
-import io.tofpu.speedbridge2.domain.player.PlayerService;
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.domain.player.misc.Score;
 
 import java.sql.ResultSet;
 import java.util.*;
@@ -45,9 +44,13 @@ public final class IslandBoard {
                             while (resultSet.next()) {
                                 final int position = resultSet.getRow();
                                 final UUID uuid = UUID.fromString(resultSet.getString("uid"));
-                                final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uuid);
+//                                final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uuid);
 
-                                final BoardPlayer value = new BoardPlayer(position, uuid, bridgePlayer);
+                                final int islandSlot = resultSet.getInt("island_slot");
+                                final double playerScore = resultSet.getDouble("score");
+                                final Score score = Score.of(islandSlot, playerScore);
+
+                                final BoardPlayer value = new BoardPlayer(position, uuid, score);
 
                                 boardMap.put(position, value);
                             }

@@ -35,7 +35,8 @@ public final class IslandBoardPlayer {
             return CompletableFuture.completedFuture(cachedValue);
         }
 
-        BridgeUtil.debug("attempting to query to database for board for " + owner + ", " + islandSlot);
+        BridgeUtil.debug("attempting to query to database for position for " + owner +
+                         ", " + islandSlot);
         try (final DatabaseQuery databaseQuery = new DatabaseQuery(ISLAND_POSITION)) {
             databaseQuery.setInt(1, islandSlot);
             databaseQuery.setString(2, owner.toString());

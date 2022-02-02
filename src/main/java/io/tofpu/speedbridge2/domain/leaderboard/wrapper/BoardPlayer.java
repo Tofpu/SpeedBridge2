@@ -1,18 +1,18 @@
 package io.tofpu.speedbridge2.domain.leaderboard.wrapper;
 
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.domain.player.misc.Score;
 
 import java.util.UUID;
 
 public final class BoardPlayer {
     private final int position;
     private final UUID owner;
-    private final BridgePlayer bridgePlayer;
+    private final Score score;
 
-    public BoardPlayer(final int position, final UUID owner, final BridgePlayer bridgePlayer) {
+    public BoardPlayer(final int position, final UUID owner, final Score score) {
         this.position = position;
         this.owner = owner;
-        this.bridgePlayer = bridgePlayer;
+        this.score = score;
     }
 
     public int getPosition() {
@@ -23,8 +23,8 @@ public final class BoardPlayer {
         return owner;
     }
 
-    public BridgePlayer getBridgePlayer() {
-        return bridgePlayer;
+    public Score getScore() {
+        return score;
     }
 
     @Override
@@ -32,8 +32,8 @@ public final class BoardPlayer {
         final StringBuilder sb = new StringBuilder("BoardPlayer{");
         sb.append("position=")
                 .append(position);
-        sb.append(", bridgePlayer=")
-                .append(bridgePlayer);
+        sb.append(", score=")
+                .append(score);
         sb.append('}');
         return sb.toString();
     }

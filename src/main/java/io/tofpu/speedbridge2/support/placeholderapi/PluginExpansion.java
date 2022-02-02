@@ -13,6 +13,8 @@ import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -145,31 +147,24 @@ public final class PluginExpansion extends PlaceholderExpansion {
                     return "";
                 }
 
-                Score bestScore = null;
-                for (final Score score : boardPlayer.getBridgePlayer()
-                        .getScores()) {
-                    // if the island slot is in effect, and the given score does not
-                    // equal to the slot, continue
-                    if (islandSlot != -1 && islandSlot != score.getScoredOn()) {
-                        continue;
-                    }
-
-                    // if the best score is not null, and the given score is higher or
-                    // equal to the best score, continue
-                    if (bestScore != null && score.compareTo(bestScore) > 0) {
-                        continue;
-                    }
-                    bestScore = score;
-                }
+                Score bestScore = boardPlayer.getScore();
 
                 if (bestScore == null) {
                     return "";
                 }
 
-                return BridgeUtil.translate(Message.INSTANCE.LEADERBOARD_FORMAT.replace("%position%",
-                                boardPlayer.getPosition() + "")
-                        .replace("%name%", player.getName())
-                        .replace("%score%", BridgeUtil.formatNumber(bestScore.getScore())));
+                final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(boardPlayer.getOwner());
+
+                final String name;
+                try {
+                    name = offlinePlayer == null ? "" : offlinePlayer.getName();
+                    return BridgeUtil.translate(Message.INSTANCE.LEADERBOARD_FORMAT.replace("%position%",
+                                    boardPlayer.getPosition() + "")
+                            .replace("%name%", name)
+                            .replace("%score%", BridgeUtil.formatNumber(bestScore.getScore())));
+                } catch (final NullPointerException ex) {
+                    return "";
+                }
         }
 
         // if the param length is lower than two, don't continue

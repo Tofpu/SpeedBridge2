@@ -8,8 +8,7 @@ import io.tofpu.speedbridge2.domain.leaderboard.loader.IslandLoader;
 import io.tofpu.speedbridge2.domain.leaderboard.loader.PersonalBoardLoader;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
-import io.tofpu.speedbridge2.domain.player.PlayerService;
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.domain.player.misc.Score;
 
 import java.sql.ResultSet;
 import java.util.*;
@@ -27,10 +26,12 @@ public final class Leaderboard {
     private Leaderboard() {
         this.globalMap = new ConcurrentHashMap<>();
 
+        // player's personal global position
         this.playerCache = CacheBuilder.newBuilder()
                 .expireAfterAccess(5, TimeUnit.SECONDS)
                 .build(PersonalBoardLoader.INSTANCE);
 
+        // player's global position that based on an island
         this.islandPositionMap = CacheBuilder.newBuilder()
                 .expireAfterAccess(5, TimeUnit.SECONDS)
                 .build(IslandLoader.INSTANCE);
@@ -65,10 +66,14 @@ public final class Leaderboard {
                         }
 
                         final int position = resultSet.getRow();
-                        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uuid);
+//                        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uuid);
+
+                        final int islandSlot = resultSet.getInt("island_slot");
+                        final double playerScore = resultSet.getDouble("score");
+                        final Score score = Score.of(islandSlot, playerScore);
 
                         final BoardPlayer value = new BoardPlayer(position,
-                                uuid, bridgePlayer);
+                                uuid, score);
 
                         uuidList.add(uuid);
                         globalBoardMap.put(position, value);
