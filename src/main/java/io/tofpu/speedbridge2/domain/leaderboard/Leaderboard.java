@@ -4,8 +4,8 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.leaderboard.loader.BoardLoader;
 import io.tofpu.speedbridge2.domain.leaderboard.loader.IslandLoader;
+import io.tofpu.speedbridge2.domain.leaderboard.loader.PersonalBoardLoader;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
@@ -20,7 +20,7 @@ public final class Leaderboard {
 
     private final Map<Integer, BoardPlayer> globalMap;
     private final LoadingCache<UUID, BoardPlayer> playerCache;
-    private final LoadingCache<UUID, IslandBoardPlayer> playerIslandCache;
+    private final LoadingCache<UUID, IslandBoardPlayer> islandPositionMap;
 
     private final ScheduledExecutorService executorService;
 
@@ -29,9 +29,9 @@ public final class Leaderboard {
 
         this.playerCache = CacheBuilder.newBuilder()
                 .expireAfterAccess(5, TimeUnit.SECONDS)
-                .build(BoardLoader.INSTANCE);
+                .build(PersonalBoardLoader.INSTANCE);
 
-        this.playerIslandCache = CacheBuilder.newBuilder()
+        this.islandPositionMap = CacheBuilder.newBuilder()
                 .expireAfterAccess(5, TimeUnit.SECONDS)
                 .build(IslandLoader.INSTANCE);
 
@@ -95,8 +95,14 @@ public final class Leaderboard {
         return CompletableFuture.supplyAsync(() -> playerCache.getUnchecked(uniqueId));
     }
 
+    public CompletableFuture<BoardPlayer> retrieve(final int position) {
+        final BoardPlayer boardPlayer = globalMap.get(position);
+
+        return CompletableFuture.completedFuture(boardPlayer);
+    }
+
     public CompletableFuture<IslandBoardPlayer.IslandBoard> retrieve(final UUID uniqueId, final int islandSlot) {
-        final IslandBoardPlayer player = playerIslandCache.asMap()
+        final IslandBoardPlayer player = islandPositionMap.asMap()
                 .get(uniqueId);
 
         if (player != null) {
@@ -107,18 +113,11 @@ public final class Leaderboard {
             }
         }
 
-        return playerIslandCache.getUnchecked(uniqueId)
+        return islandPositionMap.getUnchecked(uniqueId)
                 .retrieve(islandSlot);
     }
 
     public void shutdown() {
         executorService.shutdownNow();
-    }
-
-    public CompletableFuture<BoardPlayer> retrieve(final int position) {
-        final BoardPlayer boardPlayer = globalMap.get(position);
-        System.out.println("position: " + position);
-
-        return CompletableFuture.completedFuture(boardPlayer);
     }
 }

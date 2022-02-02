@@ -13,13 +13,13 @@ import org.jetbrains.annotations.Nullable;
 import java.sql.ResultSet;
 import java.util.UUID;
 
-public final class BoardLoader extends CacheLoader<UUID, BoardPlayer> implements BoardRetrieve<BoardPlayer> {
-    public static final BoardLoader INSTANCE = new BoardLoader();
+public final class PersonalBoardLoader extends CacheLoader<UUID, BoardPlayer> implements BoardRetrieve<BoardPlayer> {
+    public static final PersonalBoardLoader INSTANCE = new PersonalBoardLoader();
     private static final String GLOBAL_POSITION =
             "SELECT 1 + COUNT(*) AS position FROM scores WHERE score < (SELECT score " +
             "FROM scores WHERE uid = ?)";
 
-    private BoardLoader() {}
+    private PersonalBoardLoader() {}
 
     @Override
     public @Nullable BoardPlayer load(final @NotNull UUID key) throws Exception {

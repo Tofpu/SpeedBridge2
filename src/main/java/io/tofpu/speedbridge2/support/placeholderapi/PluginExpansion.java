@@ -78,7 +78,7 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 }
                 return BridgeUtil.formatNumber(BridgeUtil.nanoToSeconds(gamePlayer.getTimer()));
             case "position": // %speedbridge_position% returns the player's global position
-                if (args.length == 2) {
+                if (args.length == 2) { // returns island-based position
                     final CompletableFuture<IslandBoardPlayer.IslandBoard> retrieve =
                             Leaderboard.INSTANCE.retrieve(player.getUniqueId(),
                                     Integer.parseInt(args[1]));
