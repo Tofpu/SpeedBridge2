@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.domain.island;
 
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.island.object.Island;
+import io.tofpu.speedbridge2.domain.island.object.IslandBoard;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -12,6 +13,9 @@ public final class IslandHandler {
     private final Map<Integer, Island> islands = new HashMap<>();
 
     public void load(final Map<Integer, Island> loadedIslands) {
+        for (final Island island : loadedIslands.values()) {
+            IslandBoard.add(island);
+        }
         this.islands.putAll(loadedIslands);
     }
 
@@ -32,6 +36,8 @@ public final class IslandHandler {
         // if the island didn't exist beforehand, insert the object
         if (previousIsland == null) {
             Databases.ISLAND_DATABASE.insert(island);
+            IslandBoard.add(island);
+
             return IslandCreationResult.SUCCESS;
         } else {
             // otherwise, return ISLAND_ALREADY_EXISTS
@@ -58,6 +64,8 @@ public final class IslandHandler {
         // if the island is not null, wipe said island & return deleted island!
         if (island != null) {
             Databases.ISLAND_DATABASE.delete(slot);
+            IslandBoard.remove(island);
+
             return island;
         }
         return null;
@@ -67,7 +75,7 @@ public final class IslandHandler {
         return Collections.unmodifiableCollection(this.islands.values());
     }
 
-    public static enum IslandCreationResult {
+    public enum IslandCreationResult {
         UNKNOWN_SCHEMATIC, ISLAND_ALREADY_EXISTS, SUCCESS
     }
 }

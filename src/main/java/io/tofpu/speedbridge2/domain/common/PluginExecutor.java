@@ -15,8 +15,8 @@ public final class PluginExecutor implements Executor {
         return (CompletableFuture<Void>) INSTANCE.submit(runnable);
     }
 
-    public static CompletableFuture<?> supply(final Supplier<?> supplier) {
-        return INSTANCE.supplyAsync(supplier);
+    public static <T> CompletableFuture<T> supply(final Supplier<?> supplier) {
+        return (CompletableFuture<T>) INSTANCE.supplyAsync(supplier);
     }
 
     private final @NotNull ExecutorService executor;

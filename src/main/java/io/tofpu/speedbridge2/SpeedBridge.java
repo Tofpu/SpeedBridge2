@@ -7,7 +7,9 @@ import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.DatabaseManager;
 import io.tofpu.speedbridge2.domain.island.IslandService;
+import io.tofpu.speedbridge2.domain.island.object.IslandBoard;
 import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
+import io.tofpu.speedbridge2.domain.leaderboard.Leaderboard;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.support.placeholderapi.PluginExpansion;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -53,11 +55,17 @@ public final class SpeedBridge {
         SchematicManager.INSTANCE.load(javaPlugin);
         CommandManager.load(javaPlugin);
 
+        Leaderboard.INSTANCE.load();
+        IslandBoard.load();
+
         HelpCommandGenerator.generateHelpCommand();
     }
 
     public void shutdown() {
         DatabaseManager.shutdown();
+        Leaderboard.INSTANCE.shutdown();
+
+        IslandBoard.shutdown();
     }
 
     public static BukkitAudiences getAdventure() {

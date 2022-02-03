@@ -2,24 +2,42 @@ package io.tofpu.speedbridge2.domain.island.object;
 
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.island.schematic.IslandSchematic;
+import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
-import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class Island extends IslandSchematic {
     private final int slot;
-
     private final Map<GamePlayer, GameIsland> islandMap = new HashMap<>();
     private String category;
+
+    private final Map<Integer, BoardPlayer> boardMap = new HashMap<>();
 
     public Island(final int slot, final String category) {
         this.slot = slot;
         this.category = category;
+    }
+
+    public BoardPlayer retrieveBy(final int position) {
+        return boardMap.get(position);
+    }
+
+    public BoardPlayer retrieveBy(final UUID uniqueId) {
+        for (final BoardPlayer boardPlayer : boardMap.values()) {
+            if (boardPlayer.getOwner()
+                    .equals(uniqueId)) {
+                return boardPlayer;
+            }
+        }
+        return null;
     }
 
     public Map.Entry<GamePlayer, GameIsland> generateGame(final BridgePlayer player) {
@@ -87,12 +105,23 @@ public class Island extends IslandSchematic {
         return category;
     }
 
+    public void updateBoard(final Map<Integer, BoardPlayer> newBoardMap) {
+        boardMap.clear();
+        boardMap.putAll(newBoardMap);
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Island{");
-        sb.append("slot=").append(slot);
-        sb.append(", islandMap=").append(islandMap);
-        sb.append(", category='").append(category).append('\'');
+        sb.append("slot=")
+                .append(slot);
+        sb.append(", islandMap=")
+                .append(islandMap);
+        sb.append(", category='")
+                .append(category)
+                .append('\'');
+        sb.append(", boardMap=")
+                .append(boardMap);
         sb.append('}');
         return sb.toString();
     }

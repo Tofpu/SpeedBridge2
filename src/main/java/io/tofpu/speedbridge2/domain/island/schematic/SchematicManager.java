@@ -2,7 +2,7 @@ package io.tofpu.speedbridge2.domain.island.schematic;
 
 import com.sk89q.worldedit.WorldEditException;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.island.object.GameIsland;
+import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;

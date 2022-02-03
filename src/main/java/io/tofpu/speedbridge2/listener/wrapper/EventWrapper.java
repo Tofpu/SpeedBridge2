@@ -1,6 +1,6 @@
 package io.tofpu.speedbridge2.listener.wrapper;
 
-import io.tofpu.speedbridge2.domain.island.object.GameIsland;
+import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import org.bukkit.event.Event;

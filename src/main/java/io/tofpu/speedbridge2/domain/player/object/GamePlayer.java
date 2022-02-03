@@ -1,6 +1,6 @@
 package io.tofpu.speedbridge2.domain.player.object;
 
-import io.tofpu.speedbridge2.domain.island.object.GameIsland;
+import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import org.bukkit.Location;
 import org.bukkit.Material;
