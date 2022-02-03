@@ -154,15 +154,27 @@ public final class PluginExpansion extends PlaceholderExpansion {
                     return "";
                 }
 
-                final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(boardPlayer.getOwner());
+                final Player onlinePlayer = Bukkit.getPlayer(boardPlayer.getOwner());
+                final String playerName;
 
-                final String name;
+                if (onlinePlayer == null || !onlinePlayer.isOnline()) {
+                    final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(boardPlayer.getOwner());
+                    String offlineName;
+                    try {
+                        offlineName = offlinePlayer.getName();
+                    } catch (final NullPointerException ex) {
+                        offlineName = "";
+                    }
+                    playerName = offlineName;
+                } else {
+                    playerName = onlinePlayer.getName();
+                }
+
                 try {
-                    name = offlinePlayer == null ? "" : offlinePlayer.getName();
                     return BridgeUtil.translate(ConfigurationManager.INSTANCE.getLeaderboardCategory()
                             .getLeaderboardFormat()
                             .replace("%position%", boardPlayer.getPosition() + "")
-                            .replace("%name%", name)
+                            .replace("%name%", playerName)
                             .replace("%score%", BridgeUtil.formatNumber(bestScore.getScore())));
                 } catch (final NullPointerException ex) {
                     return "";
