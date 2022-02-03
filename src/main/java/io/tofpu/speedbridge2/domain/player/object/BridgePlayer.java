@@ -78,7 +78,7 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
         return score;
     }
 
-    public Score setNewScore(final int islandSlot, final long newScore) {
+    public Score setNewScore(final int islandSlot, final double newScore) {
         final Score score = Score.of(islandSlot, newScore);
         return setNewScore(score);
     }

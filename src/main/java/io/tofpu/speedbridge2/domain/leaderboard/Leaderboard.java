@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.domain.leaderboard;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.leaderboard.loader.IslandLoader;
@@ -86,7 +87,8 @@ public final class Leaderboard {
                 e.printStackTrace();
             }
 
-        }, 1, 10, TimeUnit.SECONDS);
+        }, 1, ConfigurationManager.INSTANCE.getLeaderboardCategory()
+                .getUpdateInterval(), TimeUnit.SECONDS);
     }
 
     public CompletableFuture<BoardPlayer> retrieve(final UUID uniqueId) {

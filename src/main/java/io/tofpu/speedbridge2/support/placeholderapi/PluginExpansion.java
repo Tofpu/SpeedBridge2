@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.support.placeholderapi;
 
 import io.tofpu.speedbridge2.domain.common.Message;
+import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.Island;
@@ -158,8 +159,9 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 final String name;
                 try {
                     name = offlinePlayer == null ? "" : offlinePlayer.getName();
-                    return BridgeUtil.translate(Message.INSTANCE.LEADERBOARD_FORMAT.replace("%position%",
-                                    boardPlayer.getPosition() + "")
+                    return BridgeUtil.translate(ConfigurationManager.INSTANCE.getLeaderboardCategory()
+                            .getLeaderboardFormat()
+                            .replace("%position%", boardPlayer.getPosition() + "")
                             .replace("%name%", name)
                             .replace("%score%", BridgeUtil.formatNumber(bestScore.getScore())));
                 } catch (final NullPointerException ex) {

@@ -54,7 +54,8 @@ public final class PlayerDatabase extends Database {
     }
 
     public CompletableFuture<Void> update(final UUID uuid, final Score score) {
-        return DatabaseUtil.databaseQueryExecute("UPDATE scores SET islandSlot = ?, score = ? WHERE uid = ?", databaseQuery -> {
+        return DatabaseUtil.databaseQueryExecute("UPDATE scores SET island_slot = ?, " +
+                                                 "score = ? WHERE uid = ?", databaseQuery -> {
             BridgeUtil.debug("player uid: " + uuid.toString());
 
             BridgeUtil.debug("player score island: " + score.getScoredOn());

@@ -67,8 +67,6 @@ public final class Message {
     public final String RELOADED = SUCCESS + "The config has been reloaded!";
 
     public final String LOBBY_SET_LOCATION = SUCCESS + "The lobby location has been set!";
-    public final String LEADERBOARD_FORMAT =
-            "&e" + "%position%. &6%name% &7(%score%)";
 
     public static CompletableFuture<Void> load(final File directory) {
         final File messageFile = new File(directory, "messages.yml");

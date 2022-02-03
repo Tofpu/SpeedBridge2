@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2.domain.common.config.manager;
 import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.config.PluginConfiguration;
 import io.tofpu.speedbridge2.domain.common.config.category.GeneralCategory;
+import io.tofpu.speedbridge2.domain.common.config.category.LeaderboardCategory;
 import io.tofpu.speedbridge2.domain.common.config.category.LobbyCategory;
 import io.tofpu.speedbridge2.domain.common.config.serializer.LocationSerializer;
 import org.bukkit.Location;
@@ -99,6 +100,10 @@ public final class ConfigurationManager {
 
     public GeneralCategory getGeneralCategory() {
         return configuration.getGeneralCategory();
+    }
+
+    public LeaderboardCategory getLeaderboardCategory() {
+        return configuration.getLeaderboardCategory();
     }
 
     public LobbyCategory getLobbyCategory() {
