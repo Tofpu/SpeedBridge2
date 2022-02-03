@@ -10,7 +10,6 @@ import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.IslandBoard;
 import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
 import io.tofpu.speedbridge2.domain.leaderboard.Leaderboard;
-import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.support.placeholderapi.PluginExpansion;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
@@ -34,8 +33,6 @@ public final class SpeedBridge {
         DatabaseManager.load(javaPlugin).thenRun(() -> {
             final IslandService islandService = IslandService.INSTANCE;
             islandService.load();
-            final PlayerService playerService = PlayerService.INSTANCE;
-            playerService.load();
 
             Message.load(javaPlugin.getDataFolder());
         });

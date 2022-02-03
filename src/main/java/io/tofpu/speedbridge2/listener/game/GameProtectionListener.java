@@ -16,7 +16,7 @@ public final class GameProtectionListener extends GameListener {
     private void onItemDrop(final PlayerDropItemEvent event) {
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
                 .getUniqueId());
-        if (!bridgePlayer.isPlaying()) {
+        if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
             return;
         }
 
@@ -31,7 +31,7 @@ public final class GameProtectionListener extends GameListener {
         final Player player = (Player) event.getEntity();
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(player
                 .getUniqueId());
-        if (!bridgePlayer.isPlaying()) {
+        if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
             return;
         }
 
@@ -43,7 +43,7 @@ public final class GameProtectionListener extends GameListener {
         final Player player = (Player) event.getEntity();
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(player
                 .getUniqueId());
-        if (!bridgePlayer.isPlaying()) {
+        if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
             return;
         }
 

@@ -71,6 +71,10 @@ public final class PluginExpansion extends PlaceholderExpansion {
         }
 
         final BridgePlayer bridgePlayer = playerService.get(player.getUniqueId());
+        if (bridgePlayer == null) {
+            return "";
+        }
+
         final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
 
         final String[] args = params.split("_");

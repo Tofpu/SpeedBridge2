@@ -10,11 +10,12 @@ import cloud.commandframework.meta.CommandMeta;
 import io.tofpu.speedbridge2.command.parser.GameIslandParser;
 import io.tofpu.speedbridge2.command.parser.IslandParser;
 import io.tofpu.speedbridge2.command.subcommand.SpeedBridgeCommand;
-import io.tofpu.speedbridge2.domain.player.object.CommonBridgePlayer;
 import io.tofpu.speedbridge2.domain.island.object.Island;
-import io.tofpu.speedbridge2.domain.player.object.SenderBridgePlayer;
 import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
+import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.domain.player.object.CommonBridgePlayer;
+import io.tofpu.speedbridge2.domain.player.object.SenderBridgePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -34,7 +35,14 @@ public final class CommandManager {
                 return new SenderBridgePlayer(sender);
             }
             final Player player = (Player) sender;
-            return PlayerService.INSTANCE.get(player.getUniqueId());
+            final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(player.getUniqueId());
+
+            // if the bridge player is null, return a temporally bridgeplayer instance
+            if (bridgePlayer == null) {
+                return BridgePlayer.of(player.getUniqueId());
+            }
+
+            return bridgePlayer;
         };
 
         final Function<CommonBridgePlayer, CommandSender> senderToBridgePlayerFunction = CommonBridgePlayer::getPlayer;

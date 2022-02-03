@@ -14,7 +14,7 @@ public final class IslandResetListener extends GameListener {
         // TODO: remove the bridge player eventually!
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
                 .getUniqueId());
-        if (!bridgePlayer.isPlaying()) {
+        if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
             return;
         }
 

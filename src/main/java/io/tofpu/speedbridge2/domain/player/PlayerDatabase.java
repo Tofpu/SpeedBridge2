@@ -102,55 +102,75 @@ public final class PlayerDatabase extends Database {
                 DatabaseUtil.databaseQuery("SELECT * FROM players", resultSet -> {
                     try {
                         while (resultSet.next()) {
-                            final BridgePlayer bridgePlayer = BridgePlayer.of(UUID.fromString(resultSet
-                                    .getString(1)));
+                            final BridgePlayer bridgePlayer = retrieve(UUID.fromString(resultSet.getString(1))).get();
 
-                            BridgeUtil.debug("found another player! " + bridgePlayer.getPlayerUid());
+                            BridgeUtil.debug("found another player! " +
+                                             bridgePlayer.getPlayerUid());
 
                             bridgePlayers.add(bridgePlayer);
                         }
-                    } catch (SQLException exception) {
+                    } catch (SQLException | InterruptedException | ExecutionException exception) {
                         exception.printStackTrace();
                     }
-                }).get();
+                        })
+                        .get();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
-            }
-
-            for (final BridgePlayer bridgePlayer : bridgePlayers) {
-                try {
-                    runAsync(() -> {
-                        try (final DatabaseQuery query = new DatabaseQuery("SELECT * FROM scores WHERE uid = ?")) {
-                            query.setString(1, bridgePlayer.getPlayerUid()
-                                    .toString());
-
-                            try (final ResultSet set = query.executeQuery()) {
-                                while (set.next()) {
-                                    final Score score = Score.of(set.getInt(3), set.getDouble(4));
-                                    BridgeUtil.debug("found new score! " + score);
-                                    bridgePlayer.setInternalNewScore(score);
-                                }
-                            }
-                        } catch (Exception exception) {
-                            exception.printStackTrace();
-                        }
-                    }).get();
-
-                    final Collection<PlayerStat> playerStats = Databases.STATS_DATABASE.getStoredStats(bridgePlayer.getPlayerUid())
-                            .get();
-
-                    for (final PlayerStat playerStat : playerStats) {
-                        bridgePlayer.setInternalStat(playerStat);
-                    }
-
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
             }
 
             BridgeUtil.debug("players result: " + bridgePlayers);
 
             return bridgePlayers;
+        });
+    }
+
+    public CompletableFuture<BridgePlayer> retrieve(final UUID uniqueId) {
+        return runAsync(() -> {
+            final BridgePlayer bridgePlayer = BridgePlayer.of(uniqueId);
+
+            try (final DatabaseQuery query = new DatabaseQuery(
+                    "SELECT * FROM players " + "where uid = ?")) {
+                query.setString(1, uniqueId.toString());
+
+                // if the execution returns false, that means the player is new
+                if (!query.execute()) {
+                    insert(bridgePlayer);
+                    return bridgePlayer;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+                try (final DatabaseQuery query = new DatabaseQuery("SELECT * FROM scores WHERE uid = ?")) {
+                    query.setString(1, bridgePlayer.getPlayerUid()
+                            .toString());
+
+                    try (final ResultSet set = query.executeQuery()) {
+                        while (set.next()) {
+                            final Score score = Score.of(set.getInt(3), set.getDouble(4));
+                            BridgeUtil.debug("found new score! " + score);
+                            bridgePlayer.setInternalNewScore(score);
+                        }
+                    }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+
+                final Collection<PlayerStat> playerStats = Databases.STATS_DATABASE.getStoredStats(bridgePlayer.getPlayerUid())
+                        .get();
+
+                for (final PlayerStat playerStat : playerStats) {
+                    bridgePlayer.setInternalStat(playerStat);
+                }
+
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            BridgeUtil.debug("successfully loaded " + uniqueId + " player's data!");
+
+            return bridgePlayer;
         });
     }
 }

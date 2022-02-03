@@ -9,18 +9,9 @@ public final class PlayerService {
     public static final PlayerService INSTANCE = new PlayerService();
 
     private final PlayerHandler playerHandler;
-    private final PlayerRepository playerRepository;
 
     public PlayerService() {
         this.playerHandler = new PlayerHandler();
-        this.playerRepository = new PlayerRepository();
-    }
-
-    public void load() {
-        this.playerRepository.loadPlayers().whenComplete((playerMap,
-                throwable) -> {
-            this.playerHandler.load(playerMap);
-        });
     }
 
     public BridgePlayer get(final UUID uuid) {

@@ -20,7 +20,7 @@ public final class IslandRegionListener extends GameListener {
     private void onPlayerMove(final PlayerMoveEvent event) {
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
                 .getUniqueId());
-        if (!bridgePlayer.isPlaying()) {
+        if (bridgePlayer == null ||!bridgePlayer.isPlaying()) {
             return;
         }
         final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
