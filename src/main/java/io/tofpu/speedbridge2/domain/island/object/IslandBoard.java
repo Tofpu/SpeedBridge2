@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.island.object;
 
+import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
@@ -10,8 +11,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public final class IslandBoard {
-    // TODO: CHANGE THE INTERVAL BEFORE PUSH TO MAIN; OPTIONAL - MAKE THIS CUSTOMIZABLE
-    public static final long INTERVAL = TimeUnit.SECONDS.toMillis(10);
+    public static final long INTERVAL = TimeUnit.SECONDS.toMillis(ConfigurationManager.INSTANCE.getLeaderboardCategory()
+            .getUpdateInterval());
 
     private static final Queue<Island> ISLAND_QUEUE = new LinkedList<>();
     private static final Timer QUEUE_TIMER = new Timer();
