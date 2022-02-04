@@ -1,6 +1,6 @@
 package io.tofpu.speedbridge2.domain.leaderboard.wrapper;
 
-import io.tofpu.speedbridge2.domain.player.misc.Score;
+import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 
 import java.util.UUID;
 

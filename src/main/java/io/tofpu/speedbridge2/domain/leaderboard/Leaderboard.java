@@ -9,7 +9,7 @@ import io.tofpu.speedbridge2.domain.leaderboard.loader.IslandLoader;
 import io.tofpu.speedbridge2.domain.leaderboard.loader.PersonalBoardLoader;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
-import io.tofpu.speedbridge2.domain.player.misc.Score;
+import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 
 import java.sql.ResultSet;
 import java.util.*;

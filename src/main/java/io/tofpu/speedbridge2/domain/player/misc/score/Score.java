@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.domain.player.misc;
+package io.tofpu.speedbridge2.domain.player.misc.score;
 
 public final class Score implements Comparable<Score> {
     private final int scoredOn;

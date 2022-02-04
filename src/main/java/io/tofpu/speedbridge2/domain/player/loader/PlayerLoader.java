@@ -25,7 +25,7 @@ public final class PlayerLoader extends CacheLoader<UUID, BridgePlayer> implemen
         try {
             BridgeUtil.debug("attempting to load " + uniqueId + " player's data!");
 
-            bridgePlayer = Databases.PLAYER_DATABASE.retrieve(uniqueId)
+            bridgePlayer = Databases.PLAYER_DATABASE.getStoredPlayer(uniqueId)
                     .get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();

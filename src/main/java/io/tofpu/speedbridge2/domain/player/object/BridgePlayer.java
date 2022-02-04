@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2.domain.player.object;
 
 import io.tofpu.speedbridge2.domain.common.database.Databases;
-import io.tofpu.speedbridge2.domain.player.misc.Score;
+import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStat;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
 import org.bukkit.Bukkit;
@@ -68,10 +68,10 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
     public Score setNewScore(final Score score) {
         // if our score map contains the island, update the score
         if (this.scoreMap.containsKey(score.getScoredOn())) {
-            Databases.PLAYER_DATABASE.update(this.playerUid, score);
+            Databases.SCORE_DATABASE.update(this.playerUid, score);
         } else {
             // otherwise, insert the score
-            Databases.PLAYER_DATABASE.insert(this.playerUid, score);
+            Databases.SCORE_DATABASE.insert(this.playerUid, score);
         }
 
         this.scoreMap.put(score.getScoredOn(), score);
