@@ -6,7 +6,6 @@ import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -51,14 +50,10 @@ public class IslandDatabase extends Database {
 
             try {
                 DatabaseUtil.databaseQuery("SELECT * FROM islands", resultSet -> {
-                    try {
-                        while (resultSet.next()) {
-                            final Island island = new Island(resultSet.getInt(1), resultSet.getString(2));
-                            island.selectSchematic(resultSet.getString(3));
-                            islands.add(island);
-                        }
-                    } catch (SQLException exception) {
-                        exception.printStackTrace();
+                    while (resultSet.next()) {
+                        final Island island = new Island(resultSet.getInt("slot"), resultSet.getString("category"));
+                        island.selectSchematic(resultSet.getString("schematicName"));
+                        islands.add(island);
                     }
                 }).get();
             } catch (InterruptedException | ExecutionException e) {

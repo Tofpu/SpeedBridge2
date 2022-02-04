@@ -11,7 +11,6 @@ import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 
-import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -54,34 +53,30 @@ public final class Leaderboard {
                 final Map<Integer, BoardPlayer> globalBoardMap = new HashMap<>();
 
                 databaseQuery.executeQuery(resultSet -> {
-                    try {
-                        while (resultSet.next()) {
-                            // if we reached the 10 limit, break the loop
-                            if (globalBoardMap.size() == 10) {
-                                break;
-                            }
-
-                            final UUID uuid = UUID.fromString(resultSet.getString("uid"));
-                            // if we already have the given uuid, continue through the loop!
-                            if (uuidList.contains(uuid)) {
-                                continue;
-                            }
-
-                            final int position = resultSet.getRow();
-                            //                        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uuid);
-
-                            final int islandSlot = resultSet.getInt("island_slot");
-                            final double playerScore = resultSet.getDouble("score");
-                            final Score score = Score.of(islandSlot, playerScore);
-
-                            final BoardPlayer value = new BoardPlayer(position,
-                                    uuid, score);
-
-                            uuidList.add(uuid);
-                            globalBoardMap.put(position, value);
+                    while (resultSet.next()) {
+                        // if we reached the 10 limit, break the loop
+                        if (globalBoardMap.size() == 10) {
+                            break;
                         }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+
+                        final UUID uuid = UUID.fromString(resultSet.getString("uid"));
+                        // if we already have the given uuid, continue through the loop!
+                        if (uuidList.contains(uuid)) {
+                            continue;
+                        }
+
+                        final int position = resultSet.getInt("position");
+                        //                        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uuid);
+
+                        final int islandSlot = resultSet.getInt("island_slot");
+                        final double playerScore = resultSet.getDouble("score");
+                        final Score score = Score.of(islandSlot, playerScore);
+
+                        final BoardPlayer value = new BoardPlayer(position,
+                                uuid, score);
+
+                        uuidList.add(uuid);
+                        globalBoardMap.put(position, value);
                     }
                 });
 

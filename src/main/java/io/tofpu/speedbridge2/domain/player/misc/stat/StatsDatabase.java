@@ -5,7 +5,6 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -53,20 +52,16 @@ public final class StatsDatabase extends Database {
                     databaseQuery.setString(owner.toString());
 
                     databaseQuery.executeQuery(resultSet -> {
-                        try {
-                            while (resultSet.next()) {
-                                final PlayerStatType playerStatType = PlayerStatType.match(resultSet.getString(3));
+                        while (resultSet.next()) {
+                            final PlayerStatType playerStatType = PlayerStatType.match(resultSet.getString("key"));
 
-                                if (playerStatType == null) {
-                                    continue;
-                                }
-                                final PlayerStat playerStat = PlayerStatType.create(owner, playerStatType, resultSet.getString(4));
-                                BridgeUtil.debug("found stat: " + playerStat);
-
-                                playerStats.add(playerStat);
+                            if (playerStatType == null) {
+                                continue;
                             }
-                        } catch (SQLException e) {
-                            e.printStackTrace();
+                            final PlayerStat playerStat = PlayerStatType.create(owner, playerStatType, resultSet.getString("value"));
+                            BridgeUtil.debug("found stat: " + playerStat);
+
+                            playerStats.add(playerStat);
                         }
                     });
                 }).get();

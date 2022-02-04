@@ -6,7 +6,6 @@ import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 
-import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -42,21 +41,17 @@ public final class IslandBoard {
                         databaseQuery.setInt(island.getSlot());
 
                         databaseQuery.executeQuery(resultSet -> {
-                            try {
-                                while (resultSet.next()) {
-                                    final int position = resultSet.getRow();
-                                    final UUID uuid = UUID.fromString(resultSet.getString("uid"));
+                            while (resultSet.next()) {
+                                final int position = resultSet.getInt("position");
+                                final UUID uuid = UUID.fromString(resultSet.getString("uid"));
 
-                                    final int islandSlot = resultSet.getInt("island_slot");
-                                    final double playerScore = resultSet.getDouble("score");
-                                    final Score score = Score.of(islandSlot, playerScore);
+                                final int islandSlot = resultSet.getInt("island_slot");
+                                final double playerScore = resultSet.getDouble("score");
+                                final Score score = Score.of(islandSlot, playerScore);
 
-                                    final BoardPlayer value = new BoardPlayer(position, uuid, score);
+                                final BoardPlayer value = new BoardPlayer(position, uuid, score);
 
-                                    boardMap.put(position, value);
-                                }
-                            } catch (SQLException e) {
-                                e.printStackTrace();
+                                boardMap.put(position, value);
                             }
                         });
 

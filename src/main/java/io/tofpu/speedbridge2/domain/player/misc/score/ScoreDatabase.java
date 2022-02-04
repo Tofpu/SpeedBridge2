@@ -7,7 +7,6 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -59,14 +58,10 @@ public final class ScoreDatabase extends Database {
                 query.setString(uniqueId.toString());
 
                 query.executeQuery(resultSet -> {
-                    try {
-                        while (resultSet.next()) {
-                            final Score score = Score.of(resultSet.getInt(3), resultSet.getDouble(4));
-                            BridgeUtil.debug("found new score! " + score);
-                            scores.add(score);
-                        }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
+                    while (resultSet.next()) {
+                        final Score score = Score.of(resultSet.getInt("island_slot"), resultSet.getDouble("score"));
+                        BridgeUtil.debug("found new score! " + score);
+                        scores.add(score);
                     }
                 });
             } catch (Exception exception) {

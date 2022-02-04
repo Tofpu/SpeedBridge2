@@ -4,7 +4,6 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -44,11 +43,7 @@ public final class IslandBoardPlayer {
 
             final AtomicReference<IslandBoard> islandBoard = new AtomicReference<>();
             databaseQuery.executeQuery(resultSet -> {
-                try {
-                    islandBoard.set(new IslandBoard(resultSet.getInt(1), islandSlot));
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                islandBoard.set(new IslandBoard(resultSet.getInt("position"), islandSlot));
                 boardMap.put(islandSlot, islandBoard.get());
             });
             return CompletableFuture.completedFuture(islandBoard.get());

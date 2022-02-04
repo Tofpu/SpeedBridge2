@@ -69,10 +69,10 @@ public class DatabaseQuery implements AutoCloseable {
         return false;
     }
 
-    public void executeQuery(final Consumer<ResultSet> resultSetConsumer) {
+    public void executeQuery(final Consumer<DatabaseSet> resultSetConsumer) {
         try {
             try (final ResultSet resultSet = this.preparedStatement.executeQuery()) {
-                resultSetConsumer.accept(resultSet);
+                resultSetConsumer.accept(new DatabaseSet(resultSet));
             }
         } catch (SQLException exception) {
             exception.printStackTrace();
