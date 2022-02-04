@@ -3,7 +3,7 @@ package io.tofpu.speedbridge2.command.parser;
 import cloud.commandframework.annotations.AnnotationAccessor;
 import cloud.commandframework.context.CommandContext;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.domain.player.object.CommonBridgePlayer;
+import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.object.extra.NullIsland;
 import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;

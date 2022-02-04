@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.domain.player.object;
+package io.tofpu.speedbridge2.domain.player.object.extra;
 
 import org.bukkit.command.CommandSender;
 

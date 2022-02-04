@@ -4,6 +4,7 @@ import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStat;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
+import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

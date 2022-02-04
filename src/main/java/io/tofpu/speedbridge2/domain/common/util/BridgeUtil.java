@@ -2,7 +2,7 @@ package io.tofpu.speedbridge2.domain.common.util;
 
 import io.tofpu.speedbridge2.SpeedBridge;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
-import io.tofpu.speedbridge2.domain.player.object.CommonBridgePlayer;
+import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;

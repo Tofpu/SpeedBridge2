@@ -13,7 +13,7 @@ import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.domain.player.object.CommonBridgePlayer;
+import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
