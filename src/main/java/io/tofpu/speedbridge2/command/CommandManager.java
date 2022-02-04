@@ -20,13 +20,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
 public final class CommandManager {
     private static BukkitCommandManager<CommonBridgePlayer> manager;
 
-    public static void load(final Plugin plugin) {
+    public static void load(final @NotNull Plugin plugin) {
         final Function<CommandTree<CommonBridgePlayer>, CommandExecutionCoordinator<CommonBridgePlayer>> executionCoordinatorFunction = CommandExecutionCoordinator.SimpleCoordinator
                 .simpleCoordinator();
 

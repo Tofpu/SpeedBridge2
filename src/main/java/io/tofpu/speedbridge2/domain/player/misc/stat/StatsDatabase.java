@@ -4,6 +4,7 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.Database;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,7 +20,7 @@ public final class StatsDatabase extends Database {
         super(DatabaseTable.of("stats", "stats_id INTEGER PRIMARY KEY AUTOINCREMENT", "uid text NOT NULL", "key text NOT NULL", "value text NOT NULL"));
     }
 
-    public CompletableFuture<Void> insert(final PlayerStat playerStat) {
+    public @NotNull CompletableFuture<Void> insert(final @NotNull PlayerStat playerStat) {
         return DatabaseUtil.databaseQueryExecute(
                 "INSERT OR IGNORE INTO stats (uid, key, value) VALUES " +
                 "(?, ?, ?)", databaseQuery -> {
@@ -30,7 +31,7 @@ public final class StatsDatabase extends Database {
                 });
     }
 
-    public CompletableFuture<Void> update(final PlayerStat playerStat) {
+    public @NotNull CompletableFuture<Void> update(final @NotNull PlayerStat playerStat) {
         return DatabaseUtil.databaseQueryExecute("UPDATE stats SET value = ? WHERE " +
                                                  "uid = ? AND key = ?", databaseQuery -> {
             databaseQuery.setString(playerStat.getValue());
@@ -43,7 +44,7 @@ public final class StatsDatabase extends Database {
         });
     }
 
-    public CompletableFuture<Collection<PlayerStat>> getStoredStats(final UUID owner) {
+    public @NotNull CompletableFuture<Collection<PlayerStat>> getStoredStats(final @NotNull UUID owner) {
         return runAsync(() -> {
             final List<PlayerStat> playerStats = new ArrayList<>();
 

@@ -9,6 +9,7 @@ import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStat;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,14 +25,14 @@ public final class PlayerDatabase extends Database {
         super(DatabaseTable.of("players", "uid text PRIMARY KEY"));
     }
 
-    public CompletableFuture<Void> insert(final BridgePlayer player) {
+    public @NotNull CompletableFuture<Void> insert(final @NotNull BridgePlayer player) {
         return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO players VALUES (?)", databaseQuery -> {
             databaseQuery.setString(player.getPlayerUid()
                     .toString());
         });
     }
 
-    public CompletableFuture<Void> update(final BridgePlayer player) {
+    public @NotNull CompletableFuture<Void> update(final @NotNull BridgePlayer player) {
         final List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
         BridgeUtil.debug("player uid: " + player.getPlayerUid());
 
@@ -50,13 +51,13 @@ public final class PlayerDatabase extends Database {
         return CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]));
     }
 
-    public CompletableFuture<Void> delete(final UUID uuid) {
+    public @NotNull CompletableFuture<Void> delete(final @NotNull UUID uuid) {
         return DatabaseUtil.databaseQueryExecute("DELETE FROM players WHERE uid = ?", databaseQuery -> {
             databaseQuery.setString(uuid.toString());
         });
     }
 
-    public CompletableFuture<BridgePlayer> getStoredPlayer(final UUID uniqueId) {
+    public @NotNull CompletableFuture<BridgePlayer> getStoredPlayer(final @NotNull UUID uniqueId) {
         return runAsync(() -> {
             final BridgePlayer bridgePlayer = BridgePlayer.of(uniqueId);
 

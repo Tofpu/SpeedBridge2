@@ -13,11 +13,12 @@ import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class IslandRegionListener extends GameListener {
     @EventHandler(ignoreCancelled = true)
-    private void onPlayerMove(final PlayerMoveEvent event) {
+    private void onPlayerMove(final @NotNull PlayerMoveEvent event) {
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
                 .getUniqueId());
         if (bridgePlayer == null ||!bridgePlayer.isPlaying()) {

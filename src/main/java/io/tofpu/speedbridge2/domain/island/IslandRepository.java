@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2.domain.island;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.object.Island;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +15,7 @@ import java.util.concurrent.ExecutionException;
 import static io.tofpu.speedbridge2.domain.common.util.DatabaseUtil.runAsync;
 
 public final class IslandRepository {
-    public CompletableFuture<Map<Integer, Island>> loadIslands() {
+    public @NotNull CompletableFuture<Map<Integer, Island>> loadIslands() {
         return runAsync(() -> {
             final List<Island> islands = new ArrayList<>();
             try {

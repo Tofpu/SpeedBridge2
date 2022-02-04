@@ -12,6 +12,7 @@ import org.bukkit.WorldCreator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,13 +20,13 @@ import java.util.List;
 import java.util.Random;
 
 public final class SchematicManager {
-    public static final SchematicManager INSTANCE = new SchematicManager();
-    private static final List<IslandPlot> SCHEMATIC_PLOTS = new ArrayList<>();
+    public static final @NotNull SchematicManager INSTANCE = new SchematicManager();
+    private static final @NotNull List<IslandPlot> SCHEMATIC_PLOTS = new ArrayList<>();
 
-    private World world;
+    private @Nullable World world;
     private SchematicManager() {}
 
-    public void load(final Plugin plugin) {
+    public void load(final @NotNull Plugin plugin) {
         World world = Bukkit.getWorld("speedbridge2");
         if (world == null) {
             world = Bukkit.createWorld(WorldCreator.name("speedbridge2")
@@ -55,7 +56,7 @@ public final class SchematicManager {
         world.setGameRuleValue("doDaylightCycle", "false");
     }
 
-    public IslandPlot reservePlot(final GameIsland gameIsland) {
+    public @Nullable IslandPlot reservePlot(final GameIsland gameIsland) {
         if (world == null) {
             Bukkit.getLogger()
                     .severe("The SpeedBridge2 world cannot be found! cancelled player's request to reserve a plot.");
@@ -138,7 +139,8 @@ public final class SchematicManager {
 
     public static final class EmptyChunkGenerator extends ChunkGenerator {
         @Override
-        public ChunkData generateChunkData(final World world, final Random random, final int x, final int z, final BiomeGrid biome) {
+        public @NotNull ChunkData generateChunkData(final World world, final Random random,
+                final int x, final int z, final BiomeGrid biome) {
             return createChunkData(world);
         }
     }

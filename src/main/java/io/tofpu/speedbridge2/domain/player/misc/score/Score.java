@@ -1,5 +1,7 @@
 package io.tofpu.speedbridge2.domain.player.misc.score;
 
+import org.jetbrains.annotations.NotNull;
+
 public final class Score implements Comparable<Score> {
     private final int scoredOn;
     private final double score;
@@ -22,7 +24,7 @@ public final class Score implements Comparable<Score> {
     }
 
     @Override
-    public int compareTo(final Score o) {
+    public int compareTo(final @NotNull Score o) {
         if (this.score > o.getScore()) {
             return 1;
         } else if (this.score == o.getScore()) {

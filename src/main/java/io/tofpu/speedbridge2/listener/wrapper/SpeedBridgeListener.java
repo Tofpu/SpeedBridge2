@@ -15,11 +15,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class SpeedBridgeListener extends GameListener {
     @EventHandler
-    private void onBlockPlace(final BlockPlaceEvent event) {
+    private void onBlockPlace(final @NotNull BlockPlaceEvent event) {
         final EventWrapper<BlockPlaceEvent> eventWrapper =
                 BlockPlaceEventWrapper.wrap(event);
         if (!eventWrapper.isPlaying()) {
@@ -30,7 +31,7 @@ public final class SpeedBridgeListener extends GameListener {
     }
 
     @EventHandler
-    private void onBlockPlace(final BlockBreakEvent event) {
+    private void onBlockPlace(final @NotNull BlockBreakEvent event) {
         final EventWrapper<BlockBreakEvent> eventWrapper = BlockBreakEventWrapper.wrap(event);
         if (!eventWrapper.isPlaying()) {
             return;
@@ -39,13 +40,13 @@ public final class SpeedBridgeListener extends GameListener {
         callEvent(eventWrapper);
     }
 
-    private void callEvent(final Event event) {
+    private void callEvent(final @NotNull Event event) {
         Bukkit.getPluginManager()
                 .callEvent(event);
     }
 
     @EventHandler
-    private void onPlayerInteract(final PlayerInteractEvent event) {
+    private void onPlayerInteract(final @NotNull PlayerInteractEvent event) {
         final EventWrapper<PlayerInteractEvent> eventWrapper =
                 PlayerInteractEventWrapper.wrap(event);
         if (event.getAction() != Action.PHYSICAL || !eventWrapper.isPlaying() ||
@@ -56,7 +57,7 @@ public final class SpeedBridgeListener extends GameListener {
         callEvent(eventWrapper);
     }
 
-    private BridgePlayer getBridgePlayer(final Player player) {
+    private BridgePlayer getBridgePlayer(final @NotNull Player player) {
         return PlayerService.INSTANCE.get(player.getUniqueId());
     }
 }

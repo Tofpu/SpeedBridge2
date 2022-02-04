@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.domain.common.database.wrapper;
 
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import org.jetbrains.annotations.NotNull;
 
 public class DatabaseTable {
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS %s (%s)";
@@ -8,11 +9,12 @@ public class DatabaseTable {
     private final String[] columns;
     private final String sql;
 
-    public static DatabaseTable of(final String table, final String... columns) {
+    public static DatabaseTable of(final @NotNull String table,
+            final @NotNull String... columns) {
         return new DatabaseTable(table, columns);
     }
 
-    private DatabaseTable(final String table, final String... columns) {
+    private DatabaseTable(final @NotNull String table, final @NotNull String... columns) {
         this.table = table;
         this.columns = columns;
         this.sql = String.format(CREATE_TABLE, table, formatColumns(columns));
@@ -20,7 +22,7 @@ public class DatabaseTable {
         BridgeUtil.debug(sql);
     }
 
-    public String formatColumns(final String[] columns) {
+    public @NotNull String formatColumns(final String[] columns) {
         final StringBuilder formattedColumn = new StringBuilder();
 
         int index = 0;
@@ -35,20 +37,20 @@ public class DatabaseTable {
         return formattedColumn.toString();
     }
 
-    public String getTable() {
+    public @NotNull String getTable() {
         return table;
     }
 
-    public String[] getColumns() {
+    public @NotNull String[] getColumns() {
         return columns;
     }
 
-    public String getSql() {
+    public @NotNull String getSql() {
         return sql;
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return getSql();
     }
 }

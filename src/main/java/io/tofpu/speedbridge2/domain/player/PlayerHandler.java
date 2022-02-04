@@ -4,13 +4,15 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import io.tofpu.speedbridge2.domain.player.loader.PlayerLoader;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public final class PlayerHandler {
-    private final LoadingCache<UUID, BridgePlayer> playerMap;
+    private final @NotNull LoadingCache<UUID, BridgePlayer> playerMap;
 
     public PlayerHandler() {
         this.playerMap = CacheBuilder.newBuilder()
@@ -25,15 +27,15 @@ public final class PlayerHandler {
         });
     }
 
-    public BridgePlayer get(final UUID uniqueId) {
+    public @Nullable BridgePlayer get(final UUID uniqueId) {
         return this.playerMap.asMap().get(uniqueId);
     }
 
-    public BridgePlayer remove(final UUID uniqueId) {
+    public @Nullable BridgePlayer remove(final UUID uniqueId) {
         return this.playerMap.asMap().remove(uniqueId);
     }
 
-    public BridgePlayer internalRefresh(final UUID uniqueId) {
+    public @Nullable BridgePlayer internalRefresh(final UUID uniqueId) {
         final BridgePlayer bridgePlayer = get(uniqueId);
         if (bridgePlayer == null) {
             load(uniqueId);
@@ -45,7 +47,7 @@ public final class PlayerHandler {
         return bridgePlayer;
     }
 
-    public BridgePlayer invalidate(final UUID uniqueId) {
+    public @Nullable BridgePlayer invalidate(final UUID uniqueId) {
         final BridgePlayer bridgePlayer = get(uniqueId);
         if (bridgePlayer == null) {
             return null;

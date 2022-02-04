@@ -3,6 +3,8 @@ package io.tofpu.speedbridge2.domain.island;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.object.IslandBoard;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -10,20 +12,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class IslandHandler {
-    private final Map<Integer, Island> islands = new HashMap<>();
+    private final @NotNull Map<Integer, Island> islands = new HashMap<>();
 
-    public void load(final Map<Integer, Island> loadedIslands) {
+    public void load(final @NotNull Map<Integer, Island> loadedIslands) {
         for (final Island island : loadedIslands.values()) {
             IslandBoard.add(island);
         }
         this.islands.putAll(loadedIslands);
     }
 
-    public IslandCreationResult createIsland(final int slot, final String category) {
+    public @NotNull IslandCreationResult createIsland(final int slot,
+            final @NotNull String category) {
         return createIsland(slot, category, "");
     }
 
-    public IslandCreationResult createIsland(final int slot, final String category,
+    public @NotNull IslandCreationResult createIsland(final int slot,
+            final @NotNull String category,
             final String schematic) {
         final Island island = new Island(slot, category);
 
@@ -45,11 +49,11 @@ public final class IslandHandler {
         }
     }
 
-    public Island findIslandBy(final int slot) {
+    public @Nullable Island findIslandBy(final int slot) {
         return this.islands.get(slot);
     }
 
-    public Island findIslandBy(final String category) {
+    public @Nullable Island findIslandBy(final String category) {
         for (final Island island : this.islands.values()) {
             if (island.getCategory().equals(category)) {
                 return island;
@@ -58,7 +62,7 @@ public final class IslandHandler {
         return null;
     }
 
-    public Island deleteIsland(final int slot) {
+    public @Nullable Island deleteIsland(final int slot) {
         final Island island = this.islands.remove(slot);
 
         // if the island is not null, wipe said island & return deleted island!
@@ -71,7 +75,7 @@ public final class IslandHandler {
         return null;
     }
 
-    public Collection<Island> getIslands() {
+    public @NotNull Collection<Island> getIslands() {
         return Collections.unmodifiableCollection(this.islands.values());
     }
 

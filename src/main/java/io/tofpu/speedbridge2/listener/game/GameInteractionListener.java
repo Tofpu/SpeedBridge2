@@ -14,11 +14,12 @@ import io.tofpu.speedbridge2.listener.wrapper.wrappers.PlayerInteractEventWrappe
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class GameInteractionListener extends GameListener {
     @EventHandler
-    private void whenPlayerPlaceBlock(final BlockPlaceEventWrapper eventWrapper) {
+    private void whenPlayerPlaceBlock(final @NotNull BlockPlaceEventWrapper eventWrapper) {
         final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
 
         final BlockPlaceEvent event = eventWrapper.getEvent();
@@ -34,7 +35,7 @@ public final class GameInteractionListener extends GameListener {
     }
 
     @EventHandler
-    private void whenPlayerScore(final PlayerInteractEventWrapper eventWrapper) {
+    private void whenPlayerScore(final @NotNull PlayerInteractEventWrapper eventWrapper) {
         final BridgePlayer bridgePlayer = eventWrapper.getBridgePlayer();
         final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
 

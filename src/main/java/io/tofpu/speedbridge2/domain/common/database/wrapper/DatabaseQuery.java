@@ -1,6 +1,8 @@
 package io.tofpu.speedbridge2.domain.common.database.wrapper;
 
 import io.tofpu.speedbridge2.domain.common.database.DatabaseManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,10 +11,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class DatabaseQuery implements AutoCloseable {
-    private final PreparedStatement preparedStatement;
-    private final AtomicInteger setterCounter;
+    private final @Nullable PreparedStatement preparedStatement;
+    private final @NotNull AtomicInteger setterCounter;
 
-    public DatabaseQuery(final String query) {
+    public DatabaseQuery(final @NotNull String query) {
         PreparedStatement preparedStatement;
         try {
             preparedStatement = DatabaseManager.getConnection().prepareStatement(query);
@@ -24,7 +26,7 @@ public class DatabaseQuery implements AutoCloseable {
         this.setterCounter = new AtomicInteger(0);
     }
 
-    public DatabaseQuery setInt(final Integer integer) {
+    public @NotNull DatabaseQuery setInt(final Integer integer) {
         try {
             this.preparedStatement.setInt(setterCounter.incrementAndGet(), integer);
         } catch (SQLException exception) {
@@ -33,7 +35,7 @@ public class DatabaseQuery implements AutoCloseable {
         return this;
     }
 
-    public DatabaseQuery setString(final String string) {
+    public @NotNull DatabaseQuery setString(final String string) {
         try {
             this.preparedStatement.setString(setterCounter.incrementAndGet(), string);
         } catch (SQLException exception) {
@@ -42,7 +44,7 @@ public class DatabaseQuery implements AutoCloseable {
         return this;
     }
 
-    public DatabaseQuery setDouble(final double score) {
+    public @NotNull DatabaseQuery setDouble(final double score) {
         try {
             this.preparedStatement.setDouble(setterCounter.incrementAndGet(), score);
         } catch (SQLException exception) {
@@ -51,7 +53,7 @@ public class DatabaseQuery implements AutoCloseable {
         return this;
     }
 
-    public DatabaseQuery setLong(final long l) {
+    public @NotNull DatabaseQuery setLong(final long l) {
         try {
             this.preparedStatement.setLong(setterCounter.incrementAndGet(), l);
         } catch (SQLException exception) {
@@ -69,7 +71,7 @@ public class DatabaseQuery implements AutoCloseable {
         return false;
     }
 
-    public void executeQuery(final Consumer<DatabaseSet> resultSetConsumer) {
+    public void executeQuery(final @NotNull Consumer<DatabaseSet> resultSetConsumer) {
         try {
             try (final ResultSet resultSet = this.preparedStatement.executeQuery()) {
                 resultSetConsumer.accept(new DatabaseSet(resultSet));

@@ -9,13 +9,14 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class PlayerConnectionListener extends GameListener {
     final PlayerService playerService = PlayerService.INSTANCE;
 
     @EventHandler
-    private void onPlayerJoin(final PlayerJoinEvent event) {
+    private void onPlayerJoin(final @NotNull PlayerJoinEvent event) {
         // internally refreshing the BridgePlayer object, to avoid the Player object
         // from breaking
         playerService.internalRefresh(event.getPlayer());
@@ -33,7 +34,7 @@ public final class PlayerConnectionListener extends GameListener {
     }
 
     @EventHandler
-    private void onPlayerQuit(final PlayerQuitEvent event) {
+    private void onPlayerQuit(final @NotNull PlayerQuitEvent event) {
         // invalidate
         playerService.invalidate(event.getPlayer());
     }

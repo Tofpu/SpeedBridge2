@@ -5,6 +5,7 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
 import io.tofpu.speedbridge2.domain.island.object.Island;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +14,12 @@ import java.util.concurrent.ExecutionException;
 
 import static io.tofpu.speedbridge2.domain.common.util.DatabaseUtil.runAsync;
 
-public class IslandDatabase extends Database {
+public final class IslandDatabase extends Database {
     public IslandDatabase() {
         super(DatabaseTable.of("islands", "slot NOT NULL PRIMARY KEY", "category TEXT", "schematicName TEXT"));
     }
 
-    public CompletableFuture<Void> insert(final Island island) {
+    public @NotNull CompletableFuture<Void> insert(final Island island) {
         return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO islands VALUES (?, ?, ?)", databaseQuery -> {
             databaseQuery.setInt(island.getSlot());
             databaseQuery.setString(island.getCategory());
@@ -26,7 +27,7 @@ public class IslandDatabase extends Database {
         });
     }
 
-    public CompletableFuture<Void> update(final Island island) {
+    public @NotNull CompletableFuture<Void> update(final Island island) {
         return DatabaseUtil.databaseQueryExecute("UPDATE islands SET category = ?, schematicName = ? WHERE slot = ?", databaseQuery -> {
             BridgeUtil.debug("island category: " + island.getCategory());
             databaseQuery.setString(island.getCategory());
@@ -38,13 +39,13 @@ public class IslandDatabase extends Database {
         });
     }
 
-    public CompletableFuture<Void> delete(final int slot) {
+    public @NotNull CompletableFuture<Void> delete(final int slot) {
         return DatabaseUtil.databaseQueryExecute("DELETE FROM islands WHERE slot = ?", databaseQuery -> {
             databaseQuery.setInt(slot);
         });
     }
 
-    public CompletableFuture<List<Island>> getStoredIslands() {
+    public @NotNull CompletableFuture<List<Island>> getStoredIslands() {
         return runAsync(() -> {
             final List<Island> islands = new ArrayList<>();
 

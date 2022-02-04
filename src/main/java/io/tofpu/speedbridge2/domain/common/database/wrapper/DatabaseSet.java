@@ -1,12 +1,14 @@
 package io.tofpu.speedbridge2.domain.common.database.wrapper;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public final class DatabaseSet {
-    private final ResultSet resultSet;
+    private final @NotNull ResultSet resultSet;
 
-    public DatabaseSet(final ResultSet resultSet) {
+    public DatabaseSet(final @NotNull ResultSet resultSet) {
         this.resultSet = resultSet;
     }
 
@@ -19,7 +21,7 @@ public final class DatabaseSet {
         return false;
     }
 
-    public String getString(final String column) {
+    public String getString(final @NotNull String column) {
         try {
             return resultSet.getString(column);
         } catch (SQLException e) {
@@ -28,7 +30,7 @@ public final class DatabaseSet {
         return "null";
     }
 
-    public int getInt(final String column) {
+    public int getInt(final @NotNull String column) {
         try {
             return resultSet.getInt(column);
         } catch (SQLException e) {
@@ -37,7 +39,7 @@ public final class DatabaseSet {
         return -1;
     }
 
-    public double getDouble(final String column) {
+    public double getDouble(final @NotNull String column) {
         try {
             return resultSet.getDouble(column);
         } catch (SQLException e) {

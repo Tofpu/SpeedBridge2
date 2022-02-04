@@ -7,6 +7,8 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,11 +18,11 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 
-public class DatabaseManager {
-    private static final Queue<String> TABLE_QUEUE = new LinkedList<>();
-    private static HikariDataSource dataSource;
+public final class DatabaseManager {
+    private static final @NotNull Queue<String> TABLE_QUEUE = new LinkedList<>();
+    private static @Nullable HikariDataSource dataSource;
 
-    public static CompletableFuture<Void> load(final Plugin plugin) {
+    public static CompletableFuture<Void> load(final @NotNull Plugin plugin) {
         return PluginExecutor.runAsync(() -> {
             try {
                 Class.forName("org.sqlite.JDBC");
@@ -75,11 +77,11 @@ public class DatabaseManager {
         dataSource.close();
     }
 
-    public static void appendTable(final DatabaseTable table) {
+    public static void appendTable(final @NotNull DatabaseTable table) {
         TABLE_QUEUE.add(table.toString());
     }
 
-    public static Connection getConnection() {
+    public static @Nullable Connection getConnection() {
         try {
             return dataSource.getConnection();
         } catch (SQLException exception) {

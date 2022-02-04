@@ -2,31 +2,33 @@ package io.tofpu.speedbridge2.domain.player;
 
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
 public final class PlayerService {
-    public static final PlayerService INSTANCE = new PlayerService();
+    public static final @NotNull PlayerService INSTANCE = new PlayerService();
 
-    private final PlayerHandler playerHandler;
+    private final @NotNull PlayerHandler playerHandler;
 
     public PlayerService() {
         this.playerHandler = new PlayerHandler();
     }
 
-    public BridgePlayer get(final UUID uuid) {
+    public @Nullable BridgePlayer get(final @NotNull UUID uuid) {
         return this.playerHandler.get(uuid);
     }
 
-    public BridgePlayer remove(final UUID uniqueId) {
+    public @Nullable BridgePlayer remove(final @NotNull UUID uniqueId) {
         return playerHandler.remove(uniqueId);
     }
 
-    public BridgePlayer internalRefresh(final Player player) {
+    public @Nullable BridgePlayer internalRefresh(final @NotNull Player player) {
         return playerHandler.internalRefresh(player.getUniqueId());
     }
 
-    public BridgePlayer invalidate(final Player player) {
+    public @Nullable BridgePlayer invalidate(final @NotNull Player player) {
         return playerHandler.invalidate(player.getUniqueId());
     }
 }

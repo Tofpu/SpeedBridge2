@@ -6,6 +6,7 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,8 @@ public final class ScoreDatabase extends Database {
         super(DatabaseTable.of("scores", SCORE_COLUMNS));
     }
 
-    public CompletableFuture<Void> insert(final UUID uuid, final Score score) {
+    public @NotNull CompletableFuture<Void> insert(final @NotNull UUID uuid,
+            final @NotNull Score score) {
         return DatabaseUtil.databaseQueryExecute(
                 "INSERT OR IGNORE INTO scores (uid, island_slot, score) VALUES " +
                 "(?, ?, ?)", databaseQuery -> {
@@ -35,7 +37,8 @@ public final class ScoreDatabase extends Database {
                 });
     }
 
-    public CompletableFuture<Void> update(final UUID uuid, final Score score) {
+    public @NotNull CompletableFuture<Void> update(final @NotNull UUID uuid,
+            final @NotNull Score score) {
         return DatabaseUtil.databaseQueryExecute("UPDATE scores SET island_slot = ?, " +
                                                  "score = ? WHERE uid = ?", databaseQuery -> {
             BridgeUtil.debug("player uid: " + uuid.toString());
@@ -50,7 +53,7 @@ public final class ScoreDatabase extends Database {
         });
     }
 
-    public CompletableFuture<List<Score>> getStoredScore(final UUID uniqueId) {
+    public @NotNull CompletableFuture<List<Score>> getStoredScore(final @NotNull UUID uniqueId) {
         return PluginExecutor.supply(() -> {
             final List<Score> scores = new ArrayList<>();
 

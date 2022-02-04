@@ -8,6 +8,7 @@ import io.tofpu.speedbridge2.domain.island.schematic.IslandSchematic;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
 import java.util.HashMap;
@@ -80,7 +81,7 @@ public class Island extends IslandSchematic {
         update();
     }
 
-    public boolean selectSchematic(final String schematicName) {
+    public boolean selectSchematic(final @NotNull String schematicName) {
         final boolean successful = super.selectSchematic(schematicName);
         // if the operation was successful, update the database
         if (successful) {
