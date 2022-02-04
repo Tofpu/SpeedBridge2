@@ -6,7 +6,7 @@ import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 
-import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -39,23 +39,26 @@ public final class IslandBoard {
                     try (final DatabaseQuery databaseQuery = new DatabaseQuery(
                             "SELECT * FROM scores WHERE island_slot = ? ORDER BY " +
                             "score " + "LIMIT 10 OFFSET 0")) {
-                        databaseQuery.setInt(1, island.getSlot());
+                        databaseQuery.setInt(island.getSlot());
 
-                        try (final ResultSet resultSet = databaseQuery.executeQuery()) {
-                            while (resultSet.next()) {
-                                final int position = resultSet.getRow();
-                                final UUID uuid = UUID.fromString(resultSet.getString("uid"));
-//                                final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uuid);
+                        databaseQuery.executeQuery(resultSet -> {
+                            try {
+                                while (resultSet.next()) {
+                                    final int position = resultSet.getRow();
+                                    final UUID uuid = UUID.fromString(resultSet.getString("uid"));
 
-                                final int islandSlot = resultSet.getInt("island_slot");
-                                final double playerScore = resultSet.getDouble("score");
-                                final Score score = Score.of(islandSlot, playerScore);
+                                    final int islandSlot = resultSet.getInt("island_slot");
+                                    final double playerScore = resultSet.getDouble("score");
+                                    final Score score = Score.of(islandSlot, playerScore);
 
-                                final BoardPlayer value = new BoardPlayer(position, uuid, score);
+                                    final BoardPlayer value = new BoardPlayer(position, uuid, score);
 
-                                boardMap.put(position, value);
+                                    boardMap.put(position, value);
+                                }
+                            } catch (SQLException e) {
+                                e.printStackTrace();
                             }
-                        }
+                        });
 
                         BridgeUtil.debug("successfully updated " + island.getSlot() + " island!");
                         BridgeUtil.debug(String.valueOf(boardMap));

@@ -27,9 +27,7 @@ public class DatabaseUtil {
     public static CompletableFuture<Void> databaseQuery(final String sql, final Consumer<ResultSet> databaseQueryConsumer) {
         return runAsync(() -> {
             try (final DatabaseQuery query = new DatabaseQuery(sql)) {
-                try (final ResultSet resultSet = query.executeQuery()) {
-                    databaseQueryConsumer.accept(resultSet);
-                }
+                query.executeQuery(databaseQueryConsumer);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -37,6 +35,6 @@ public class DatabaseUtil {
     }
 
     public static <T> CompletableFuture<T> runAsync(final Supplier<?> supplier) {
-        return (CompletableFuture<T>) PluginExecutor.supply(supplier);
+        return PluginExecutor.supply(supplier);
     }
 }

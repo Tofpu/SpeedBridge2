@@ -138,6 +138,18 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
         return player;
     }
 
+    public GamePlayer getGamePlayer() {
+        return gamePlayer;
+    }
+
+    public void invalidatePlayer() {
+        this.player = null;
+    }
+
+    public void internalRefresh(final UUID uniqueId) {
+        this.player = Bukkit.getPlayer(uniqueId);
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("BridgePlayer{");
@@ -153,17 +165,5 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
                 .append(gamePlayer);
         sb.append('}');
         return sb.toString();
-    }
-
-    public GamePlayer getGamePlayer() {
-        return gamePlayer;
-    }
-
-    public void invalidatePlayer() {
-        this.player = null;
-    }
-
-    public void internalRefresh(final UUID uniqueId) {
-        this.player = Bukkit.getPlayer(uniqueId);
     }
 }

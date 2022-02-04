@@ -4,11 +4,12 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class IslandBoardPlayer {
     private static final String ISLAND_POSITION =
@@ -38,14 +39,19 @@ public final class IslandBoardPlayer {
         BridgeUtil.debug("attempting to query to database for position for " + owner +
                          ", " + islandSlot);
         try (final DatabaseQuery databaseQuery = new DatabaseQuery(ISLAND_POSITION)) {
-            databaseQuery.setInt(1, islandSlot);
-            databaseQuery.setString(2, owner.toString());
+            databaseQuery.setInt(islandSlot);
+            databaseQuery.setString(owner.toString());
 
-            try (final ResultSet resultSet = databaseQuery.executeQuery()) {
-                final IslandBoard islandBoard = new IslandBoard(resultSet.getInt(1), islandSlot);
-                boardMap.put(islandSlot, islandBoard);
-                return CompletableFuture.completedFuture(islandBoard);
-            }
+            final AtomicReference<IslandBoard> islandBoard = new AtomicReference<>();
+            databaseQuery.executeQuery(resultSet -> {
+                try {
+                    islandBoard.set(new IslandBoard(resultSet.getInt(1), islandSlot));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                boardMap.put(islandSlot, islandBoard.get());
+            });
+            return CompletableFuture.completedFuture(islandBoard.get());
         } catch (Exception e) {
             e.printStackTrace();
         }

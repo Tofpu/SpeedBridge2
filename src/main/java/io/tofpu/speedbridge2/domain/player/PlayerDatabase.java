@@ -26,7 +26,7 @@ public final class PlayerDatabase extends Database {
 
     public CompletableFuture<Void> insert(final BridgePlayer player) {
         return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO players VALUES (?)", databaseQuery -> {
-            databaseQuery.setString(1, player.getPlayerUid()
+            databaseQuery.setString(player.getPlayerUid()
                     .toString());
         });
     }
@@ -38,12 +38,12 @@ public final class PlayerDatabase extends Database {
         for (final Score score : player.getScores()) {
             final CompletableFuture<Void> future = DatabaseUtil.databaseQueryExecute("UPDATE scores SET islandSlot = ?, " + "score = ? WHERE uid = ?", databaseQuery -> {
                 BridgeUtil.debug("player score island: " + score.getScoredOn());
-                databaseQuery.setInt(1, score.getScoredOn());
+                databaseQuery.setInt(score.getScoredOn());
 
                 BridgeUtil.debug("player score: " + score.getScore());
-                databaseQuery.setDouble(2, score.getScore());
+                databaseQuery.setDouble(score.getScore());
 
-                databaseQuery.setString(3, player.getPlayerUid().toString());
+                databaseQuery.setString(player.getPlayerUid().toString());
             });
             completableFutures.add(future);
         }
@@ -52,7 +52,7 @@ public final class PlayerDatabase extends Database {
 
     public CompletableFuture<Void> delete(final UUID uuid) {
         return DatabaseUtil.databaseQueryExecute("DELETE FROM players WHERE uid = ?", databaseQuery -> {
-            databaseQuery.setString(1, uuid.toString());
+            databaseQuery.setString(uuid.toString());
         });
     }
 
@@ -62,7 +62,7 @@ public final class PlayerDatabase extends Database {
 
             try (final DatabaseQuery query = new DatabaseQuery(
                     "SELECT * FROM players " + "where uid = ?")) {
-                query.setString(1, uniqueId.toString());
+                query.setString(uniqueId.toString());
 
                 // if the execution returns false, that means the player is new
                 if (!query.execute()) {

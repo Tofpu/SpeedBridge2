@@ -5,42 +5,55 @@ import io.tofpu.speedbridge2.domain.common.database.DatabaseManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 public class DatabaseQuery implements AutoCloseable {
     private final PreparedStatement preparedStatement;
+    private final AtomicInteger setterCounter;
 
     public DatabaseQuery(final String query) {
         PreparedStatement preparedStatement;
         try {
             preparedStatement = DatabaseManager.getConnection().prepareStatement(query);
-        } catch (SQLException exception) {
+        } catch (final SQLException exception) {
             exception.printStackTrace();
             preparedStatement = null;
         }
         this.preparedStatement = preparedStatement;
+        this.setterCounter = new AtomicInteger(0);
     }
 
-    public DatabaseQuery setInt(final int index, final Integer integer) {
+    public DatabaseQuery setInt(final Integer integer) {
         try {
-            this.preparedStatement.setInt(index, integer);
+            this.preparedStatement.setInt(setterCounter.incrementAndGet(), integer);
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
         return this;
     }
 
-    public DatabaseQuery setString(final int index, final String string) {
+    public DatabaseQuery setString(final String string) {
         try {
-            this.preparedStatement.setString(index, string);
+            this.preparedStatement.setString(setterCounter.incrementAndGet(), string);
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
         return this;
     }
 
-    public DatabaseQuery setLong(final int index, final long l) {
+    public DatabaseQuery setDouble(final double score) {
         try {
-            this.preparedStatement.setLong(index, l);
+            this.preparedStatement.setDouble(setterCounter.incrementAndGet(), score);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return this;
+    }
+
+    public DatabaseQuery setLong(final long l) {
+        try {
+            this.preparedStatement.setLong(setterCounter.incrementAndGet(), l);
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
@@ -56,13 +69,14 @@ public class DatabaseQuery implements AutoCloseable {
         return false;
     }
 
-    public ResultSet executeQuery() {
+    public void executeQuery(final Consumer<ResultSet> resultSetConsumer) {
         try {
-            return this.preparedStatement.executeQuery();
+            try (final ResultSet resultSet = this.preparedStatement.executeQuery()) {
+                resultSetConsumer.accept(resultSet);
+            }
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
-        return null;
     }
 
     @Override
@@ -72,14 +86,5 @@ public class DatabaseQuery implements AutoCloseable {
         }
         this.preparedStatement.getConnection().close();
         this.preparedStatement.close();
-    }
-
-    public DatabaseQuery setDouble(final int index, final double score) {
-        try {
-            this.preparedStatement.setDouble(index, score);
-        } catch (SQLException exception) {
-            exception.printStackTrace();
-        }
-        return this;
     }
 }

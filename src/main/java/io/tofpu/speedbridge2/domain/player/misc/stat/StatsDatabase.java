@@ -5,7 +5,6 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,21 +24,21 @@ public final class StatsDatabase extends Database {
         return DatabaseUtil.databaseQueryExecute(
                 "INSERT OR IGNORE INTO stats (uid, key, value) VALUES " +
                 "(?, ?, ?)", databaseQuery -> {
-                    databaseQuery.setString(1, playerStat.getOwner()
+                    databaseQuery.setString(playerStat.getOwner()
                             .toString());
-                    databaseQuery.setString(2, playerStat.getKey());
-                    databaseQuery.setString(3, playerStat.getValue());
+                    databaseQuery.setString(playerStat.getKey());
+                    databaseQuery.setString(playerStat.getValue());
                 });
     }
 
     public CompletableFuture<Void> update(final PlayerStat playerStat) {
         return DatabaseUtil.databaseQueryExecute("UPDATE stats SET value = ? WHERE " +
                                                  "uid = ? AND key = ?", databaseQuery -> {
-            databaseQuery.setString(1, playerStat.getValue());
+            databaseQuery.setString(playerStat.getValue());
 
-            databaseQuery.setString(2, playerStat.getOwner()
+            databaseQuery.setString(playerStat.getOwner()
                     .toString());
-            databaseQuery.setString(3, playerStat.getKey());
+            databaseQuery.setString(playerStat.getKey());
 
             System.out.println(playerStat);
         });
@@ -51,23 +50,25 @@ public final class StatsDatabase extends Database {
 
             try {
                 DatabaseUtil.databaseQueryExecute("SELECT * FROM stats WHERE uid = ?", databaseQuery -> {
-                    databaseQuery.setString(1, owner.toString());
+                    databaseQuery.setString(owner.toString());
 
-                    try (final ResultSet resultSet = databaseQuery.executeQuery()) {
-                        while (resultSet.next()) {
-                            final PlayerStatType playerStatType = PlayerStatType.match(resultSet.getString(3));
+                    databaseQuery.executeQuery(resultSet -> {
+                        try {
+                            while (resultSet.next()) {
+                                final PlayerStatType playerStatType = PlayerStatType.match(resultSet.getString(3));
 
-                            if (playerStatType == null) {
-                                continue;
+                                if (playerStatType == null) {
+                                    continue;
+                                }
+                                final PlayerStat playerStat = PlayerStatType.create(owner, playerStatType, resultSet.getString(4));
+                                BridgeUtil.debug("found stat: " + playerStat);
+
+                                playerStats.add(playerStat);
                             }
-                            final PlayerStat playerStat = PlayerStatType.create(owner, playerStatType, resultSet.getString(4));
-                            BridgeUtil.debug("found stat: " + playerStat);
-
-                            playerStats.add(playerStat);
+                        } catch (SQLException e) {
+                            e.printStackTrace();
                         }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+                    });
                 }).get();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();

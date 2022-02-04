@@ -10,8 +10,9 @@ import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class PersonalBoardLoader extends CacheLoader<UUID, BoardPlayer> implements BoardRetrieve<BoardPlayer> {
     public static final PersonalBoardLoader INSTANCE = new PersonalBoardLoader();
@@ -35,14 +36,23 @@ public final class PersonalBoardLoader extends CacheLoader<UUID, BoardPlayer> im
     @Override
     public @Nullable BoardPlayer retrieve(final @NotNull UUID key) {
         try (final DatabaseQuery databaseQuery = new DatabaseQuery(GLOBAL_POSITION)) {
-            databaseQuery.setString(1, key.toString());
-            try (final ResultSet resultSet = databaseQuery.executeQuery()) {
-                final int islandSlot = resultSet.getInt("island_slot");
-                final double playerScore = resultSet.getDouble("score");
-                final Score score = Score.of(islandSlot, playerScore);
+            databaseQuery.setString(key.toString());
 
-                return new BoardPlayer(resultSet.getInt(1), key, score);
-            }
+            final AtomicReference<BoardPlayer> boardPlayer = new AtomicReference<>();
+            databaseQuery.executeQuery(resultSet -> {
+                final int islandSlot;
+                try {
+                    islandSlot = resultSet.getInt("island_slot");
+                    final double playerScore = resultSet.getDouble("score");
+                    final Score score = Score.of(islandSlot, playerScore);
+
+                    boardPlayer.set(new BoardPlayer(resultSet.getInt("position"), key, score));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            return boardPlayer.get();
         } catch (Exception e) {
             e.printStackTrace();
         }

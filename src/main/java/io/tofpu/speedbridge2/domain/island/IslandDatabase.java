@@ -21,27 +21,27 @@ public class IslandDatabase extends Database {
 
     public CompletableFuture<Void> insert(final Island island) {
         return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO islands VALUES (?, ?, ?)", databaseQuery -> {
-            databaseQuery.setInt(1, island.getSlot());
-            databaseQuery.setString(2, island.getCategory());
-            databaseQuery.setString(3, island.getSchematicName());
+            databaseQuery.setInt(island.getSlot());
+            databaseQuery.setString(island.getCategory());
+            databaseQuery.setString(island.getSchematicName());
         });
     }
 
     public CompletableFuture<Void> update(final Island island) {
         return DatabaseUtil.databaseQueryExecute("UPDATE islands SET category = ?, schematicName = ? WHERE slot = ?", databaseQuery -> {
             BridgeUtil.debug("island category: " + island.getCategory());
-            databaseQuery.setString(1, island.getCategory());
+            databaseQuery.setString(island.getCategory());
 
             BridgeUtil.debug("island schematic: " + island.getSchematicName());
-            databaseQuery.setString(2, island.getSchematicName());
+            databaseQuery.setString(island.getSchematicName());
 
-            databaseQuery.setInt(3, island.getSlot());
+            databaseQuery.setInt(island.getSlot());
         });
     }
 
     public CompletableFuture<Void> delete(final int slot) {
         return DatabaseUtil.databaseQueryExecute("DELETE FROM islands WHERE slot = ?", databaseQuery -> {
-            databaseQuery.setInt(1, slot);
+            databaseQuery.setInt(slot);
         });
     }
 

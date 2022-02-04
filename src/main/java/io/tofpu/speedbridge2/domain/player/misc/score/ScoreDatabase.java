@@ -7,7 +7,7 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
 
-import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -25,13 +25,13 @@ public final class ScoreDatabase extends Database {
                 "INSERT OR IGNORE INTO scores (uid, island_slot, score) VALUES " +
                 "(?, ?, ?)", databaseQuery -> {
                     BridgeUtil.debug("player uid: " + uuid.toString());
-                    databaseQuery.setString(1, uuid.toString());
+                    databaseQuery.setString(uuid.toString());
 
                     BridgeUtil.debug("player score island: " + score.getScoredOn());
-                    databaseQuery.setInt(2, score.getScoredOn());
+                    databaseQuery.setInt(score.getScoredOn());
 
                     BridgeUtil.debug("player score: " + score.getScore());
-                    databaseQuery.setDouble(3, score.getScore());
+                    databaseQuery.setDouble(score.getScore());
 
                 });
     }
@@ -42,12 +42,12 @@ public final class ScoreDatabase extends Database {
             BridgeUtil.debug("player uid: " + uuid.toString());
 
             BridgeUtil.debug("player score island: " + score.getScoredOn());
-            databaseQuery.setInt(1, score.getScoredOn());
+            databaseQuery.setInt(score.getScoredOn());
 
             BridgeUtil.debug("player score: " + score.getScore());
-            databaseQuery.setDouble(2, score.getScore());
+            databaseQuery.setDouble(score.getScore());
 
-            databaseQuery.setString(3, uuid.toString());
+            databaseQuery.setString(uuid.toString());
         });
     }
 
@@ -56,15 +56,19 @@ public final class ScoreDatabase extends Database {
             final List<Score> scores = new ArrayList<>();
 
             try (final DatabaseQuery query = new DatabaseQuery("SELECT * FROM scores WHERE uid = ?")) {
-                query.setString(1, uniqueId.toString());
+                query.setString(uniqueId.toString());
 
-                try (final ResultSet set = query.executeQuery()) {
-                    while (set.next()) {
-                        final Score score = Score.of(set.getInt(3), set.getDouble(4));
-                        BridgeUtil.debug("found new score! " + score);
-                        scores.add(score);
+                query.executeQuery(resultSet -> {
+                    try {
+                        while (resultSet.next()) {
+                            final Score score = Score.of(resultSet.getInt(3), resultSet.getDouble(4));
+                            BridgeUtil.debug("found new score! " + score);
+                            scores.add(score);
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
                     }
-                }
+                });
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
