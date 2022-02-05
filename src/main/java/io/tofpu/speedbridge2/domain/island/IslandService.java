@@ -38,7 +38,7 @@ public final class IslandService {
         return this.islandHandler.createIsland(slot, category);
     }
 
-    public @NotNull Island findIslandBy(final int slot) {
+    public @Nullable Island findIslandBy(final int slot) {
         return this.islandHandler.findIslandBy(slot);
     }
 

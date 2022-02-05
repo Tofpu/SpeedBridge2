@@ -17,38 +17,39 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static io.tofpu.speedbridge2.domain.common.util.DatabaseUtil.runAsync;
 
 public final class PlayerDatabase extends Database {
     public PlayerDatabase() {
-        super(DatabaseTable.of("players", "uid text PRIMARY KEY"));
-    }
-
-    public @NotNull CompletableFuture<Void> insert(final @NotNull BridgePlayer player) {
-        return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO players VALUES (?)", databaseQuery -> {
-            databaseQuery.setString(player.getPlayerUid()
-                    .toString());
-        });
+        super(DatabaseTable.of("players", "uid text PRIMARY KEY", "name text NOT NULL"));
     }
 
     public @NotNull CompletableFuture<Void> update(final @NotNull BridgePlayer player) {
         final List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
         BridgeUtil.debug("player uid: " + player.getPlayerUid());
 
+        completableFutures.add(updateName(player.getPlayer()
+                .getName(), player));
+
         for (final Score score : player.getScores()) {
-            final CompletableFuture<Void> future = DatabaseUtil.databaseQueryExecute("UPDATE scores SET islandSlot = ?, " + "score = ? WHERE uid = ?", databaseQuery -> {
-                BridgeUtil.debug("player score island: " + score.getScoredOn());
-                databaseQuery.setInt(score.getScoredOn());
-
-                BridgeUtil.debug("player score: " + score.getScore());
-                databaseQuery.setDouble(score.getScore());
-
-                databaseQuery.setString(player.getPlayerUid().toString());
-            });
-            completableFutures.add(future);
+            completableFutures.add(Databases.SCORE_DATABASE.update(player.getPlayerUid(), score));
         }
         return CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]));
+    }
+
+    public CompletableFuture<Void> updateName(final String newName, final BridgePlayer bridgePlayer) {
+        return runAsync(() -> {
+            try (final DatabaseQuery databaseQuery = new DatabaseQuery(
+                    "UPDATE players SET name = ? WHERE uid" + " = ?")) {
+                databaseQuery.setString(newName);
+                databaseQuery.setString(bridgePlayer.getPlayerUid()
+                        .toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public @NotNull CompletableFuture<Void> delete(final @NotNull UUID uuid) {
@@ -70,6 +71,22 @@ public final class PlayerDatabase extends Database {
                     insert(bridgePlayer);
                     return bridgePlayer;
                 }
+
+                final AtomicBoolean pause = new AtomicBoolean(false);
+
+                query.executeQuery(databaseSet -> {
+                    if (!databaseSet.next()) {
+                        pause.set(true);
+                        insert(bridgePlayer);
+                    } else {
+                        bridgePlayer.setName(databaseSet.getString("name"));
+                    }
+                });
+
+                if (pause.get()) {
+                    return bridgePlayer;
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -96,6 +113,15 @@ public final class PlayerDatabase extends Database {
             BridgeUtil.debug("successfully loaded " + uniqueId + " player's data!");
 
             return bridgePlayer;
+        });
+    }
+
+    public @NotNull CompletableFuture<Void> insert(final @NotNull BridgePlayer player) {
+        return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO players VALUES (?, ?)", databaseQuery -> {
+            databaseQuery.setString(player.getPlayerUid()
+                    .toString());
+            databaseQuery.setString(player.getPlayer()
+                    .getName());
         });
     }
 }

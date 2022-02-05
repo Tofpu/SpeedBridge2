@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.domain.player;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.player.loader.PlayerLoader;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -35,11 +36,16 @@ public final class PlayerHandler {
         return this.playerMap.asMap().remove(uniqueId);
     }
 
-    public @Nullable BridgePlayer internalRefresh(final UUID uniqueId) {
+    public @Nullable BridgePlayer internalRefresh(final String name,
+            final UUID uniqueId) {
         final BridgePlayer bridgePlayer = get(uniqueId);
         if (bridgePlayer == null) {
             load(uniqueId);
             return null;
+        }
+
+        if (!bridgePlayer.getName().equals(name)) {
+            Databases.PLAYER_DATABASE.updateName(name, bridgePlayer);
         }
 
         bridgePlayer.internalRefresh(uniqueId);

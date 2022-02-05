@@ -18,6 +18,7 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
     private final Map<Integer, Score> scoreMap;
     private final Map<String, PlayerStat> statsMap;
 
+    private String name;
     private Player player;
     private GamePlayer gamePlayer;
 
@@ -29,13 +30,18 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
         return new BridgePlayer(playerUid);
     }
 
+    public static BridgePlayer of(final String name, final UUID playerUid) {
+        return new BridgePlayer(name, playerUid);
+    }
+
     private BridgePlayer(final BridgePlayer copy) {
-        this(copy.playerUid);
+        this(copy.getName(), copy.playerUid);
         this.scoreMap.putAll(copy.scoreMap);
         this.statsMap.putAll(copy.statsMap);
     }
 
-    private BridgePlayer(final UUID playerUid) {
+    private BridgePlayer(final String name, final UUID playerUid) {
+        this.name = name;
         this.playerUid = playerUid;
         this.scoreMap = new HashMap<>();
         this.statsMap = new HashMap<>();
@@ -45,6 +51,11 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
         } else {
             this.player = null;
         }
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     public Score setScoreIfLower(final int islandSlot, final double score) {
@@ -147,8 +158,27 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
         this.player = null;
     }
 
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    private BridgePlayer(final UUID playerUid) {
+        this.playerUid = playerUid;
+        this.scoreMap = new HashMap<>();
+        this.statsMap = new HashMap<>();
+
+        if (playerUid != null) {
+            this.player = Bukkit.getPlayer(playerUid);
+            this.name = player.getName();
+        } else {
+            this.player = null;
+            this.name = "null";
+        }
+    }
+
     public void internalRefresh(final UUID uniqueId) {
         this.player = Bukkit.getPlayer(uniqueId);
+        this.name = player.getName();
     }
 
     @Override

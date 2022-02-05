@@ -25,6 +25,9 @@ public final class Message {
             "<gold><bold>" + MessageUtil.Symbols.ARROW_RIGHT.getSymbol() +
             "</bold> <yellow>";
 
+    public final String NO_ARGUMENT =
+            SUCCESS + "Type /speedbridge help for further " + "information.";
+
     public final String ISLAND_ALREADY_EXISTS = ERROR + "Island %s already exists!";
 
     public final String ISLAND_HAS_BEEN_CREATED =

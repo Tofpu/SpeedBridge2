@@ -10,6 +10,11 @@ public final class SenderBridgePlayer extends CommonBridgePlayer<CommandSender> 
     }
 
     @Override
+    public String getName() {
+        return "Console";
+    }
+
+    @Override
     public CommandSender getPlayer() {
         return getSender();
     }

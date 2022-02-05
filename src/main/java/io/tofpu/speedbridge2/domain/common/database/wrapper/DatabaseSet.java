@@ -21,6 +21,15 @@ public final class DatabaseSet {
         return false;
     }
 
+    public int getRow() {
+        try {
+            return resultSet.getRow();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
     public String getString(final @NotNull String column) {
         try {
             return resultSet.getString(column);

@@ -4,7 +4,9 @@ import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
+import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -42,14 +44,17 @@ public final class IslandBoard {
 
                         databaseQuery.executeQuery(resultSet -> {
                             while (resultSet.next()) {
-                                final int position = resultSet.getInt("position");
+                                final int position = resultSet.getRow();
                                 final UUID uuid = UUID.fromString(resultSet.getString("uid"));
 
                                 final int islandSlot = resultSet.getInt("island_slot");
                                 final double playerScore = resultSet.getDouble("score");
                                 final Score score = Score.of(islandSlot, playerScore);
 
-                                final BoardPlayer value = new BoardPlayer(position, uuid, score);
+                                final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uuid);
+                                final String name = bridgePlayer == null ? "" : bridgePlayer.getName();
+
+                                final BoardPlayer value = new BoardPlayer(name, position, uuid, score);
 
                                 boardMap.put(position, value);
                             }

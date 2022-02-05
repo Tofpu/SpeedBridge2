@@ -58,7 +58,7 @@ public final class SpeedBridge {
         Leaderboard.INSTANCE.load();
         IslandBoard.load();
 
-        HelpCommandGenerator.generateHelpCommand();
+        HelpCommandGenerator.generateHelpCommand(javaPlugin);
 
         // for administrator's who reloaded the plugin
         for (final Player player : Bukkit.getOnlinePlayers()) {

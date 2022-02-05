@@ -124,7 +124,6 @@ public final class PluginExpansion extends PlaceholderExpansion {
                 final int position = Integer.parseInt(args[2]);
                 BoardPlayer boardPlayer;
                 if (args[1].equalsIgnoreCase("global")) {
-
                     final CompletableFuture<BoardPlayer> globalBoard = Leaderboard.INSTANCE.retrieve(position);
                     // if the retrieve process is not immediate, return empty
                     if (!globalBoard.isDone()) {
@@ -158,21 +157,7 @@ public final class PluginExpansion extends PlaceholderExpansion {
                     return "";
                 }
 
-                final Player onlinePlayer = Bukkit.getPlayer(boardPlayer.getOwner());
-                final String playerName;
-
-                if (onlinePlayer == null || !onlinePlayer.isOnline()) {
-                    final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(boardPlayer.getOwner());
-                    String offlineName;
-                    try {
-                        offlineName = offlinePlayer.getName();
-                    } catch (final NullPointerException ex) {
-                        offlineName = "";
-                    }
-                    playerName = offlineName;
-                } else {
-                    playerName = onlinePlayer.getName();
-                }
+                final String playerName = boardPlayer.getName();
 
                 try {
                     return BridgeUtil.translate(ConfigurationManager.INSTANCE.getLeaderboardCategory()

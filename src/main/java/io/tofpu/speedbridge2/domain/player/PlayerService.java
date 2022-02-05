@@ -25,7 +25,7 @@ public final class PlayerService {
     }
 
     public @Nullable BridgePlayer internalRefresh(final @NotNull Player player) {
-        return playerHandler.internalRefresh(player.getUniqueId());
+        return playerHandler.internalRefresh(player.getName(), player.getUniqueId());
     }
 
     public @Nullable BridgePlayer invalidate(final @NotNull Player player) {

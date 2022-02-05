@@ -268,7 +268,7 @@ public final class SpeedBridgeCommand {
     @Hidden
     public void onNoArgument(final CommonBridgePlayer<?> bridgePlayer) {
         final CommandSender player = bridgePlayer.getPlayer();
-        HelpCommandGenerator.showHelpMessage(player);
+        BridgeUtil.sendMessage(player, INSTANCE.NO_ARGUMENT);
     }
 
     @CommandMethod("speedbridge help")
