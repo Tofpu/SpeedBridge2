@@ -167,11 +167,10 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
         this.scoreMap = new HashMap<>();
         this.statsMap = new HashMap<>();
 
-        if (playerUid != null) {
-            this.player = Bukkit.getPlayer(playerUid);
+        this.player = Bukkit.getPlayer(playerUid);
+        if (player != null) {
             this.name = player.getName();
         } else {
-            this.player = null;
             this.name = "null";
         }
     }

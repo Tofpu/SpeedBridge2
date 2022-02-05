@@ -9,9 +9,6 @@ import io.tofpu.speedbridge2.domain.leaderboard.loader.IslandLoader;
 import io.tofpu.speedbridge2.domain.leaderboard.loader.PersonalBoardLoader;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
-import io.tofpu.speedbridge2.domain.player.PlayerService;
-import io.tofpu.speedbridge2.domain.player.misc.score.Score;
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -67,20 +64,10 @@ public final class Leaderboard {
                             continue;
                         }
 
-                        final int position = resultSet.getRow();
-
-                        final int islandSlot = resultSet.getInt("island_slot");
-                        final double playerScore = resultSet.getDouble("score");
-                        final Score score = Score.of(islandSlot, playerScore);
-
-                        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uuid);
-                        final String name = bridgePlayer == null ? "" : bridgePlayer.getName();
-
-                        final BoardPlayer value = new BoardPlayer(name, position,
-                                uuid, score);
+                        final BoardPlayer value = BridgeUtil.resultToBoardPlayer(resultSet);
 
                         uuidList.add(uuid);
-                        globalBoardMap.put(position, value);
+                        globalBoardMap.put(value.getPosition(), value);
                     }
                 });
 

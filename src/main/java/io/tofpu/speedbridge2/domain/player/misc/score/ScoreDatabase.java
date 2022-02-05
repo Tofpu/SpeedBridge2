@@ -25,7 +25,7 @@ public final class ScoreDatabase extends Database {
         return DatabaseUtil.databaseQueryExecute(
                 "INSERT OR IGNORE INTO scores (uid, island_slot, score) VALUES " +
                 "(?, ?, ?)", databaseQuery -> {
-                    BridgeUtil.debug("player uid: " + uuid.toString());
+                    BridgeUtil.debug("player uid: " + uuid);
                     databaseQuery.setString(uuid.toString());
 
                     BridgeUtil.debug("player score island: " + score.getScoredOn());
@@ -41,7 +41,7 @@ public final class ScoreDatabase extends Database {
             final @NotNull Score score) {
         return DatabaseUtil.databaseQueryExecute("UPDATE scores SET island_slot = ?, " +
                                                  "score = ? WHERE uid = ?", databaseQuery -> {
-            BridgeUtil.debug("player uid: " + uuid.toString());
+            BridgeUtil.debug("player uid: " + uuid);
 
             BridgeUtil.debug("player score island: " + score.getScoredOn());
             databaseQuery.setInt(score.getScoredOn());

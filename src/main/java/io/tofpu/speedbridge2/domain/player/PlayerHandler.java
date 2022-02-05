@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.domain.player;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.player.loader.PlayerLoader;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
@@ -21,10 +22,10 @@ public final class PlayerHandler {
                 .build(PlayerLoader.INSTANCE);
     }
 
-    public void load(final UUID uniqueId) {
-        CompletableFuture.runAsync(() -> {
+    public CompletableFuture<BridgePlayer> load(final UUID uniqueId) {
+        return PluginExecutor.supply(() -> {
             // for loading purposes
-            this.playerMap.getUnchecked(uniqueId);
+            return this.playerMap.getUnchecked(uniqueId);
         });
     }
 

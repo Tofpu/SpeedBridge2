@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import static io.tofpu.speedbridge2.domain.common.Message.INSTANCE;
 import static io.tofpu.speedbridge2.domain.common.util.MessageUtil.Symbols.ARROW_RIGHT;
@@ -253,12 +254,14 @@ public final class SpeedBridgeCommand {
     @CommandDescription("Reloads the config")
     @CommandPermission("speedbridge.reload")
     public void pluginReload(final CommonBridgePlayer<?> player) {
-        Message.load(SpeedBridgePlugin.getPlugin(SpeedBridgePlugin.class).getDataFolder()).thenRun(() -> {
-            ConfigurationManager.INSTANCE.reload().whenComplete((unused, throwable) -> {
-                if (player.getPlayer() != null) {
-                    BridgeUtil.sendMessage(player, INSTANCE.RELOADED);
-                }
-            });
+        final CompletableFuture<?>[] completableFutures = new CompletableFuture[2];
+        completableFutures[0] = Message.load(SpeedBridgePlugin.getPlugin(SpeedBridgePlugin.class).getDataFolder());
+        completableFutures[1] = ConfigurationManager.INSTANCE.reload();
+
+        CompletableFuture.allOf(completableFutures).thenRun(() -> {
+            if (player.getPlayer() != null) {
+                BridgeUtil.sendMessage(player, INSTANCE.RELOADED);
+            }
         });
     }
 

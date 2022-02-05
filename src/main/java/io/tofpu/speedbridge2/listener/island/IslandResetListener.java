@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 public final class IslandResetListener extends GameListener {
     @EventHandler
     private void onPlayerQuit(final @NotNull PlayerQuitEvent event) {
-        // TODO: remove the bridge player eventually!
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
                 .getUniqueId());
         if (bridgePlayer == null || !bridgePlayer.isPlaying()) {

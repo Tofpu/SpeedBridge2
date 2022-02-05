@@ -26,6 +26,15 @@ public final class PlayerDatabase extends Database {
         super(DatabaseTable.of("players", "uid text PRIMARY KEY", "name text NOT NULL"));
     }
 
+    public @NotNull CompletableFuture<Void> insert(final @NotNull BridgePlayer player) {
+        return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO players VALUES (?, ?)", databaseQuery -> {
+            databaseQuery.setString(player.getPlayerUid()
+                    .toString());
+            databaseQuery.setString(player.getPlayer()
+                    .getName());
+        });
+    }
+
     public @NotNull CompletableFuture<Void> update(final @NotNull BridgePlayer player) {
         final List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
         BridgeUtil.debug("player uid: " + player.getPlayerUid());
@@ -66,14 +75,7 @@ public final class PlayerDatabase extends Database {
                     "SELECT * FROM players " + "where uid = ?")) {
                 query.setString(uniqueId.toString());
 
-                // if the execution returns false, that means the player is new
-                if (!query.execute()) {
-                    insert(bridgePlayer);
-                    return bridgePlayer;
-                }
-
                 final AtomicBoolean pause = new AtomicBoolean(false);
-
                 query.executeQuery(databaseSet -> {
                     if (!databaseSet.next()) {
                         pause.set(true);
@@ -113,15 +115,6 @@ public final class PlayerDatabase extends Database {
             BridgeUtil.debug("successfully loaded " + uniqueId + " player's data!");
 
             return bridgePlayer;
-        });
-    }
-
-    public @NotNull CompletableFuture<Void> insert(final @NotNull BridgePlayer player) {
-        return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO players VALUES (?, ?)", databaseQuery -> {
-            databaseQuery.setString(player.getPlayerUid()
-                    .toString());
-            databaseQuery.setString(player.getPlayer()
-                    .getName());
         });
     }
 }

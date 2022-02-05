@@ -4,11 +4,9 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.leaderboard.meta.BoardRetrieve;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
-import io.tofpu.speedbridge2.domain.player.PlayerService;
-import io.tofpu.speedbridge2.domain.player.misc.score.Score;
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,14 +39,7 @@ public final class PersonalBoardLoader extends CacheLoader<UUID, BoardPlayer> im
 
             final AtomicReference<BoardPlayer> boardPlayer = new AtomicReference<>();
             databaseQuery.executeQuery(resultSet -> {
-                final int islandSlot = resultSet.getInt("island_slot");
-                final double playerScore = resultSet.getDouble("score");
-                final Score score = Score.of(islandSlot, playerScore);
-
-                final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(key);
-                final String name = bridgePlayer == null ? "" : bridgePlayer.getName();
-
-                boardPlayer.set(new BoardPlayer(name, resultSet.getRow(), key, score));
+                boardPlayer.set(BridgeUtil.resultToBoardPlayer(resultSet));
             });
 
             return boardPlayer.get();

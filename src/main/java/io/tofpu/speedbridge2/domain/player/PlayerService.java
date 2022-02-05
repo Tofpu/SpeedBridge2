@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public final class PlayerService {
     public static final @NotNull PlayerService INSTANCE = new PlayerService();
@@ -30,5 +31,9 @@ public final class PlayerService {
 
     public @Nullable BridgePlayer invalidate(final @NotNull Player player) {
         return playerHandler.invalidate(player.getUniqueId());
+    }
+
+    public CompletableFuture<BridgePlayer> load(final UUID uid) {
+        return playerHandler.load(uid);
     }
 }
