@@ -2,8 +2,8 @@ package io.tofpu.speedbridge2.domain.island.schematic;
 
 import com.sk89q.worldedit.WorldEditException;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.island.object.Island;
+import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import org.bukkit.Bukkit;
@@ -15,15 +15,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public final class SchematicManager {
     public static final @NotNull SchematicManager INSTANCE = new SchematicManager();
-    private static final @NotNull List<IslandPlot> SCHEMATIC_PLOTS = new ArrayList<>();
+
+    private static final @NotNull Map<Integer, Collection<IslandPlot>> SCHEMATIC_PLOTS =
+            new HashMap<>();
+    private static final AtomicInteger COUNTER = new AtomicInteger();
 
     private @Nullable World world;
+
     private SchematicManager() {}
 
     public void load(final @NotNull Plugin plugin) {
@@ -66,11 +69,12 @@ public final class SchematicManager {
         final Island island = gameIsland.getIsland();
         IslandPlot selectedPlot = null;
 
-        for (final IslandPlot islandPlot : SCHEMATIC_PLOTS) {
+        final Collection<IslandPlot> islandPlots = retrieve(island.getSlot());
+        for (final IslandPlot islandPlot : islandPlots) {
             // if a free plot was found that equals to the same slot, select the plot and
             // break the loop
-            if (islandPlot.getIsland().getSlot() == gameIsland.getIsland()
-                    .getSlot() && islandPlot.isPlotFree()) {
+            if (islandPlot.getIsland()
+                        .getSlot() == island.getSlot() && islandPlot.isPlotFree()) {
                 BridgeUtil.debug("found a available plot!");
                 selectedPlot = islandPlot;
                 break;
@@ -81,7 +85,8 @@ public final class SchematicManager {
         if (selectedPlot == null) {
             BridgeUtil.debug("no free plot available, creating our own plot!");
 
-            final double[] positions = {100 * (SCHEMATIC_PLOTS.size() + 100), 100, 100};
+            final double[] positions = {
+                    100 * (COUNTER.getAndIncrement() + 100), 100, 100};
 
             selectedPlot = new IslandPlot(island, world, positions);
 
@@ -95,8 +100,8 @@ public final class SchematicManager {
                 return null;
             }
 
-            // adding the plot for future use
-            SCHEMATIC_PLOTS.add(selectedPlot);
+            // adding the plot for usability
+            islandPlots.add(selectedPlot);
         } else {
             // reserving the plot to player
             selectedPlot.reservePlot(gameIsland);
@@ -114,10 +119,14 @@ public final class SchematicManager {
         return selectedPlot;
     }
 
+    public Collection<IslandPlot> retrieve(final int slot) {
+        return SCHEMATIC_PLOTS.getOrDefault(slot, new ArrayList<>());
+    }
+
     public boolean freePlot(final GameIsland gameIsland) {
         IslandPlot selectedPlot = null;
 
-        for (final IslandPlot islandPlot : SCHEMATIC_PLOTS) {
+        for (final IslandPlot islandPlot : retrieve(gameIsland.getIsland().getSlot())) {
             // if a plot's island equals to island, select the plot and break the loop
             final GameIsland island = islandPlot.getGameIsland();
             if (island != null && island.equals(gameIsland)) {
@@ -137,10 +146,13 @@ public final class SchematicManager {
         return true;
     }
 
+    public void clearPlot(final int slot) {
+        SCHEMATIC_PLOTS.remove(slot);
+    }
+
     public static final class EmptyChunkGenerator extends ChunkGenerator {
         @Override
-        public @NotNull ChunkData generateChunkData(final World world, final Random random,
-                final int x, final int z, final BiomeGrid biome) {
+        public @NotNull ChunkData generateChunkData(final World world, final Random random, final int x, final int z, final BiomeGrid biome) {
             return createChunkData(world);
         }
     }

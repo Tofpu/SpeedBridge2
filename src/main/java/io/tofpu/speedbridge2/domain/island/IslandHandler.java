@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2.domain.island;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.object.IslandBoard;
+import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,6 +70,8 @@ public final class IslandHandler {
         if (island != null) {
             Databases.ISLAND_DATABASE.delete(slot);
             IslandBoard.remove(island);
+
+            SchematicManager.INSTANCE.clearPlot(slot);
 
             return island;
         }
