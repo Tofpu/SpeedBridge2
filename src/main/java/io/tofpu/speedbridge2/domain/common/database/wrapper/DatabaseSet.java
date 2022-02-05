@@ -48,6 +48,15 @@ public final class DatabaseSet {
         return -1;
     }
 
+    public int getInt(final int index) {
+        try {
+            return resultSet.getInt(index);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
     public double getDouble(final @NotNull String column) {
         try {
             return resultSet.getDouble(column);

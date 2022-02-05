@@ -258,7 +258,7 @@ public final class SpeedBridgeCommand {
         completableFutures[0] = Message.load(SpeedBridgePlugin.getPlugin(SpeedBridgePlugin.class).getDataFolder());
         completableFutures[1] = ConfigurationManager.INSTANCE.reload();
 
-        CompletableFuture.allOf(completableFutures).thenRun(() -> {
+        CompletableFuture.allOf(completableFutures).whenComplete((unused, throwable) -> {
             if (player.getPlayer() != null) {
                 BridgeUtil.sendMessage(player, INSTANCE.RELOADED);
             }

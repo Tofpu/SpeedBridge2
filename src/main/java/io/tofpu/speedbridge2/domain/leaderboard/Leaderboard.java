@@ -64,7 +64,8 @@ public final class Leaderboard {
                             continue;
                         }
 
-                        final BoardPlayer value = BridgeUtil.resultToBoardPlayer(resultSet);
+                        final BoardPlayer value =
+                                BridgeUtil.resultToBoardPlayer(true, resultSet);
 
                         uuidList.add(uuid);
                         globalBoardMap.put(value.getPosition(), value);

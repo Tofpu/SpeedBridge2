@@ -5,7 +5,6 @@ import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import java.util.UUID;
 
 public final class BoardPlayer {
-
     private final String name;
     private final UUID owner;
 

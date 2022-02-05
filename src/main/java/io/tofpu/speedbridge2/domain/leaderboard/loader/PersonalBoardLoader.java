@@ -39,7 +39,10 @@ public final class PersonalBoardLoader extends CacheLoader<UUID, BoardPlayer> im
 
             final AtomicReference<BoardPlayer> boardPlayer = new AtomicReference<>();
             databaseQuery.executeQuery(resultSet -> {
-                boardPlayer.set(BridgeUtil.resultToBoardPlayer(resultSet));
+                if (!resultSet.next()) {
+                    return;
+                }
+                boardPlayer.set(BridgeUtil.resultToBoardPlayer(false, resultSet));
             });
 
             return boardPlayer.get();

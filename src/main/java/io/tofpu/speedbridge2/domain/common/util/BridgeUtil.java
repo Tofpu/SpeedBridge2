@@ -67,7 +67,7 @@ public final class BridgeUtil {
         return ChatColor.translateAlternateColorCodes('&', replace);
     }
 
-    public static BoardPlayer resultToBoardPlayer(final DatabaseSet databaseSet) {
+    public static BoardPlayer resultToBoardPlayer(final boolean row, final DatabaseSet databaseSet) {
         final UUID uid = UUID.fromString(databaseSet.getString("uid"));
         final int islandSlot = databaseSet.getInt("island_slot");
         final double playerScore = databaseSet.getDouble("score");
@@ -77,14 +77,17 @@ public final class BridgeUtil {
         BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uid);
         if (bridgePlayer == null) {
             try {
-                bridgePlayer = PlayerService.INSTANCE.load(uid).get();
+                bridgePlayer = PlayerService.INSTANCE.load(uid)
+                        .get();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }
 
         final String name = bridgePlayer == null ? "" : bridgePlayer.getName();
+        final int position = !row ? databaseSet.getInt("position") :
+                databaseSet.getRow();
 
-        return new BoardPlayer(name, databaseSet.getRow(), uid, score);
+        return new BoardPlayer(name, position, uid, score);
     }
 }

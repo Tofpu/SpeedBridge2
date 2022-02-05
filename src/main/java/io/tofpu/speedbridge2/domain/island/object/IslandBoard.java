@@ -41,7 +41,8 @@ public final class IslandBoard {
 
                         databaseQuery.executeQuery(resultSet -> {
                             while (resultSet.next()) {
-                                final BoardPlayer value = BridgeUtil.resultToBoardPlayer(resultSet);
+                                final BoardPlayer value =
+                                        BridgeUtil.resultToBoardPlayer(true, resultSet);
 
                                 boardMap.put(value.getPosition(), value);
                             }

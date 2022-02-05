@@ -30,7 +30,6 @@ public final class IslandBoardPlayer {
         // if the cached value is not null
         if (cachedValue != null) {
             // return the cached value
-
             BridgeUtil.debug("found existing value " + owner + ", " + islandSlot);
             return CompletableFuture.completedFuture(cachedValue);
         }
