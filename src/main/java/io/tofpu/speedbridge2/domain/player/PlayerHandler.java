@@ -9,6 +9,8 @@ import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -62,5 +64,9 @@ public final class PlayerHandler {
         bridgePlayer.invalidatePlayer();
 
         return bridgePlayer;
+    }
+
+    public Collection<BridgePlayer> getBridgePlayers() {
+        return Collections.unmodifiableCollection(playerMap.asMap().values());
     }
 }

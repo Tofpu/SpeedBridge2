@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -35,5 +36,9 @@ public final class PlayerService {
 
     public CompletableFuture<BridgePlayer> load(final UUID uid) {
         return playerHandler.load(uid);
+    }
+
+    public Collection<BridgePlayer> getBridgePlayers() {
+        return playerHandler.getBridgePlayers();
     }
 }

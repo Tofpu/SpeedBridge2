@@ -38,7 +38,9 @@ public final class LeaderboardExpansion extends AbstractExpansion {
 
         final BoardPlayer boardPlayer;
         if (args[1].equalsIgnoreCase("global")) {
-            boardPlayer = Leaderboard.INSTANCE.retrieve(position);
+            boardPlayer = Leaderboard.INSTANCE.retrieve(Leaderboard.LeaderboardRetrieveType.GLOBAL, position);
+        } else if (args[1].equalsIgnoreCase("session")) {
+            boardPlayer = Leaderboard.INSTANCE.retrieve(Leaderboard.LeaderboardRetrieveType.SESSION, position);
         } else {
             final Island island = IslandService.INSTANCE.findIslandBy(Integer.parseInt(args[1]));
 
