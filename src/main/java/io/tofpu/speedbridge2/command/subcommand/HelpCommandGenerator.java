@@ -32,7 +32,7 @@ public final class HelpCommandGenerator {
         final String prefix =
                 " <gold><bold>" + MessageUtil.Symbols.ARROW_RIGHT.getSymbol() + " ";
         final String infoPrefix = " <gold><bold>│ ";
-        final String infoFormat = prefix + "</bold><yellow>%s: %s";
+        final String infoFormat = prefix + "<bold><yellow>%s:<reset> <yellow>%s";
 
         messages.add(infoPrefix + "INFORMATION");
         messages.add(String.format(infoFormat, "Author", "Tofpu"));

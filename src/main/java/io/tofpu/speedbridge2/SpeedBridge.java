@@ -13,6 +13,7 @@ import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
 import io.tofpu.speedbridge2.domain.leaderboard.Leaderboard;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.support.placeholderapi.PluginExpansion;
+import io.tofpu.speedbridge2.support.placeholderapi.expansion.ExpansionHandler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -39,6 +40,8 @@ public final class SpeedBridge {
 
             Message.load(javaPlugin.getDataFolder());
         });
+
+        ExpansionHandler.INSTANCE.load();
 
         try {
             DynamicClass.addParameters(javaPlugin);

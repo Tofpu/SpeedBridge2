@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2.domain.leaderboard.wrapper;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.UUID;
@@ -21,6 +22,10 @@ public final class IslandBoardPlayer {
     public IslandBoardPlayer(final UUID owner) {
         this.owner = owner;
         this.boardMap = new ConcurrentHashMap<>();
+    }
+
+    public @Nullable IslandBoard findDefault(final int islandSlot) {
+        return boardMap.get(islandSlot);
     }
 
     public @NotNull CompletableFuture<IslandBoard> retrieve(final int islandSlot) {

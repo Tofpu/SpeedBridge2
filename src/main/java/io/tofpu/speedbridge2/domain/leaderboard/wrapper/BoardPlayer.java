@@ -37,7 +37,12 @@ public final class BoardPlayer {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("BoardPlayer{");
-        sb.append("position=")
+        sb.append("name='")
+                .append(name)
+                .append('\'');
+        sb.append(", owner=")
+                .append(owner);
+        sb.append(", position=")
                 .append(position);
         sb.append(", score=")
                 .append(score);

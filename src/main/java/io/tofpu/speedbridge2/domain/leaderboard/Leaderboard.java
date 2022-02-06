@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.domain.leaderboard;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
+import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
@@ -86,37 +87,39 @@ public final class Leaderboard {
         final BoardPlayer player = playerCache.asMap()
                 .get(uniqueId);
 
+        // if the board player is found, return the completed value
         if (player != null) {
             return CompletableFuture.completedFuture(player);
         }
 
+        // otherwise, attempt to load the player board async
         return CompletableFuture.supplyAsync(() -> playerCache.getUnchecked(uniqueId));
     }
 
-    public CompletableFuture<BoardPlayer> retrieve(final int position) {
-        final BoardPlayer boardPlayer = globalMap.get(position);
-
-        return CompletableFuture.completedFuture(boardPlayer);
+    public BoardPlayer retrieve(final int position) {
+        return globalMap.get(position);
     }
 
     public CompletableFuture<IslandBoardPlayer.IslandBoard> retrieve(final UUID uniqueId, final int islandSlot) {
         final IslandBoardPlayer player = islandPositionMap.asMap()
                 .get(uniqueId);
+        final IslandBoardPlayer.IslandBoard islandBoard =
+                player == null ? null : player.findDefault(islandSlot);
 
-        if (player != null) {
-            final CompletableFuture<IslandBoardPlayer.IslandBoard> islandBoard = player.retrieve(islandSlot);
-
-            if (islandBoard.isDone()) {
-                return islandBoard;
-            }
+        // if an island board is found, return the completed value
+        if (islandBoard != null) {
+            return CompletableFuture.completedFuture(islandBoard);
         }
 
-        // this is sus
-        return islandPositionMap.getUnchecked(uniqueId)
-                .retrieve(islandSlot);
+        // otherwise, attempt to retrieve the board async
+        return PluginExecutor.supply(() -> islandPositionMap.getUnchecked(uniqueId)
+                .retrieve(islandSlot));
     }
 
     public void shutdown() {
         executorService.shutdownNow();
     }
 }
+
+
+
