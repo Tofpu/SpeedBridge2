@@ -10,9 +10,13 @@ import io.tofpu.speedbridge2.domain.leaderboard.loader.IslandLoader;
 import io.tofpu.speedbridge2.domain.leaderboard.loader.PersonalBoardLoader;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 public final class Leaderboard {
     public static final Leaderboard INSTANCE = new Leaderboard();
@@ -20,8 +24,6 @@ public final class Leaderboard {
     private final Map<Integer, BoardPlayer> globalMap;
     private final LoadingCache<UUID, BoardPlayer> playerCache;
     private final LoadingCache<UUID, IslandBoardPlayer> islandPositionMap;
-
-    private final ScheduledExecutorService executorService;
 
     private Leaderboard() {
         this.globalMap = new ConcurrentHashMap<>();
@@ -35,52 +37,49 @@ public final class Leaderboard {
         this.islandPositionMap = CacheBuilder.newBuilder()
                 .expireAfterAccess(5, TimeUnit.SECONDS)
                 .build(IslandLoader.INSTANCE);
-
-        this.executorService = Executors.newSingleThreadScheduledExecutor();
     }
 
-    public void load() {
-        executorService.scheduleWithFixedDelay(() -> {
-            BridgeUtil.debug("refreshing!");
-            for (final UUID uuid : playerCache.asMap()
-                    .keySet()) {
-                this.playerCache.refresh(uuid);
-            }
-
-            try (final DatabaseQuery databaseQuery = new DatabaseQuery(
-                    "SELECT DISTINCT * FROM scores ORDER BY score")) {
-                final List<UUID> uuidList = new ArrayList<>();
-                final Map<Integer, BoardPlayer> globalBoardMap = new HashMap<>();
-
-                databaseQuery.executeQuery(resultSet -> {
-                    while (resultSet.next()) {
-                        // if we reached the 10 limit, break the loop
-                        if (globalBoardMap.size() == 10) {
-                            break;
-                        }
-
-                        final UUID uuid = UUID.fromString(resultSet.getString("uid"));
-                        // if we already have the given uuid, continue through the loop!
-                        if (uuidList.contains(uuid)) {
-                            continue;
-                        }
-
-                        final BoardPlayer value =
-                                BridgeUtil.resultToBoardPlayer(true, resultSet);
-
-                        uuidList.add(uuid);
-                        globalBoardMap.put(value.getPosition(), value);
+    public void load(final JavaPlugin javaPlugin) {
+        Bukkit.getScheduler()
+                .runTaskTimerAsynchronously(javaPlugin, () -> {
+                    BridgeUtil.debug("refreshing!");
+                    for (final UUID uuid : playerCache.asMap()
+                            .keySet()) {
+                        this.playerCache.refresh(uuid);
                     }
-                });
 
-                this.globalMap.clear();
-                this.globalMap.putAll(globalBoardMap);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                    try (final DatabaseQuery databaseQuery = new DatabaseQuery("SELECT DISTINCT * FROM scores ORDER BY score")) {
+                        final List<UUID> uuidList = new ArrayList<>();
+                        final Map<Integer, BoardPlayer> globalBoardMap = new HashMap<>();
 
-        }, 1, ConfigurationManager.INSTANCE.getLeaderboardCategory()
-                .getUpdateInterval(), TimeUnit.SECONDS);
+                        databaseQuery.executeQuery(resultSet -> {
+                            while (resultSet.next()) {
+                                // if we reached the 10 limit, break the loop
+                                if (globalBoardMap.size() == 10) {
+                                    break;
+                                }
+
+                                final UUID uuid = UUID.fromString(resultSet.getString("uid"));
+                                // if we already have the given uuid, continue through the loop!
+                                if (uuidList.contains(uuid)) {
+                                    continue;
+                                }
+
+                                final BoardPlayer value = BridgeUtil.resultToBoardPlayer(true, resultSet);
+
+                                uuidList.add(uuid);
+                                globalBoardMap.put(value.getPosition(), value);
+                            }
+                        });
+
+                        this.globalMap.clear();
+                        this.globalMap.putAll(globalBoardMap);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }, 1, ConfigurationManager.INSTANCE.getLeaderboardCategory()
+                        .getUpdateInterval());
     }
 
     public CompletableFuture<BoardPlayer> retrieve(final UUID uniqueId) {
@@ -114,10 +113,6 @@ public final class Leaderboard {
         // otherwise, attempt to retrieve the board async
         return PluginExecutor.supply(() -> islandPositionMap.getUnchecked(uniqueId)
                 .retrieve(islandSlot));
-    }
-
-    public void shutdown() {
-        executorService.shutdownNow();
     }
 }
 

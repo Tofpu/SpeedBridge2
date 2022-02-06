@@ -58,8 +58,8 @@ public final class SpeedBridge {
         SchematicManager.INSTANCE.load(javaPlugin);
         CommandManager.load(javaPlugin);
 
-        Leaderboard.INSTANCE.load();
-        IslandBoard.load();
+        Leaderboard.INSTANCE.load(javaPlugin);
+        IslandBoard.load(javaPlugin);
 
         HelpCommandGenerator.generateHelpCommand(javaPlugin);
 
@@ -71,9 +71,6 @@ public final class SpeedBridge {
 
     public void shutdown() {
         DatabaseManager.shutdown();
-        Leaderboard.INSTANCE.shutdown();
-
-        IslandBoard.shutdown();
         PluginExecutor.INSTANCE.shutdown();
     }
 
