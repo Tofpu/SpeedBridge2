@@ -4,9 +4,8 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.Database;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
+import org.jetbrains.annotations.NotNull;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,53 +20,51 @@ public final class StatsDatabase extends Database {
         super(DatabaseTable.of("stats", "stats_id INTEGER PRIMARY KEY AUTOINCREMENT", "uid text NOT NULL", "key text NOT NULL", "value text NOT NULL"));
     }
 
-    public CompletableFuture<Void> insert(final PlayerStat playerStat) {
+    public @NotNull CompletableFuture<Void> insert(final @NotNull PlayerStat playerStat) {
         return DatabaseUtil.databaseQueryExecute(
                 "INSERT OR IGNORE INTO stats (uid, key, value) VALUES " +
                 "(?, ?, ?)", databaseQuery -> {
-                    databaseQuery.setString(1, playerStat.getOwner()
+                    databaseQuery.setString(playerStat.getOwner()
                             .toString());
-                    databaseQuery.setString(2, playerStat.getKey());
-                    databaseQuery.setString(3, playerStat.getValue());
+                    databaseQuery.setString(playerStat.getKey());
+                    databaseQuery.setString(playerStat.getValue());
                 });
     }
 
-    public CompletableFuture<Void> update(final PlayerStat playerStat) {
+    public @NotNull CompletableFuture<Void> update(final @NotNull PlayerStat playerStat) {
         return DatabaseUtil.databaseQueryExecute("UPDATE stats SET value = ? WHERE " +
                                                  "uid = ? AND key = ?", databaseQuery -> {
-            databaseQuery.setString(1, playerStat.getValue());
+            databaseQuery.setString(playerStat.getValue());
 
-            databaseQuery.setString(2, playerStat.getOwner()
+            databaseQuery.setString(playerStat.getOwner()
                     .toString());
-            databaseQuery.setString(3, playerStat.getKey());
+            databaseQuery.setString(playerStat.getKey());
 
             System.out.println(playerStat);
         });
     }
 
-    public CompletableFuture<Collection<PlayerStat>> getStoredStats(final UUID owner) {
+    public @NotNull CompletableFuture<Collection<PlayerStat>> getStoredStats(final @NotNull UUID owner) {
         return runAsync(() -> {
             final List<PlayerStat> playerStats = new ArrayList<>();
 
             try {
                 DatabaseUtil.databaseQueryExecute("SELECT * FROM stats WHERE uid = ?", databaseQuery -> {
-                    databaseQuery.setString(1, owner.toString());
+                    databaseQuery.setString(owner.toString());
 
-                    try (final ResultSet resultSet = databaseQuery.executeQuery()) {
+                    databaseQuery.executeQuery(resultSet -> {
                         while (resultSet.next()) {
-                            final PlayerStatType playerStatType = PlayerStatType.match(resultSet.getString(3));
+                            final PlayerStatType playerStatType = PlayerStatType.match(resultSet.getString("key"));
 
                             if (playerStatType == null) {
                                 continue;
                             }
-                            final PlayerStat playerStat = PlayerStatType.create(owner, playerStatType, resultSet.getString(4));
+                            final PlayerStat playerStat = PlayerStatType.create(owner, playerStatType, resultSet.getString("value"));
                             BridgeUtil.debug("found stat: " + playerStat);
 
                             playerStats.add(playerStat);
                         }
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+                    });
                 }).get();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();

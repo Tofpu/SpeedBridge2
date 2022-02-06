@@ -3,12 +3,13 @@ package io.tofpu.speedbridge2.domain.leaderboard.wrapper;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.sql.ResultSet;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class IslandBoardPlayer {
     private static final String ISLAND_POSITION =
@@ -23,6 +24,10 @@ public final class IslandBoardPlayer {
         this.boardMap = new ConcurrentHashMap<>();
     }
 
+    public @Nullable IslandBoard findDefault(final int islandSlot) {
+        return boardMap.get(islandSlot);
+    }
+
     public @NotNull CompletableFuture<IslandBoard> retrieve(final int islandSlot) {
         BridgeUtil.debug("attempting to retrieve board for " + owner + ", " + islandSlot);
 
@@ -30,7 +35,6 @@ public final class IslandBoardPlayer {
         // if the cached value is not null
         if (cachedValue != null) {
             // return the cached value
-
             BridgeUtil.debug("found existing value " + owner + ", " + islandSlot);
             return CompletableFuture.completedFuture(cachedValue);
         }
@@ -38,14 +42,15 @@ public final class IslandBoardPlayer {
         BridgeUtil.debug("attempting to query to database for position for " + owner +
                          ", " + islandSlot);
         try (final DatabaseQuery databaseQuery = new DatabaseQuery(ISLAND_POSITION)) {
-            databaseQuery.setInt(1, islandSlot);
-            databaseQuery.setString(2, owner.toString());
+            databaseQuery.setInt(islandSlot);
+            databaseQuery.setString(owner.toString());
 
-            try (final ResultSet resultSet = databaseQuery.executeQuery()) {
-                final IslandBoard islandBoard = new IslandBoard(resultSet.getInt(1), islandSlot);
-                boardMap.put(islandSlot, islandBoard);
-                return CompletableFuture.completedFuture(islandBoard);
-            }
+            final AtomicReference<IslandBoard> islandBoard = new AtomicReference<>();
+            databaseQuery.executeQuery(resultSet -> {
+                islandBoard.set(new IslandBoard(resultSet.getInt("position"), islandSlot));
+                boardMap.put(islandSlot, islandBoard.get());
+            });
+            return CompletableFuture.completedFuture(islandBoard.get());
         } catch (Exception e) {
             e.printStackTrace();
         }

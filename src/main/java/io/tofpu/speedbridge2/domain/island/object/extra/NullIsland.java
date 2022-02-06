@@ -5,6 +5,7 @@ import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class NullIsland extends Island {
     public void setCategory(final String anotherCategory) {}
 
     @Override
-    public boolean selectSchematic(final String schematicName) {
+    public boolean selectSchematic(final @NotNull String schematicName) {
         return false;
     }
 }

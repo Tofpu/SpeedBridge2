@@ -11,9 +11,9 @@ import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
 import io.tofpu.speedbridge2.domain.island.IslandHandler;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.Island;
-import io.tofpu.speedbridge2.domain.player.misc.Score;
+import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.domain.player.object.CommonBridgePlayer;
+import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import static io.tofpu.speedbridge2.domain.common.Message.INSTANCE;
 import static io.tofpu.speedbridge2.domain.common.util.MessageUtil.Symbols.ARROW_RIGHT;
@@ -253,12 +254,14 @@ public final class SpeedBridgeCommand {
     @CommandDescription("Reloads the config")
     @CommandPermission("speedbridge.reload")
     public void pluginReload(final CommonBridgePlayer<?> player) {
-        Message.load(SpeedBridgePlugin.getPlugin(SpeedBridgePlugin.class).getDataFolder()).thenRun(() -> {
-            ConfigurationManager.INSTANCE.reload().whenComplete((unused, throwable) -> {
-                if (player.getPlayer() != null) {
-                    BridgeUtil.sendMessage(player, INSTANCE.RELOADED);
-                }
-            });
+        final CompletableFuture<?>[] completableFutures = new CompletableFuture[2];
+        completableFutures[0] = Message.load(SpeedBridgePlugin.getPlugin(SpeedBridgePlugin.class).getDataFolder());
+        completableFutures[1] = ConfigurationManager.INSTANCE.reload();
+
+        CompletableFuture.allOf(completableFutures).whenComplete((unused, throwable) -> {
+            if (player.getPlayer() != null) {
+                BridgeUtil.sendMessage(player, INSTANCE.RELOADED);
+            }
         });
     }
 
@@ -268,7 +271,7 @@ public final class SpeedBridgeCommand {
     @Hidden
     public void onNoArgument(final CommonBridgePlayer<?> bridgePlayer) {
         final CommandSender player = bridgePlayer.getPlayer();
-        HelpCommandGenerator.showHelpMessage(player);
+        BridgeUtil.sendMessage(player, INSTANCE.NO_ARGUMENT);
     }
 
     @CommandMethod("speedbridge help")

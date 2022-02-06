@@ -14,11 +14,12 @@ import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class IslandProtectionListener extends GameListener {
     @EventHandler(ignoreCancelled = true)
-    private void onBlockBreak(final BlockBreakEventWrapper eventWrapper) {
+    private void onBlockBreak(final @NotNull BlockBreakEventWrapper eventWrapper) {
         final BlockBreakEvent event = eventWrapper.getEvent();
 
         final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
@@ -33,7 +34,7 @@ public final class IslandProtectionListener extends GameListener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    private void onBlockPlaceEvent(final BlockPlaceEventWrapper eventWrapper) {
+    private void onBlockPlaceEvent(final @NotNull BlockPlaceEventWrapper eventWrapper) {
         final GameIsland gameIsland = eventWrapper.getCurrentGame();
         final Region region = gameIsland.getIslandPlot().region();
 

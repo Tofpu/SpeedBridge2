@@ -8,6 +8,8 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
 import com.sk89q.worldedit.extent.clipboard.io.SchematicReader;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,12 +17,12 @@ import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 
 public class IslandSchematic {
-    private String schematicName = "";
-    private Clipboard schematicClipboard;
+    private @Nullable String schematicName = "";
+    private @Nullable Clipboard schematicClipboard;
 
     public IslandSchematic() {}
 
-    protected boolean selectSchematic(final String schematicName) {
+    protected boolean selectSchematic(final @NotNull String schematicName) {
         final LocalConfiguration configuration = WorldEdit.getInstance()
                 .getConfiguration();
         final File directory = Bukkit.getPluginManager()
@@ -53,11 +55,11 @@ public class IslandSchematic {
         return file.exists();
     }
 
-    public String getSchematicName() {
+    public @Nullable String getSchematicName() {
         return schematicName;
     }
 
-    public Clipboard getSchematicClipboard() {
+    public @Nullable Clipboard getSchematicClipboard() {
         return this.schematicClipboard;
     }
 

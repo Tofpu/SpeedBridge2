@@ -9,14 +9,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class GameProtectionListener extends GameListener {
     @EventHandler
-    private void onItemDrop(final PlayerDropItemEvent event) {
+    private void onItemDrop(final @NotNull PlayerDropItemEvent event) {
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
                 .getUniqueId());
-        if (!bridgePlayer.isPlaying()) {
+        if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
             return;
         }
 
@@ -24,14 +25,14 @@ public final class GameProtectionListener extends GameListener {
     }
 
     @EventHandler
-    private void onEntityDamage(final EntityDamageEvent event) {
+    private void onEntityDamage(final @NotNull EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) {
             return;
         }
         final Player player = (Player) event.getEntity();
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(player
                 .getUniqueId());
-        if (!bridgePlayer.isPlaying()) {
+        if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
             return;
         }
 
@@ -39,11 +40,11 @@ public final class GameProtectionListener extends GameListener {
     }
 
     @EventHandler
-    private void onFoodLevelChange(final FoodLevelChangeEvent event) {
+    private void onFoodLevelChange(final @NotNull FoodLevelChangeEvent event) {
         final Player player = (Player) event.getEntity();
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(player
                 .getUniqueId());
-        if (!bridgePlayer.isPlaying()) {
+        if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
             return;
         }
 

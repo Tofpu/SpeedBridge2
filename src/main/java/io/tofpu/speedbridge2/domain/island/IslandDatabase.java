@@ -5,8 +5,8 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
 import io.tofpu.speedbridge2.domain.island.object.Island;
+import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -14,51 +14,47 @@ import java.util.concurrent.ExecutionException;
 
 import static io.tofpu.speedbridge2.domain.common.util.DatabaseUtil.runAsync;
 
-public class IslandDatabase extends Database {
+public final class IslandDatabase extends Database {
     public IslandDatabase() {
         super(DatabaseTable.of("islands", "slot NOT NULL PRIMARY KEY", "category TEXT", "schematicName TEXT"));
     }
 
-    public CompletableFuture<Void> insert(final Island island) {
+    public @NotNull CompletableFuture<Void> insert(final Island island) {
         return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO islands VALUES (?, ?, ?)", databaseQuery -> {
-            databaseQuery.setInt(1, island.getSlot());
-            databaseQuery.setString(2, island.getCategory());
-            databaseQuery.setString(3, island.getSchematicName());
+            databaseQuery.setInt(island.getSlot());
+            databaseQuery.setString(island.getCategory());
+            databaseQuery.setString(island.getSchematicName());
         });
     }
 
-    public CompletableFuture<Void> update(final Island island) {
+    public @NotNull CompletableFuture<Void> update(final Island island) {
         return DatabaseUtil.databaseQueryExecute("UPDATE islands SET category = ?, schematicName = ? WHERE slot = ?", databaseQuery -> {
             BridgeUtil.debug("island category: " + island.getCategory());
-            databaseQuery.setString(1, island.getCategory());
+            databaseQuery.setString(island.getCategory());
 
             BridgeUtil.debug("island schematic: " + island.getSchematicName());
-            databaseQuery.setString(2, island.getSchematicName());
+            databaseQuery.setString(island.getSchematicName());
 
-            databaseQuery.setInt(3, island.getSlot());
+            databaseQuery.setInt(island.getSlot());
         });
     }
 
-    public CompletableFuture<Void> delete(final int slot) {
+    public @NotNull CompletableFuture<Void> delete(final int slot) {
         return DatabaseUtil.databaseQueryExecute("DELETE FROM islands WHERE slot = ?", databaseQuery -> {
-            databaseQuery.setInt(1, slot);
+            databaseQuery.setInt(slot);
         });
     }
 
-    public CompletableFuture<List<Island>> getStoredIslands() {
+    public @NotNull CompletableFuture<List<Island>> getStoredIslands() {
         return runAsync(() -> {
             final List<Island> islands = new ArrayList<>();
 
             try {
                 DatabaseUtil.databaseQuery("SELECT * FROM islands", resultSet -> {
-                    try {
-                        while (resultSet.next()) {
-                            final Island island = new Island(resultSet.getInt(1), resultSet.getString(2));
-                            island.selectSchematic(resultSet.getString(3));
-                            islands.add(island);
-                        }
-                    } catch (SQLException exception) {
-                        exception.printStackTrace();
+                    while (resultSet.next()) {
+                        final Island island = new Island(resultSet.getInt("slot"), resultSet.getString("category"));
+                        island.selectSchematic(resultSet.getString("schematicName"));
+                        islands.add(island);
                     }
                 }).get();
             } catch (InterruptedException | ExecutionException e) {

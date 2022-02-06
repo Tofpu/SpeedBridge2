@@ -6,15 +6,15 @@ import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class IslandResetListener extends GameListener {
     @EventHandler
-    private void onPlayerQuit(final PlayerQuitEvent event) {
-        // TODO: remove the bridge player eventually!
+    private void onPlayerQuit(final @NotNull PlayerQuitEvent event) {
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
                 .getUniqueId());
-        if (!bridgePlayer.isPlaying()) {
+        if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
             return;
         }
 

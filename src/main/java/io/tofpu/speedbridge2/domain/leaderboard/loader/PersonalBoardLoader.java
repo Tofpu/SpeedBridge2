@@ -4,14 +4,14 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.leaderboard.meta.BoardRetrieve;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
-import io.tofpu.speedbridge2.domain.player.misc.Score;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.sql.ResultSet;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class PersonalBoardLoader extends CacheLoader<UUID, BoardPlayer> implements BoardRetrieve<BoardPlayer> {
     public static final PersonalBoardLoader INSTANCE = new PersonalBoardLoader();
@@ -35,14 +35,17 @@ public final class PersonalBoardLoader extends CacheLoader<UUID, BoardPlayer> im
     @Override
     public @Nullable BoardPlayer retrieve(final @NotNull UUID key) {
         try (final DatabaseQuery databaseQuery = new DatabaseQuery(GLOBAL_POSITION)) {
-            databaseQuery.setString(1, key.toString());
-            try (final ResultSet resultSet = databaseQuery.executeQuery()) {
-                final int islandSlot = resultSet.getInt("island_slot");
-                final double playerScore = resultSet.getDouble("score");
-                final Score score = Score.of(islandSlot, playerScore);
+            databaseQuery.setString(key.toString());
 
-                return new BoardPlayer(resultSet.getInt(1), key, score);
-            }
+            final AtomicReference<BoardPlayer> boardPlayer = new AtomicReference<>();
+            databaseQuery.executeQuery(resultSet -> {
+                if (!resultSet.next()) {
+                    return;
+                }
+                boardPlayer.set(BridgeUtil.resultToBoardPlayer(false, resultSet));
+            });
+
+            return boardPlayer.get();
         } catch (Exception e) {
             e.printStackTrace();
         }

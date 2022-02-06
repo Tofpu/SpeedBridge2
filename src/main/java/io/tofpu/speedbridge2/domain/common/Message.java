@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.domain.common;
 
 import io.tofpu.speedbridge2.domain.common.util.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -14,8 +15,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class Message {
-    private static final Map<String, Field> FIELD_MAP = new ConcurrentHashMap<>();
-    public static final Message INSTANCE = new Message();
+    private static final @NotNull Map<String, Field> FIELD_MAP = new ConcurrentHashMap<>();
+    public static final @NotNull Message INSTANCE = new Message();
 
     @IgnoreMessage
     public final String ERROR = "<red>" + MessageUtil.Symbols.WARNING.getSymbol() + " ";
@@ -23,6 +24,9 @@ public final class Message {
     public final String SUCCESS =
             "<gold><bold>" + MessageUtil.Symbols.ARROW_RIGHT.getSymbol() +
             "</bold> <yellow>";
+
+    public final String NO_ARGUMENT =
+            SUCCESS + "Type /speedbridge help for further " + "information.";
 
     public final String ISLAND_ALREADY_EXISTS = ERROR + "Island %s already exists!";
 
@@ -68,7 +72,7 @@ public final class Message {
 
     public final String LOBBY_SET_LOCATION = SUCCESS + "The lobby location has been set!";
 
-    public static CompletableFuture<Void> load(final File directory) {
+    public static @NotNull CompletableFuture<Void> load(final File directory) {
         final File messageFile = new File(directory, "messages.yml");
         final boolean fileExists = messageFile.exists();
 

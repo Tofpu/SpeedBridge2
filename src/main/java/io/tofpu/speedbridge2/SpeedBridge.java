@@ -4,6 +4,7 @@ import io.tofpu.dynamicclass.DynamicClass;
 import io.tofpu.speedbridge2.command.CommandManager;
 import io.tofpu.speedbridge2.command.subcommand.HelpCommandGenerator;
 import io.tofpu.speedbridge2.domain.common.Message;
+import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.DatabaseManager;
 import io.tofpu.speedbridge2.domain.island.IslandService;
@@ -12,8 +13,10 @@ import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
 import io.tofpu.speedbridge2.domain.leaderboard.Leaderboard;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.support.placeholderapi.PluginExpansion;
+import io.tofpu.speedbridge2.support.placeholderapi.expansion.ExpansionHandler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -34,11 +37,11 @@ public final class SpeedBridge {
         DatabaseManager.load(javaPlugin).thenRun(() -> {
             final IslandService islandService = IslandService.INSTANCE;
             islandService.load();
-            final PlayerService playerService = PlayerService.INSTANCE;
-            playerService.load();
 
             Message.load(javaPlugin.getDataFolder());
         });
+
+        ExpansionHandler.INSTANCE.load();
 
         try {
             DynamicClass.addParameters(javaPlugin);
@@ -55,17 +58,20 @@ public final class SpeedBridge {
         SchematicManager.INSTANCE.load(javaPlugin);
         CommandManager.load(javaPlugin);
 
-        Leaderboard.INSTANCE.load();
-        IslandBoard.load();
+        Leaderboard.INSTANCE.load(javaPlugin);
+        IslandBoard.load(javaPlugin);
 
-        HelpCommandGenerator.generateHelpCommand();
+        HelpCommandGenerator.generateHelpCommand(javaPlugin);
+
+        // for administrator's who reloaded the plugin
+        for (final Player player : Bukkit.getOnlinePlayers()) {
+            PlayerService.INSTANCE.internalRefresh(player);
+        }
     }
 
     public void shutdown() {
         DatabaseManager.shutdown();
-        Leaderboard.INSTANCE.shutdown();
-
-        IslandBoard.shutdown();
+        PluginExecutor.INSTANCE.shutdown();
     }
 
     public static BukkitAudiences getAdventure() {

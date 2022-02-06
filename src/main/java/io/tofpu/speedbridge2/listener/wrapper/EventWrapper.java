@@ -5,23 +5,25 @@ import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class EventWrapper<E extends Event> extends Event {
-    private static final HandlerList handlers = new HandlerList();
+    private static final @NotNull HandlerList handlers = new HandlerList();
 
-    private final BridgePlayer bridgePlayer;
-    private final E event;
+    private final @NotNull BridgePlayer bridgePlayer;
+    private final @NotNull E event;
 
     public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public EventWrapper(final BridgePlayer bridgePlayer, final E event) {
+    public EventWrapper(final @NotNull BridgePlayer bridgePlayer,
+            final @NotNull E event) {
         this.bridgePlayer = bridgePlayer;
         this.event = event;
     }
 
-    public E getEvent() {
+    public @NotNull E getEvent() {
         return event;
     }
 
@@ -29,7 +31,7 @@ public class EventWrapper<E extends Event> extends Event {
         return bridgePlayer.isPlaying();
     }
 
-    public BridgePlayer getBridgePlayer() {
+    public @NotNull BridgePlayer getBridgePlayer() {
         return bridgePlayer;
     }
 
@@ -37,11 +39,11 @@ public class EventWrapper<E extends Event> extends Event {
         return getGamePlayer().hasTimerStarted();
     }
 
-    public GamePlayer getGamePlayer() {
+    public @NotNull GamePlayer getGamePlayer() {
         return bridgePlayer.getGamePlayer();
     }
 
-    public GameIsland getCurrentGame() {
+    public @NotNull GameIsland getCurrentGame() {
         return getGamePlayer().getCurrentGame();
     }
 
