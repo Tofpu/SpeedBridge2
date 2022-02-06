@@ -42,7 +42,7 @@ public final class Leaderboard {
     public void load(final JavaPlugin javaPlugin) {
         Bukkit.getScheduler()
                 .runTaskTimerAsynchronously(javaPlugin, () -> {
-                    BridgeUtil.debug("refreshing!");
+                    BridgeUtil.debug("refreshing the leaderboard!");
                     for (final UUID uuid : playerCache.asMap()
                             .keySet()) {
                         this.playerCache.refresh(uuid);
@@ -78,7 +78,7 @@ public final class Leaderboard {
                         e.printStackTrace();
                     }
 
-                }, 1, ConfigurationManager.INSTANCE.getLeaderboardCategory()
+                }, 1, 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
                         .getUpdateInterval());
     }
 
