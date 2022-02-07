@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.support.placeholderapi.expansion.expansions;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
+import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.IslandService;
@@ -38,7 +39,14 @@ public final class LeaderboardExpansion extends AbstractExpansion {
 
         final BoardPlayer boardPlayer;
         if (args[1].equalsIgnoreCase("global")) {
-            boardPlayer = Leaderboard.INSTANCE.retrieve(position);
+            boardPlayer = Leaderboard.INSTANCE.retrieve(Leaderboard.LeaderboardRetrieveType.GLOBAL, position);
+        } else if (args[1].equalsIgnoreCase("session")) {
+            boardPlayer = Leaderboard.INSTANCE.retrieve(Leaderboard.LeaderboardRetrieveType.SESSION, position);
+
+            // if board player is null, return the empty session leaderboard message
+            if (boardPlayer == null) {
+                return BridgeUtil.translateMiniMessageLegacy(Message.INSTANCE.EMPTY_SESSION_LEADERBOARD);
+            }
         } else {
             final Island island = IslandService.INSTANCE.findIslandBy(Integer.parseInt(args[1]));
 

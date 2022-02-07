@@ -2,21 +2,21 @@ package io.tofpu.speedbridge2.domain.player.object;
 
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
+import io.tofpu.speedbridge2.domain.player.misc.sessional.SessionScore;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStat;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
 import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-public final class BridgePlayer extends CommonBridgePlayer<Player> {
+public final class BridgePlayer extends CommonBridgePlayer<Player> implements SessionScore {
     private final UUID playerUid;
     private final Map<Integer, Score> scoreMap;
     private final Map<String, PlayerStat> statsMap;
+
+    private final Map<Integer, Score> sessionMap;
 
     private String name;
     private Player player;
@@ -38,14 +38,24 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
         this(copy.getName(), copy.playerUid);
         this.scoreMap.putAll(copy.scoreMap);
         this.statsMap.putAll(copy.statsMap);
+        this.sessionMap.putAll(copy.sessionMap);
+    }
+
+    private BridgePlayer(final UUID playerUid) {
+        this("null", playerUid);
+
+        if (player != null) {
+            this.name = player.getName();
+        }
     }
 
     private BridgePlayer(final String name, final UUID playerUid) {
-        this.name = name;
         this.playerUid = playerUid;
         this.scoreMap = new HashMap<>();
         this.statsMap = new HashMap<>();
+        this.sessionMap = new HashMap<>();
 
+        this.name = name;
         if (playerUid != null) {
             this.player = Bukkit.getPlayer(playerUid);
         } else {
@@ -62,13 +72,19 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
         final Score currentScore = this.scoreMap.get(islandSlot);
         final Score newScore = Score.of(islandSlot, score);
 
+        // adding the score to the session map
+        final Score sessionScore = this.sessionMap.get(islandSlot);
+        // if the session score is null, or the newer score is lower than the session score
+        if (sessionScore == null || newScore.compareTo(sessionScore) < 0) {
+            this.sessionMap.put(islandSlot, newScore);
+        }
+
         // if the current score is null, or new score is less than the current score,
         // insert into the scoreMap
         if (currentScore == null || newScore.compareTo(currentScore) < 0) {
             setNewScore(newScore);
             return newScore;
         }
-
         return newScore;
     }
 
@@ -156,23 +172,13 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
 
     public void invalidatePlayer() {
         this.player = null;
+
+        // resetting the session scores
+        resetSessionScores();
     }
 
     public void setName(final String name) {
         this.name = name;
-    }
-
-    private BridgePlayer(final UUID playerUid) {
-        this.playerUid = playerUid;
-        this.scoreMap = new HashMap<>();
-        this.statsMap = new HashMap<>();
-
-        this.player = Bukkit.getPlayer(playerUid);
-        if (player != null) {
-            this.name = player.getName();
-        } else {
-            this.name = "null";
-        }
     }
 
     public void internalRefresh(final UUID uniqueId) {
@@ -195,5 +201,15 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> {
                 .append(gamePlayer);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public Collection<Score> getSessionScores() {
+        return Collections.unmodifiableCollection(this.sessionMap.values());
+    }
+
+    @Override
+    public void resetSessionScores() {
+        this.sessionMap.clear();
     }
 }

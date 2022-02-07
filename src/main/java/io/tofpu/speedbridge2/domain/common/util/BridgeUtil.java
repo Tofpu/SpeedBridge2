@@ -8,6 +8,7 @@ import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
+import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -29,6 +30,10 @@ public final class BridgeUtil {
 
     public static String formatNumber(final double score) {
         return String.format("%.3f", score);
+    }
+
+    public static String translateMiniMessageLegacy(final String content) {
+        return BukkitComponentSerializer.legacy().serialize(translateMiniMessage(content));
     }
 
     public static Component translateMiniMessage(final String content) {

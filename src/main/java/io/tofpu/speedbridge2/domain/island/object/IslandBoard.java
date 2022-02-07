@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class IslandBoard {
     public static final long INTERVAL = ConfigurationManager.INSTANCE.getLeaderboardCategory()
-            .getUpdateInterval();
+            .getGlobalUpdateInterval();
 
     private static final Queue<Island> ISLAND_QUEUE = new ConcurrentLinkedQueue<>();
 

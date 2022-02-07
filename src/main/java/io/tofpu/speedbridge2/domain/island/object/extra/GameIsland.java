@@ -80,15 +80,17 @@ public final class GameIsland {
         final Player player = gamePlayer.getBridgePlayer()
                 .getPlayer();
 
-        player.getInventory()
-                .clear();
+        if (player != null) {
+            player.getInventory()
+                    .clear();
 
-        final LobbyCategory lobbyCategory = ConfigurationManager.INSTANCE.getLobbyCategory();
+            final LobbyCategory lobbyCategory = ConfigurationManager.INSTANCE.getLobbyCategory();
 
-        // teleport the player to the lobby location
-        final Location location = lobbyCategory.getLobbyLocation();
-        if (location != null) {
-            player.teleport(location);
+            // teleport the player to the lobby location
+            final Location location = lobbyCategory.getLobbyLocation();
+            if (location != null) {
+                player.teleport(location);
+            }
         }
 
         // remove the blocks

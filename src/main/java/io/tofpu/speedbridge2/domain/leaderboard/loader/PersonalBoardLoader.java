@@ -16,9 +16,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public final class PersonalBoardLoader extends CacheLoader<UUID, BoardPlayer> implements BoardRetrieve<BoardPlayer> {
     public static final PersonalBoardLoader INSTANCE = new PersonalBoardLoader();
     private static final String GLOBAL_POSITION =
-            "SELECT 1 + COUNT(*) AS position, * FROM scores WHERE score < (SELECT score" +
-            " " +
-            "FROM scores WHERE uid = ?)";
+            "SELECT * FROM (SELECT *, COUNT(*) AS" + " position FROM scores" +
+                                                  ") WHERE uid = ?";
 
     private PersonalBoardLoader() {}
 
@@ -39,9 +38,6 @@ public final class PersonalBoardLoader extends CacheLoader<UUID, BoardPlayer> im
 
             final AtomicReference<BoardPlayer> boardPlayer = new AtomicReference<>();
             databaseQuery.executeQuery(resultSet -> {
-                if (!resultSet.next()) {
-                    return;
-                }
                 boardPlayer.set(BridgeUtil.resultToBoardPlayer(false, resultSet));
             });
 

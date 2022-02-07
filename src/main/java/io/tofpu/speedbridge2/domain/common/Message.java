@@ -72,54 +72,7 @@ public final class Message {
 
     public final String LOBBY_SET_LOCATION = SUCCESS + "The lobby location has been set!";
 
-    public static @NotNull CompletableFuture<Void> load(final File directory) {
-        final File messageFile = new File(directory, "messages.yml");
-        final boolean fileExists = messageFile.exists();
-
-        BridgeUtil.debug(String.valueOf(FIELD_MAP));
-
-        final Class<Message> messageClass = Message.class;
-        if (!fileExists) {
-            return CompletableFuture.runAsync(() -> {
-                FileUtil.write(messageFile, false, ReflectionUtil.toString(FIELD_MAP,
-                        messageClass));
-            });
-        }
-
-        return CompletableFuture.runAsync(() -> {
-            final List<String> fieldList = new ArrayList<>();
-            try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(messageFile), StandardCharsets.UTF_8))) {
-                while (reader.ready()) {
-                    final String input = reader.readLine();
-                    final String[] args = input.split(":");
-
-                    final String fieldName = args[0];
-                    final String message = args[1].replaceFirst(" ", "");
-
-                    final Field field = FIELD_MAP.get(fieldName);
-                    if (field == null) {
-                        continue;
-                    }
-
-                    fieldList.add(fieldName);
-                    field.set(INSTANCE, message);
-                }
-            } catch (IOException | IllegalAccessException e) {
-                throw new IllegalStateException(e);
-            }
-
-            final Map<String, Field> missingFields = new HashMap<>();
-            for (final Map.Entry<String, Field> entry : FIELD_MAP.entrySet()) {
-                if (fieldList.contains(entry.getKey())) {
-                    continue;
-                }
-
-                missingFields.put(entry.getKey(), entry.getValue());
-            }
-
-            FileUtil.write(messageFile, true, ReflectionUtil.toString(missingFields, messageClass));
-        });
-    }
+    public final String EMPTY_SESSION_LEADERBOARD = "<strikethrough><gray>----";
 
     // from listeners
 
@@ -138,20 +91,75 @@ public final class Message {
 
     public final String EMPTY_SCORE_FORMAT = "";
 
-    private Message() {
-        CompletableFuture.runAsync(() -> {
-            for (final Field field : Message.class.getDeclaredFields()) {
-                if (Modifier.isStatic(field.getModifiers()) || field.isAnnotationPresent(IgnoreMessage.class)) {
-                    continue;
-                }
+    public static @NotNull CompletableFuture<Void> load(final File directory) {
+        final CompletableFuture<Void> loadFieldMap;
+        if (FIELD_MAP.isEmpty()) {
+            loadFieldMap = CompletableFuture.runAsync(() -> {
+                for (final Field field : Message.class.getDeclaredFields()) {
+                    if (Modifier.isStatic(field.getModifiers()) ||
+                        field.isAnnotationPresent(IgnoreMessage.class)) {
+                        continue;
+                    }
 
-                if (!field.isAccessible()) {
-                    field.setAccessible(true);
-                }
+                    if (!field.isAccessible()) {
+                        field.setAccessible(true);
+                    }
 
-                FIELD_MAP.put(field.getName(), field);
-            }
+                    FIELD_MAP.put(field.getName(), field);
+                }
+                BridgeUtil.debug(String.valueOf(FIELD_MAP));
+            });
+        } else {
+            loadFieldMap = CompletableFuture.completedFuture(null);
+        }
+
+        return loadFieldMap.thenRun(() -> {
+            final File messageFile = new File(directory, "messages.yml");
+            final boolean fileExists = messageFile.exists();
+
             BridgeUtil.debug(String.valueOf(FIELD_MAP));
+
+            final Class<Message> messageClass = Message.class;
+            if (!fileExists) {
+                CompletableFuture.runAsync(() -> {
+                    FileUtil.write(messageFile, false, ReflectionUtil.toString(FIELD_MAP, messageClass));
+                });
+                return;
+            }
+
+            CompletableFuture.runAsync(() -> {
+                final List<String> fieldList = new ArrayList<>();
+                try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(messageFile), StandardCharsets.UTF_8))) {
+                    while (reader.ready()) {
+                        final String input = reader.readLine();
+                        final String[] args = input.split(":");
+
+                        final String fieldName = args[0];
+                        final String message = args[1].replaceFirst(" ", "");
+
+                        final Field field = FIELD_MAP.get(fieldName);
+                        if (field == null) {
+                            continue;
+                        }
+
+                        fieldList.add(fieldName);
+                        field.set(INSTANCE, message);
+                    }
+                } catch (IOException | IllegalAccessException e) {
+                    throw new IllegalStateException(e);
+                }
+
+                final Map<String, Field> missingFields = new HashMap<>();
+                for (final Map.Entry<String, Field> entry : FIELD_MAP.entrySet()) {
+                    if (fieldList.contains(entry.getKey())) {
+                        continue;
+                    }
+
+                    missingFields.put(entry.getKey(), entry.getValue());
+                }
+
+                FileUtil.write(messageFile, true, ReflectionUtil.toString(missingFields, messageClass));
+            });
         });
     }
 }
