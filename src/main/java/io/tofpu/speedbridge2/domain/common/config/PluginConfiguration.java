@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.common.config;
 
+import io.tofpu.speedbridge2.domain.common.config.category.BlockMenuCategory;
 import io.tofpu.speedbridge2.domain.common.config.category.GeneralCategory;
 import io.tofpu.speedbridge2.domain.common.config.category.LeaderboardCategory;
 import io.tofpu.speedbridge2.domain.common.config.category.LobbyCategory;
@@ -12,6 +13,9 @@ public final class PluginConfiguration {
     private final GeneralCategory generalCategory = new GeneralCategory();
 
     @Setting
+    private final BlockMenuCategory blockMenuCategory = new BlockMenuCategory();
+
+    @Setting
     private final LeaderboardCategory leaderboardCategory = new LeaderboardCategory();
 
     @Setting
@@ -19,6 +23,10 @@ public final class PluginConfiguration {
 
     public LobbyCategory getLobbyCategory() {
         return lobbyCategory;
+    }
+
+    public BlockMenuCategory getBlockMenuCategory() {
+        return blockMenuCategory;
     }
 
     public LeaderboardCategory getLeaderboardCategory() {

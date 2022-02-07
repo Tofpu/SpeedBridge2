@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2;
 import io.tofpu.dynamicclass.DynamicClass;
 import io.tofpu.speedbridge2.command.CommandManager;
 import io.tofpu.speedbridge2.command.subcommand.HelpCommandGenerator;
+import io.tofpu.speedbridge2.domain.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
@@ -60,6 +61,7 @@ public final class SpeedBridge {
 
         Leaderboard.INSTANCE.load(javaPlugin);
         IslandBoard.load(javaPlugin);
+        BlockMenuManager.INSTANCE.load();
 
         HelpCommandGenerator.generateHelpCommand(javaPlugin);
 

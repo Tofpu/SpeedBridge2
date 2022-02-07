@@ -2,11 +2,14 @@ package io.tofpu.speedbridge2.domain.common.config.manager;
 
 import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.config.PluginConfiguration;
+import io.tofpu.speedbridge2.domain.common.config.category.BlockMenuCategory;
 import io.tofpu.speedbridge2.domain.common.config.category.GeneralCategory;
 import io.tofpu.speedbridge2.domain.common.config.category.LeaderboardCategory;
 import io.tofpu.speedbridge2.domain.common.config.category.LobbyCategory;
 import io.tofpu.speedbridge2.domain.common.config.serializer.LocationSerializer;
+import io.tofpu.speedbridge2.domain.common.config.serializer.MaterialSerializer;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -34,7 +37,9 @@ public final class ConfigurationManager {
                         .toPath()
                         .resolve("config.conf"))
                 .defaultOptions(configurationOptions -> configurationOptions.shouldCopyDefaults(true)
-                        .serializers(builder -> builder.register(Location.class, LocationSerializer.INSTANCE)))
+                        .serializers(builder -> builder.register(Location.class,
+                                LocationSerializer.INSTANCE).register(Material.class,
+                                MaterialSerializer.INSTANCE)))
                 .build();
 
         try {
@@ -104,6 +109,10 @@ public final class ConfigurationManager {
 
     public LeaderboardCategory getLeaderboardCategory() {
         return configuration.getLeaderboardCategory();
+    }
+
+    public BlockMenuCategory getBlockMenuCategory() {
+        return configuration.getBlockMenuCategory();
     }
 
     public LobbyCategory getLobbyCategory() {
