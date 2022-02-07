@@ -73,7 +73,11 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
         final Score newScore = Score.of(islandSlot, score);
 
         // adding the score to the session map
-        this.sessionMap.put(islandSlot, newScore);
+        final Score sessionScore = this.sessionMap.get(islandSlot);
+        // if the session score is null, or the newer score is lower than the session score
+        if (sessionScore == null || newScore.compareTo(sessionScore) < 0) {
+            this.sessionMap.put(islandSlot, newScore);
+        }
 
         // if the current score is null, or new score is less than the current score,
         // insert into the scoreMap
@@ -81,7 +85,6 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
             setNewScore(newScore);
             return newScore;
         }
-
         return newScore;
     }
 

@@ -18,6 +18,8 @@ public final class IslandResetListener extends GameListener {
             return;
         }
 
+        event.getPlayer().getInventory().clear();
+
         // quit from the game
         bridgePlayer.getGamePlayer().getCurrentGame().getIsland().leaveGame(bridgePlayer);
     }
