@@ -56,36 +56,6 @@ public final class Leaderboard {
                         this.playerCache.refresh(uuid);
                     }
 
-                    // sessional leaderboard operation
-                    final Map<UUID, BoardPlayer> scoreMap = new HashMap<>();
-                    for (final BridgePlayer bridgePlayer : PlayerService.INSTANCE.getBridgePlayers()) {
-                        if (scoreMap.size() == 10) {
-                            break;
-                        }
-
-                        Score bestScore = null;
-                        for (final Score score : bridgePlayer.getSessionScores()) {
-                            // if the best score is not null, and best score is higher
-                            // than or equal to 0
-                            if (bestScore != null && bestScore.compareTo(score) >= 0) {
-                                continue;
-                            }
-                            bestScore = score;
-                        }
-
-                        if (bestScore != null) {
-                            final int position = scoreMap.size() + 1;
-                            final UUID uuid = bridgePlayer.getPlayerUid();
-                            scoreMap.put(uuid, new BoardPlayer(bridgePlayer.getName(), position, uuid, bestScore));
-                        }
-                    }
-
-                    this.sessionalMap.clear();
-                    for (final Map.Entry<UUID, BoardPlayer> entry : scoreMap.entrySet()) {
-                        final BoardPlayer value = entry.getValue();
-                        this.sessionalMap.put(value.getPosition(), value);
-                    }
-
                     // global leaderboard operation
                     try (final DatabaseQuery databaseQuery = new DatabaseQuery("SELECT DISTINCT * FROM scores ORDER BY score")) {
                         final List<UUID> uuidList = new ArrayList<>();
@@ -116,9 +86,41 @@ public final class Leaderboard {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
                 }, 1, 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
-                        .getUpdateInterval());
+                        .getGlobalUpdateInterval());
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(javaPlugin, () -> {
+            // sessional leaderboard operation
+            final Map<UUID, BoardPlayer> scoreMap = new HashMap<>();
+            for (final BridgePlayer bridgePlayer : PlayerService.INSTANCE.getBridgePlayers()) {
+                if (scoreMap.size() == 10) {
+                    break;
+                }
+
+                Score bestScore = null;
+                for (final Score score : bridgePlayer.getSessionScores()) {
+                    // if the best score is not null, and best score is higher
+                    // than or equal to 0
+                    if (bestScore != null && bestScore.compareTo(score) >= 0) {
+                        continue;
+                    }
+                    bestScore = score;
+                }
+
+                if (bestScore != null) {
+                    final int position = scoreMap.size() + 1;
+                    final UUID uuid = bridgePlayer.getPlayerUid();
+                    scoreMap.put(uuid, new BoardPlayer(bridgePlayer.getName(), position, uuid, bestScore));
+                }
+            }
+
+            this.sessionalMap.clear();
+            for (final Map.Entry<UUID, BoardPlayer> entry : scoreMap.entrySet()) {
+                final BoardPlayer value = entry.getValue();
+                this.sessionalMap.put(value.getPosition(), value);
+            }
+        }, 1, 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
+                .getSessionUpdateInterval());
     }
 
     public CompletableFuture<BoardPlayer> retrieve(final UUID uniqueId) {
