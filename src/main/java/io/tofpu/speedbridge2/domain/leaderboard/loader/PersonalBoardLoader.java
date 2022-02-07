@@ -33,14 +33,11 @@ public final class PersonalBoardLoader extends CacheLoader<UUID, BoardPlayer> im
 
     @Override
     public @Nullable BoardPlayer retrieve(final @NotNull UUID key) {
-        System.out.println("personal board loader retrieve method");
         try (final DatabaseQuery databaseQuery = new DatabaseQuery(GLOBAL_POSITION)) {
             databaseQuery.setString(key.toString());
 
             final AtomicReference<BoardPlayer> boardPlayer = new AtomicReference<>();
             databaseQuery.executeQuery(resultSet -> {
-                System.out.println("retrieving uid");
-                System.out.println(resultSet.getString("uid"));
                 boardPlayer.set(BridgeUtil.resultToBoardPlayer(false, resultSet));
             });
 
