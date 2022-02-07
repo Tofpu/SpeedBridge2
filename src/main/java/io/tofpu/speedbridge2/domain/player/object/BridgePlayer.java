@@ -1,17 +1,20 @@
 package io.tofpu.speedbridge2.domain.player.object;
 
 import io.tofpu.speedbridge2.domain.common.database.Databases;
+import io.tofpu.speedbridge2.domain.player.misc.block.BlockChoice;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
-import io.tofpu.speedbridge2.domain.player.misc.sessional.SessionScore;
+import io.tofpu.speedbridge2.domain.player.misc.session.SessionScore;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStat;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
 import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public final class BridgePlayer extends CommonBridgePlayer<Player> implements SessionScore {
+public final class BridgePlayer extends CommonBridgePlayer<Player> implements SessionScore, BlockChoice {
     private final UUID playerUid;
     private final Map<Integer, Score> scoreMap;
     private final Map<String, PlayerStat> statsMap;
@@ -21,6 +24,8 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
     private String name;
     private Player player;
     private GamePlayer gamePlayer;
+
+    private Material chosenBlock;
 
     public static BridgePlayer of(final BridgePlayer copy) {
         return new BridgePlayer(copy);
@@ -38,7 +43,9 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
         this(copy.getName(), copy.playerUid);
         this.scoreMap.putAll(copy.scoreMap);
         this.statsMap.putAll(copy.statsMap);
+
         this.sessionMap.putAll(copy.sessionMap);
+        this.chosenBlock = copy.chosenBlock;
     }
 
     private BridgePlayer(final UUID playerUid) {
@@ -61,6 +68,8 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
         } else {
             this.player = null;
         }
+
+        this.chosenBlock = Material.AIR;
     }
 
     @Override
@@ -211,5 +220,20 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
     @Override
     public void resetSessionScores() {
         this.sessionMap.clear();
+    }
+
+    @Override
+    public Material getChoseMaterial() {
+        return this.chosenBlock;
+    }
+
+    @Override
+    public void setChosenMaterial(final @NotNull Material material) {
+        this.chosenBlock = material;
+        Databases.BLOCK_DATABASE.update(this);
+    }
+
+    public void setIntervalMaterial(final @NotNull Material material) {
+        this.chosenBlock = material;
     }
 }

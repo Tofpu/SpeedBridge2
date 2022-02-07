@@ -4,18 +4,24 @@ import org.bukkit.Material;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @ConfigSerializable
 public final class BlockMenuCategory {
+
     @Setting("blocks")
-    private Set<Material> materials = new HashSet<>(Arrays.asList(Material.WOOL,
+    private List<Material> materials = new ArrayList<>(Arrays.asList(Material.WOOL,
             Material.DIAMOND_BLOCK, Material.GOLD_BLOCK, Material.IRON_BLOCK,
             Material.REDSTONE_BLOCK, Material.LAPIS_BLOCK, Material.QUARTZ_BLOCK));
 
-    public Set<Material> getMaterialBlocks() {
+    @Setting("default_block")
+    private Material defaultBlock = materials.isEmpty() ? Material.AIR : materials.get(0);
+
+    public Collection<Material> getMaterialBlocks() {
         return materials;
+    }
+
+    public Material getDefaultBlock() {
+        return defaultBlock;
     }
 }
