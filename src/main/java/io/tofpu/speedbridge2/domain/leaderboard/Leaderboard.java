@@ -24,14 +24,14 @@ import java.util.concurrent.TimeUnit;
 public final class Leaderboard {
     public static final Leaderboard INSTANCE = new Leaderboard();
 
-    private final Map<Integer, BoardPlayer> globalMap;
+    private final LeaderboardMap globalMap;
     private final Map<Integer, BoardPlayer> sessionalMap;
 
     private final LoadingCache<UUID, BoardPlayer> playerCache;
     private final LoadingCache<UUID, IslandBoardPlayer> islandPositionMap;
 
     private Leaderboard() {
-        this.globalMap = new ConcurrentHashMap<>();
+        this.globalMap = new LeaderboardMap();
         this.sessionalMap = new ConcurrentHashMap<>();
 
         // player's personal global position
@@ -47,14 +47,8 @@ public final class Leaderboard {
 
     public void load(final JavaPlugin javaPlugin) {
         Bukkit.getScheduler()
-                .runTaskTimerAsynchronously(javaPlugin, () -> {
-                    BridgeUtil.debug("refreshing the leaderboard!");
-
-                    // per-player based position operation
-                    for (final UUID uuid : playerCache.asMap()
-                            .keySet()) {
-                        this.playerCache.refresh(uuid);
-                    }
+                .runTaskAsynchronously(javaPlugin, () -> {
+                    BridgeUtil.debug("loading the leaderboard!");
 
                     // global leaderboard operation
                     try (final DatabaseQuery databaseQuery = new DatabaseQuery("SELECT DISTINCT * FROM scores ORDER BY score")) {
@@ -81,46 +75,60 @@ public final class Leaderboard {
                             }
                         });
 
-                        this.globalMap.clear();
-                        this.globalMap.putAll(globalBoardMap);
+                        this.globalMap.load(globalBoardMap);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                });
+
+        Bukkit.getScheduler()
+                .runTaskTimerAsynchronously(javaPlugin, () -> {
+                    BridgeUtil.debug("refreshing the leaderboard!");
+
+                    // per-player based position operation
+                    for (final UUID uuid : playerCache.asMap()
+                            .keySet()) {
+                        this.playerCache.refresh(uuid);
+                    }
+
+                    // update the global leaderboard
+                    globalMap.updateLeaderboard();
                 }, 1, 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
                         .getGlobalUpdateInterval());
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(javaPlugin, () -> {
-            // sessional leaderboard operation
-            final Map<UUID, BoardPlayer> scoreMap = new HashMap<>();
-            for (final BridgePlayer bridgePlayer : PlayerService.INSTANCE.getBridgePlayers()) {
-                if (scoreMap.size() == 10) {
-                    break;
-                }
+        Bukkit.getScheduler()
+                .runTaskTimerAsynchronously(javaPlugin, () -> {
+                    // sessional leaderboard operation
+                    final Map<UUID, BoardPlayer> scoreMap = new HashMap<>();
+                    for (final BridgePlayer bridgePlayer : PlayerService.INSTANCE.getBridgePlayers()) {
+                        if (scoreMap.size() == 10) {
+                            break;
+                        }
 
-                Score bestScore = null;
-                for (final Score score : bridgePlayer.getSessionScores()) {
-                    // if the best score is not null, and best score is higher
-                    // than or equal to 0
-                    if (bestScore != null && bestScore.compareTo(score) >= 0) {
-                        continue;
+                        Score bestScore = null;
+                        for (final Score score : bridgePlayer.getSessionScores()) {
+                            // if the best score is not null, and best score is higher
+                            // than or equal to 0
+                            if (bestScore != null && bestScore.compareTo(score) >= 0) {
+                                continue;
+                            }
+                            bestScore = score;
+                        }
+
+                        if (bestScore != null) {
+                            final int position = scoreMap.size() + 1;
+                            final UUID uuid = bridgePlayer.getPlayerUid();
+                            scoreMap.put(uuid, new BoardPlayer(bridgePlayer.getName(), position, uuid, bestScore));
+                        }
                     }
-                    bestScore = score;
-                }
 
-                if (bestScore != null) {
-                    final int position = scoreMap.size() + 1;
-                    final UUID uuid = bridgePlayer.getPlayerUid();
-                    scoreMap.put(uuid, new BoardPlayer(bridgePlayer.getName(), position, uuid, bestScore));
-                }
-            }
-
-            this.sessionalMap.clear();
-            for (final Map.Entry<UUID, BoardPlayer> entry : scoreMap.entrySet()) {
-                final BoardPlayer value = entry.getValue();
-                this.sessionalMap.put(value.getPosition(), value);
-            }
-        }, 1, 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
-                .getSessionUpdateInterval());
+                    this.sessionalMap.clear();
+                    for (final Map.Entry<UUID, BoardPlayer> entry : scoreMap.entrySet()) {
+                        final BoardPlayer value = entry.getValue();
+                        this.sessionalMap.put(value.getPosition(), value);
+                    }
+                }, 1, 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
+                        .getSessionUpdateInterval());
     }
 
     public CompletableFuture<BoardPlayer> retrieve(final UUID uniqueId) {
@@ -161,6 +169,10 @@ public final class Leaderboard {
         // otherwise, attempt to retrieve the board async
         return PluginExecutor.supply(() -> islandPositionMap.getUnchecked(uniqueId)
                 .retrieve(islandSlot));
+    }
+
+    public void addScore(final BridgePlayer owner, final Score score) {
+        this.globalMap.append(owner, score);
     }
 
     public enum LeaderboardRetrieveType {
