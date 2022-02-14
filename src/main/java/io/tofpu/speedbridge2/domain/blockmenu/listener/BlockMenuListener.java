@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.domain.blockmenu.listener;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
+import io.tofpu.speedbridge2.domain.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.domain.blockmenu.holder.BlockMenuHolder;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
@@ -16,7 +17,7 @@ public final class BlockMenuListener extends GameListener {
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent event) {
         final Inventory clickedInventory = event.getClickedInventory();
-        if (clickedInventory != null &&
+        if (clickedInventory == null ||
             (!(clickedInventory.getHolder() instanceof BlockMenuHolder))) {
             return;
         }
@@ -30,10 +31,11 @@ public final class BlockMenuListener extends GameListener {
 
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getWhoClicked()
                 .getUniqueId());
-        if (bridgePlayer == null) {
+        if (bridgePlayer == null || bridgePlayer.getChoseMaterial() == type) {
             return;
         }
 
         bridgePlayer.setChosenMaterial(type);
+        BlockMenuManager.INSTANCE.showInventory(bridgePlayer);
     }
 }

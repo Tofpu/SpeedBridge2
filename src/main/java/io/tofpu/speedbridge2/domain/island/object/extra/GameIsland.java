@@ -11,7 +11,6 @@ import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -45,8 +44,9 @@ public final class GameIsland {
         final Player player = gamePlayer.getBridgePlayer().getPlayer();
 
         player.getInventory().clear();
-        player.getInventory().setItem(0, new ItemStack(Material.WOOL,
-                64));
+        player.getInventory()
+                .setItem(0, new ItemStack(gamePlayer.getBridgePlayer()
+                        .getChoseMaterial(), 64));
 
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
@@ -64,7 +64,8 @@ public final class GameIsland {
         final Player player = gamePlayer.getBridgePlayer().getPlayer();
 
         player.getInventory().setItem(0,
-                new ItemStack(Material.WOOL,
+                new ItemStack(gamePlayer.getBridgePlayer()
+                        .getChoseMaterial(),
                         64));
 
         if (notify) {
