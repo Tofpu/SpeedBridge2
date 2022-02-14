@@ -242,6 +242,8 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
     @Override
     public void setChosenMaterial(final @NotNull Material material) {
         this.chosenBlock = material;
+
+        // this may cause the database to lock if it got abused, we'll see
         Databases.BLOCK_DATABASE.update(this);
     }
 
