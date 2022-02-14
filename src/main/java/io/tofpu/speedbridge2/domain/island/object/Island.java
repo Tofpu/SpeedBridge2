@@ -5,7 +5,9 @@ import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.island.schematic.IslandSchematic;
+import io.tofpu.speedbridge2.domain.leaderboard.LeaderboardMap;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +22,7 @@ public class Island extends IslandSchematic {
     private final Map<GamePlayer, GameIsland> islandMap = new HashMap<>();
     private String category;
 
-    private final Map<Integer, BoardPlayer> boardMap = new HashMap<>();
+    private final LeaderboardMap leaderboardMap = new LeaderboardMap();
 
     public Island(final int slot, final String category) {
         this.slot = slot;
@@ -28,11 +30,11 @@ public class Island extends IslandSchematic {
     }
 
     public BoardPlayer retrieveBy(final int position) {
-        return boardMap.get(position);
+        return leaderboardMap.get(position);
     }
 
     public BoardPlayer retrieveBy(final UUID uniqueId) {
-        for (final BoardPlayer boardPlayer : boardMap.values()) {
+        for (final BoardPlayer boardPlayer : leaderboardMap.values()) {
             if (boardPlayer.getOwner()
                     .equals(uniqueId)) {
                 return boardPlayer;
@@ -106,9 +108,17 @@ public class Island extends IslandSchematic {
         return category;
     }
 
+    public void loadBoard(final Map<Integer, BoardPlayer> boardMap) {
+        this.leaderboardMap.load(boardMap);
+    }
+
+    public void addLeaderboardScore(final BridgePlayer bridgePlayer, final Score score) {
+        leaderboardMap.append(bridgePlayer, score);
+    }
+
     public void updateBoard(final Map<Integer, BoardPlayer> newBoardMap) {
-        boardMap.clear();
-        boardMap.putAll(newBoardMap);
+        leaderboardMap.clear();
+        leaderboardMap.putAll(newBoardMap);
     }
 
     @Override
@@ -122,7 +132,7 @@ public class Island extends IslandSchematic {
                 .append(category)
                 .append('\'');
         sb.append(", boardMap=")
-                .append(boardMap);
+                .append(leaderboardMap);
         sb.append('}');
         return sb.toString();
     }
