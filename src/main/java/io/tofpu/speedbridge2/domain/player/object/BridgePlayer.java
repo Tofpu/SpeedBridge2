@@ -14,6 +14,7 @@ import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -244,6 +245,11 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
     @Override
     public void setChosenMaterial(final @NotNull Material material) {
         this.chosenBlock = material;
+
+        // if the player is playing, update their block with the new material
+        if (isPlaying()) {
+            getPlayer().getInventory().setItem(0, new ItemStack(this.chosenBlock, 64));
+        }
 
         // this may cause the database to lock if it got abused, we'll see
         Databases.BLOCK_DATABASE.update(this);

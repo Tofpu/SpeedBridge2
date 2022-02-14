@@ -74,7 +74,9 @@ public final class DatabaseManager {
     }
 
     public static void shutdown() {
-        dataSource.close();
+        if (dataSource != null) {
+            dataSource.close();
+        }
     }
 
     public static void appendTable(final @NotNull DatabaseTable table) {
@@ -83,7 +85,9 @@ public final class DatabaseManager {
 
     public static @Nullable Connection getConnection() {
         try {
-            return dataSource.getConnection();
+            if (dataSource != null) {
+                return dataSource.getConnection();
+            }
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
