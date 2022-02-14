@@ -61,16 +61,50 @@ public final class BlockMenuManager {
 
         final Material chosenMaterial = bridgePlayer.getChoseMaterial();
         for (final ItemStack itemStack : inventoryClone.getContents()) {
-            if (itemStack == null || itemStack.getType() != chosenMaterial) {
+            if (itemStack == null) {
                 continue;
             }
 
-            chosenItem(itemStack);
+            final Material itemType =
+                    itemStack.getType() == null ? Material.AIR : itemStack.getType();
+
+            if (itemType != chosenMaterial) {
+                final boolean canSelectItem = canSelectItem(bridgePlayer, itemStack);
+
+                // if the player cannot select the item
+                if (!canSelectItem) {
+                    modifyItem(ModifyItemType.LACK_PERMISSION, itemStack);
+                }
+
+                continue;
+            }
+
+            modifyItem(ModifyItemType.SELECTED, itemStack);
             break;
         }
 
         player.openInventory(inventoryClone);
         return inventoryClone;
+    }
+
+    private boolean canSelectItem(final BridgePlayer bridgePlayer, final ItemStack itemStack) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
+            return false;
+        }
+        return bridgePlayer.getPlayer()
+                .hasPermission("speedbridge.block." + itemStack.getType()
+                        .name());
+    }
+
+    private void modifyItem(final ModifyItemType modifyItemType, final ItemStack itemStack) {
+        switch (modifyItemType) {
+            case SELECTED:
+                chosenItem(itemStack);
+                break;
+            case LACK_PERMISSION:
+                lackPermissionItem(itemStack);
+                break;
+        }
     }
 
     private Inventory cloneInventory(final @NotNull Inventory inventory) {
@@ -93,7 +127,19 @@ public final class BlockMenuManager {
         itemStack.setItemMeta(meta);
     }
 
+    private void lackPermissionItem(final ItemStack itemStack) {
+        final ItemMeta itemMeta = itemStack.getItemMeta();
+        // set the itemstack lore to the appropriate lore
+        itemMeta.setLore(Collections.singletonList(BridgeUtil.translate("&cYou do not have the permission to use this!")));
+
+        itemStack.setItemMeta(itemMeta);
+    }
+
     public Set<Material> getMaterialSet() {
         return Collections.unmodifiableSet(materialSet);
+    }
+
+    enum ModifyItemType {
+        SELECTED, LACK_PERMISSION;
     }
 }
