@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.player.object;
 
+import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.player.misc.block.BlockChoice;
 import io.tofpu.speedbridge2.domain.island.IslandService;
@@ -72,7 +73,8 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
             this.player = null;
         }
 
-        this.chosenBlock = Material.AIR;
+        this.chosenBlock =
+                ConfigurationManager.INSTANCE.getBlockMenuCategory().getDefaultBlock();
     }
 
     @Override
