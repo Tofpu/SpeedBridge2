@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.domain.player.misc.sessional;
+package io.tofpu.speedbridge2.domain.player.misc.session;
 
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 

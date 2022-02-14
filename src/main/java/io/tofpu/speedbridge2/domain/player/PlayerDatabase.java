@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.player;
 
+import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.Database;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
@@ -9,6 +10,7 @@ import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStat;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -27,12 +29,20 @@ public final class PlayerDatabase extends Database {
     }
 
     public @NotNull CompletableFuture<Void> insert(final @NotNull BridgePlayer player) {
-        return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO players VALUES (?, ?)", databaseQuery -> {
-            databaseQuery.setString(player.getPlayerUid()
-                    .toString());
-            databaseQuery.setString(player.getPlayer()
-                    .getName());
-        });
+        final CompletableFuture<?>[] completableFutures = new CompletableFuture[2];
+
+        completableFutures[0] = DatabaseUtil.databaseQueryExecute(
+                "INSERT OR IGNORE " + "INTO players VALUES (?, " +
+                "?)", databaseQuery -> {
+                    databaseQuery.setString(player.getPlayerUid()
+                            .toString());
+                    databaseQuery.setString(player.getPlayer()
+                            .getName());
+                });
+
+        completableFutures[1] = Databases.BLOCK_DATABASE.insert(player);
+
+        return CompletableFuture.allOf(completableFutures);
     }
 
     public @NotNull CompletableFuture<Void> update(final @NotNull BridgePlayer player) {
@@ -41,6 +51,7 @@ public final class PlayerDatabase extends Database {
 
         completableFutures.add(updateName(player.getPlayer()
                 .getName(), player));
+        completableFutures.add(Databases.BLOCK_DATABASE.update(player));
 
         for (final Score score : player.getScores()) {
             completableFutures.add(Databases.SCORE_DATABASE.update(player.getPlayerUid(), score));
@@ -88,7 +99,6 @@ public final class PlayerDatabase extends Database {
                 if (pause.get()) {
                     return bridgePlayer;
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -100,6 +110,17 @@ public final class PlayerDatabase extends Database {
                 final Collection<PlayerStat> playerStats = Databases.STATS_DATABASE.getStoredStats(bridgePlayer.getPlayerUid())
                         .get();
 
+                Material material =
+                        Databases.BLOCK_DATABASE.getStoredMaterial(uniqueId).get();
+
+                // if the returned material is null
+                if (material == null) {
+                    // reassign the material with the default block
+                    material = ConfigurationManager.INSTANCE.getBlockMenuCategory().getDefaultBlock();
+                    // insert the player to the blocks database
+                    Databases.BLOCK_DATABASE.insert(bridgePlayer);
+                }
+
                 for (final Score score : scoreList) {
                     bridgePlayer.setInternalNewScore(score);
                 }
@@ -108,6 +129,7 @@ public final class PlayerDatabase extends Database {
                     bridgePlayer.setInternalStat(playerStat);
                 }
 
+                bridgePlayer.setIntervalMaterial(material);
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

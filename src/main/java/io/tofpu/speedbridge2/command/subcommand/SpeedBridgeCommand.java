@@ -4,6 +4,7 @@ package io.tofpu.speedbridge2.command.subcommand;
 import cloud.commandframework.annotations.*;
 import com.sk89q.minecraft.util.commands.CommandAlias;
 import io.tofpu.speedbridge2.command.parser.IslandArgument;
+import io.tofpu.speedbridge2.domain.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
@@ -250,6 +251,14 @@ public final class SpeedBridgeCommand {
         BridgeUtil.sendMessage(player, message);
     }
 
+    @ProxiedBy("choose")
+    @CommandMethod("speedbridge choose")
+    @CommandAlias("speedbridge choose")
+    @CommandDescription("Lets you choose a block")
+    public void chooseBlock(final BridgePlayer bridgePlayer) {
+        BlockMenuManager.INSTANCE.showInventory(bridgePlayer);
+    }
+
     @CommandMethod("speedbridge reload")
     @CommandDescription("Reloads the config")
     @CommandPermission("speedbridge.reload")
@@ -259,6 +268,9 @@ public final class SpeedBridgeCommand {
         completableFutures[1] = ConfigurationManager.INSTANCE.reload();
 
         CompletableFuture.allOf(completableFutures).whenComplete((unused, throwable) -> {
+            // reloading the blocks
+            BlockMenuManager.INSTANCE.reload();
+
             if (player.getPlayer() != null) {
                 BridgeUtil.sendMessage(player, INSTANCE.RELOADED);
             }
