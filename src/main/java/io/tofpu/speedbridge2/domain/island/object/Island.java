@@ -116,9 +116,8 @@ public class Island extends IslandSchematic {
         leaderboardMap.append(bridgePlayer, score);
     }
 
-    public void updateBoard(final Map<Integer, BoardPlayer> newBoardMap) {
-        leaderboardMap.clear();
-        leaderboardMap.putAll(newBoardMap);
+    public void updateLeaderboard() {
+        this.leaderboardMap.updateLeaderboard();
     }
 
     @Override

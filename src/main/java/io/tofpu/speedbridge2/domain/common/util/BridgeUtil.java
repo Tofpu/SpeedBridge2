@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.domain.common.util;
 
 import io.tofpu.speedbridge2.SpeedBridge;
+import io.tofpu.speedbridge2.domain.common.PlayerNameCache;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseSet;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
@@ -17,7 +18,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.util.Vector;
 
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 public final class BridgeUtil {
     public static Vector toVector(final com.sk89q.worldedit.Vector vector) {
@@ -81,15 +81,10 @@ public final class BridgeUtil {
 
         BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uid);
         if (bridgePlayer == null) {
-            try {
-                bridgePlayer = PlayerService.INSTANCE.load(uid)
-                        .get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
+            bridgePlayer = BridgePlayer.of(PlayerNameCache.INSTANCE.getOrDefault(uid), uid);
         }
 
-        final String name = bridgePlayer == null ? "" : bridgePlayer.getName();
+        final String name = bridgePlayer.getName();
         final int position = !row ? databaseSet.getInt("position") :
                 databaseSet.getRow();
 

@@ -59,8 +59,12 @@ public final class SpeedBridge {
         SchematicManager.INSTANCE.load(javaPlugin);
         CommandManager.load(javaPlugin);
 
-        Leaderboard.INSTANCE.load(javaPlugin);
-        IslandBoard.load(javaPlugin);
+        Leaderboard.INSTANCE.load(javaPlugin)
+                .whenComplete((unused, throwable) -> {
+                    // when the global leaderboard is complete, load the per-island
+                    // leaderboard
+                    IslandBoard.load(javaPlugin);
+                });
         BlockMenuManager.INSTANCE.load();
 
         HelpCommandGenerator.generateHelpCommand(javaPlugin);

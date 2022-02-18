@@ -1,56 +1,42 @@
 package io.tofpu.speedbridge2.domain.leaderboard;
 
+import io.tofpu.speedbridge2.domain.common.PlayerNameCache;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
-import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public final class LeaderboardMap extends LinkedHashMap<Integer, BoardPlayer> {
-    private final Map<BridgePlayer, Score> globalReference = new LinkedHashMap<>();
-    private final Map<BridgePlayer, Score> tempBoardMap = new HashMap<>();
+    private final Map<UUID, Score> globalReference = new LinkedHashMap<>();
+    private final Map<UUID, Score> tempBoardMap = new HashMap<>();
 
     public void load(final Map<Integer, BoardPlayer> boardPlayerMap) {
         for (final BoardPlayer boardPlayer : boardPlayerMap.values()) {
-            final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(boardPlayer.getOwner());
-            this.globalReference.put(bridgePlayer, boardPlayer.getScore());
+            //            final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(boardPlayer.getOwner());
+            this.globalReference.put(boardPlayer.getOwner(), boardPlayer.getScore());
         }
         updateLeaderboard();
-    }
-
-    public void append(final BridgePlayer bridgePlayer, final Score score) {
-        final Score previousScore = globalReference.get(bridgePlayer);
-
-        // if the player's previous score is higher than, or equal to the given score;
-        // return
-        if (previousScore != null && score.getScore() >= previousScore.getScore()) {
-            return;
-        }
-
-        // insert the player's best score to the temp board
-        this.tempBoardMap.put(bridgePlayer, score);
     }
 
     public void updateLeaderboard() {
         final AtomicInteger positionCounter = new AtomicInteger();
 
-        final Map<BridgePlayer, Score> tempClone = new HashMap<>(tempBoardMap);
+        final Map<UUID, Score> tempClone = new HashMap<>(tempBoardMap);
         tempClone.putAll(globalReference);
 
         final LinkedHashMap<Integer, BoardPlayer> sortedMap = tempClone.entrySet()
                 .stream()
                 .sorted(Map.Entry.comparingByValue())
                 .limit(10)
-                .collect(Collectors.toMap(o -> {
-                    return positionCounter.incrementAndGet();
-                }, o -> {
-                    final BridgePlayer key = o.getKey();
-                    return new BoardPlayer(key.getName(), positionCounter.get(), key.getPlayerUid(), o.getValue());
+                .collect(Collectors.toMap(o -> positionCounter.incrementAndGet(), o -> {
+                    final UUID uuid = o.getKey();
+                    return new BoardPlayer(PlayerNameCache.INSTANCE.getOrDefault(uuid), positionCounter.get(), uuid, o.getValue());
                 }, (o, o2) -> o, LinkedHashMap::new));
 
         final LinkedHashMap<Integer, BoardPlayer> globalBoardCopy = this;
@@ -77,7 +63,16 @@ public final class LeaderboardMap extends LinkedHashMap<Integer, BoardPlayer> {
         this.tempBoardMap.clear();
     }
 
-    public Map<Integer, BoardPlayer> getGlobalBoardMap() {
-        return this;
+    public void append(final BridgePlayer bridgePlayer, final Score score) {
+        final Score previousScore = globalReference.get(bridgePlayer.getPlayerUid());
+
+        // if the player's previous score is higher than, or equal to the given score;
+        // return
+        if (previousScore != null && score.getScore() >= previousScore.getScore()) {
+            return;
+        }
+
+        // insert the player's best score to the temp board
+        this.tempBoardMap.put(bridgePlayer.getPlayerUid(), score);
     }
 }

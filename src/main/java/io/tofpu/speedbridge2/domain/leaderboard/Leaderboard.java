@@ -45,7 +45,8 @@ public final class Leaderboard {
                 .build(IslandLoader.INSTANCE);
     }
 
-    public void load(final JavaPlugin javaPlugin) {
+    public CompletableFuture<Void> load(final JavaPlugin javaPlugin) {
+        final CompletableFuture<Void> loadFuture = new CompletableFuture<>();
         Bukkit.getScheduler()
                 .runTaskAsynchronously(javaPlugin, () -> {
                     BridgeUtil.debug("loading the leaderboard!");
@@ -76,6 +77,7 @@ public final class Leaderboard {
                         });
 
                         this.globalMap.load(globalBoardMap);
+                        loadFuture.complete(null);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -93,7 +95,8 @@ public final class Leaderboard {
 
                     // update the global leaderboard
                     globalMap.updateLeaderboard();
-                }, 1, 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
+                }, 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
+                        .getGlobalUpdateInterval(), 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
                         .getGlobalUpdateInterval());
 
         Bukkit.getScheduler()
@@ -127,8 +130,11 @@ public final class Leaderboard {
                         final BoardPlayer value = entry.getValue();
                         this.sessionalMap.put(value.getPosition(), value);
                     }
-                }, 1, 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
+                }, ConfigurationManager.INSTANCE.getLeaderboardCategory()
+                        .getSessionUpdateInterval(), 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
                         .getSessionUpdateInterval());
+
+        return loadFuture;
     }
 
     public CompletableFuture<BoardPlayer> retrieve(final UUID uniqueId) {

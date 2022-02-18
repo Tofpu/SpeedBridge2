@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.player;
 
+import io.tofpu.speedbridge2.domain.common.PlayerNameCache;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.Database;
@@ -92,7 +93,14 @@ public final class PlayerDatabase extends Database {
                         pause.set(true);
                         insert(bridgePlayer);
                     } else {
-                        bridgePlayer.setName(databaseSet.getString("name"));
+                        final String name = databaseSet.getString("name");
+
+                        if (name != null && !name.isEmpty()) {
+                            // storing the player name to the name cache
+                            PlayerNameCache.INSTANCE.insert(uniqueId, name);
+                        }
+
+                        bridgePlayer.setName(name);
                     }
                 });
 

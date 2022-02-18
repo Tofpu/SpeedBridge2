@@ -66,28 +66,8 @@ public final class IslandBoard {
 
                     for (final Island island : ISLAND_QUEUE) {
                         BridgeUtil.debug("updating " + island.getSlot() + " now!");
-                        final Map<Integer, BoardPlayer> boardMap = new HashMap<>();
 
-                        try (final DatabaseQuery databaseQuery = new DatabaseQuery(
-                                "SELECT * FROM scores WHERE island_slot = ? ORDER BY " +
-                                "score " + "LIMIT 10 OFFSET 0")) {
-                            databaseQuery.setInt(island.getSlot());
-
-                            databaseQuery.executeQuery(resultSet -> {
-                                while (resultSet.next()) {
-                                    final BoardPlayer value = BridgeUtil.resultToBoardPlayer(true, resultSet);
-
-                                    boardMap.put(value.getPosition(), value);
-                                }
-                            });
-
-                            BridgeUtil.debug("successfully updated " + island.getSlot() +
-                                             " island!");
-                            BridgeUtil.debug(String.valueOf(boardMap));
-                            island.updateBoard(boardMap);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        island.updateLeaderboard();
                     }
                 }, 1L, 20 * INTERVAL);
     }
