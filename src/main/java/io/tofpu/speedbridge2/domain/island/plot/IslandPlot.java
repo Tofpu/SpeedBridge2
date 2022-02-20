@@ -38,7 +38,7 @@ public final class IslandPlot {
         final WorldEdit worldEdit = WorldEditAPI.getWorldEdit();
         final ClipboardWrapper schematicPlot = worldEdit.create(island.getSchematicClipboard());
 
-        final RegionWrapper regionWrapper = worldEdit.create(schematicPlot.getRegion());
+        final RegionWrapper regionWrapper = worldEdit.create(schematicPlot.to().getRegion());
         final VectorWrapper origin = schematicPlot.getOrigin();
 
         this.minPoint = regionWrapper.getMinimumPoint()
