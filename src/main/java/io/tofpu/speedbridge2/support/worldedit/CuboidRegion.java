@@ -1,9 +1,11 @@
 package io.tofpu.speedbridge2.support.worldedit;
 
-public final class CuboidRegion {
-    private final Vector minVector, maxVector;
+import io.tofpu.multiworldedit.VectorWrapper;
 
-    public CuboidRegion(final Vector minVector, final Vector maxVector) {
+public final class CuboidRegion {
+    private final VectorWrapper minVector, maxVector;
+
+    public CuboidRegion(final VectorWrapper minVector, final VectorWrapper maxVector) {
         this.minVector = minVector;
         this.maxVector = maxVector;
     }
@@ -16,11 +18,11 @@ public final class CuboidRegion {
         return new Vector(Math.max(minVector.getX(), maxVector.getX()), Math.max(minVector.getY(), maxVector.getY()), Math.max(minVector.getZ(), maxVector.getZ()));
     }
 
-    public Vector getMinVector() {
+    public VectorWrapper getMinVector() {
         return minVector;
     }
 
-    public Vector getMaxVector() {
+    public VectorWrapper getMaxVector() {
         return maxVector;
     }
 

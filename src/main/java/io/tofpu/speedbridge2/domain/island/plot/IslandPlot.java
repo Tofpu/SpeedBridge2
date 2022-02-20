@@ -6,13 +6,10 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
-import io.tofpu.multiworldedit.EditSessionWrapper;
-import io.tofpu.multiworldedit.WorldEditAPI;
+import io.tofpu.multiworldedit.*;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.support.worldedit.CuboidRegion;
-import io.tofpu.speedbridge2.support.worldedit.Vector;
-import io.tofpu.speedbridge2.support.worldedit.util.WorldEditReflectionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -26,26 +23,28 @@ public final class IslandPlot {
     private final double y;
     private final double z;
 
-    private final Vector minPoint;
-    private final Vector maxPoint;
+    private final VectorWrapper minPoint;
+    private final VectorWrapper maxPoint;
 
     private final PlotState plotState;
 
     public IslandPlot(final Island island, final World world, double[] positions) {
         this.island = island;
-        Clipboard schematicPlot = island.getSchematicClipboard();
         this.world = world;
         this.x = positions[0];
         this.y = positions[1];
         this.z = positions[2];
 
-        final Vector origin = WorldEditReflectionUtil.getOriginFromRegion(schematicPlot);
+        final WorldEdit worldEdit = WorldEditAPI.getWorldEdit();
+        final ClipboardWrapper schematicPlot = worldEdit.create(island.getSchematicClipboard());
 
-        this.minPoint = WorldEditReflectionUtil.getMinimumPointFromRegion(schematicPlot.getRegion())
+        final RegionWrapper regionWrapper = worldEdit.create(schematicPlot.getRegion());
+        final VectorWrapper origin = schematicPlot.getOrigin();
+
+        this.minPoint = regionWrapper.getMinimumPoint()
                 .subtract(origin)
                 .add(x, y, z);
-
-        this.maxPoint = WorldEditReflectionUtil.getMaximumPointFromRegion(schematicPlot.getRegion())
+        this.maxPoint = regionWrapper.getMaximumPoint()
                 .subtract(origin)
                 .add(x, y, z);
 
@@ -62,7 +61,7 @@ public final class IslandPlot {
         try (final EditSessionWrapper editSessionWrapper = WorldEditAPI.getWorldEdit()
                 .create(bukkitWorld, -1)) {
             final Clipboard schematicClipboard = getIsland().getSchematicClipboard();
-            final EditSession editSession = editSessionWrapper.get();
+            final EditSession editSession = editSessionWrapper.to();
 
             final Operation operation = WorldEditAPI.getWorldEdit()
                     .create(schematicClipboard, editSession, bukkitWorld)
