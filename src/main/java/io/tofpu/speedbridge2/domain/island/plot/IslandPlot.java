@@ -71,7 +71,7 @@ public final class IslandPlot {
 
             Operations.completeLegacy(operation);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IllegalStateException(e);
         }
     }
 
