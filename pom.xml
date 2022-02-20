@@ -219,5 +219,11 @@
             <artifactId>XSeries</artifactId>
             <version>8.6.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.tofpu</groupId>
+            <artifactId>multiworldedit-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 </project>
