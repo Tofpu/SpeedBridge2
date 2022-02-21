@@ -221,9 +221,9 @@
         </dependency>
 
         <dependency>
-            <groupId>io.tofpu</groupId>
+            <groupId>com.github.tofpu.MultiWorldEdit</groupId>
             <artifactId>multiworldedit-api</artifactId>
-            <version>1.0.0</version>
+            <version>969bb41a2b</version>
         </dependency>
     </dependencies>
 </project>
