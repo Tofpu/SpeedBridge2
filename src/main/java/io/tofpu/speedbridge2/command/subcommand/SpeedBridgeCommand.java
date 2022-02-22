@@ -15,6 +15,8 @@ import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
+import io.tofpu.speedbridge2.domain.setup.IslandSetup;
+import io.tofpu.speedbridge2.domain.setup.IslandSetupManager;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -320,6 +322,57 @@ public final class SpeedBridgeCommand {
             message = String.format(INSTANCE.JOINED_AN_ISLAND, island.getSlot() + "");
         }
 
+        BridgeUtil.sendMessage(bridgePlayer, message);
+    }
+
+    @CommandMethod("speedbridge|sb setup <slot>")
+    @CommandDescription("Creates an island setup")
+    public void onIslandSetup(final BridgePlayer bridgePlayer,
+            final @Argument("slot") int slot) {
+        final Island island = IslandService.INSTANCE.findIslandBy(slot);
+
+        final String message;
+        if (island == null) {
+            message = INSTANCE.INVALID_ISLAND;
+        } else {
+            message = "<yellow>You're now on setup mode with " + slot + " island!";
+            IslandSetupManager.INSTANCE.startSetup(bridgePlayer, island);
+        }
+        BridgeUtil.sendMessage(bridgePlayer, message);
+    }
+
+    @CommandMethod("speedbridge|sb setup setspawn")
+    @CommandDescription("Sets the island's spawnpoint")
+    public void setupSetSpawn(final BridgePlayer bridgePlayer) {
+        final IslandSetup islandSetup =
+                IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
+
+        final String message;
+        if (islandSetup == null) {
+            message = "<red>You're not in a setup.";
+        } else {
+            message = "<yellow>You have set the island's spawnpoint.\n<yellow>You can " +
+                      "complete the setup by typing /sb setup finish.";
+            islandSetup.setPlayerSpawnPoint(bridgePlayer.getPlayer().getLocation());
+        }
+        BridgeUtil.sendMessage(bridgePlayer, message);
+    }
+
+    @CommandMethod("speedbridge|sb setup finish")
+    @CommandDescription("Completes the island's setup")
+    public void setupFinish(final BridgePlayer bridgePlayer) {
+        final IslandSetup islandSetup =
+                IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
+
+        final String message;
+        if (islandSetup == null) {
+            message = "<red>You're not in a setup.";
+        } else if (!islandSetup.isReady()) {
+            message = "<red>Incomplete setup. Please ensure that the spawnpoint is set.";
+        } else {
+            message = "<yellow>The setup is complete.";
+            islandSetup.finish();
+        }
         BridgeUtil.sendMessage(bridgePlayer, message);
     }
 }
