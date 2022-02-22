@@ -33,7 +33,7 @@ import static io.tofpu.speedbridge2.domain.common.util.MessageUtil.Symbols.CROSS
 public final class SpeedBridgeCommand {
     private final IslandService islandService = IslandService.INSTANCE;
 
-    @CommandMethod("speedbridge setlobby")
+    @CommandMethod("speedbridge|sb setlobby")
     @CommandDescription("Sets the lobby location")
     @CommandPermission("speedbridge.lobby.set")
     public void onLobbySet(final BridgePlayer bridgePlayer) {
@@ -42,8 +42,7 @@ public final class SpeedBridgeCommand {
         });
     }
 
-    @ProxiedBy("createIsland")
-    @CommandMethod("speedbridge create <slot> <schematic>")
+    @CommandMethod("speedbridge|sb create <slot> <schematic>")
     @CommandDescription("Create an island with a defined slot")
     @CommandPermission("speedbridge.island.create")
     public void onIslandCreate(final CommonBridgePlayer<?> player, final @Argument("slot")
@@ -73,8 +72,7 @@ public final class SpeedBridgeCommand {
         BridgeUtil.sendMessage(sender, message);
     }
 
-    @ProxiedBy("deleteIsland")
-    @CommandMethod("speedbridge delete <slot>")
+    @CommandMethod("speedbridge|sb delete <slot>")
     @CommandDescription("delete an island")
     @CommandPermission("speedbridge.island.delete")
     public void onIslandDelete(final CommonBridgePlayer<?> player, final @Argument(
@@ -90,8 +88,7 @@ public final class SpeedBridgeCommand {
         BridgeUtil.sendMessage(player, message);
     }
 
-    @ProxiedBy("selectIsland")
-    @CommandMethod("speedbridge select <slot>")
+    @CommandMethod("speedbridge|sb select <slot>")
     @CommandDescription("select an island to modify their properties")
     @CommandPermission("island.island.select")
     public void onIslandSelect(final CommonBridgePlayer<?> bridgePlayer, final @Argument("slot")
@@ -139,11 +136,13 @@ public final class SpeedBridgeCommand {
     }
 
     @ProxiedBy("join")
-    @CommandMethod("speedbridge join [island]")
+    @CommandMethod("speedbridge|sb join [island]")
     @CommandDescription("Join an island")
     public void onIslandJoin(final BridgePlayer bridgePlayer, final @Argument("island")
             String category) {
-        final Player player = Bukkit.getPlayer(bridgePlayer.getPlayerUid());
+        if (!isSetupComplete(bridgePlayer)) {
+            return;
+        }
 
         // /join 2
         // /join default
@@ -183,36 +182,36 @@ public final class SpeedBridgeCommand {
         }
 
         if (!message.isEmpty()) {
-            BridgeUtil.sendMessage(player, message);
+            BridgeUtil.sendMessage(bridgePlayer, message);
         }
     }
 
-    @ProxiedBy("randomjoin")
-    @CommandMethod("speedbridge randomjoin")
-    @CommandDescription("Chooses a random island for you")
-    public void onRandomJoin(final BridgePlayer bridgePlayer) {
-        final Optional<Island> optionalIsland =
-                islandService.getAllIslands().stream().parallel()
-                        .filter(Island::isReady).findAny();
+    private boolean isSetupComplete(final BridgePlayer bridgePlayer) {
+        final boolean isLobbyProcessComplete =
+                ConfigurationManager.INSTANCE.getLobbyCategory()
+                        .getLobbyLocation() != null;
 
-        final String message;
-
-        if (bridgePlayer.isPlaying()) {
-            message = INSTANCE.ALREADY_IN_A_ISLAND;
-        } else if (!optionalIsland.isPresent()) {
-            message = INSTANCE.NO_AVAILABLE_ISLAND;
-        } else {
-            final Island island = optionalIsland.get();
-            island.generateGame(bridgePlayer);
-
-            message = String.format(INSTANCE.JOINED_AN_ISLAND, island.getSlot() + "");
+        // if the lobby process is complete, return true
+        if (isLobbyProcessComplete) {
+            return true;
         }
 
-        BridgeUtil.sendMessage(bridgePlayer, message);
+        final Player player = bridgePlayer.getPlayer();
+        // if the player is an operator, or has the "speedbridge.lobby.set" permission
+        // node
+        if (player.isOp() || player.hasPermission("speedbridge.lobby.set")) {
+            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.LOBBY_MISSING);
+        } else {
+            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.INCOMPLETE_SETUP);
+            // forwarding the message to console
+            BridgeUtil.sendMessage(Bukkit.getConsoleSender(), INSTANCE.LOBBY_MISSING);
+        }
+
+        return false;
     }
 
     @ProxiedBy("leave")
-    @CommandMethod("speedbridge leave")
+    @CommandMethod("speedbridge|sb leave")
     @CommandDescription("Leave an island")
     @IslandArgument
     public void onIslandLeave(final BridgePlayer bridgePlayer, final @NotNull Island island) {
@@ -220,8 +219,8 @@ public final class SpeedBridgeCommand {
     }
 
     @ProxiedBy("score")
-    @CommandMethod("speedbridge score")
-    @CommandAlias("speedbridge score")
+    @CommandMethod("speedbridge|sb score")
+    @CommandAlias("speedbridge|sb score")
     @CommandDescription("Shows a list of your scores")
     public void onScore(final BridgePlayer bridgePlayer) {
         final Player player = bridgePlayer.getPlayer();
@@ -252,14 +251,14 @@ public final class SpeedBridgeCommand {
     }
 
     @ProxiedBy("choose")
-    @CommandMethod("speedbridge choose")
-    @CommandAlias("speedbridge choose")
+    @CommandMethod("speedbridge|sb choose")
+    @CommandAlias("speedbridge|sb choose")
     @CommandDescription("Lets you choose a block")
     public void chooseBlock(final BridgePlayer bridgePlayer) {
         BlockMenuManager.INSTANCE.showInventory(bridgePlayer);
     }
 
-    @CommandMethod("speedbridge reload")
+    @CommandMethod("speedbridge|sb reload")
     @CommandDescription("Reloads the config")
     @CommandPermission("speedbridge.reload")
     public void pluginReload(final CommonBridgePlayer<?> player) {
@@ -277,7 +276,7 @@ public final class SpeedBridgeCommand {
         });
     }
 
-    @CommandMethod("speedbridge")
+    @CommandMethod("speedbridge|sb")
     @CommandDescription("Shows a list of commands")
     @CommandPermission("speedbridge.help")
     @Hidden
@@ -286,11 +285,41 @@ public final class SpeedBridgeCommand {
         BridgeUtil.sendMessage(player, INSTANCE.NO_ARGUMENT);
     }
 
-    @CommandMethod("speedbridge help")
+    @CommandMethod("speedbridge|sb help")
     @CommandPermission("speedbridge.help")
     @CommandDescription("Shows a list of commands")
     public void onHelpCommand(final CommonBridgePlayer<?> bridgePlayer) {
         final CommandSender player = bridgePlayer.getPlayer();
         HelpCommandGenerator.showHelpMessage(player);
+    }
+
+    @ProxiedBy("randomjoin")
+    @CommandMethod("speedbridge|sb randomjoin")
+    @CommandDescription("Chooses a random island for you")
+    public void onRandomJoin(final BridgePlayer bridgePlayer) {
+        if (!isSetupComplete(bridgePlayer)) {
+            return;
+        }
+
+        final Optional<Island> optionalIsland = islandService.getAllIslands()
+                .stream()
+                .parallel()
+                .filter(Island::isReady)
+                .findAny();
+
+        final String message;
+
+        if (bridgePlayer.isPlaying()) {
+            message = INSTANCE.ALREADY_IN_A_ISLAND;
+        } else if (!optionalIsland.isPresent()) {
+            message = INSTANCE.NO_AVAILABLE_ISLAND;
+        } else {
+            final Island island = optionalIsland.get();
+            island.generateGame(bridgePlayer);
+
+            message = String.format(INSTANCE.JOINED_AN_ISLAND, island.getSlot() + "");
+        }
+
+        BridgeUtil.sendMessage(bridgePlayer, message);
     }
 }

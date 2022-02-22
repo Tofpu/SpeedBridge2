@@ -87,6 +87,15 @@ public final class Message {
     public final String SCORED =
             SECOND_STYLE + "You scored <yellow>%s</yellow> " + "seconds!";
 
+    public final String LOBBY_MISSING = ERROR + "Incomplete setup. Please ensure to " +
+                                        "setup SpeedBridge's lobby to complete the " +
+                                        "process." +
+                                        ".\n<red>Type /speedbridge setlobby to set the " +
+                                        "lobby.";
+
+    public final String INCOMPLETE_SETUP = ERROR + "Incomplete setup. Please try again " +
+                                           "later.";
+
     // placeholders
 
     public final String EMPTY_SCORE_FORMAT = "";
