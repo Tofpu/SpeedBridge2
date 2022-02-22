@@ -116,7 +116,15 @@ public final class IslandPlot {
     }
 
     public Location getLocation() {
-        return location;
+        final Location absoluteLocation = island.getAbsoluteLocation();
+
+        // if the absolute location were not defined, return the island plot location
+        if (absoluteLocation == null) {
+            return location;
+        }
+
+        // otherwise, add plot's location to the absolute location
+        return absoluteLocation.add(this.location);
     }
 
     public CuboidRegion region() {

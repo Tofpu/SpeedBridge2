@@ -8,12 +8,16 @@ import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
+import java.util.UUID;
+
 public final class IslandSetup {
+    private final UUID editorUid;
     private final Island island;
     private final IslandPlot islandPlot;
     private Location playerSpawnPoint;
 
-    public IslandSetup(final Island island, final IslandPlot islandPlot) {
+    public IslandSetup(final UUID editorUid, final Island island, final IslandPlot islandPlot) {
+        this.editorUid = editorUid;
         this.island = island;
         this.islandPlot = islandPlot;
     }
@@ -27,8 +31,8 @@ public final class IslandSetup {
             return false;
         }
 
-        final Location nonRelative = playerSpawnPoint.subtract(islandPlot.getLocation());
-        island.setSpawnPoint(nonRelative);
+        final Location absoluteLocation = playerSpawnPoint.subtract(islandPlot.getLocation());
+        island.setRelativePoint(absoluteLocation);
 
         resetPlot();
         IslandSetupManager.INSTANCE.invalidate(this);
@@ -70,6 +74,10 @@ public final class IslandSetup {
                 }
             }
         }
+    }
+
+    public UUID getEditorUid() {
+        return editorUid;
     }
 
     public Island getIsland() {

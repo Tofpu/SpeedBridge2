@@ -71,10 +71,7 @@ public final class GamePlayer {
         }
 
         player.getPlayer()
-                .teleport(selectedPlot.getLocation()
-                        .add(selectedPlot.getGameIsland()
-                                .getIsland()
-                                .getSpawnPoint()));
+                .teleport(selectedPlot.getLocation());
     }
 
     public boolean hasPlaced(final Block block) {

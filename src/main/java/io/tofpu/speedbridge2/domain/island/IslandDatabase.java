@@ -27,7 +27,7 @@ public final class IslandDatabase extends Database {
             databaseQuery.setInt(island.getSlot());
             databaseQuery.setString(island.getCategory());
             databaseQuery.setString(island.getSchematicName());
-            databaseQuery.setString(locationToString(island.getSpawnPoint()));
+            databaseQuery.setString(locationToString(island.getAbsoluteLocation()));
         });
     }
 
@@ -41,14 +41,14 @@ public final class IslandDatabase extends Database {
                     BridgeUtil.debug("island schematic: " + island.getSchematicName());
                     databaseQuery.setString(island.getSchematicName());
 
-                    databaseQuery.setInt(island.getSlot());
-
-                    final Location spawnPoint = island.getSpawnPoint();
+                    final Location spawnPoint = island.getAbsoluteLocation();
                     if (spawnPoint != null) {
                         databaseQuery.setString(locationToString(spawnPoint));
                     } else {
                         databaseQuery.setString(null);
                     }
+
+                    databaseQuery.setInt(island.getSlot());
                 });
     }
 
@@ -74,10 +74,10 @@ public final class IslandDatabase extends Database {
                             final int x = Integer.parseInt(split[0]);
                             final int y = Integer.parseInt(split[1]);
                             final int z = Integer.parseInt(split[2]);
-                            final float yaw = Integer.parseInt(split[3]);
-                            final float pitch = Integer.parseInt(split[4]);
+                            final float yaw = Float.parseFloat(split[3]);
+                            final float pitch = Float.parseFloat(split[4]);
 
-                            island.setSpawnPoint(new Location(Bukkit.getWorld("Speedbridge2"), x, y, z, yaw, pitch));
+                            island.setRelativePoint(new Location(Bukkit.getWorld("Speedbridge2"), x, y, z, yaw, pitch));
                         }
 
                         islands.add(island);

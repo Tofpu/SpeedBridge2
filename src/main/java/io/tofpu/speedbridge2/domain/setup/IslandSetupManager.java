@@ -33,7 +33,7 @@ public final class IslandSetupManager {
         final double[] positions = {100 * (islandSetupMap.size() + 100), 100, 0};
 
         // TODO: create a custom wrapper of island plot
-        islandSetup = new IslandSetup(island, new IslandPlot(island, world, positions));
+        islandSetup = new IslandSetup(playerUid, island, new IslandPlot(island, world, positions));
         islandSetupMap.put(playerUid, islandSetup);
 
         final IslandPlot islandPlot = islandSetup.getIslandPlot();
@@ -54,7 +54,10 @@ public final class IslandSetupManager {
     }
 
     public void invalidate(final IslandSetup islandSetup) {
-        islandSetupMap.remove(islandSetup.getIsland()
-                .getSlot());
+        islandSetupMap.remove(islandSetup.getEditorUid());
+    }
+
+    public void invalidate(final UUID uuid) {
+        islandSetupMap.remove(uuid);
     }
 }

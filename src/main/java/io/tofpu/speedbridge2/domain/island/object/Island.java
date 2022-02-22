@@ -24,7 +24,7 @@ public class Island extends IslandSchematic {
     private String category;
 
     private final LeaderboardMap leaderboardMap = new LeaderboardMap();
-    private Location spawnPoint = null;
+    private Location relativePoint = null;
 
     public Island(final int slot, final String category) {
         this.slot = slot;
@@ -94,17 +94,17 @@ public class Island extends IslandSchematic {
         return successful;
     }
 
-    public void setSpawnPoint(final Location newSpawnPoint) {
-        this.spawnPoint = newSpawnPoint;
+    public void setRelativePoint(final Location newSpawnPoint) {
+        this.relativePoint = newSpawnPoint;
         update();
     }
 
-    public Location getSpawnPoint() {
-        return this.spawnPoint;
+    public Location getAbsoluteLocation() {
+        return this.relativePoint;
     }
 
     public boolean isReady() {
-        return getSchematicClipboard() != null && spawnPoint != null;
+        return getSchematicClipboard() != null && relativePoint != null;
     }
 
     private void update() {
