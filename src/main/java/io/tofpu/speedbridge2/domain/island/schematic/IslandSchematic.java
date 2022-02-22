@@ -1,22 +1,20 @@
 package io.tofpu.speedbridge2.domain.island.schematic;
 
-import com.sk89q.jnbt.NBTInputStream;
 import com.sk89q.worldedit.LocalConfiguration;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
-import com.sk89q.worldedit.extent.clipboard.io.SchematicReader;
+import io.tofpu.multiworldedit.WorldEditAPI;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.zip.GZIPInputStream;
+import java.nio.file.Path;
 
 public class IslandSchematic {
+    private static final String[] SCHEMATIC_TYPES = {"schematic", "schem"};
+
     private @Nullable String schematicName = "";
     private @Nullable Clipboard schematicClipboard;
 
@@ -33,26 +31,34 @@ public class IslandSchematic {
                 .toFile();
 
         BridgeUtil.debug("worldedit's directory: " + directory);
-        final File file = directory.toPath().resolve(schematicName + ".schematic").toFile();
 
-        if (file.exists()) {
-            NBTInputStream nbtStream;
-            try {
-                nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(file)));
-                final ClipboardReader reader = new SchematicReader(nbtStream);
-                this.schematicClipboard = reader.read(null);
+        final File file = findSchematicFile(directory, schematicName);
+        if (file != null && file.exists()) {
+            this.schematicClipboard = WorldEditAPI.getWorldEdit()
+                    .read(file);
 
-                BridgeUtil.debug("successfully set the island's schematic");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            BridgeUtil.debug("successfully set the island's schematic");
 
             this.schematicName = schematicName;
+            return true;
         } else {
             BridgeUtil.debug(schematicName + " cannot be found as a schematic");
         }
+        return false;
+    }
 
-        return file.exists();
+    private File findSchematicFile(final @NotNull File directory, final @NotNull String name) {
+        final Path directoryPath = directory.toPath();
+        File file = null;
+        for (final String schematicType : SCHEMATIC_TYPES) {
+            file = directoryPath.resolve(name + "." + schematicType)
+                    .toFile();
+
+            if (file.exists()) {
+                break;
+            }
+        }
+        return file;
     }
 
     public @Nullable String getSchematicName() {

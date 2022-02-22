@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2;
 
 import io.tofpu.dynamicclass.DynamicClass;
+import io.tofpu.multiworldedit.WorldEditAPI;
 import io.tofpu.speedbridge2.command.CommandManager;
 import io.tofpu.speedbridge2.command.subcommand.HelpCommandGenerator;
 import io.tofpu.speedbridge2.domain.blockmenu.BlockMenuManager;
@@ -32,6 +33,8 @@ public final class SpeedBridge {
 
     public void load() {
         adventure = BukkitAudiences.create(javaPlugin);
+
+        WorldEditAPI.load(javaPlugin);
 
         ConfigurationManager.INSTANCE.load(javaPlugin);
 

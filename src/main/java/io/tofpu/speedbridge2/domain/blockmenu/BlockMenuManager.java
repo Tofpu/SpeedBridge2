@@ -109,7 +109,9 @@ public final class BlockMenuManager {
     }
 
     private Inventory cloneInventory(final @NotNull Inventory inventory) {
-        final Inventory inventoryClone = Bukkit.createInventory(BlockMenuHolder.INSTANCE, inventory.getSize(), inventory.getTitle());
+        final Inventory inventoryClone =
+                Bukkit.createInventory(BlockMenuHolder.INSTANCE, inventory.getSize(),
+                        BlockMenuHolder.INVENTORY_TITLE);
         inventoryClone.setContents(inventory.getContents());
 
         return inventoryClone;

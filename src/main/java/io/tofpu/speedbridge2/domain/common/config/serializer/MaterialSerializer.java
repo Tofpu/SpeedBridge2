@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.common.config.serializer;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -13,7 +14,11 @@ public final class MaterialSerializer implements TypeSerializer<Material> {
 
     @Override
     public Material deserialize(final Type type, final ConfigurationNode node) throws SerializationException {
-        return Material.matchMaterial(node.getString("AIR"));
+        final String materialName = node.getString("AIR");
+
+        return XMaterial.matchXMaterial(materialName)
+                .orElse(XMaterial.AIR)
+                .parseMaterial();
     }
 
     @Override

@@ -1,18 +1,19 @@
 package io.tofpu.speedbridge2.domain.island.plot;
 
-import com.sk89q.worldedit.*;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.Region;
-import com.sk89q.worldedit.session.ClipboardHolder;
-import com.sk89q.worldedit.world.registry.WorldData;
+import io.tofpu.multiworldedit.*;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
+import io.tofpu.speedbridge2.support.worldedit.CuboidRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+
+import java.io.IOException;
 
 public final class IslandPlot {
     private final Island island;
@@ -22,50 +23,56 @@ public final class IslandPlot {
     private final double y;
     private final double z;
 
-    private final Vector minPoint;
-    private final Vector maxPoint;
+    private final VectorWrapper minPoint;
+    private final VectorWrapper maxPoint;
 
     private final PlotState plotState;
 
     public IslandPlot(final Island island, final World world, double[] positions) {
         this.island = island;
-        Clipboard schematicPlot = island.getSchematicClipboard();
         this.world = world;
         this.x = positions[0];
         this.y = positions[1];
         this.z = positions[2];
 
-        this.minPoint = schematicPlot.getRegion()
-                .getMinimumPoint()
-                .subtract(schematicPlot.getOrigin())
-                .add(new Vector(x, y, z));
+        final WorldEdit worldEdit = WorldEditAPI.getWorldEdit();
+        final ClipboardWrapper schematicPlot = worldEdit.create(island.getSchematicClipboard());
 
-        this.maxPoint = schematicPlot.getRegion()
-                .getMaximumPoint()
-                .subtract(schematicPlot.getOrigin())
-                .add(new Vector(x, y, z));
+        final RegionWrapper regionWrapper = worldEdit.create(schematicPlot.to().getRegion());
+        final VectorWrapper origin = schematicPlot.getOrigin();
+
+        this.minPoint = regionWrapper.getMinimumPoint()
+                .subtract(origin)
+                .add(x, y, z);
+        this.maxPoint = regionWrapper.getMaximumPoint()
+                .subtract(origin)
+                .add(x, y, z);
 
         this.plotState = new PlotState();
     }
 
     public void generatePlot() throws WorldEditException {
         // possibly make this operation async?
-        Bukkit.getLogger().info("generating plot!");
+        Bukkit.getLogger()
+                .info("generating plot!");
 
         final BukkitWorld bukkitWorld = new BukkitWorld(world);
-        final WorldData worldData = bukkitWorld.getWorldData();
 
-        final EditSession editSession = WorldEdit.getInstance()
-                .getEditSessionFactory()
-                .getEditSession((com.sk89q.worldedit.world.World) bukkitWorld, -1);
+        try (final EditSessionWrapper editSessionWrapper = WorldEditAPI.getWorldEdit()
+                .create(bukkitWorld, -1)) {
+            final Clipboard schematicClipboard = getIsland().getSchematicClipboard();
+            final EditSession editSession = editSessionWrapper.to();
 
-        final ClipboardHolder clipboardHolder = new ClipboardHolder(island.getSchematicClipboard(), worldData);
-        final Operation operation = clipboardHolder.createPaste(editSession, worldData)
-                .to(new BlockVector(x, y, z))
-                .ignoreAirBlocks(true)
-                .build();
+            final Operation operation = WorldEditAPI.getWorldEdit()
+                    .create(schematicClipboard, editSession, bukkitWorld)
+                    .to((int) x, (int) y, (int) z)
+                    .ignoreAirBlocks(true)
+                    .build();
 
-        Operations.completeLegacy(operation);
+            Operations.completeLegacy(operation);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public void reservePlot(final GameIsland gameIsland) {
@@ -88,7 +95,7 @@ public final class IslandPlot {
         return z;
     }
 
-    public Region region() {
+    public CuboidRegion region() {
         return new CuboidRegion(minPoint, maxPoint);
     }
 

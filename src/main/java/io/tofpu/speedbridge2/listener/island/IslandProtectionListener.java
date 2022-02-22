@@ -1,13 +1,13 @@
 package io.tofpu.speedbridge2.listener.island;
 
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.regions.Region;
 import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import io.tofpu.speedbridge2.listener.GameListener;
 import io.tofpu.speedbridge2.listener.wrapper.wrappers.BlockBreakEventWrapper;
 import io.tofpu.speedbridge2.listener.wrapper.wrappers.BlockPlaceEventWrapper;
+import io.tofpu.speedbridge2.support.worldedit.CuboidRegion;
+import io.tofpu.speedbridge2.support.worldedit.Vector;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -36,7 +36,7 @@ public final class IslandProtectionListener extends GameListener {
     @EventHandler(ignoreCancelled = true)
     private void onBlockPlaceEvent(final @NotNull BlockPlaceEventWrapper eventWrapper) {
         final GameIsland gameIsland = eventWrapper.getCurrentGame();
-        final Region region = gameIsland.getIslandPlot().region();
+        final CuboidRegion region = gameIsland.getIslandPlot().region();
 
         final BlockPlaceEvent event = eventWrapper.getEvent();
         final Location location = event.getBlockPlaced().getLocation();

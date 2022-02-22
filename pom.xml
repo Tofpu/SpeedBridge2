@@ -66,6 +66,20 @@
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
+
+                                        <exclude>com/cryptomorin/xseries/XItemStack*</exclude>
+                                        <exclude>com/cryptomorin/xseries/XItemStack*</exclude>
+                                        <exclude>com/cryptomorin/xseries/NMSExtras*</exclude>
+                                        <exclude>com/cryptomorin/xseries/NoteBlockMusic*</exclude>
+                                        <exclude>com/cryptomorin/xseries/SkullCacheListener*</exclude>
+                                        <exclude>com/cryptomorin/xseries/XBiome*</exclude>
+                                        <exclude>com/cryptomorin/xseries/XBlock</exclude>
+                                        <exclude>com/cryptomorin/xseries/XEnchantment</exclude>
+                                        <exclude>com/cryptomorin/xseries/XEntity</exclude>
+                                        <exclude>com/cryptomorin/xseries/XItemStack</exclude>
+                                        <exclude>com/cryptomorin/xseries/XPotion</exclude>
+                                        <exclude>com/cryptomorin/xseries/XSound</exclude>
+                                        <exclude>com/cryptomorin/xseries/XTag</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
@@ -145,10 +159,7 @@
             <artifactId>cloud-bukkit</artifactId>
             <version>1.6.1</version>
         </dependency>
-        <!--
-        ~    Optional: Allows you to use annotated methods
-        ~    to declare commands
-        -->
+
         <dependency>
             <groupId>cloud.commandframework</groupId>
             <artifactId>cloud-annotations</artifactId>
@@ -195,13 +206,24 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.10.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.cryptomorin</groupId>
+            <artifactId>XSeries</artifactId>
+            <version>8.6.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.tofpu.MultiWorldEdit</groupId>
+            <artifactId>multiworldedit-api</artifactId>
+            <version>969bb41a2b</version>
         </dependency>
     </dependencies>
 </project>
