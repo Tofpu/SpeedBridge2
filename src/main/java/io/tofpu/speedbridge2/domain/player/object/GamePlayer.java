@@ -69,9 +69,9 @@ public final class GamePlayer {
         if (player == null) {
             return;
         }
-        player.getPlayer().teleport(new Location(selectedPlot.getWorld(), selectedPlot.getX(),
-                selectedPlot
-                .getY(), selectedPlot.getZ()));
+
+        player.getPlayer()
+                .teleport(selectedPlot.getLocation());
     }
 
     public boolean hasPlaced(final Block block) {

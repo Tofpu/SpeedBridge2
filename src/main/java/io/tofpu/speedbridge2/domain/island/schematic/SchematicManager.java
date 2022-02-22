@@ -75,7 +75,7 @@ public final class SchematicManager {
             // break the loop
             if (islandPlot.getIsland()
                         .getSlot() == island.getSlot() && islandPlot.isPlotFree()) {
-                BridgeUtil.debug("found a available plot!");
+                BridgeUtil.debug("found an available plot!");
                 selectedPlot = islandPlot;
                 break;
             }

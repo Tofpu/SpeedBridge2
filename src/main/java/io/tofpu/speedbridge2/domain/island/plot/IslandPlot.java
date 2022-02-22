@@ -11,6 +11,7 @@ import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.support.worldedit.CuboidRegion;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.io.IOException;
@@ -22,6 +23,10 @@ public final class IslandPlot {
     private final double x;
     private final double y;
     private final double z;
+    private final double yaw;
+    private final double pitch;
+
+    private final Location location;
 
     private final VectorWrapper minPoint;
     private final VectorWrapper maxPoint;
@@ -38,15 +43,22 @@ public final class IslandPlot {
         final WorldEdit worldEdit = WorldEditAPI.getWorldEdit();
         final ClipboardWrapper schematicPlot = worldEdit.create(island.getSchematicClipboard());
 
-        final RegionWrapper regionWrapper = worldEdit.create(schematicPlot.to().getRegion());
+        final RegionWrapper regionWrapper = worldEdit.create(schematicPlot.to()
+                .getRegion());
         final VectorWrapper origin = schematicPlot.getOrigin();
+
+        // TODO: setup this
+        this.yaw = 0f;
+        this.pitch = 0f;
 
         this.minPoint = regionWrapper.getMinimumPoint()
                 .subtract(origin)
-                .add(x, y, z);
+                .add(this.x, y, this.z);
         this.maxPoint = regionWrapper.getMaximumPoint()
                 .subtract(origin)
-                .add(x, y, z);
+                .add(this.x, y, this.z);
+
+        this.location = new Location(world, this.x, y, this.z, (float) yaw, (float) pitch);
 
         this.plotState = new PlotState();
     }
@@ -93,6 +105,26 @@ public final class IslandPlot {
 
     public double getZ() {
         return z;
+    }
+
+    public double getYaw() {
+        return yaw;
+    }
+
+    public double getPitch() {
+        return pitch;
+    }
+
+    public Location getLocation() {
+        final Location absoluteLocation = island.getAbsoluteLocation();
+
+        // if the absolute location were not defined, return the island plot location
+        if (absoluteLocation == null) {
+            return location;
+        }
+
+        // otherwise, add plot's location to the absolute location
+        return absoluteLocation.add(this.location);
     }
 
     public CuboidRegion region() {

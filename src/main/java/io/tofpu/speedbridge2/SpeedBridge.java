@@ -14,6 +14,7 @@ import io.tofpu.speedbridge2.domain.island.object.IslandBoard;
 import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
 import io.tofpu.speedbridge2.domain.leaderboard.Leaderboard;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
+import io.tofpu.speedbridge2.domain.island.setup.IslandSetupManager;
 import io.tofpu.speedbridge2.support.placeholderapi.PluginExpansion;
 import io.tofpu.speedbridge2.support.placeholderapi.expansion.ExpansionHandler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
@@ -60,6 +61,7 @@ public final class SpeedBridge {
         }
 
         SchematicManager.INSTANCE.load(javaPlugin);
+        IslandSetupManager.INSTANCE.load();
         CommandManager.load(javaPlugin);
 
         Leaderboard.INSTANCE.load(javaPlugin)

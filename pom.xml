@@ -220,10 +220,16 @@
             <version>8.6.1</version>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>com.github.Tofpu.MultiWorldEdit</groupId>-->
+<!--            <artifactId>multiworldedit-api</artifactId>-->
+<!--            <version>5bfffa2f38</version>-->
+<!--        </dependency>-->
+
         <dependency>
-            <groupId>com.github.tofpu.MultiWorldEdit</groupId>
+            <groupId>io.tofpu</groupId>
             <artifactId>multiworldedit-api</artifactId>
-            <version>969bb41a2b</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 </project>
