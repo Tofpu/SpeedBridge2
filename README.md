@@ -1,8 +1,6 @@
 <div align="center">
-  <img src="/image/banner_small.png"/>
+  <h1>SpeedBridge v2
 </div>
-
-## SpeedBridge v2
 
 __SpeedBridge v2__ is the second generation of the SpeedBridge project. The initial goal is to take things further where the previous generation couldn't do best.
 
