@@ -89,10 +89,22 @@ public final class Message {
             "complete the " + "process." +
             "\n<red>Type /speedbridge setlobby to set the " + "lobby.";
 
-    public final String INCOMPLETE_SETUP =
+    public final String GENERAL_SETUP_INCOMPLETE =
             ERROR + "Incomplete setup. Please try again " + "later.";
+    public final String STARTING_SETUP_PROCESS =
+            SUCCESS + "You're now setting up %s " + "island";
+    public final String NOT_IN_A_SETUP = ERROR + "You're not in a setup.";
+    public final String SET_SPAWN_POINT =
+            SUCCESS + "You have set the island's " + "spawnpoint.";
+    public final String COMPLETE_NOTIFICATION =
+            SUCCESS + "You can complete the setup " + "by typing /sb setup finish";
+    public final String SETUP_INCOMPLETE = ERROR + "The setup is incomplete. Please " +
+                                           "ensure that the spawnpoint is set.";
+    public final String SETUP_COMPLETE = SUCCESS + "The setup is now complete.";
 
     public final String EMPTY_SCORE_FORMAT = "";
+    public final String INVALID_SPAWN_POINT =
+            ERROR + "The spawnpoint has to be set " + "inside the regions.";
 
     public static @NotNull CompletableFuture<Void> load(final File directory) {
         return CompletableFuture.runAsync(() -> {

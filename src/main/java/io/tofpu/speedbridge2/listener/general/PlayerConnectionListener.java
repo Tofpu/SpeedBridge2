@@ -6,7 +6,7 @@ import io.tofpu.speedbridge2.domain.common.config.category.LobbyCategory;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
-import io.tofpu.speedbridge2.domain.setup.IslandSetupManager;
+import io.tofpu.speedbridge2.domain.island.setup.IslandSetupManager;
 import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

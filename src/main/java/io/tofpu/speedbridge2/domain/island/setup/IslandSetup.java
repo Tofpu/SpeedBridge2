@@ -1,29 +1,41 @@
-package io.tofpu.speedbridge2.domain.setup;
+package io.tofpu.speedbridge2.domain.island.setup;
 
 import io.tofpu.multiworldedit.ClipboardWrapper;
 import io.tofpu.multiworldedit.VectorWrapper;
 import io.tofpu.multiworldedit.WorldEditAPI;
+import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
+import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
 import java.util.UUID;
 
 public final class IslandSetup {
-    private final UUID editorUid;
+    private final BridgePlayer playerEditor;
     private final Island island;
     private final IslandPlot islandPlot;
     private Location playerSpawnPoint;
 
-    public IslandSetup(final UUID editorUid, final Island island, final IslandPlot islandPlot) {
-        this.editorUid = editorUid;
+    public IslandSetup(final BridgePlayer playerEditor, final Island island, final IslandPlot islandPlot) {
+        this.playerEditor = playerEditor;
         this.island = island;
         this.islandPlot = islandPlot;
     }
 
     public void setPlayerSpawnPoint(final Location playerSpawnPoint) {
+        // if the location is outside the schematic, return
+        if (!isLocationValid(playerSpawnPoint)) {
+            return;
+        }
         this.playerSpawnPoint = playerSpawnPoint;
+    }
+
+    public boolean isLocationValid(final Location playerSpawnPoint) {
+        final Location absoluteLocation = playerSpawnPoint.subtract(islandPlot.getLocation());
+        return absoluteLocation.getX() >= 0 && absoluteLocation.getY() >= 0 &&
+               absoluteLocation.getZ() >= 0;
     }
 
     public boolean finish() {
@@ -33,6 +45,11 @@ public final class IslandSetup {
 
         final Location absoluteLocation = playerSpawnPoint.subtract(islandPlot.getLocation());
         island.setRelativePoint(absoluteLocation);
+
+        // teleporting the player to the lobby location
+        playerEditor.getPlayer()
+                .teleport(ConfigurationManager.INSTANCE.getLobbyCategory()
+                        .getLobbyLocation());
 
         resetPlot();
         IslandSetupManager.INSTANCE.invalidate(this);
@@ -76,8 +93,12 @@ public final class IslandSetup {
         }
     }
 
+    public BridgePlayer getPlayerEditor() {
+        return playerEditor;
+    }
+
     public UUID getEditorUid() {
-        return editorUid;
+        return playerEditor.getPlayerUid();
     }
 
     public Island getIsland() {

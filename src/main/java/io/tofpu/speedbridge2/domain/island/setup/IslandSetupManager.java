@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.domain.setup;
+package io.tofpu.speedbridge2.domain.island.setup;
 
 import com.sk89q.worldedit.WorldEditException;
 import io.tofpu.speedbridge2.domain.island.object.Island;
@@ -32,8 +32,7 @@ public final class IslandSetupManager {
 
         final double[] positions = {100 * (islandSetupMap.size() + 100), 100, 0};
 
-        // TODO: create a custom wrapper of island plot
-        islandSetup = new IslandSetup(playerUid, island, new IslandPlot(island, world, positions));
+        islandSetup = new IslandSetup(bridgePlayer, island, new IslandPlot(island, world, positions));
         islandSetupMap.put(playerUid, islandSetup);
 
         final IslandPlot islandPlot = islandSetup.getIslandPlot();
