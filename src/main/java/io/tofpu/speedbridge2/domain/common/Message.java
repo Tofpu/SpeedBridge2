@@ -3,10 +3,9 @@ package io.tofpu.speedbridge2.domain.common;
 import io.tofpu.speedbridge2.domain.common.util.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,8 +73,6 @@ public final class Message {
 
     public final String EMPTY_SESSION_LEADERBOARD = "<strikethrough><gray>----";
 
-    // from listeners
-
     @IgnoreMessage
     public final String STYLE =
             "<gold>" + MessageUtil.Symbols.CLOCK.getSymbol() + "<yellow> ";
@@ -87,23 +84,19 @@ public final class Message {
     public final String SCORED =
             SECOND_STYLE + "You scored <yellow>%s</yellow> " + "seconds!";
 
-    public final String LOBBY_MISSING = ERROR + "Incomplete setup. Please ensure to " +
-                                        "setup SpeedBridge's lobby to complete the " +
-                                        "process." +
-                                        ".\n<red>Type /speedbridge setlobby to set the " +
-                                        "lobby.";
+    public final String LOBBY_MISSING =
+            ERROR + "Incomplete setup. Please ensure to set up SpeedBridge's lobby to " +
+            "complete the " + "process." +
+            "\n<red>Type /speedbridge setlobby to set the " + "lobby.";
 
-    public final String INCOMPLETE_SETUP = ERROR + "Incomplete setup. Please try again " +
-                                           "later.";
-
-    // placeholders
+    public final String INCOMPLETE_SETUP =
+            ERROR + "Incomplete setup. Please try again " + "later.";
 
     public final String EMPTY_SCORE_FORMAT = "";
 
     public static @NotNull CompletableFuture<Void> load(final File directory) {
-        final CompletableFuture<Void> loadFieldMap;
-        if (FIELD_MAP.isEmpty()) {
-            loadFieldMap = CompletableFuture.runAsync(() -> {
+        return CompletableFuture.runAsync(() -> {
+            if (FIELD_MAP.isEmpty()) {
                 for (final Field field : Message.class.getDeclaredFields()) {
                     if (Modifier.isStatic(field.getModifiers()) ||
                         field.isAnnotationPresent(IgnoreMessage.class)) {
@@ -117,58 +110,49 @@ public final class Message {
                     FIELD_MAP.put(field.getName(), field);
                 }
                 BridgeUtil.debug(String.valueOf(FIELD_MAP));
-            });
-        } else {
-            loadFieldMap = CompletableFuture.completedFuture(null);
-        }
+            }
 
-        return loadFieldMap.thenRun(() -> {
             final File messageFile = new File(directory, "messages.yml");
-            final boolean fileExists = messageFile.exists();
+            final boolean messageFileExists = messageFile.exists();
 
             BridgeUtil.debug(String.valueOf(FIELD_MAP));
 
-            final Class<Message> messageClass = Message.class;
-            if (!fileExists) {
-                CompletableFuture.runAsync(() -> {
-                    FileUtil.write(messageFile, false, ReflectionUtil.toString(FIELD_MAP, messageClass));
-                });
+            if (!messageFileExists) {
+                FileUtil.write(messageFile, false, ReflectionUtil.toString(FIELD_MAP));
                 return;
             }
 
-            CompletableFuture.runAsync(() -> {
-                final List<String> fieldList = new ArrayList<>();
-                try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(messageFile), StandardCharsets.UTF_8))) {
-                    while (reader.ready()) {
-                        final String input = reader.readLine();
-                        final String[] args = input.split(":");
+            final List<String> fieldList = new ArrayList<>();
+            for (final String fileMessage : FileUtil.read(messageFile)) {
+                final String[] args = fileMessage.split(":");
 
-                        final String fieldName = args[0];
-                        final String message = args[1].replaceFirst(" ", "");
+                final String fieldName = args[0];
+                final String message = args[1].replaceFirst(" ", "")
+                        .replace("\\n", "\n");
 
-                        final Field field = FIELD_MAP.get(fieldName);
-                        if (field == null) {
-                            continue;
-                        }
+                final Field field = FIELD_MAP.get(fieldName);
+                if (field == null) {
+                    continue;
+                }
 
-                        fieldList.add(fieldName);
-                        field.set(INSTANCE, message);
-                    }
-                } catch (IOException | IllegalAccessException e) {
+                fieldList.add(fieldName);
+                try {
+                    field.set(INSTANCE, message);
+                } catch (IllegalAccessException e) {
                     throw new IllegalStateException(e);
                 }
+            }
 
-                final Map<String, Field> missingFields = new HashMap<>();
-                for (final Map.Entry<String, Field> entry : FIELD_MAP.entrySet()) {
-                    if (fieldList.contains(entry.getKey())) {
-                        continue;
-                    }
-
-                    missingFields.put(entry.getKey(), entry.getValue());
+            final Map<String, Field> missingFields = new HashMap<>();
+            for (final Map.Entry<String, Field> entry : FIELD_MAP.entrySet()) {
+                if (fieldList.contains(entry.getKey())) {
+                    continue;
                 }
 
-                FileUtil.write(messageFile, true, ReflectionUtil.toString(missingFields, messageClass));
-            });
+                missingFields.put(entry.getKey(), entry.getValue());
+            }
+
+            FileUtil.write(messageFile, true, ReflectionUtil.toString(missingFields));
         });
     }
 }
