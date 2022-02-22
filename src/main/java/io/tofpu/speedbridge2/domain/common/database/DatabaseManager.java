@@ -58,6 +58,14 @@ public final class DatabaseManager {
     }
 
     private static void loadTables() {
+        while (getConnection() == null) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+
         // a hacky way to call the class's constructor
         Databases.ISLAND_DATABASE.toString();
         Databases.PLAYER_DATABASE.toString();

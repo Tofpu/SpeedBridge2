@@ -335,7 +335,7 @@ public final class SpeedBridgeCommand {
         if (island == null) {
             message = INSTANCE.INVALID_ISLAND;
         } else {
-            message = "<yellow>You're now on setup mode with " + slot + " island!";
+            message = "<yellow>You're now setting up " + slot + " island!";
             IslandSetupManager.INSTANCE.startSetup(bridgePlayer, island);
         }
         BridgeUtil.sendMessage(bridgePlayer, message);

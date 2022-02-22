@@ -27,8 +27,10 @@ public final class IslandSetup {
             return false;
         }
 
-        resetPlot();
+        final Location nonRelative = playerSpawnPoint.subtract(islandPlot.getLocation());
+        island.setSpawnPoint(nonRelative);
 
+        resetPlot();
         IslandSetupManager.INSTANCE.invalidate(this);
         return true;
     }

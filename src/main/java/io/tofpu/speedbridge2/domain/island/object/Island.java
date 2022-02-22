@@ -10,6 +10,7 @@ import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
+import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
@@ -23,6 +24,7 @@ public class Island extends IslandSchematic {
     private String category;
 
     private final LeaderboardMap leaderboardMap = new LeaderboardMap();
+    private Location spawnPoint = null;
 
     public Island(final int slot, final String category) {
         this.slot = slot;
@@ -92,8 +94,17 @@ public class Island extends IslandSchematic {
         return successful;
     }
 
+    public void setSpawnPoint(final Location newSpawnPoint) {
+        this.spawnPoint = newSpawnPoint;
+        update();
+    }
+
+    public Location getSpawnPoint() {
+        return this.spawnPoint;
+    }
+
     public boolean isReady() {
-        return getSchematicClipboard() != null;
+        return getSchematicClipboard() != null && spawnPoint != null;
     }
 
     private void update() {

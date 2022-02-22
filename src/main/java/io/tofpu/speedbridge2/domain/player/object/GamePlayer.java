@@ -69,7 +69,12 @@ public final class GamePlayer {
         if (player == null) {
             return;
         }
-        player.getPlayer().teleport(selectedPlot.getLocation());
+
+        player.getPlayer()
+                .teleport(selectedPlot.getLocation()
+                        .add(selectedPlot.getGameIsland()
+                                .getIsland()
+                                .getSpawnPoint()));
     }
 
     public boolean hasPlaced(final Block block) {
