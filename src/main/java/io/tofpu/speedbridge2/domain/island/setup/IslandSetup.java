@@ -25,10 +25,6 @@ public final class IslandSetup {
     }
 
     public void setPlayerSpawnPoint(final Location playerSpawnPoint) {
-        // if the location is outside the schematic, return
-        if (!isLocationValid(playerSpawnPoint)) {
-            return;
-        }
         this.playerSpawnPoint = playerSpawnPoint;
     }
 

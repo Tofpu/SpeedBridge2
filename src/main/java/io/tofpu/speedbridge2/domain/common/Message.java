@@ -25,7 +25,7 @@ public final class Message {
             "</bold> <yellow>";
 
     public final String NO_ARGUMENT =
-            SUCCESS + "Type /speedbridge help for further " + "information.";
+            SUCCESS + "Type " + runCommand("/speedbridge help") + " for further " + "information.";
 
     public final String ISLAND_ALREADY_EXISTS = ERROR + "Island %s already exists!";
 
@@ -42,7 +42,7 @@ public final class Message {
 
     public final String INVALID_ISLAND_ARGUMENT =
             ERROR + "Invalid argument. Please choose a slot, or an island category" +
-            ".\n" + ERROR + "Alternatively, you could run the \"/randomjoin\" command.";
+            ".\n" + ERROR + "Alternatively, you could run the '" + runCommand("/randomjoin") + "' command.";
     public final String INVALID_ISLAND = ERROR + "Island %s cannot be found!";
     public final String NO_AVAILABLE_ISLAND = ERROR + "There is no island available " +
                                               "at the moment... please try again " +
@@ -87,7 +87,7 @@ public final class Message {
     public final String LOBBY_MISSING =
             ERROR + "Incomplete setup. Please ensure to set up SpeedBridge's lobby to " +
             "complete the " + "process." +
-            "\n<red>Type /speedbridge setlobby to set the " + "lobby.";
+            "\n<red>Type " + runCommand("/speedbridge setlobby") + " to set the " + "lobby.";
 
     public final String GENERAL_SETUP_INCOMPLETE =
             ERROR + "Incomplete setup. Please try again " + "later.";
@@ -97,7 +97,8 @@ public final class Message {
     public final String SET_SPAWN_POINT =
             SUCCESS + "You have set the island's " + "spawnpoint.";
     public final String COMPLETE_NOTIFICATION =
-            SUCCESS + "You can complete the setup " + "by typing /sb setup finish";
+            SUCCESS + "You can complete the setup " + "by typing " +
+            runCommand("/sb setup finish");
     public final String SETUP_INCOMPLETE = ERROR + "The setup is incomplete. Please " +
                                            "ensure that the spawnpoint is set.";
     public final String SETUP_COMPLETE = SUCCESS + "The setup is now complete.";
@@ -106,6 +107,12 @@ public final class Message {
     public final String INVALID_SPAWN_POINT =
             ERROR + "The spawnpoint has to be set " + "inside the regions.";
     public final String SETUP_CANCELLED = SUCCESS + "The setup has been cancelled.";
+
+    private static String runCommand(final String command) {
+        return "<hover:show_text:'<yellow>Click to run " +
+               "%command%'><click:run_command:'%command%'>%command%".replace(
+                       "%command" + "%", command);
+    }
 
     public static @NotNull CompletableFuture<Void> load(final File directory) {
         return CompletableFuture.runAsync(() -> {
@@ -140,7 +147,7 @@ public final class Message {
                 final String[] args = fileMessage.split(":");
 
                 final String fieldName = args[0];
-                final String message = args[1].replaceFirst(" ", "")
+                final String message = substring(args, 1).replaceFirst(" ", "")
                         .replace("\\n", "\n");
 
                 final Field field = FIELD_MAP.get(fieldName);
@@ -167,5 +174,16 @@ public final class Message {
 
             FileUtil.write(messageFile, true, ReflectionUtil.toString(missingFields));
         });
+    }
+
+    public static String substring(final String[] array, final int startIndex) {
+        final StringBuilder builder = new StringBuilder();
+        for (int i = startIndex; i < array.length; i++) {
+            if (i != startIndex) {
+                builder.append(":");
+            }
+            builder.append(array[i]);
+        }
+        return builder.toString();
     }
 }

@@ -37,7 +37,7 @@ public final class BridgeUtil {
     }
 
     public static Component translateMiniMessage(final String content) {
-        return MiniMessage.get().parse(content);
+        return MiniMessage.miniMessage().deserializeOrNull(content);
     }
 
     public static Component sendMessage(final CommandSender sender,
