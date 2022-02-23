@@ -19,21 +19,25 @@ public final class Message {
 
     @IgnoreMessage
     public final String ERROR = "<red>" + MessageUtil.Symbols.WARNING.getSymbol() + " ";
+
     @IgnoreMessage
     public final String SUCCESS =
             "<gold><bold>" + MessageUtil.Symbols.ARROW_RIGHT.getSymbol() +
             "</bold> <yellow>";
 
     public final String NO_ARGUMENT =
-            SUCCESS + "Type " + runCommand("/speedbridge help") + " for further " + "information.";
+            SUCCESS + "Type " + runCommand("/speedbridge help") + " for further " +
+            "information.";
 
     public final String ISLAND_ALREADY_EXISTS = ERROR + "Island %s already exists!";
 
-    public final String ISLAND_HAS_BEEN_CREATED =
-            SUCCESS + "Island %s has been " + "created!";
     public final String ISLAND_HAS_BEEN_CREATED_SCHEMATIC =
-            ISLAND_HAS_BEEN_CREATED.replaceAll("!", "") + " with \"%s\" chosen as a " +
+            SUCCESS + "Island %s has been " + "created  with '%s' chosen as a " +
             "schematic!";
+
+    public final String ISLAND_SETUP_NOTIFICATION =
+            SUCCESS + "You can complete your %s" + " island setup by running " +
+            runCommand("/sb setup %s") + ", and setting up the spawn point.";
 
     public final String VALID_SELECT =
             SUCCESS + "Island %s has selected" + " \"%s\" " + "as a " + "%s!";
@@ -42,14 +46,15 @@ public final class Message {
 
     public final String INVALID_ISLAND_ARGUMENT =
             ERROR + "Invalid argument. Please choose a slot, or an island category" +
-            ".\n" + ERROR + "Alternatively, you could run the '" + runCommand("/randomjoin") + "' command.";
+            ".\n" + ERROR + "Alternatively, you could run the '" +
+            runCommand("/randomjoin") + "' command.";
+
     public final String INVALID_ISLAND = ERROR + "Island %s cannot be found!";
     public final String NO_AVAILABLE_ISLAND = ERROR + "There is no island available " +
                                               "at the moment... please try again " +
                                               "later!";
 
-    public final String ALREADY_IN_A_ISLAND =
-            ERROR + "You're already on an " + "island!";
+    public final String ALREADY_IN_A_ISLAND = ERROR + "You're already on an island!";
 
     @IgnoreMessage
     public final String SCORE_TITLE_BAR = MessageUtil.CHAT_BAR.substring(0,
@@ -91,21 +96,27 @@ public final class Message {
 
     public final String GENERAL_SETUP_INCOMPLETE =
             ERROR + "Incomplete setup. Please try again " + "later.";
+
     public final String STARTING_SETUP_PROCESS =
             SUCCESS + "You're now setting up %s " + "island";
+
     public final String NOT_IN_A_SETUP = ERROR + "You're not setting up anything.";
     public final String SET_SPAWN_POINT =
             SUCCESS + "You have set the island's " + "spawnpoint.";
+
     public final String COMPLETE_NOTIFICATION =
             SUCCESS + "You can complete the setup " + "by typing " +
             runCommand("/sb setup finish");
+
     public final String SETUP_INCOMPLETE = ERROR + "The setup is incomplete. Please " +
-                                           "ensure that the spawnpoint is set.";
+                                           "ensure that the spawn point is set.";
     public final String SETUP_COMPLETE = SUCCESS + "The setup is now complete.";
 
     public final String EMPTY_SCORE_FORMAT = "";
+
     public final String INVALID_SPAWN_POINT =
-            ERROR + "The spawnpoint has to be set " + "inside the regions.";
+            ERROR + "The spawn point has to be set inside the regions.";
+
     public final String SETUP_CANCELLED = SUCCESS + "The setup has been cancelled.";
 
     private static String runCommand(final String command) {
