@@ -70,7 +70,7 @@ public final class SpeedBridgeCommand {
             message = String.format(INSTANCE.UNKNOWN_SCHEMATIC, schematic);
         } else {
             message = String.format(INSTANCE.ISLAND_HAS_BEEN_CREATED_SCHEMATIC,
-                    slot + "", schematic);
+                    slot + "", schematic) + "\n" + String.format(INSTANCE.ISLAND_SETUP_NOTIFICATION, slot, slot);
         }
         BridgeUtil.sendMessage(sender, message);
     }

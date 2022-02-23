@@ -3,7 +3,7 @@ package io.tofpu.speedbridge2.domain.island.schematic;
 import com.sk89q.worldedit.LocalConfiguration;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import io.tofpu.multiworldedit.WorldEditAPI;
+import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +34,7 @@ public class IslandSchematic {
 
         final File file = findSchematicFile(directory, schematicName);
         if (file != null && file.exists()) {
-            this.schematicClipboard = WorldEditAPI.getWorldEdit()
+            this.schematicClipboard = MultiWorldEditAPI.getMultiWorldEdit()
                     .read(file);
 
             BridgeUtil.debug("successfully set the island's schematic");

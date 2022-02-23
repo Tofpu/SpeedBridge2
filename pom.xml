@@ -224,16 +224,10 @@
             <version>8.6.1</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.github.Tofpu.MultiWorldEdit</groupId>-->
-<!--            <artifactId>multiworldedit-api</artifactId>-->
-<!--            <version>5bfffa2f38</version>-->
-<!--        </dependency>-->
-
         <dependency>
-            <groupId>io.tofpu</groupId>
+            <groupId>com.github.Tofpu.MultiWorldEdit</groupId>
             <artifactId>multiworldedit-api</artifactId>
-            <version>1.0.0</version>
+            <version>321a69d3e8</version>
         </dependency>
     </dependencies>
 </project>
