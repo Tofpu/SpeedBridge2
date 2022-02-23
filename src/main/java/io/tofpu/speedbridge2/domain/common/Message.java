@@ -93,7 +93,7 @@ public final class Message {
             ERROR + "Incomplete setup. Please try again " + "later.";
     public final String STARTING_SETUP_PROCESS =
             SUCCESS + "You're now setting up %s " + "island";
-    public final String NOT_IN_A_SETUP = ERROR + "You're not in a setup.";
+    public final String NOT_IN_A_SETUP = ERROR + "You're not setting up anything.";
     public final String SET_SPAWN_POINT =
             SUCCESS + "You have set the island's " + "spawnpoint.";
     public final String COMPLETE_NOTIFICATION =
@@ -105,6 +105,7 @@ public final class Message {
     public final String EMPTY_SCORE_FORMAT = "";
     public final String INVALID_SPAWN_POINT =
             ERROR + "The spawnpoint has to be set " + "inside the regions.";
+    public final String SETUP_CANCELLED = SUCCESS + "The setup has been cancelled.";
 
     public static @NotNull CompletableFuture<Void> load(final File directory) {
         return CompletableFuture.runAsync(() -> {

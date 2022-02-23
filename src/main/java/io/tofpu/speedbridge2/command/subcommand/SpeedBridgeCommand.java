@@ -12,11 +12,11 @@ import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
 import io.tofpu.speedbridge2.domain.island.IslandHandler;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.Island;
+import io.tofpu.speedbridge2.domain.island.setup.IslandSetup;
+import io.tofpu.speedbridge2.domain.island.setup.IslandSetupManager;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
-import io.tofpu.speedbridge2.domain.island.setup.IslandSetup;
-import io.tofpu.speedbridge2.domain.island.setup.IslandSetupManager;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -374,8 +374,7 @@ public final class SpeedBridgeCommand {
     @CommandMethod("speedbridge|sb setup finish")
     @CommandDescription("Completes the island's setup")
     public void setupFinish(final BridgePlayer bridgePlayer) {
-        final IslandSetup islandSetup =
-                IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
+        final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
         final String message;
         if (islandSetup == null) {
@@ -385,6 +384,23 @@ public final class SpeedBridgeCommand {
         } else {
             message = INSTANCE.SETUP_COMPLETE;
             islandSetup.finish();
+        }
+
+        BridgeUtil.sendMessage(bridgePlayer, message);
+    }
+
+    @CommandMethod("speedbridge|sb setup cancel")
+    @CommandDescription("Cancels the island's setup")
+    public void cancelSetup(final BridgePlayer bridgePlayer) {
+        final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
+
+        final String message;
+        if (islandSetup == null) {
+            message = INSTANCE.NOT_IN_A_SETUP;
+        } else {
+            message = INSTANCE.SETUP_CANCELLED;
+
+            islandSetup.cancel();
         }
 
         BridgeUtil.sendMessage(bridgePlayer, message);

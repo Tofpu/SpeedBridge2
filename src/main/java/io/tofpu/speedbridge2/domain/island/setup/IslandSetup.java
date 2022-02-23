@@ -56,6 +56,16 @@ public final class IslandSetup {
         return true;
     }
 
+    public void cancel() {
+        // teleporting the player to the lobby location
+        playerEditor.getPlayer()
+                .teleport(ConfigurationManager.INSTANCE.getLobbyCategory()
+                        .getLobbyLocation());
+
+        resetPlot();
+        IslandSetupManager.INSTANCE.invalidate(this);
+    }
+
     public boolean isReady() {
         return playerSpawnPoint != null;
     }
