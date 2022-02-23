@@ -1,8 +1,8 @@
 package io.tofpu.speedbridge2.domain.island.setup;
 
 import io.tofpu.multiworldedit.ClipboardWrapper;
+import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import io.tofpu.multiworldedit.VectorWrapper;
-import io.tofpu.multiworldedit.WorldEditAPI;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
@@ -71,7 +71,7 @@ public final class IslandSetup {
     }
 
     private void resetPlot() {
-        final ClipboardWrapper clipboardWrapper = WorldEditAPI.getWorldEdit()
+        final ClipboardWrapper clipboardWrapper = MultiWorldEditAPI.getMultiWorldEdit()
                 .create(island.getSchematicClipboard());
 
         final VectorWrapper minimumPoint = clipboardWrapper.getMinimumPoint();

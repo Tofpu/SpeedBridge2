@@ -40,7 +40,7 @@ public final class IslandPlot {
         this.y = positions[1];
         this.z = positions[2];
 
-        final WorldEdit worldEdit = WorldEditAPI.getWorldEdit();
+        final MultiWorldEdit worldEdit = MultiWorldEditAPI.getMultiWorldEdit();
         final ClipboardWrapper schematicPlot = worldEdit.create(island.getSchematicClipboard());
 
         final RegionWrapper regionWrapper = worldEdit.create(schematicPlot.to()
@@ -70,12 +70,12 @@ public final class IslandPlot {
 
         final BukkitWorld bukkitWorld = new BukkitWorld(world);
 
-        try (final EditSessionWrapper editSessionWrapper = WorldEditAPI.getWorldEdit()
+        try (final EditSessionWrapper editSessionWrapper = MultiWorldEditAPI.getMultiWorldEdit()
                 .create(bukkitWorld, -1)) {
             final Clipboard schematicClipboard = getIsland().getSchematicClipboard();
             final EditSession editSession = editSessionWrapper.to();
 
-            final Operation operation = WorldEditAPI.getWorldEdit()
+            final Operation operation = MultiWorldEditAPI.getMultiWorldEdit()
                     .create(schematicClipboard, editSession, bukkitWorld)
                     .to((int) x, (int) y, (int) z)
                     .ignoreAirBlocks(true)
