@@ -3,7 +3,6 @@ package io.tofpu.speedbridge2.command.subcommand;
 
 import cloud.commandframework.annotations.*;
 import com.sk89q.minecraft.util.commands.CommandAlias;
-import io.tofpu.speedbridge2.SpeedBridge;
 import io.tofpu.speedbridge2.command.parser.IslandArgument;
 import io.tofpu.speedbridge2.domain.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.domain.common.Message;
@@ -19,8 +18,6 @@ import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -73,7 +70,7 @@ public final class SpeedBridgeCommand {
             message = String.format(INSTANCE.UNKNOWN_SCHEMATIC, schematic);
         } else {
             message = String.format(INSTANCE.ISLAND_HAS_BEEN_CREATED_SCHEMATIC,
-                    slot + "", schematic) + "\n" + String.format(INSTANCE.ISLAND_SETUP_NOTIFICATION, slot, slot);
+                    slot + "", schematic);
         }
         BridgeUtil.sendMessage(sender, message);
     }
