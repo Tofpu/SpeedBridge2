@@ -18,6 +18,8 @@ public final class IslandSetup {
     private final IslandPlot islandPlot;
     private Location playerSpawnPoint;
 
+    private boolean removed = false;
+
     public IslandSetup(final BridgePlayer playerEditor, final Island island, final IslandPlot islandPlot) {
         this.playerEditor = playerEditor;
         this.island = island;
@@ -35,9 +37,11 @@ public final class IslandSetup {
     }
 
     public boolean finish() {
-        if (!isReady()) {
+        if (!isReady() || isRemoved()) {
             return false;
         }
+        this.removed = true;
+        playerEditor.toggleSetup();
 
         final Location absoluteLocation = playerSpawnPoint.subtract(islandPlot.getLocation());
         island.setRelativePoint(absoluteLocation);
@@ -52,7 +56,16 @@ public final class IslandSetup {
         return true;
     }
 
+    boolean isRemoved() {
+        return removed;
+    }
+
     public void cancel() {
+        if (isRemoved()) {
+            return;
+        }
+        this.removed = true;
+
         // teleporting the player to the lobby location
         playerEditor.getPlayer()
                 .teleport(ConfigurationManager.INSTANCE.getLobbyCategory()
@@ -63,7 +76,7 @@ public final class IslandSetup {
     }
 
     public boolean isReady() {
-        return playerSpawnPoint != null;
+        return !isRemoved() && playerSpawnPoint != null;
     }
 
     private void resetPlot() {

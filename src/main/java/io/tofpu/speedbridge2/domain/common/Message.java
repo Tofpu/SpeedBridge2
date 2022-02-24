@@ -32,12 +32,12 @@ public final class Message {
     public final String ISLAND_ALREADY_EXISTS = ERROR + "Island %s already exists!";
 
     public final String ISLAND_HAS_BEEN_CREATED_SCHEMATIC =
-            SUCCESS + "Island %s has been " + "created  with '%s' chosen as a " +
+            SUCCESS + "Island %s has been created with '%s' chosen as a " +
             "schematic!";
 
     public final String ISLAND_SETUP_NOTIFICATION =
-            SUCCESS + "You can complete your %s" + " island setup by running " +
-            runCommand("/sb setup %s") + ", and setting up the spawn point.";
+            SUCCESS + "You can complete your %slot% island setup by running " +
+            runCommand("/sb setup %slot%") + ", and setting up the spawn point.";
 
     public final String VALID_SELECT =
             SUCCESS + "Island %s has selected" + " \"%s\" " + "as a " + "%s!";
@@ -124,6 +124,7 @@ public final class Message {
                "%command%'><click:run_command:'%command%'>%command%".replace(
                        "%command" + "%", command);
     }
+    public final String IN_A_SETUP = SUCCESS + "You're in a setup.";
 
     public static @NotNull CompletableFuture<Void> load(final File directory) {
         return CompletableFuture.runAsync(() -> {
