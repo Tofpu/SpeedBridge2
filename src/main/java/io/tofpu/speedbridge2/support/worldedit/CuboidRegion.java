@@ -26,6 +26,14 @@ public final class CuboidRegion {
         return maxVector;
     }
 
+    public boolean contains(final org.bukkit.util.Vector vector) {
+        final double x = vector.getX();
+        final double y = vector.getY();
+        final double z = vector.getZ();
+
+        return contains(new Vector(x, y, z));
+    }
+
     public boolean contains(final Vector vector) {
         final double x = vector.getX();
         final double y = vector.getY();

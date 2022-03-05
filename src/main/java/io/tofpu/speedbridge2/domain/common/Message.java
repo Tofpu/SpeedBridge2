@@ -124,7 +124,7 @@ public final class Message {
                "%command%'><click:run_command:'%command%'>%command%".replace(
                        "%command" + "%", command);
     }
-    public final String IN_A_SETUP = SUCCESS + "You're in a setup.";
+    public final String IN_A_SETUP = ERROR + "You're already in a setup.";
 
     public static @NotNull CompletableFuture<Void> load(final File directory) {
         return CompletableFuture.runAsync(() -> {
