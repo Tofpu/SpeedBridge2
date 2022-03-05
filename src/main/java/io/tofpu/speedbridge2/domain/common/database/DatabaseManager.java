@@ -51,6 +51,8 @@ public final class DatabaseManager {
             config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
             config.setConnectionTestQuery("SELECT 1;");
 
+            System.out.println("Loading Hikari now!");
+
             DatabaseManager.dataSource = new HikariDataSource(config);
 
             loadTables();

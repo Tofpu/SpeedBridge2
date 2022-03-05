@@ -73,7 +73,12 @@ public final class BridgeUtil {
     }
 
     public static BoardPlayer resultToBoardPlayer(final boolean row, final DatabaseSet databaseSet) {
-        final UUID uid = UUID.fromString(databaseSet.getString("uid"));
+        final String resultUid = databaseSet.getString("uid");
+        if (resultUid == null) {
+            return null;
+        }
+
+        final UUID uid = UUID.fromString(resultUid);
         final int islandSlot = databaseSet.getInt("island_slot");
         final double playerScore = databaseSet.getDouble("score");
 

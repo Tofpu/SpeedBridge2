@@ -20,6 +20,7 @@ tasks {
             relocate("io.tofpu.dynamicclass", "io.tofpu.speedbridge2.lib.dynamicclass")
             relocate("org.spongepowered", "io.tofpu.speedbridge2.lib.configurate")
             relocate("net.kyori.adventure", "io.tofpu.speedbridge2.lib.adventure")
+            relocate("com.zaxxer.HikariCP", "io.tofpu.speedbridge2.lib.hikaricp")
         }
     }
 }
@@ -39,7 +40,7 @@ dependencies {
 
     implementation("org.xerial:sqlite-jdbc:3.36.0.3")
 
-    implementation("com.zaxxer:HikariCP:4.0.3")
+    implementation("com.zaxxer:HikariCP:5.0.1")
 
     compileOnly("com.sk89q:worldedit:6.0.0-SNAPSHOT")
 

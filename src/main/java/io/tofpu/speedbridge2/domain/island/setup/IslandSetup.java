@@ -49,9 +49,9 @@ public final class IslandSetup {
         island.setRelativePoint(absoluteLocation);
 
         // teleporting the player to the lobby location
-        playerEditor.getPlayer()
-                .teleport(ConfigurationManager.INSTANCE.getLobbyCategory()
-                        .getLobbyLocation());
+//        playerEditor.getPlayer()
+//                .teleport(ConfigurationManager.INSTANCE.getLobbyCategory()
+//                        .getLobbyLocation());
 
         resetPlot();
         IslandSetupManager.INSTANCE.invalidate(this);
@@ -69,7 +69,7 @@ public final class IslandSetup {
         final VectorWrapper minimumPoint = clipboardWrapper.getMinimumPoint();
         final VectorWrapper maximumPoint = clipboardWrapper.getMaximumPoint();
 
-        final int offset = 3;
+        final int offset = 2;
 
         final int plotX = (int) islandPlot.getX() - offset;
         final int plotY = (int) islandPlot.getY() - offset;

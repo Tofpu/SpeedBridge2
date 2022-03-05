@@ -3,10 +3,12 @@ package io.tofpu.speedbridge2.domain.leaderboard.loader;
 import com.google.common.cache.CacheLoader;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import io.tofpu.speedbridge2.domain.common.PlayerNameCache;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.leaderboard.meta.BoardRetrieve;
 import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,13 +40,20 @@ public final class PersonalBoardLoader extends CacheLoader<UUID, BoardPlayer> im
 
             final AtomicReference<BoardPlayer> boardPlayer = new AtomicReference<>();
             databaseQuery.executeQuery(resultSet -> {
+                if (!resultSet.next()) {
+                    return;
+                }
                 boardPlayer.set(BridgeUtil.resultToBoardPlayer(false, resultSet));
             });
 
-            return boardPlayer.get();
-        } catch (Exception e) {
-            e.printStackTrace();
+            final BoardPlayer player = boardPlayer.get();
+            if (player == null) {
+                return new BoardPlayer(PlayerNameCache.INSTANCE.getOrDefault(key),
+                        0, key, new Score(-1, -1));
+            }
+            return player;
+        } catch (final Exception e) {
+            throw new IllegalStateException(e);
         }
-        return null;
     }
 }

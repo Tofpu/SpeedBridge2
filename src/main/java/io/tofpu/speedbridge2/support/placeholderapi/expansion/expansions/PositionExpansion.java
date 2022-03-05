@@ -46,8 +46,11 @@ public final class PositionExpansion extends AbstractExpansion {
         }
 
         try {
-            return retrieve.get()
-                           .getPosition() + "";
+            final IslandBoardPlayer.IslandBoard islandBoard = retrieve.get();
+            if (islandBoard == null) {
+                return "0";
+            }
+            return islandBoard.getPosition() + "";
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
@@ -62,8 +65,11 @@ public final class PositionExpansion extends AbstractExpansion {
         }
 
         try {
-            return boardRetrieve.get()
-                           .getPosition() + "";
+            final BoardPlayer boardPlayer = boardRetrieve.get();
+            if (boardPlayer == null) {
+                return "0";
+            }
+            return boardPlayer.getPosition() + "";
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }

@@ -57,24 +57,33 @@ public final class SpeedBridge {
         CommandManager.load(javaPlugin);
         BlockMenuManager.INSTANCE.load();
 
-        DatabaseManager.load(javaPlugin).thenRun(() -> {
+        DatabaseManager.load(javaPlugin).whenComplete((unused, throwable) -> {
+            if (throwable != null) {
+                throw new IllegalStateException(throwable);
+            }
+
             final IslandService islandService = IslandService.INSTANCE;
             islandService.load();
 
             Leaderboard.INSTANCE.load(javaPlugin)
-                    .whenComplete((unused, throwable) -> {
+                    .whenComplete((unused1, throwable1) -> {
+                        if (throwable1 != null) {
+                            throw new IllegalStateException(throwable1);
+                        }
+
                         // when the global leaderboard is complete, load the per-island
                         // leaderboard
                         IslandBoard.load(javaPlugin);
+
+                        // once the database is loaded once, and for all - load
+                        // the players that are currently online
+                        for (final Player player : Bukkit.getOnlinePlayers()) {
+                            PlayerService.INSTANCE.internalRefresh(player);
+                        }
                     });
 
             Message.load(javaPlugin.getDataFolder());
         });
-
-        // for administrator's who reloaded the plugin
-        for (final Player player : Bukkit.getOnlinePlayers()) {
-            PlayerService.INSTANCE.internalRefresh(player);
-        }
 
         HelpCommandGenerator.generateHelpCommand(javaPlugin);
     }
