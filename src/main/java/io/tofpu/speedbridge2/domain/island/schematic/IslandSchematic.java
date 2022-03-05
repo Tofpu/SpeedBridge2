@@ -1,7 +1,5 @@
 package io.tofpu.speedbridge2.domain.island.schematic;
 
-import com.sk89q.worldedit.LocalConfiguration;
-import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
@@ -21,13 +19,11 @@ public class IslandSchematic {
     public IslandSchematic() {}
 
     protected boolean selectSchematic(final @NotNull String schematicName) {
-        final LocalConfiguration configuration = WorldEdit.getInstance()
-                .getConfiguration();
         final File directory = Bukkit.getPluginManager()
                 .getPlugin("WorldEdit")
                 .getDataFolder()
                 .toPath()
-                .resolve(configuration.saveDir)
+                .resolve("schematics")
                 .toFile();
 
         BridgeUtil.debug("worldedit's directory: " + directory);

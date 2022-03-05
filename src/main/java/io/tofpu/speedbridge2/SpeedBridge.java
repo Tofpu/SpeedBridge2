@@ -38,14 +38,6 @@ public final class SpeedBridge {
         MultiWorldEditAPI.load(javaPlugin);
 
         ConfigurationManager.INSTANCE.load(javaPlugin);
-
-        DatabaseManager.load(javaPlugin).thenRun(() -> {
-            final IslandService islandService = IslandService.INSTANCE;
-            islandService.load();
-
-            Message.load(javaPlugin.getDataFolder());
-        });
-
         ExpansionHandler.INSTANCE.load();
 
         try {
@@ -63,21 +55,28 @@ public final class SpeedBridge {
         SchematicManager.INSTANCE.load(javaPlugin);
         IslandSetupManager.INSTANCE.load();
         CommandManager.load(javaPlugin);
-
-        Leaderboard.INSTANCE.load(javaPlugin)
-                .whenComplete((unused, throwable) -> {
-                    // when the global leaderboard is complete, load the per-island
-                    // leaderboard
-                    IslandBoard.load(javaPlugin);
-                });
         BlockMenuManager.INSTANCE.load();
 
-        HelpCommandGenerator.generateHelpCommand(javaPlugin);
+        DatabaseManager.load(javaPlugin).thenRun(() -> {
+            final IslandService islandService = IslandService.INSTANCE;
+            islandService.load();
+
+            Leaderboard.INSTANCE.load(javaPlugin)
+                    .whenComplete((unused, throwable) -> {
+                        // when the global leaderboard is complete, load the per-island
+                        // leaderboard
+                        IslandBoard.load(javaPlugin);
+                    });
+
+            Message.load(javaPlugin.getDataFolder());
+        });
 
         // for administrator's who reloaded the plugin
         for (final Player player : Bukkit.getOnlinePlayers()) {
             PlayerService.INSTANCE.internalRefresh(player);
         }
+
+        HelpCommandGenerator.generateHelpCommand(javaPlugin);
     }
 
     public void shutdown() {

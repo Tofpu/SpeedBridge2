@@ -1,7 +1,6 @@
 package io.tofpu.speedbridge2.domain.common.util;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.bukkit.ChatColor;
 
 import java.util.Collections;
 
@@ -11,15 +10,15 @@ public final class MessageUtil {
     /**
      * Good sized bar for scoreboards
      */
-    public static final String SB_BAR = ChatColor.STRIKETHROUGH + "----------------------";
+    public static final String SB_BAR = "----------------------";
     /**
      * Good sized bar for guis
      */
-    public static final String MENU_BAR = ChatColor.STRIKETHROUGH + "------------------------";
+    public static final String MENU_BAR = "------------------------";
     /**
      * Good sized bar for information messages
      */
-    public static final String CHAT_BAR = ChatColor.STRIKETHROUGH + "------------------------------------------------";
+    public static final String CHAT_BAR = "------------------------------------------------";
     /**
      * No text in the message, adds a bit of space between a message
      */
