@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.domain.leaderboard.wrapper;
+package io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper;
 
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;

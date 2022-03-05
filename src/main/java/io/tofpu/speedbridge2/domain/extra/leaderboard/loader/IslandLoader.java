@@ -1,11 +1,11 @@
-package io.tofpu.speedbridge2.domain.leaderboard.loader;
+package io.tofpu.speedbridge2.domain.extra.leaderboard.loader;
 
 import com.google.common.cache.CacheLoader;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.leaderboard.meta.BoardRetrieve;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.meta.BoardRetrieve;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.IslandBoardPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;

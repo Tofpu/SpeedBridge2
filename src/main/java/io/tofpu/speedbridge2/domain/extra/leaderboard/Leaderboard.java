@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.domain.leaderboard;
+package io.tofpu.speedbridge2.domain.extra.leaderboard;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
@@ -6,10 +6,10 @@ import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.leaderboard.loader.IslandLoader;
-import io.tofpu.speedbridge2.domain.leaderboard.loader.PersonalBoardLoader;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.loader.IslandLoader;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.loader.PersonalBoardLoader;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.IslandBoardPlayer;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;

@@ -98,7 +98,7 @@ public final class Message {
             ERROR + "Incomplete setup. Please try again " + "later.";
 
     public final String STARTING_SETUP_PROCESS =
-            SUCCESS + "You're now setting up %s " + "island";
+            SUCCESS + "You're now setting up %s " + "island.";
 
     public final String NOT_IN_A_SETUP = ERROR + "You're not setting up anything.";
     public final String SET_SPAWN_POINT =

@@ -1,7 +1,7 @@
-package io.tofpu.speedbridge2.domain.leaderboard;
+package io.tofpu.speedbridge2.domain.extra.leaderboard;
 
 import io.tofpu.speedbridge2.domain.common.PlayerNameCache;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 
