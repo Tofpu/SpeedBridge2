@@ -44,21 +44,21 @@ public final class IslandSetup {
         this.removed = true;
         playerEditor.toggleSetup();
 
-        final Location absoluteLocation = islandPlot.getLocation()
+        final Location absoluteLocation = islandPlot.getIslandLocation()
                 .subtract(this.playerSpawnPoint);
-        island.setRelativePoint(absoluteLocation);
+        island.setAbsoluteLocation(absoluteLocation);
 
         // teleporting the player to the lobby location
-//        playerEditor.getPlayer()
-//                .teleport(ConfigurationManager.INSTANCE.getLobbyCategory()
-//                        .getLobbyLocation());
+        playerEditor.getPlayer()
+                .teleport(ConfigurationManager.INSTANCE.getLobbyCategory()
+                        .getLobbyLocation());
 
         resetPlot();
         IslandSetupManager.INSTANCE.invalidate(this);
         return true;
     }
 
-    boolean isRemoved() {
+    public boolean isRemoved() {
         return removed;
     }
 
@@ -102,6 +102,7 @@ public final class IslandSetup {
             return;
         }
         this.removed = true;
+        IslandSetupManager.INSTANCE.invalidate(this);
 
         playerEditor.toggleSetup();
 
@@ -111,11 +112,6 @@ public final class IslandSetup {
                         .getLobbyLocation());
 
         resetPlot();
-        IslandSetupManager.INSTANCE.invalidate(this);
-    }
-
-    public BridgePlayer getPlayerEditor() {
-        return playerEditor;
     }
 
     public UUID getEditorUid() {

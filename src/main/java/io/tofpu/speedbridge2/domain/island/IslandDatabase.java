@@ -77,7 +77,7 @@ public final class IslandDatabase extends Database {
                             final float yaw = Float.parseFloat(split[3]);
                             final float pitch = Float.parseFloat(split[4]);
 
-                            island.setRelativePoint(new Location(Bukkit.getWorld("Speedbridge2"), x, y, z, yaw, pitch));
+                            island.setAbsoluteLocation(new Location(Bukkit.getWorld("Speedbridge2"), x, y, z, yaw, pitch));
                         }
 
                         islands.add(island);
