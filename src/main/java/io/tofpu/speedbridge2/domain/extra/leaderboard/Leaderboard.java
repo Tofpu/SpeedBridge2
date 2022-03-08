@@ -49,7 +49,7 @@ public final class Leaderboard {
         final CompletableFuture<Void> loadFuture = new CompletableFuture<>();
         Bukkit.getScheduler()
                 .runTaskAsynchronously(javaPlugin, () -> {
-                    BridgeUtil.debug("loading the leaderboard!");
+                    BridgeUtil.debug("Leaderboard#load(): loading the leaderboard!");
 
                     // global leaderboard operation
                     try (final DatabaseQuery databaseQuery = new DatabaseQuery("SELECT DISTINCT * FROM scores ORDER BY score")) {
@@ -63,13 +63,26 @@ public final class Leaderboard {
                                     break;
                                 }
 
-                                final UUID uuid = UUID.fromString(resultSet.getString("uid"));
-                                // if we already have the given uuid, continue through the loop!
-                                if (uuidList.contains(uuid)) {
+                                final String uid = resultSet.getString("uid");
+                                if (uid == null) {
                                     continue;
                                 }
 
-                                final BoardPlayer value = BridgeUtil.resultToBoardPlayer(true, resultSet);
+                                final UUID uuid = UUID.fromString(uid);
+                                BridgeUtil.debug("Leaderboard#load(): uuid == " + uuid);
+                                // if we already have the given uuid, continue through the loop!
+                                if (uuidList.contains(uuid)) {
+                                    BridgeUtil.debug("Leaderboard#load(): uuidList contains " + uuid + "; continuing");
+                                    continue;
+                                }
+
+                                final BoardPlayer value = BridgeUtil.toBoardPlayer(true, resultSet);
+                                BridgeUtil.debug("Leaderboard#load(): value == " + value);
+                                if (value == null) {
+                                    BridgeUtil.debug("Leaderboard#load(): value == null; " +
+                                                       "continuing");
+                                    continue;
+                                }
 
                                 uuidList.add(uuid);
                                 globalBoardMap.put(value.getPosition(), value);

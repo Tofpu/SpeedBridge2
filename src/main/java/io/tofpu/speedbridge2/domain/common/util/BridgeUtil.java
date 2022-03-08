@@ -4,7 +4,7 @@ import io.tofpu.speedbridge2.SpeedBridge;
 import io.tofpu.speedbridge2.domain.common.PlayerNameCache;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseSet;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
@@ -72,9 +72,10 @@ public final class BridgeUtil {
         return ChatColor.translateAlternateColorCodes('&', replace);
     }
 
-    public static BoardPlayer resultToBoardPlayer(final boolean row, final DatabaseSet databaseSet) {
+    public static BoardPlayer toBoardPlayer(final boolean row, final DatabaseSet databaseSet) {
         final String resultUid = databaseSet.getString("uid");
         if (resultUid == null) {
+            BridgeUtil.debug("BridgeUtil#toBoardPlayer(): uid == null");
             return null;
         }
 
@@ -86,12 +87,17 @@ public final class BridgeUtil {
 
         BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uid);
         if (bridgePlayer == null) {
+            BridgeUtil.debug("BridgeUtil#toBoardPlayer(): bridgePlayer == null : " + uid);
             bridgePlayer = BridgePlayer.of(PlayerNameCache.INSTANCE.getOrDefault(uid), uid);
+        } else {
+            BridgeUtil.debug("BridgeUtil#toBoardPlayer(): bridgePlayer != null : " + uid);
         }
 
         final String name = bridgePlayer.getName();
         final int position = !row ? databaseSet.getInt("position") :
                 databaseSet.getRow();
+
+        BridgeUtil.debug("BridgeUtil#toBoardPlayer(): position == " + position);
 
         return new BoardPlayer(name, position, uid, score);
     }

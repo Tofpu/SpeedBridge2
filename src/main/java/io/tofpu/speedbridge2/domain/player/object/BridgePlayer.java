@@ -2,10 +2,10 @@ package io.tofpu.speedbridge2.domain.player.object;
 
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
-import io.tofpu.speedbridge2.domain.player.misc.block.BlockChoice;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.Leaderboard;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.Island;
-import io.tofpu.speedbridge2.domain.leaderboard.Leaderboard;
+import io.tofpu.speedbridge2.domain.player.misc.block.BlockChoice;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.misc.session.SessionScore;
 import io.tofpu.speedbridge2.domain.player.misc.setup.SetupMeta;

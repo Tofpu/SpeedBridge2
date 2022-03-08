@@ -1,9 +1,10 @@
 package io.tofpu.speedbridge2.support.placeholderapi.expansion.expansions;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
-import io.tofpu.speedbridge2.domain.leaderboard.Leaderboard;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.Leaderboard;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.IslandBoardPlayer;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import io.tofpu.speedbridge2.support.placeholderapi.expansion.AbstractExpansion;
@@ -67,6 +68,7 @@ public final class PositionExpansion extends AbstractExpansion {
         try {
             final BoardPlayer boardPlayer = boardRetrieve.get();
             if (boardPlayer == null) {
+                BridgeUtil.debug("getGlobalPosition(): boardPlayer == null");
                 return "0";
             }
             return boardPlayer.getPosition() + "";

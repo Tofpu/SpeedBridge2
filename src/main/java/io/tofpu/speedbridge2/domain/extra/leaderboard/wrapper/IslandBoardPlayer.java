@@ -13,7 +13,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public final class IslandBoardPlayer {
     private static final String ISLAND_POSITION =
-            "SELECT 1 + COUNT(*) AS position FROM scores WHERE islandSlot = ? AND score" +
+            "SELECT 1 + COUNT(*) AS position FROM scores WHERE island_slot = ? AND " +
+            "score" +
             " < " + "(SELECT score " + "FROM scores WHERE uid = ?)";
 
     private final UUID owner;
@@ -29,17 +30,19 @@ public final class IslandBoardPlayer {
     }
 
     public @NotNull CompletableFuture<IslandBoard> retrieve(final int islandSlot) {
-        BridgeUtil.debug("attempting to retrieve board for " + owner + ", " + islandSlot);
+        BridgeUtil.debug("IslandBoardPlayer#retrieve(): Attempting to retrieve board " +
+                         "for " + owner + ", " + islandSlot);
 
         final IslandBoard cachedValue = boardMap.get(islandSlot);
         // if the cached value is not null
         if (cachedValue != null) {
             // return the cached value
-            BridgeUtil.debug("found existing value " + owner + ", " + islandSlot);
+            BridgeUtil.debug("IslandBoardPlayer#retrieve(): Found existing value " + owner + ", " + islandSlot);
             return CompletableFuture.completedFuture(cachedValue);
         }
 
-        BridgeUtil.debug("attempting to query to database for position for " + owner +
+        BridgeUtil.debug("IslandBoardPlayer#retrieve(): Attempting to query to database" +
+                         " for position for " + owner +
                          ", " + islandSlot);
         try (final DatabaseQuery databaseQuery = new DatabaseQuery(ISLAND_POSITION)) {
             databaseQuery.setInt(islandSlot);
@@ -47,6 +50,11 @@ public final class IslandBoardPlayer {
 
             final AtomicReference<IslandBoard> islandBoard = new AtomicReference<>();
             databaseQuery.executeQuery(resultSet -> {
+                if (!resultSet.next()) {
+                    BridgeUtil.debug("IslandBoardPlayer#retrieve(): next: " + "false");
+                    return;
+                }
+
                 islandBoard.set(new IslandBoard(resultSet.getInt("position"), islandSlot));
                 boardMap.put(islandSlot, islandBoard.get());
             });
