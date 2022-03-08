@@ -5,6 +5,7 @@ import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.extra.leaderboard.Leaderboard;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.Island;
+import io.tofpu.speedbridge2.domain.island.object.IslandBoard;
 import io.tofpu.speedbridge2.domain.player.misc.block.BlockChoice;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.misc.session.SessionScore;
@@ -19,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public final class BridgePlayer extends CommonBridgePlayer<Player> implements SessionScore, BlockChoice, SetupMeta {
     private final UUID playerUid;
@@ -180,7 +182,7 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
         return playerUid;
     }
 
-    public Iterable<? extends Score> getScores() {
+    public Collection<Score> getScores() {
         return this.scoreMap.values();
     }
 
@@ -287,5 +289,18 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
                 .append(inSetup);
         sb.append('}');
         return sb.toString();
+    }
+
+    public CompletableFuture<Void> reset() {
+        this.scoreMap.clear();
+        this.statsMap.clear();
+        this.sessionMap.clear();
+        this.chosenBlock =
+                ConfigurationManager.INSTANCE.getBlockMenuCategory().getDefaultBlock();
+
+        Leaderboard.INSTANCE.reset(getPlayerUid());
+        IslandBoard.reset(getPlayerUid());
+
+        return Databases.PLAYER_DATABASE.delete(getPlayerUid());
     }
 }

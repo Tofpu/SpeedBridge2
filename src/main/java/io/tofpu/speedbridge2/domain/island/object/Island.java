@@ -146,4 +146,8 @@ public class Island extends IslandSchematic {
         sb.append('}');
         return sb.toString();
     }
+
+    public void resetPlayer(final UUID uuid) {
+        this.leaderboardMap.reset(uuid);
+    }
 }

@@ -2,6 +2,8 @@ package io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper;
 
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.domain.player.PlayerService;
+import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,7 +57,13 @@ public final class IslandBoardPlayer {
                     return;
                 }
 
-                islandBoard.set(new IslandBoard(resultSet.getInt("position"), islandSlot));
+                IslandBoard value = new IslandBoard(resultSet.getInt("position"), islandSlot);
+                final BridgePlayer player = PlayerService.INSTANCE.get(owner);
+                if (player != null && player.getScores().isEmpty()) {
+                    value = new IslandBoard(0, islandSlot);
+                }
+
+                islandBoard.set(value);
                 boardMap.put(islandSlot, islandBoard.get());
             });
             return CompletableFuture.completedFuture(islandBoard.get());

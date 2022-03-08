@@ -9,7 +9,9 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseSet;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.extra.leaderboard.meta.BoardRetrieve;
 import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
+import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,10 +50,17 @@ public final class PersonalBoardLoader extends CacheLoader<UUID, BoardPlayer> im
                 }
 
                 BridgeUtil.debug("PersonalBoardLoader#retrieve(): next: " + "true");
-                boardPlayer.set(toBoardPlayer(key, resultSet));
+                BoardPlayer value = toBoardPlayer(key, resultSet);
+                final BridgePlayer player = PlayerService.INSTANCE.get(key);
+                if (player != null && player.getScores().isEmpty()) {
+                    value = new BoardPlayer(value.getName(), 0, key, value.getScore());
+                }
+
+                boardPlayer.set(value);
             });
 
             final BoardPlayer player = boardPlayer.get();
+
             BridgeUtil.debug("PersonalBoardLoader#retrieve(): player: " + player);
             if (player == null) {
                 return new BoardPlayer(PlayerNameCache.INSTANCE.getOrDefault(key),

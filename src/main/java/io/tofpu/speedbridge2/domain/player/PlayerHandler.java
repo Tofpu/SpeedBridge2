@@ -72,4 +72,12 @@ public final class PlayerHandler {
     public Collection<BridgePlayer> getBridgePlayers() {
         return Collections.unmodifiableCollection(playerMap.asMap().values());
     }
+
+    public void reset(final UUID uuid) {
+        final BridgePlayer bridgePlayer = get(uuid);
+        if (bridgePlayer == null) {
+            return;
+        }
+        bridgePlayer.reset();
+    }
 }

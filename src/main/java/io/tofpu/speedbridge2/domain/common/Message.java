@@ -119,6 +119,12 @@ public final class Message {
 
     public final String SETUP_CANCELLED = SUCCESS + "The setup has been cancelled.";
 
+    public final String PLAYER_DOESNT_EXIST = ERROR + "%s does not exist.";
+    public final String PLAYER_WIPED = SUCCESS + "%s data has been wiped.";
+
+    public final String SOMETHING_WENT_WRONG = ERROR + "Something went wrong... check " +
+                                               "your console";
+
     private static String runCommand(final String command) {
         return "<hover:show_text:'<yellow>Click to run " +
                "%command%'><click:run_command:'%command%'>%command%".replace(

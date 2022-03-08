@@ -74,4 +74,16 @@ public final class ScoreDatabase extends Database {
             return scores;
         });
     }
+
+    public CompletableFuture<?> delete(final UUID uuid) {
+        return PluginExecutor.runAsync(() -> {
+            try (final DatabaseQuery query = new DatabaseQuery("DELETE FROM scores " +
+                                                               "WHERE uid = ?")) {
+                query.setString(uuid.toString());
+                query.execute();
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
+        });
+    }
 }

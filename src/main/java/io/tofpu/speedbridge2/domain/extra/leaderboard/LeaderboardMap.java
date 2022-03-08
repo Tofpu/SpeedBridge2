@@ -5,16 +5,15 @@ import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public final class LeaderboardMap extends LinkedHashMap<Integer, BoardPlayer> {
     private final Map<UUID, Score> globalReference = new LinkedHashMap<>();
     private final Map<UUID, Score> tempBoardMap = new HashMap<>();
+
+    private final List<UUID> removeUserList = new ArrayList<>();
 
     public void load(final Map<Integer, BoardPlayer> boardPlayerMap) {
         for (final BoardPlayer boardPlayer : boardPlayerMap.values()) {
@@ -32,6 +31,7 @@ public final class LeaderboardMap extends LinkedHashMap<Integer, BoardPlayer> {
 
         final LinkedHashMap<Integer, BoardPlayer> sortedMap = tempClone.entrySet()
                 .stream()
+                .filter(uuidScoreEntry -> !removeUserList.contains(uuidScoreEntry.getKey()))
                 .sorted(Map.Entry.comparingByValue())
                 .limit(10)
                 .collect(Collectors.toMap(o -> positionCounter.incrementAndGet(), o -> {
@@ -46,6 +46,7 @@ public final class LeaderboardMap extends LinkedHashMap<Integer, BoardPlayer> {
         // sorting the board clone by the key
         final Map<Integer, BoardPlayer> newBoardMap = globalBoardCopy.entrySet()
                 .stream()
+                .filter(uuidScoreEntry -> !removeUserList.contains(uuidScoreEntry.getValue().getOwner()))
                 .sorted(Map.Entry.comparingByKey())
                 .limit(10)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -61,6 +62,9 @@ public final class LeaderboardMap extends LinkedHashMap<Integer, BoardPlayer> {
         this.globalReference.putAll(tempClone);
 
         this.tempBoardMap.clear();
+
+        // clearing the removed list
+        this.removeUserList.clear();
     }
 
     public void append(final BridgePlayer bridgePlayer, final Score score) {
@@ -74,5 +78,19 @@ public final class LeaderboardMap extends LinkedHashMap<Integer, BoardPlayer> {
 
         // insert the player's best score to the temp board
         this.tempBoardMap.put(bridgePlayer.getPlayerUid(), score);
+    }
+
+    public void reset(final UUID uuid) {
+        removeUserList.add(uuid);
+    }
+
+    private int getPlayerPosition(final UUID key) {
+        for (final Map.Entry<Integer, BoardPlayer> playerEntry : this.entrySet()) {
+            if (playerEntry.getValue().getOwner() != key) {
+                continue;
+            }
+            return playerEntry.getKey();
+        }
+        return -1;
     }
 }

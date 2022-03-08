@@ -1,6 +1,8 @@
 package io.tofpu.speedbridge2.domain.player.misc.stat;
 
+import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.Database;
+import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.DatabaseUtil;
@@ -65,12 +67,25 @@ public final class StatsDatabase extends Database {
                             playerStats.add(playerStat);
                         }
                     });
-                }).get();
+                        })
+                        .get();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
 
             return playerStats;
+        });
+    }
+
+    public CompletableFuture<?> delete(final UUID uuid) {
+        return PluginExecutor.runAsync(() -> {
+            try (final DatabaseQuery query = new DatabaseQuery(
+                    "SELECT * FROM stats WHERE " + "uid = ?")) {
+                query.setString(uuid.toString());
+                query.execute();
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
         });
     }
 }

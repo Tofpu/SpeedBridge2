@@ -124,7 +124,7 @@ public final class IslandPlot {
         }
 
         // otherwise, add plot's location to the absolute location
-        return absoluteLocation.add(this.location);
+        return getPlotLocation().add(absoluteLocation);
     }
 
     public Location getPlotLocation() {

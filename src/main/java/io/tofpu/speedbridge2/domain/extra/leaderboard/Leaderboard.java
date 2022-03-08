@@ -98,7 +98,7 @@ public final class Leaderboard {
 
         Bukkit.getScheduler()
                 .runTaskTimerAsynchronously(javaPlugin, () -> {
-                    BridgeUtil.debug("refreshing the leaderboard!");
+                    BridgeUtil.debug("Leaderboard#load(): refreshing the leaderboard!");
 
                     // per-player based position operation
                     for (final UUID uuid : playerCache.asMap()
@@ -192,6 +192,10 @@ public final class Leaderboard {
 
     public void addScore(final BridgePlayer owner, final Score score) {
         this.globalMap.append(owner, score);
+    }
+
+    public void reset(final UUID playerUid) {
+        this.globalMap.reset(playerUid);
     }
 
     public enum LeaderboardRetrieveType {

@@ -3,12 +3,14 @@ package io.tofpu.speedbridge2.domain.common.util;
 import io.tofpu.speedbridge2.SpeedBridge;
 import io.tofpu.speedbridge2.domain.common.PlayerNameCache;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
+import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseSet;
 import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -18,6 +20,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.util.Vector;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 public final class BridgeUtil {
     public static Vector toVector(final com.sk89q.worldedit.Vector vector) {
@@ -42,7 +45,9 @@ public final class BridgeUtil {
 
     public static Component sendMessage(final CommandSender sender,
             final Component component) {
-        SpeedBridge.getAdventure().sender(sender).sendMessage(component);
+        final Audience audience = SpeedBridge.getAdventure()
+                .sender(sender);
+        audience.sendMessage(component);
         return component;
     }
 
@@ -100,5 +105,27 @@ public final class BridgeUtil {
         BridgeUtil.debug("BridgeUtil#toBoardPlayer(): position == " + position);
 
         return new BoardPlayer(name, position, uid, score);
+    }
+
+    public static UUID findUUIDBy(final String playerName) {
+        final AtomicReference<UUID> uuid = new AtomicReference<>();
+        try (final DatabaseQuery databaseQuery = new DatabaseQuery("SELECT uid FROM " +
+                                                                   "players WHERE name " +
+                                                                   "= ?")) {
+            databaseQuery.setString(playerName);
+
+            databaseQuery.executeQuery(databaseSet -> {
+                if (!databaseSet.next()) {
+                    return;
+                }
+                final String uid = databaseSet.getString("uid");
+                if (uid != null) {
+                    uuid.set(UUID.fromString(uid));
+                }
+            });
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        return uuid.get();
     }
 }

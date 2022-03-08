@@ -84,4 +84,10 @@ public final class IslandBoard {
                     }
                 }, 1L, 20 * INTERVAL);
     }
+
+    public static void reset(final UUID uuid) {
+        for (final Island island : ISLAND_QUEUE) {
+            island.resetPlayer(uuid);
+        }
+    }
 }
