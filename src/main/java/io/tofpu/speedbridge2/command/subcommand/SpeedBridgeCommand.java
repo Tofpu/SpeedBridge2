@@ -325,7 +325,7 @@ public final class SpeedBridgeCommand {
                     .filter(Island::isReady)
                     .findAny();
 
-            if (!optionalIsland.isPresent()) {
+            if (optionalIsland.isEmpty()) {
                 message = INSTANCE.NO_AVAILABLE_ISLAND;
             } else {
                 final Island island = optionalIsland.get();
@@ -351,7 +351,7 @@ public final class SpeedBridgeCommand {
 
         final String message;
         if (island == null) {
-            message = INSTANCE.INVALID_ISLAND;
+            message = String.format(INSTANCE.INVALID_ISLAND, slot);
         } else {
             if (bridgePlayer.isInSetup()) {
                 message = INSTANCE.IN_A_SETUP;
