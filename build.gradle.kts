@@ -13,6 +13,7 @@ tasks {
 
     named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
         mergeServiceFiles()
+        minimize()
 
         dependencies {
             relocate("org.xerial", "io.tofpu.speedbridge2.lib.sqlite")
@@ -51,7 +52,9 @@ dependencies {
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
     implementation("net.kyori:adventure-text-minimessage:4.10.0-SNAPSHOT")
 
-    implementation("com.github.tofpu:DynamicClass:2ea7dee04c")
+    implementation("com.github.tofpu:DynamicClass:2ea7dee04c") {
+        exclude("com.google.guava", "guava")
+    }
 
     implementation("org.spongepowered:configurate-hocon:4.0.0")
 
