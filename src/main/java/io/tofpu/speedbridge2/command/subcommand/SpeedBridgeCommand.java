@@ -376,7 +376,7 @@ public final class SpeedBridgeCommand {
                     .filter(Island::isReady)
                     .findAny();
 
-            if (optionalIsland.isEmpty()) {
+            if (optionalIsland.isPresent()) {
                 message = INSTANCE.NO_AVAILABLE_ISLAND;
             } else {
                 final Island island = optionalIsland.get();
