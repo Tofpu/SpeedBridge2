@@ -64,7 +64,7 @@ public class Island {
                 .getInventory()
                 .clear();
 
-        BridgeUtil.sendMessage(bridgePlayer.getPlayer(), String.format(Message.INSTANCE.LEFT_AN_ISLAND, slot));
+        BridgeUtil.sendMessage(bridgePlayer.getPlayer(), String.format(Message.INSTANCE.leftAnIsland, slot));
         bridgePlayer.setGamePlayer(null);
 
         // remove the game player

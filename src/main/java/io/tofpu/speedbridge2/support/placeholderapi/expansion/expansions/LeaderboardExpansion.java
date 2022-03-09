@@ -45,7 +45,7 @@ public final class LeaderboardExpansion extends AbstractExpansion {
 
             // if board player is null, return the empty session leaderboard message
             if (boardPlayer == null) {
-                return BridgeUtil.translateMiniMessageLegacy(Message.INSTANCE.EMPTY_SESSION_LEADERBOARD);
+                return BridgeUtil.translateMiniMessageLegacy(Message.INSTANCE.emptySessionLeaderboard);
             }
         } else {
             final Island island = IslandService.INSTANCE.findIslandBy(Integer.parseInt(args[1]));

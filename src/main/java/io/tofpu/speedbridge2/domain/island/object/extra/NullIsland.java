@@ -23,7 +23,7 @@ public class NullIsland extends Island {
     @Override
     public void leaveGame(final BridgePlayer bridgePlayer) {
         BridgeUtil.sendMessage(bridgePlayer.getPlayer(),
-                Message.INSTANCE.NOT_IN_A_ISLAND);
+                Message.INSTANCE.notInAIsland);
     }
 
     @Override

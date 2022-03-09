@@ -53,7 +53,7 @@ public final class GameInteractionListener extends GameListener {
         player.setScoreIfLower(island.getSlot(), score.getScore());
         player.increment(PlayerStatType.TOTAL_WINS);
 
-        BridgeUtil.sendMessage(player, String.format(Message.INSTANCE.SCORED, BridgeUtil.formatNumber(score.getScore())));
+        BridgeUtil.sendMessage(player, String.format(Message.INSTANCE.scored, BridgeUtil.formatNumber(score.getScore())));
 
         currentGame.resetGame(false);
     }

@@ -41,7 +41,7 @@ public final class PlayerConnectionListener extends GameListener {
                 return;
             }
 
-            BridgeUtil.sendMessage(player, Message.INSTANCE.LOBBY_MISSING);
+            BridgeUtil.sendMessage(player, Message.INSTANCE.lobbyMissing);
         }
     }
 
