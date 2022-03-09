@@ -150,4 +150,33 @@ public final class IslandPlot {
     public boolean isPlotFree() {
         return plotState.isPlotFree();
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("IslandPlot{");
+        sb.append("island=")
+                .append(island);
+        sb.append(", world=")
+                .append(world);
+        sb.append(", x=")
+                .append(x);
+        sb.append(", y=")
+                .append(y);
+        sb.append(", z=")
+                .append(z);
+        sb.append(", yaw=")
+                .append(yaw);
+        sb.append(", pitch=")
+                .append(pitch);
+        sb.append(", location=")
+                .append(location);
+        sb.append(", minPoint=")
+                .append(minPoint);
+        sb.append(", maxPoint=")
+                .append(maxPoint);
+        sb.append(", plotState=")
+                .append(plotState);
+        sb.append('}');
+        return sb.toString();
+    }
 }

@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class SchematicManager {
     public static final @NotNull SchematicManager INSTANCE = new SchematicManager();
 
-    private static final @NotNull Map<Integer, Collection<IslandPlot>> SCHEMATIC_PLOTS =
+    private static final @NotNull Map<Integer, Collection<IslandPlot>> ISLAND_PLOTS =
             new HashMap<>();
     private static final AtomicInteger COUNTER = new AtomicInteger();
 
@@ -102,6 +102,9 @@ public final class SchematicManager {
 
             // adding the plot for usability
             islandPlots.add(selectedPlot);
+
+            // adding the new island plot to the schematic plot map
+            ISLAND_PLOTS.put(island.getSlot(), islandPlots);
         } else {
             // reserving the plot to player
             selectedPlot.reservePlot(gameIsland);
@@ -120,34 +123,11 @@ public final class SchematicManager {
     }
 
     public Collection<IslandPlot> retrieve(final int slot) {
-        return SCHEMATIC_PLOTS.getOrDefault(slot, new ArrayList<>());
-    }
-
-    public boolean freePlot(final GameIsland gameIsland) {
-        IslandPlot selectedPlot = null;
-
-        for (final IslandPlot islandPlot : retrieve(gameIsland.getIsland().getSlot())) {
-            // if a plot's island equals to island, select the plot and break the loop
-            final GameIsland island = islandPlot.getGameIsland();
-            if (island != null && island.equals(gameIsland)) {
-                BridgeUtil.debug("found the identical island plot!");
-                selectedPlot = islandPlot;
-                break;
-            }
-        }
-
-        if (selectedPlot == null) {
-            return false;
-        }
-
-        // free the plot for other players
-        selectedPlot.freePlot();
-
-        return true;
+        return ISLAND_PLOTS.getOrDefault(slot, new ArrayList<>());
     }
 
     public void clearPlot(final int slot) {
-        SCHEMATIC_PLOTS.remove(slot);
+        ISLAND_PLOTS.remove(slot);
     }
 
     public static final class EmptyChunkGenerator extends ChunkGenerator {

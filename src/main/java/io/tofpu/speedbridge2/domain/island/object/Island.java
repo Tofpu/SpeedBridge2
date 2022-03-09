@@ -65,6 +65,7 @@ public class Island extends IslandSchematic {
         if (gameIsland == null) {
             return;
         }
+
         BridgeUtil.sendMessage(bridgePlayer.getPlayer(),
                 String.format(Message.INSTANCE.LEFT_AN_ISLAND,
                 slot));

@@ -98,7 +98,7 @@ public final class GameIsland {
         gamePlayer.resetBlocks();
 
         // free the plot
-        SchematicManager.INSTANCE.freePlot(this);
+        getIslandPlot().freePlot();
 
         // set the player's game to null, as they're leaving the island
         gamePlayer.setCurrentGame(null);
