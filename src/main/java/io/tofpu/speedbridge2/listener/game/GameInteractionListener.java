@@ -32,7 +32,7 @@ public final class GameInteractionListener extends GameListener {
         }
 
         gamePlayer.startTimer();
-        BridgeUtil.sendMessage(event.getPlayer(), Message.INSTANCE.TIME_STARTED);
+        BridgeUtil.sendMessage(event.getPlayer(), Message.INSTANCE.timeStarted);
     }
 
     @EventHandler
