@@ -36,7 +36,7 @@ public final class BestScoreExpansion extends AbstractExpansion {
         }
 
         if (bestScore == null) {
-            return "";
+            return "0";
         }
 
         return BridgeUtil.formatNumber(bestScore.getScore());

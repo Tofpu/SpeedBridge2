@@ -36,7 +36,7 @@ public final class DatabaseSet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return "null";
+        return null;
     }
 
     public int getInt(final @NotNull String column) {

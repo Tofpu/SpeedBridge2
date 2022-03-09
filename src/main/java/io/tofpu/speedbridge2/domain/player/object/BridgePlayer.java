@@ -2,12 +2,14 @@ package io.tofpu.speedbridge2.domain.player.object;
 
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
-import io.tofpu.speedbridge2.domain.player.misc.block.BlockChoice;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.Leaderboard;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.Island;
-import io.tofpu.speedbridge2.domain.leaderboard.Leaderboard;
+import io.tofpu.speedbridge2.domain.island.object.IslandBoard;
+import io.tofpu.speedbridge2.domain.player.misc.block.BlockChoice;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.misc.session.SessionScore;
+import io.tofpu.speedbridge2.domain.player.misc.setup.SetupMeta;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStat;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
 import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
@@ -18,8 +20,9 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
-public final class BridgePlayer extends CommonBridgePlayer<Player> implements SessionScore, BlockChoice {
+public final class BridgePlayer extends CommonBridgePlayer<Player> implements SessionScore, BlockChoice, SetupMeta {
     private final UUID playerUid;
     private final Map<Integer, Score> scoreMap;
     private final Map<String, PlayerStat> statsMap;
@@ -31,6 +34,7 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
     private GamePlayer gamePlayer;
 
     private Material chosenBlock;
+    private boolean inSetup;
 
     public static BridgePlayer of(final BridgePlayer copy) {
         return new BridgePlayer(copy);
@@ -76,6 +80,7 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
 
         this.chosenBlock =
                 ConfigurationManager.INSTANCE.getBlockMenuCategory().getDefaultBlock();
+        this.inSetup = false;
     }
 
     @Override
@@ -177,7 +182,7 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
         return playerUid;
     }
 
-    public Iterable<? extends Score> getScores() {
+    public Collection<Score> getScores() {
         return this.scoreMap.values();
     }
 
@@ -197,6 +202,9 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
     public void invalidatePlayer() {
         this.player = null;
 
+        // resetting the island setup
+        resetSetup();
+
         // resetting the session scores
         resetSessionScores();
     }
@@ -208,23 +216,6 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
     public void internalRefresh(final UUID uniqueId) {
         this.player = Bukkit.getPlayer(uniqueId);
         this.name = player.getName();
-    }
-
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("BridgePlayer{");
-        sb.append("playerUid=")
-                .append(playerUid);
-        sb.append(", scoreMap=")
-                .append(scoreMap);
-        sb.append(", statsMap=")
-                .append(statsMap);
-        sb.append(", player=")
-                .append(player);
-        sb.append(", gamePlayer=")
-                .append(gamePlayer);
-        sb.append('}');
-        return sb.toString();
     }
 
     @Override
@@ -257,5 +248,59 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
 
     public void setIntervalMaterial(final @NotNull Material material) {
         this.chosenBlock = material;
+    }
+
+    @Override
+    public boolean isInSetup() {
+        return this.inSetup;
+    }
+
+    @Override
+    public void toggleSetup() {
+        this.inSetup = !this.inSetup;
+    }
+
+    @Override
+    public void resetSetup() {
+        this.inSetup = false;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("BridgePlayer{");
+        sb.append("playerUid=")
+                .append(playerUid);
+        sb.append(", scoreMap=")
+                .append(scoreMap);
+        sb.append(", statsMap=")
+                .append(statsMap);
+        sb.append(", sessionMap=")
+                .append(sessionMap);
+        sb.append(", name='")
+                .append(name)
+                .append('\'');
+        sb.append(", player=")
+                .append(player);
+        sb.append(", gamePlayer=")
+                .append(gamePlayer);
+        sb.append(", chosenBlock=")
+                .append(chosenBlock);
+        sb.append(", setup=")
+                .append(inSetup);
+        sb.append('}');
+        return sb.toString();
+    }
+
+    public CompletableFuture<Void> reset() {
+        this.scoreMap.clear();
+        this.statsMap.clear();
+        this.sessionMap.clear();
+        this.chosenBlock =
+                ConfigurationManager.INSTANCE.getBlockMenuCategory().getDefaultBlock();
+
+        Leaderboard.INSTANCE.reset(getPlayerUid());
+        IslandBoard.reset(getPlayerUid());
+
+        return Databases.PLAYER_DATABASE.delete(getPlayerUid());
     }
 }

@@ -1,6 +1,6 @@
-package io.tofpu.speedbridge2.domain.blockmenu;
+package io.tofpu.speedbridge2.domain.extra.blockmenu;
 
-import io.tofpu.speedbridge2.domain.blockmenu.holder.BlockMenuHolder;
+import io.tofpu.speedbridge2.domain.extra.blockmenu.holder.BlockMenuHolder;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;

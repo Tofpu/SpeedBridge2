@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.player.misc.block;
 
+import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.Database;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
@@ -60,6 +61,18 @@ public final class BlockDatabase extends Database {
                 e.printStackTrace();
             }
             return material.get();
+        });
+    }
+
+    public CompletableFuture<?> delete(final UUID uuid) {
+        return PluginExecutor.runAsync(() -> {
+            try (final DatabaseQuery query = new DatabaseQuery(
+                    "SELECT * FROM blocks WHERE " + "uid = ?")) {
+                query.setString(uuid.toString());
+                query.execute();
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
         });
     }
 }

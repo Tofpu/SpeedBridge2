@@ -4,16 +4,17 @@ package io.tofpu.speedbridge2.command.subcommand;
 import cloud.commandframework.annotations.*;
 import com.sk89q.minecraft.util.commands.CommandAlias;
 import io.tofpu.speedbridge2.command.parser.IslandArgument;
-import io.tofpu.speedbridge2.domain.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
+import io.tofpu.speedbridge2.domain.extra.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.domain.island.IslandHandler;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.setup.IslandSetup;
 import io.tofpu.speedbridge2.domain.island.setup.IslandSetupManager;
+import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
@@ -22,12 +23,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static io.tofpu.speedbridge2.domain.common.Message.INSTANCE;
 import static io.tofpu.speedbridge2.domain.common.util.MessageUtil.Symbols.ARROW_RIGHT;
@@ -40,6 +44,10 @@ public final class SpeedBridgeCommand {
     @CommandDescription("Sets the lobby location")
     @CommandPermission("speedbridge.lobby.set")
     public void onLobbySet(final BridgePlayer bridgePlayer) {
+        if (bridgePlayer.isInSetup()) {
+            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.IN_A_SETUP);
+        }
+
         ConfigurationManager.INSTANCE.getLobbyCategory().setLobbyLocation(bridgePlayer.getPlayer().getLocation()).whenComplete((unused, throwable) -> {
             BridgeUtil.sendMessage(bridgePlayer, INSTANCE.LOBBY_SET_LOCATION);
         });
@@ -70,13 +78,13 @@ public final class SpeedBridgeCommand {
             message = String.format(INSTANCE.UNKNOWN_SCHEMATIC, schematic);
         } else {
             message = String.format(INSTANCE.ISLAND_HAS_BEEN_CREATED_SCHEMATIC,
-                    slot + "", schematic);
+                    slot + "", schematic) + "\n" + INSTANCE.ISLAND_SETUP_NOTIFICATION.replace("%slot%", slot + "");
         }
         BridgeUtil.sendMessage(sender, message);
     }
 
     @CommandMethod("speedbridge|sb delete <slot>")
-    @CommandDescription("delete an island")
+    @CommandDescription("Delete an island")
     @CommandPermission("speedbridge.island.delete")
     public void onIslandDelete(final CommonBridgePlayer<?> player, final @Argument(
             "slot") int slot) {
@@ -91,14 +99,61 @@ public final class SpeedBridgeCommand {
         BridgeUtil.sendMessage(player, message);
     }
 
+    @CommandMethod("speedbridge|sb reset <name>")
+    @CommandDescription("Wipes the player's data")
+    @CommandPermission("speedbridge.player.reset")
+    public void onPlayerReset(final CommonBridgePlayer<?> bridgePlayer, final @Argument("name")
+            String playerName) {
+        Bukkit.getScheduler()
+                .runTaskAsynchronously(JavaPlugin.getPlugin(SpeedBridgePlugin.class), () -> {
+                    final CommandSender sender = bridgePlayer.getPlayer();
+                    if (sender == null) {
+                        return;
+                    }
+
+                    final UUID uuidResult = BridgeUtil.findUUIDBy(playerName);
+                    if (uuidResult == null) {
+                        BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.PLAYER_DOESNT_EXIST, playerName));
+                        return;
+                    }
+
+                    BridgePlayer target = PlayerService.INSTANCE.get(uuidResult);
+                    if (target == null) {
+                        try {
+                            PlayerService.INSTANCE.load(uuidResult)
+                                    .get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.SOMETHING_WENT_WRONG);
+                            throw new IllegalStateException(e);
+                        }
+                    }
+
+                    if (target == null) {
+                        BridgeUtil.sendMessage(bridgePlayer,
+                                String.format(INSTANCE.PLAYER_DOESNT_EXIST, playerName));
+                        return;
+                    }
+
+                    try {
+                        target.reset()
+                                .get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        BridgeUtil.sendMessage(bridgePlayer, INSTANCE.SOMETHING_WENT_WRONG);
+                        throw new IllegalStateException(e);
+                    }
+
+                    BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.PLAYER_WIPED, playerName));
+                });
+    }
+
     @CommandMethod("speedbridge|sb select <slot>")
-    @CommandDescription("select an island to modify their properties")
-    @CommandPermission("island.island.select")
-    public void onIslandSelect(final CommonBridgePlayer<?> bridgePlayer, final @Argument("slot")
-            int slot, final @Flag(value = "c", description = "category") String category,
-            final @Flag(value = "s", description = "schematic")
+    @CommandDescription("Select an island to modify their properties")
+    @CommandPermission("speedbridge.island.island.select")
+    public void onIslandSelect(final CommonBridgePlayer<?> commonBridgePlayer, final @Argument("slot")
+            int slot, final @Flag(value = "c", description = "category")
+            String category, final @Flag(value = "s", description = "schematic")
             String schematic) {
-        final CommandSender sender = bridgePlayer.getPlayer();
+        final CommandSender sender = commonBridgePlayer.getPlayer();
         final Island island = islandService.findIslandBy(slot);
 
         String message = INSTANCE.EMPTY_SELECT;
@@ -144,6 +199,11 @@ public final class SpeedBridgeCommand {
     public void onIslandJoin(final BridgePlayer bridgePlayer, final @Argument("island")
             String category) {
         if (!isGeneralSetupComplete(bridgePlayer)) {
+            return;
+        }
+
+        if (bridgePlayer.isInSetup()) {
+            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.IN_A_SETUP);
             return;
         }
 
@@ -304,23 +364,26 @@ public final class SpeedBridgeCommand {
             return;
         }
 
-        final Optional<Island> optionalIsland = islandService.getAllIslands()
-                .stream()
-                .parallel()
-                .filter(Island::isReady)
-                .findAny();
-
         final String message;
-
-        if (bridgePlayer.isPlaying()) {
+        if (bridgePlayer.isInSetup()) {
+            message = INSTANCE.IN_A_SETUP;
+        } else if (bridgePlayer.isPlaying()) {
             message = INSTANCE.ALREADY_IN_A_ISLAND;
-        } else if (!optionalIsland.isPresent()) {
-            message = INSTANCE.NO_AVAILABLE_ISLAND;
         } else {
-            final Island island = optionalIsland.get();
-            island.generateGame(bridgePlayer);
+            final Optional<Island> optionalIsland = islandService.getAllIslands()
+                    .stream()
+                    .parallel()
+                    .filter(Island::isReady)
+                    .findAny();
 
-            message = String.format(INSTANCE.JOINED_AN_ISLAND, island.getSlot() + "");
+            if (optionalIsland.isEmpty()) {
+                message = INSTANCE.NO_AVAILABLE_ISLAND;
+            } else {
+                final Island island = optionalIsland.get();
+                island.generateGame(bridgePlayer);
+
+                message = String.format(INSTANCE.JOINED_AN_ISLAND, island.getSlot() + "");
+            }
         }
 
         BridgeUtil.sendMessage(bridgePlayer, message);
@@ -339,10 +402,14 @@ public final class SpeedBridgeCommand {
 
         final String message;
         if (island == null) {
-            message = INSTANCE.INVALID_ISLAND;
+            message = String.format(INSTANCE.INVALID_ISLAND, slot);
         } else {
-            message = String.format(INSTANCE.STARTING_SETUP_PROCESS, slot);
-            IslandSetupManager.INSTANCE.startSetup(bridgePlayer, island);
+            if (bridgePlayer.isInSetup()) {
+                message = INSTANCE.IN_A_SETUP;
+            } else {
+                message = String.format(INSTANCE.STARTING_SETUP_PROCESS, slot);
+                IslandSetupManager.INSTANCE.startSetup(bridgePlayer, island);
+            }
         }
         BridgeUtil.sendMessage(bridgePlayer, message);
     }
@@ -355,7 +422,7 @@ public final class SpeedBridgeCommand {
                 IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
         final String message;
-        if (islandSetup == null) {
+        if (!bridgePlayer.isInSetup()) {
             message = INSTANCE.NOT_IN_A_SETUP;
         } else {
             final Location playerLocation = bridgePlayer.getPlayer()
@@ -366,7 +433,9 @@ public final class SpeedBridgeCommand {
                 message = INSTANCE.INVALID_SPAWN_POINT;
             } else {
                 // otherwise, set the location point
-                message = INSTANCE.SET_SPAWN_POINT + "\n" + INSTANCE.COMPLETE_NOTIFICATION;
+                message =
+                        INSTANCE.SET_SPAWN_POINT + "\n" + INSTANCE.COMPLETE_NOTIFICATION;
+
                 islandSetup.setPlayerSpawnPoint(playerLocation);
             }
         }
@@ -380,7 +449,7 @@ public final class SpeedBridgeCommand {
         final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
         final String message;
-        if (islandSetup == null) {
+        if (!bridgePlayer.isInSetup()) {
             message = INSTANCE.NOT_IN_A_SETUP;
         } else if (!islandSetup.isReady()) {
             message = INSTANCE.SETUP_INCOMPLETE;
@@ -399,7 +468,7 @@ public final class SpeedBridgeCommand {
         final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
         final String message;
-        if (islandSetup == null) {
+        if (!bridgePlayer.isInSetup()) {
             message = INSTANCE.NOT_IN_A_SETUP;
         } else {
             message = INSTANCE.SETUP_CANCELLED;

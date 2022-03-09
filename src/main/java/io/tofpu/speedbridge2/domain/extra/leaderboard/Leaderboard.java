@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.domain.leaderboard;
+package io.tofpu.speedbridge2.domain.extra.leaderboard;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
@@ -6,10 +6,10 @@ import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.leaderboard.loader.IslandLoader;
-import io.tofpu.speedbridge2.domain.leaderboard.loader.PersonalBoardLoader;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.IslandBoardPlayer;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.loader.IslandLoader;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.loader.PersonalBoardLoader;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.IslandBoardPlayer;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
@@ -49,7 +49,7 @@ public final class Leaderboard {
         final CompletableFuture<Void> loadFuture = new CompletableFuture<>();
         Bukkit.getScheduler()
                 .runTaskAsynchronously(javaPlugin, () -> {
-                    BridgeUtil.debug("loading the leaderboard!");
+                    BridgeUtil.debug("Leaderboard#load(): loading the leaderboard!");
 
                     // global leaderboard operation
                     try (final DatabaseQuery databaseQuery = new DatabaseQuery("SELECT DISTINCT * FROM scores ORDER BY score")) {
@@ -63,13 +63,26 @@ public final class Leaderboard {
                                     break;
                                 }
 
-                                final UUID uuid = UUID.fromString(resultSet.getString("uid"));
-                                // if we already have the given uuid, continue through the loop!
-                                if (uuidList.contains(uuid)) {
+                                final String uid = resultSet.getString("uid");
+                                if (uid == null) {
                                     continue;
                                 }
 
-                                final BoardPlayer value = BridgeUtil.resultToBoardPlayer(true, resultSet);
+                                final UUID uuid = UUID.fromString(uid);
+                                BridgeUtil.debug("Leaderboard#load(): uuid == " + uuid);
+                                // if we already have the given uuid, continue through the loop!
+                                if (uuidList.contains(uuid)) {
+                                    BridgeUtil.debug("Leaderboard#load(): uuidList contains " + uuid + "; continuing");
+                                    continue;
+                                }
+
+                                final BoardPlayer value = BridgeUtil.toBoardPlayer(true, resultSet);
+                                BridgeUtil.debug("Leaderboard#load(): value == " + value);
+                                if (value == null) {
+                                    BridgeUtil.debug("Leaderboard#load(): value == null; " +
+                                                       "continuing");
+                                    continue;
+                                }
 
                                 uuidList.add(uuid);
                                 globalBoardMap.put(value.getPosition(), value);
@@ -85,7 +98,7 @@ public final class Leaderboard {
 
         Bukkit.getScheduler()
                 .runTaskTimerAsynchronously(javaPlugin, () -> {
-                    BridgeUtil.debug("refreshing the leaderboard!");
+                    BridgeUtil.debug("Leaderboard#load(): refreshing the leaderboard!");
 
                     // per-player based position operation
                     for (final UUID uuid : playerCache.asMap()
@@ -179,6 +192,10 @@ public final class Leaderboard {
 
     public void addScore(final BridgePlayer owner, final Score score) {
         this.globalMap.append(owner, score);
+    }
+
+    public void reset(final UUID playerUid) {
+        this.globalMap.reset(playerUid);
     }
 
     public enum LeaderboardRetrieveType {

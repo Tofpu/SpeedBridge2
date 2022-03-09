@@ -4,6 +4,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.LoadingCache;
 import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
+import io.tofpu.speedbridge2.domain.island.setup.IslandSetupManager;
 import io.tofpu.speedbridge2.domain.player.loader.PlayerLoader;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -63,10 +64,20 @@ public final class PlayerHandler {
         }
         bridgePlayer.invalidatePlayer();
 
+        IslandSetupManager.INSTANCE.invalidate(uniqueId);
+
         return bridgePlayer;
     }
 
     public Collection<BridgePlayer> getBridgePlayers() {
         return Collections.unmodifiableCollection(playerMap.asMap().values());
+    }
+
+    public void reset(final UUID uuid) {
+        final BridgePlayer bridgePlayer = get(uuid);
+        if (bridgePlayer == null) {
+            return;
+        }
+        bridgePlayer.reset();
     }
 }

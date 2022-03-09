@@ -115,7 +115,7 @@ public final class IslandPlot {
         return pitch;
     }
 
-    public Location getLocation() {
+    public Location getIslandLocation() {
         final Location absoluteLocation = island.getAbsoluteLocation();
 
         // if the absolute location were not defined, return the island plot location
@@ -124,7 +124,11 @@ public final class IslandPlot {
         }
 
         // otherwise, add plot's location to the absolute location
-        return absoluteLocation.add(this.location);
+        return getPlotLocation().add(absoluteLocation);
+    }
+
+    public Location getPlotLocation() {
+        return this.location;
     }
 
     public CuboidRegion region() {

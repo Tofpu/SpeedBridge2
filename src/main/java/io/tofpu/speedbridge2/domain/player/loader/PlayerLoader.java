@@ -3,7 +3,7 @@ package io.tofpu.speedbridge2.domain.player.loader;
 import com.google.common.cache.CacheLoader;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.leaderboard.meta.BoardRetrieve;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.meta.BoardRetrieve;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import org.jetbrains.annotations.NotNull;
 

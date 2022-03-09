@@ -1,8 +1,8 @@
-package io.tofpu.speedbridge2.domain.blockmenu.listener;
+package io.tofpu.speedbridge2.domain.extra.blockmenu.listener;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
-import io.tofpu.speedbridge2.domain.blockmenu.BlockMenuManager;
-import io.tofpu.speedbridge2.domain.blockmenu.holder.BlockMenuHolder;
+import io.tofpu.speedbridge2.domain.extra.blockmenu.BlockMenuManager;
+import io.tofpu.speedbridge2.domain.extra.blockmenu.holder.BlockMenuHolder;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.listener.GameListener;

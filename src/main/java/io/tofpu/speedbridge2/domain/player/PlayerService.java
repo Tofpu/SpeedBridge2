@@ -41,4 +41,8 @@ public final class PlayerService {
     public Collection<BridgePlayer> getBridgePlayers() {
         return playerHandler.getBridgePlayers();
     }
+
+    public void reset(final UUID uuid) {
+        playerHandler.reset(uuid);
+    }
 }

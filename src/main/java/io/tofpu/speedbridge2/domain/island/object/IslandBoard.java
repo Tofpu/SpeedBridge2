@@ -3,13 +3,11 @@ package io.tofpu.speedbridge2.domain.island.object;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.BoardPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class IslandBoard {
@@ -30,27 +28,41 @@ public final class IslandBoard {
     public static void load(final JavaPlugin javaPlugin) {
         Bukkit.getScheduler()
                 .runTaskAsynchronously(javaPlugin, () -> {
-                    BridgeUtil.debug("loading the island's leaderboard");
+                    BridgeUtil.debug("IslandBoard#load(): loading the island's " +
+                                     "leaderboard");
 
                     for (final Island island : ISLAND_QUEUE) {
-                        BridgeUtil.debug("loading " + island.getSlot() + " leaderboard " +
+                        BridgeUtil.debug("IslandBoard#load(): Loading " + island.getSlot() + " leaderboard " +
                                          "now!");
                         final Map<Integer, BoardPlayer> boardMap = new HashMap<>();
 
                         try (final DatabaseQuery databaseQuery = new DatabaseQuery(
-                                "SELECT * FROM scores WHERE island_slot = ? ORDER BY " +
+                                "SELECT * FROM scores WHERE island_slot = ? ORDER BY" +
+                                " " +
                                 "score " + "LIMIT 10 OFFSET 0")) {
                             databaseQuery.setInt(island.getSlot());
 
+                            final Map<UUID, BoardPlayer> boardPlayerMap =
+                                    new HashMap<>();
+
                             databaseQuery.executeQuery(resultSet -> {
                                 while (resultSet.next()) {
-                                    final BoardPlayer value = BridgeUtil.resultToBoardPlayer(true, resultSet);
+                                    final BoardPlayer value = BridgeUtil.toBoardPlayer(true, resultSet);
+                                    if (value == null) {
+                                        continue;
+                                    }
+
+                                    final UUID owner = value.getOwner();
+                                    if (boardPlayerMap.containsKey(owner)) {
+                                        continue;
+                                    }
 
                                     boardMap.put(value.getPosition(), value);
+                                    boardPlayerMap.put(owner, value);
                                 }
                             });
 
-                            BridgeUtil.debug("successfully loaded " + island.getSlot() +
+                            BridgeUtil.debug("IslandBoard#load(): Successfully loaded " + island.getSlot() +
                                              " island leaderboard!");
                             BridgeUtil.debug(String.valueOf(boardMap));
                             island.loadBoard(boardMap);
@@ -62,13 +74,20 @@ public final class IslandBoard {
 
         Bukkit.getScheduler()
                 .runTaskTimerAsynchronously(javaPlugin, () -> {
-                    BridgeUtil.debug("starting the leaderboard update process!");
+                    BridgeUtil.debug("IslandBoard#load(): Starting the leaderboard " +
+                                     "update process!");
 
                     for (final Island island : ISLAND_QUEUE) {
-                        BridgeUtil.debug("updating " + island.getSlot() + " now!");
+                        BridgeUtil.debug("IslandBoard#load(): Updating " + island.getSlot() + " now!");
 
                         island.updateLeaderboard();
                     }
                 }, 1L, 20 * INTERVAL);
+    }
+
+    public static void reset(final UUID uuid) {
+        for (final Island island : ISLAND_QUEUE) {
+            island.resetPlayer(uuid);
+        }
     }
 }

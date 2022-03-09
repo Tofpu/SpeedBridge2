@@ -29,6 +29,7 @@ public final class IslandSetupManager {
         if (islandSetup != null) {
             return false;
         }
+        bridgePlayer.toggleSetup();
 
         final double[] positions = {100 * (islandSetupMap.size() + 100), 100, 0};
 
@@ -44,7 +45,8 @@ public final class IslandSetupManager {
 
         // teleporting the player to the setup location
         bridgePlayer.getPlayer()
-                .teleport(islandPlot.getLocation());
+                .teleport(islandPlot.getPlotLocation()
+                        .add(0, 2, 0));
         return true;
     }
 
@@ -57,6 +59,9 @@ public final class IslandSetupManager {
     }
 
     public void invalidate(final UUID uuid) {
-        islandSetupMap.remove(uuid);
+        final IslandSetup islandSetup = islandSetupMap.remove(uuid);
+        if (islandSetup != null && !islandSetup.isRemoved()) {
+            islandSetup.cancel();
+        }
     }
 }

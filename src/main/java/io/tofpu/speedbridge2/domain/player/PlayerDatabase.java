@@ -74,9 +74,18 @@ public final class PlayerDatabase extends Database {
     }
 
     public @NotNull CompletableFuture<Void> delete(final @NotNull UUID uuid) {
-        return DatabaseUtil.databaseQueryExecute("DELETE FROM players WHERE uid = ?", databaseQuery -> {
-            databaseQuery.setString(uuid.toString());
-        });
+        final List<CompletableFuture> completableFutures = new ArrayList<>();
+
+        completableFutures.add(DatabaseUtil.databaseQueryExecute(
+                "DELETE FROM players " + "WHERE uid = ?", databaseQuery -> {
+                    databaseQuery.setString(uuid.toString());
+                }));
+
+        completableFutures.add(Databases.SCORE_DATABASE.delete(uuid));
+        completableFutures.add(Databases.BLOCK_DATABASE.delete(uuid));
+        completableFutures.add(Databases.STATS_DATABASE.delete(uuid));
+
+        return CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]));
     }
 
     public @NotNull CompletableFuture<BridgePlayer> getStoredPlayer(final @NotNull UUID uniqueId) {

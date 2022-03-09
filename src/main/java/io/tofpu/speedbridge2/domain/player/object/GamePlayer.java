@@ -70,8 +70,10 @@ public final class GamePlayer {
             return;
         }
 
-        player.getPlayer()
-                .teleport(selectedPlot.getLocation());
+        player.getPlayer().teleport(selectedPlot.getPlotLocation());
+
+//        player.getPlayer()
+//                .teleport(selectedPlot.getIslandLocation());
     }
 
     public boolean hasPlaced(final Block block) {

@@ -3,10 +3,10 @@ package io.tofpu.speedbridge2.domain.island.object;
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.LeaderboardMap;
+import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.island.schematic.IslandSchematic;
-import io.tofpu.speedbridge2.domain.leaderboard.LeaderboardMap;
-import io.tofpu.speedbridge2.domain.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
@@ -24,7 +24,7 @@ public class Island extends IslandSchematic {
     private String category;
 
     private final LeaderboardMap leaderboardMap = new LeaderboardMap();
-    private Location relativePoint = null;
+    private Location absoluteLocation = null;
 
     public Island(final int slot, final String category) {
         this.slot = slot;
@@ -94,17 +94,17 @@ public class Island extends IslandSchematic {
         return successful;
     }
 
-    public void setRelativePoint(final Location newSpawnPoint) {
-        this.relativePoint = newSpawnPoint;
+    public void setAbsoluteLocation(final Location newAbsoluteLocation) {
+        this.absoluteLocation = newAbsoluteLocation;
         update();
     }
 
     public Location getAbsoluteLocation() {
-        return this.relativePoint;
+        return this.absoluteLocation;
     }
 
     public boolean isReady() {
-        return getSchematicClipboard() != null && relativePoint != null;
+        return getSchematicClipboard() != null && absoluteLocation != null;
     }
 
     private void update() {
@@ -145,5 +145,9 @@ public class Island extends IslandSchematic {
                 .append(leaderboardMap);
         sb.append('}');
         return sb.toString();
+    }
+
+    public void resetPlayer(final UUID uuid) {
+        this.leaderboardMap.reset(uuid);
     }
 }
