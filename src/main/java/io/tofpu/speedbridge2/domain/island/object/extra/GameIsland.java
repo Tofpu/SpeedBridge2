@@ -8,7 +8,9 @@ import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
+import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
+import io.tofpu.speedbridge2.support.worldedit.CuboidRegion;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -108,6 +110,14 @@ public final class GameIsland {
         gamePlayer.setCurrentGame(null);
     }
 
+    public CuboidRegion region() {
+        final IslandPlot islandPlot = getIslandPlot();
+        if (islandPlot == null) {
+            return null;
+        }
+        return islandPlot.region();
+    }
+
     public Island getIsland() {
         return island;
     }
@@ -118,5 +128,9 @@ public final class GameIsland {
 
     public IslandPlot getIslandPlot() {
         return islandPlot;
+    }
+
+    public void leave(final BridgePlayer bridgePlayer) {
+        getIsland().leaveGame(bridgePlayer);
     }
 }

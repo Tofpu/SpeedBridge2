@@ -25,8 +25,13 @@ public final class PlayerConnectionListener extends GameListener {
         final Player player = event.getPlayer();
         playerService.internalRefresh(player);
 
+        teleportToLobby(player);
+    }
+
+    private void teleportToLobby(final Player player) {
         final LobbyCategory lobbyCategory =
                 ConfigurationManager.INSTANCE.getLobbyCategory();
+
 
         // if teleport_on_join is set to true, teleport the player to the lobby location
         if (lobbyCategory.isTeleportOnJoin()) {

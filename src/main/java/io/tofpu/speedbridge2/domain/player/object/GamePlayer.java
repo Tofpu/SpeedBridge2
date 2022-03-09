@@ -70,9 +70,6 @@ public final class GamePlayer {
             return;
         }
 
-        System.out.println("island: " + selectedPlot.getIslandLocation());
-        System.out.println("plot: " + selectedPlot.getPlotLocation());
-
         player.getPlayer().teleport(selectedPlot.getIslandLocation());
     }
 

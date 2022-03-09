@@ -6,6 +6,7 @@ import io.tofpu.speedbridge2.domain.extra.leaderboard.Leaderboard;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.object.IslandBoard;
+import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.player.misc.block.BlockChoice;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.misc.session.SessionScore;
@@ -158,12 +159,24 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
 
     public PlayerStat findStatBy(final PlayerStatType playerStatType) {
         return statsMap.computeIfAbsent(playerStatType.name(), s -> {
-            final PlayerStat stat = PlayerStatType.create(getPlayerUid(),
-                    playerStatType);
+            final PlayerStat stat = PlayerStatType.create(getPlayerUid(), playerStatType);
             Databases.STATS_DATABASE.insert(stat);
 
             return stat;
         });
+    }
+
+    public CompletableFuture<Void> reset() {
+        this.scoreMap.clear();
+        this.statsMap.clear();
+        this.sessionMap.clear();
+        this.chosenBlock = ConfigurationManager.INSTANCE.getBlockMenuCategory()
+                .getDefaultBlock();
+
+        Leaderboard.INSTANCE.reset(getPlayerUid());
+        IslandBoard.reset(getPlayerUid());
+
+        return Databases.PLAYER_DATABASE.delete(getPlayerUid());
     }
 
     public void setGamePlayer(final GamePlayer gamePlayer) {
@@ -265,6 +278,28 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
         this.inSetup = false;
     }
 
+    public long getTimer() {
+        if (gamePlayer == null) {
+            return -1;
+        }
+        return gamePlayer.getTimer();
+    }
+
+    public void leaveGame() {
+        final GameIsland currentGame = getCurrentGame();
+        if (currentGame == null) {
+            return;
+        }
+        currentGame.leave(this);
+    }
+
+    public GameIsland getCurrentGame() {
+        if (gamePlayer == null) {
+            return null;
+        }
+        return gamePlayer.getCurrentGame();
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("BridgePlayer{");
@@ -289,18 +324,5 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
                 .append(inSetup);
         sb.append('}');
         return sb.toString();
-    }
-
-    public CompletableFuture<Void> reset() {
-        this.scoreMap.clear();
-        this.statsMap.clear();
-        this.sessionMap.clear();
-        this.chosenBlock =
-                ConfigurationManager.INSTANCE.getBlockMenuCategory().getDefaultBlock();
-
-        Leaderboard.INSTANCE.reset(getPlayerUid());
-        IslandBoard.reset(getPlayerUid());
-
-        return Databases.PLAYER_DATABASE.delete(getPlayerUid());
     }
 }

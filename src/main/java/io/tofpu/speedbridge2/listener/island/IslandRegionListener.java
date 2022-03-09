@@ -2,10 +2,8 @@ package io.tofpu.speedbridge2.listener.island;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
-import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import io.tofpu.speedbridge2.listener.GameListener;
 import io.tofpu.speedbridge2.support.worldedit.CuboidRegion;
 import io.tofpu.speedbridge2.support.worldedit.Vector;
@@ -23,18 +21,23 @@ public final class IslandRegionListener extends GameListener {
         if (bridgePlayer == null ||!bridgePlayer.isPlaying()) {
             return;
         }
-        final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
-        final GameIsland gameIsland = gamePlayer.getCurrentGame();
-        final IslandPlot islandPlot = gameIsland.getIslandPlot();
-        final CuboidRegion region = islandPlot.region();
+        final GameIsland currentGame = bridgePlayer.getCurrentGame();
+        if (currentGame == null) {
+            return;
+        }
+
+        final CuboidRegion islandRegion = currentGame.region();
+        if (islandRegion == null) {
+            return;
+        }
 
         final Location location = event.getTo();
         final Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
 
-        final boolean isInRegion = region.contains(vector);
+        final boolean isInRegion = islandRegion.contains(vector);
 
         if (!isInRegion) {
-            gameIsland.resetGame();
+            currentGame.resetGame();
         }
     }
 }
