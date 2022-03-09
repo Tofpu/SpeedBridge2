@@ -19,7 +19,7 @@ jobs:
           distribution: 'adopt'
           
       - name: Building    
-        run: mvn clean install
+        run: ./gradlew build
 
       - uses: actions/upload-artifact@v2
         with:
