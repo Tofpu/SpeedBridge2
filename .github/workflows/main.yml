@@ -24,4 +24,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: SpeedBridge-2
-          path: ${{ github.workspace }}/target/SpeedBridge-2.jar
+          path: ${{ github.workspace }}/build/libs/SpeedBridge2-1.0-SNAPSHOT-all.jar
