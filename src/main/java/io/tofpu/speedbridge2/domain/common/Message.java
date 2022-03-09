@@ -53,6 +53,7 @@ public final class Message {
                                             "at the moment... please try again " +
                                             "later!";
     public final String alreadyInAIsland = error + "You're already on an island!";
+    public final String inAGame = error + "You cannot execute this command while playing";
     public final String scoreTitle = "<yellow>" + SCORE_TITLE_BAR + "  " + "<gold><bold" +
                                      "> YOUR SCORES</bold></gold>" + " " +
                                      SCORE_TITLE_BAR;

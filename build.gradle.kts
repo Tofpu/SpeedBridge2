@@ -49,12 +49,11 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
 
     implementation("org.xerial:sqlite-jdbc:3.36.0.3")
-
     implementation("com.zaxxer:HikariCP:5.0.1")
 
     compileOnly("com.sk89q:worldedit:6.0.0-SNAPSHOT")
 
-    implementation("cloud.commandframework:cloud-bukkit:1.6.1")
+    implementation("cloud.commandframework:cloud-bukkit:1.6.2")
     implementation("cloud.commandframework:cloud-annotations:1.6.1")
 
     implementation("net.kyori:adventure-api:4.10.0-SNAPSHOT")
@@ -65,14 +64,12 @@ dependencies {
         exclude("com.google.guava", "guava")
     }
 
-    implementation("org.spongepowered:configurate-hocon:4.0.0")
-
+    implementation("org.spongepowered:configurate-hocon:4.1.2")
     implementation("commons-lang:commons-lang:2.6")
 
     compileOnly("me.clip:placeholderapi:2.10.10")
 
     implementation("com.github.cryptomorin:XSeries:8.6.1")
-
     implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:321a69d3e8") {
         exclude("de.schlichtherle", "truezip")
         exclude("rhino", "js")

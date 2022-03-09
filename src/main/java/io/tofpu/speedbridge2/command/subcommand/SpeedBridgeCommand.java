@@ -401,7 +401,9 @@ public final class SpeedBridgeCommand {
         final Island island = IslandService.INSTANCE.findIslandBy(slot);
 
         final String message;
-        if (island == null) {
+        if (bridgePlayer.isPlaying()) {
+            message = INSTANCE.inAGame;
+        } else if (island == null) {
             message = String.format(INSTANCE.invalidIsland, slot);
         } else {
             if (bridgePlayer.isInSetup()) {
