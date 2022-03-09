@@ -215,6 +215,10 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
     public void invalidatePlayer() {
         this.player = null;
 
+        if (isPlaying()) {
+            leaveGame();
+        }
+
         // resetting the island setup
         resetSetup();
 

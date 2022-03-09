@@ -12,6 +12,7 @@ import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
@@ -60,11 +61,13 @@ public class Island {
             return;
         }
 
-        bridgePlayer.getPlayer()
-                .getInventory()
-                .clear();
+        final Player player = bridgePlayer.getPlayer();
+        if (player != null) {
+            player.getInventory()
+                    .clear();
+        }
 
-        BridgeUtil.sendMessage(bridgePlayer.getPlayer(), String.format(Message.INSTANCE.leftAnIsland, slot));
+        BridgeUtil.sendMessage(player, String.format(Message.INSTANCE.leftAnIsland, slot));
         bridgePlayer.setGamePlayer(null);
 
         // remove the game player

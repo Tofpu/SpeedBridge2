@@ -10,6 +10,7 @@ import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +46,7 @@ public final class PlayerConnectionListener extends GameListener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     private void onPlayerQuit(final @NotNull PlayerQuitEvent event) {
         final Player player = event.getPlayer();
 

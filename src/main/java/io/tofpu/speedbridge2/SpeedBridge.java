@@ -22,7 +22,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.io.IOException;
 
 public final class SpeedBridge {
@@ -64,24 +63,32 @@ public final class SpeedBridge {
             }
 
             final IslandService islandService = IslandService.INSTANCE;
-            islandService.load();
+            islandService.load().whenComplete((integerIslandMap, throwable1) -> {
+                if (throwable1 != null) {
+                    throw new IllegalStateException(throwable1);
+                }
 
-            Leaderboard.INSTANCE.load(javaPlugin)
-                    .whenComplete((unused1, throwable1) -> {
-                        if (throwable1 != null) {
-                            throw new IllegalStateException(throwable1);
-                        }
+                Leaderboard.INSTANCE.load(javaPlugin)
+                        .whenComplete((unused1, throwable2) -> {
+                            if (throwable2 != null) {
+                                throw new IllegalStateException(throwable2);
+                            }
 
-                        // when the global leaderboard is complete, load the per-island
-                        // leaderboard
-                        IslandBoard.load(javaPlugin);
+                            // when the global leaderboard is complete, load the per-island
+                            // leaderboard
+                            IslandBoard.load(javaPlugin).whenComplete((o, throwable3) -> {
+                                if (throwable3 != null) {
+                                    throw new IllegalStateException(throwable3);
+                                }
 
-                        // once the database is loaded once, and for all - load
-                        // the players that are currently online
-                        for (final Player player : Bukkit.getOnlinePlayers()) {
-                            PlayerService.INSTANCE.internalRefresh(player);
-                        }
-                    });
+                                // once the database is loaded once, and for all - load
+                                // the players that are currently online
+                                for (final Player player : Bukkit.getOnlinePlayers()) {
+                                    PlayerService.INSTANCE.internalRefresh(player);
+                                }
+                            });
+                        });
+            });
 
             Message.load(javaPlugin.getDataFolder());
         });
@@ -93,13 +100,9 @@ public final class SpeedBridge {
         DatabaseManager.shutdown();
         PluginExecutor.INSTANCE.shutdown();
 
-        final File worldFile = SchematicManager.INSTANCE.getWorldFile();
-        if (worldFile != null && worldFile.exists()) {
-            if (!worldFile.delete()) {
-                javaPlugin.getLogger().warning("The SpeedBridge2 World file couldn't be " +
-                                              "deleted due to being locked.");
-            }
-        }
+        PlayerService.INSTANCE.shutdown();
+
+        Bukkit.unloadWorld("speedbridge2", false);
     }
 
     public static BukkitAudiences getAdventure() {

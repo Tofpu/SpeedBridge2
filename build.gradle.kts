@@ -27,6 +27,12 @@ tasks {
             relocate("com.zaxxer.HikariCP", "io.tofpu.speedbridge2.lib.hikaricp")
         }
     }
+
+    processResources {
+        filesMatching("plugin.yml") {
+            expand(project.properties)
+        }
+    }
 }
 
 repositories {

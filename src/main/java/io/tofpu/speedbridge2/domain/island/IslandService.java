@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public final class IslandService {
     public static final @NotNull IslandService INSTANCE = new IslandService();
@@ -20,8 +22,8 @@ public final class IslandService {
         this.islandRepository = new IslandRepository();
     }
 
-    public void load() {
-        this.islandRepository.loadIslands().whenComplete((islandMap, throwable) -> {
+    public CompletableFuture<Map<Integer, Island>> load() {
+        return this.islandRepository.loadIslands().whenComplete((islandMap, throwable) -> {
             this.islandHandler.load(islandMap);
         });
     }

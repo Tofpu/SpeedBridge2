@@ -94,6 +94,8 @@ public final class GamePlayer {
     }
 
     public GamePlayer remove() {
+        resetBlocks();
+
         GAME_PLAYER_MAP.remove(this.getBridgePlayer().getPlayerUid());
         return this;
     }

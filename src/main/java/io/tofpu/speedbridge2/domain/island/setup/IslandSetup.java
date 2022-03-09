@@ -46,6 +46,9 @@ public final class IslandSetup {
 
         final Location absoluteLocation = islandPlot.getPlotLocation()
                 .subtract(this.playerSpawnPoint);
+        absoluteLocation.setYaw(this.playerSpawnPoint.getYaw());
+        absoluteLocation.setPitch(this.playerSpawnPoint.getPitch());
+
         island.setAbsoluteLocation(absoluteLocation);
 
         // teleporting the player to the lobby location

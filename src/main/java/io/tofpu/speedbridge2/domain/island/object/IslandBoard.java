@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class IslandBoard {
@@ -25,7 +26,8 @@ public final class IslandBoard {
         ISLAND_QUEUE.remove(island);
     }
 
-    public static void load(final JavaPlugin javaPlugin) {
+    public static CompletableFuture<?> load(final JavaPlugin javaPlugin) {
+        final CompletableFuture<?> completableFuture = new CompletableFuture<>();
         Bukkit.getScheduler()
                 .runTaskAsynchronously(javaPlugin, () -> {
                     BridgeUtil.debug("IslandBoard#load(): loading the island's " +
@@ -70,6 +72,7 @@ public final class IslandBoard {
                             e.printStackTrace();
                         }
                     }
+                    completableFuture.complete(null);
                 });
 
         Bukkit.getScheduler()
@@ -83,6 +86,8 @@ public final class IslandBoard {
                         island.updateLeaderboard();
                     }
                 }, 1L, 20 * INTERVAL);
+
+        return completableFuture;
     }
 
     public static void reset(final UUID uuid) {

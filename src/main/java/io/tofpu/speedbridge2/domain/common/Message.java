@@ -21,10 +21,10 @@ public final class Message {
     public static final String SCORE_TITLE_BAR = MessageUtil.CHAT_BAR.substring(0,
             MessageUtil.CHAT_BAR.length() / 6);
     @IgnoreMessage
-    public static final String STYLE =
+    public final String style =
             "<gold>" + MessageUtil.Symbols.CLOCK.getSymbol() + "<yellow> ";
     @IgnoreMessage
-    public static final String SECOND_STYLE =
+    public final String secondStyle =
             "<gold>" + MessageUtil.Symbols.STAR.getSymbol() + "<yellow> ";
     @IgnoreMessage
     public final String error = "<red>" + MessageUtil.Symbols.WARNING.getSymbol() + " ";
@@ -64,9 +64,9 @@ public final class Message {
     public final String reloaded = success + "The config has been reloaded!";
     public final String lobbySetLocation = success + "The lobby location has been set!";
     public final String emptySessionLeaderboard = "<strikethrough><gray>----";
-    public final String timeStarted = STYLE + "The timer is now ticking!";
+    public final String timeStarted = style + "The timer is now ticking!";
     public final String scored =
-            SECOND_STYLE + "You scored <yellow>%s</yellow> " + "seconds!";
+            secondStyle + "You scored <yellow>%s</yellow> " + "seconds!";
 
     public final String lobbyMissing =
             error + "Incomplete setup. Please ensure to set up SpeedBridge's lobby to " +

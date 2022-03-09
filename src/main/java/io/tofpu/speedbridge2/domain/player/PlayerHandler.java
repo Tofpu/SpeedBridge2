@@ -7,6 +7,7 @@ import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.island.setup.IslandSetupManager;
 import io.tofpu.speedbridge2.domain.player.loader.PlayerLoader;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,5 +80,15 @@ public final class PlayerHandler {
             return;
         }
         bridgePlayer.reset();
+    }
+
+    public void shutdown() {
+        for (final BridgePlayer bridgePlayer : getBridgePlayers()) {
+            final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
+            if (gamePlayer == null) {
+                return;
+            }
+            gamePlayer.resetBlocks();
+        }
     }
 }

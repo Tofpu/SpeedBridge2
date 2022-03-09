@@ -124,7 +124,11 @@ public final class IslandPlot {
         }
 
         // otherwise, add plot's location to the absolute location
-        return getPlotLocation().subtract(absoluteLocation);
+        final Location islandLocation = getPlotLocation().subtract(absoluteLocation);
+        islandLocation.setYaw(absoluteLocation.getYaw());
+        islandLocation.setPitch(absoluteLocation.getPitch());
+
+        return islandLocation;
     }
 
     public Location getPlotLocation() {

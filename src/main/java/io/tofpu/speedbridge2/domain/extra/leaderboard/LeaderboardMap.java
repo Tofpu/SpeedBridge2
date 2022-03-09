@@ -17,7 +17,6 @@ public final class LeaderboardMap extends LinkedHashMap<Integer, BoardPlayer> {
 
     public void load(final Map<Integer, BoardPlayer> boardPlayerMap) {
         for (final BoardPlayer boardPlayer : boardPlayerMap.values()) {
-            //            final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(boardPlayer.getOwner());
             this.globalReference.put(boardPlayer.getOwner(), boardPlayer.getScore());
         }
         updateLeaderboard();

@@ -45,4 +45,8 @@ public final class PlayerService {
     public void reset(final UUID uuid) {
         playerHandler.reset(uuid);
     }
+
+    public void shutdown() {
+        playerHandler.shutdown();
+    }
 }
