@@ -44,7 +44,7 @@ public final class IslandSetup {
         this.removed = true;
         playerEditor.toggleSetup();
 
-        final Location absoluteLocation = islandPlot.getIslandLocation()
+        final Location absoluteLocation = islandPlot.getPlotLocation()
                 .subtract(this.playerSpawnPoint);
         island.setAbsoluteLocation(absoluteLocation);
 
@@ -75,7 +75,6 @@ public final class IslandSetup {
         final int plotY = (int) islandPlot.getY() - offset;
         final int plotZ = (int) islandPlot.getZ() - offset;
 
-        // TODO: This is causing lag, needs to be fixed!
         // resetting the blocks
         for (int x = 0; x < maximumPoint.getX() - minimumPoint.getX() + offset; x++) {
             for (int y = 0; y < maximumPoint.getY() - minimumPoint.getY() + offset; y++) {

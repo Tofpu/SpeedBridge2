@@ -21,10 +21,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class SchematicManager {
     public static final @NotNull SchematicManager INSTANCE = new SchematicManager();
 
-    private static final @NotNull Map<Integer, Collection<IslandPlot>> SCHEMATIC_PLOTS =
+    private static final @NotNull Map<Integer, Collection<IslandPlot>> ISLAND_PLOTS =
             new HashMap<>();
     private static final AtomicInteger COUNTER = new AtomicInteger();
 
+    private File worldFile;
     private @Nullable World world;
 
     private SchematicManager() {}
@@ -37,12 +38,8 @@ public final class SchematicManager {
         }
         this.world = world;
 
-        final File bridgeWorld = new File(plugin.getDataFolder()
+        worldFile = new File(plugin.getDataFolder()
                 .getParentFile(), "speedbridge2");
-        // if the bridge world exists, delete it on exit
-        if (bridgeWorld.exists()) {
-            bridgeWorld.deleteOnExit();
-        }
 
         protectWorld(world);
     }
@@ -67,44 +64,16 @@ public final class SchematicManager {
         }
 
         final Island island = gameIsland.getIsland();
-        IslandPlot selectedPlot = null;
+        final int islandSlot = island.getSlot();
+        final Collection<IslandPlot> islandPlots = retrieve(islandSlot);
+        IslandPlot availablePlot = getAvailablePlot(islandPlots, islandSlot);
 
-        final Collection<IslandPlot> islandPlots = retrieve(island.getSlot());
-        for (final IslandPlot islandPlot : islandPlots) {
-            // if a free plot was found that equals to the same slot, select the plot and
-            // break the loop
-            if (islandPlot.getIsland()
-                        .getSlot() == island.getSlot() && islandPlot.isPlotFree()) {
-                BridgeUtil.debug("found an available plot!");
-                selectedPlot = islandPlot;
-                break;
-            }
-        }
-
-        // if the plot was not found, create our own & add it to our plots collection
-        if (selectedPlot == null) {
-            BridgeUtil.debug("no free plot available, creating our own plot!");
-
-            final double[] positions = {
-                    100 * (COUNTER.getAndIncrement() + 100), 100, 100};
-
-            selectedPlot = new IslandPlot(island, world, positions);
-
-            // reserving the plot to player
-            selectedPlot.reservePlot(gameIsland);
-            try {
-                // attempt to generate the plot
-                selectedPlot.generatePlot();
-            } catch (WorldEditException e) {
-                e.printStackTrace();
-                return null;
-            }
-
-            // adding the plot for usability
-            islandPlots.add(selectedPlot);
+        // if we found an available plot, start reserving the plot
+        if (availablePlot != null) {
+            availablePlot.reservePlot(gameIsland);
         } else {
-            // reserving the plot to player
-            selectedPlot.reservePlot(gameIsland);
+            // otherwise, create our own island plot
+            availablePlot = createIslandPlot(islandPlots, island, gameIsland);
         }
 
         final GamePlayer gamePlayer = gameIsland.getGamePlayer();
@@ -112,42 +81,61 @@ public final class SchematicManager {
         // setting the player island slot
         gamePlayer.setCurrentGame(gameIsland);
         // teleports the player to plot
-        gamePlayer.teleport(selectedPlot);
+        gamePlayer.teleport(availablePlot);
 
         gameIsland.onJoin();
 
-        return selectedPlot;
+        return availablePlot;
+    }
+
+    private IslandPlot getAvailablePlot(final Collection<IslandPlot> islandPlots, final int slot) {
+        for (final IslandPlot islandPlot : islandPlots) {
+            // if it's not the same island plot, or the plot is not free; continue
+            if (islandPlot.getIsland().getSlot() != slot || !islandPlot.isPlotFree()) {
+                continue;
+            }
+
+            BridgeUtil.debug("found an available plot!");
+            return islandPlot;
+        }
+        return null;
+    }
+
+    private IslandPlot createIslandPlot(final Collection<IslandPlot> islandPlots, final Island target, final GameIsland gameIsland) {
+        BridgeUtil.debug("no free plot available, creating our own plot!");
+
+        final double[] positions = {100 * (COUNTER.getAndIncrement() + 100), 100, 100};
+
+        final IslandPlot islandPlot = new IslandPlot(target, world, positions);
+
+        // reserving the plot to player
+        islandPlot.reservePlot(gameIsland);
+        try {
+            // attempt to generate the plot
+            islandPlot.generatePlot();
+        } catch (WorldEditException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        // adding the plot for usability
+        islandPlots.add(islandPlot);
+
+        // adding the new island plot to the schematic plot map
+        ISLAND_PLOTS.put(target.getSlot(), islandPlots);
+        return islandPlot;
     }
 
     public Collection<IslandPlot> retrieve(final int slot) {
-        return SCHEMATIC_PLOTS.getOrDefault(slot, new ArrayList<>());
-    }
-
-    public boolean freePlot(final GameIsland gameIsland) {
-        IslandPlot selectedPlot = null;
-
-        for (final IslandPlot islandPlot : retrieve(gameIsland.getIsland().getSlot())) {
-            // if a plot's island equals to island, select the plot and break the loop
-            final GameIsland island = islandPlot.getGameIsland();
-            if (island != null && island.equals(gameIsland)) {
-                BridgeUtil.debug("found the identical island plot!");
-                selectedPlot = islandPlot;
-                break;
-            }
-        }
-
-        if (selectedPlot == null) {
-            return false;
-        }
-
-        // free the plot for other players
-        selectedPlot.freePlot();
-
-        return true;
+        return ISLAND_PLOTS.getOrDefault(slot, new ArrayList<>());
     }
 
     public void clearPlot(final int slot) {
-        SCHEMATIC_PLOTS.remove(slot);
+        ISLAND_PLOTS.remove(slot);
+    }
+
+    public File getWorldFile() {
+        return worldFile;
     }
 
     public static final class EmptyChunkGenerator extends ChunkGenerator {

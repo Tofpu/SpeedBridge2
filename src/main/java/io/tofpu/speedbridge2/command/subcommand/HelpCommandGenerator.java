@@ -51,7 +51,9 @@ public final class HelpCommandGenerator {
                 continue;
             }
 
-            messages.add(String.format(format, commandMethod.value(), commandDescription.value()));
+            messages.add(String.format(format, commandMethod.value().replace(
+                    "speedbridge|sb", "sb"),
+                    commandDescription.value()));
         }
 
         messages.add("");

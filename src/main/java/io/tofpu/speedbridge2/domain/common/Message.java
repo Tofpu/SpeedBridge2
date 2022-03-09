@@ -18,119 +18,98 @@ public final class Message {
     public static final @NotNull Message INSTANCE = new Message();
 
     @IgnoreMessage
-    public final String ERROR = "<red>" + MessageUtil.Symbols.WARNING.getSymbol() + " ";
-
-    @IgnoreMessage
-    public final String SUCCESS =
-            "<gold><bold>" + MessageUtil.Symbols.ARROW_RIGHT.getSymbol() +
-            "</bold> <yellow>";
-
-    public final String NO_ARGUMENT =
-            SUCCESS + "Type " + runCommand("/speedbridge help") + " for further " +
-            "information.";
-
-    public final String ISLAND_ALREADY_EXISTS = ERROR + "Island %s already exists!";
-
-    public final String ISLAND_HAS_BEEN_CREATED_SCHEMATIC =
-            SUCCESS + "Island %s has been created with '%s' chosen as a " +
-            "schematic!";
-
-    public final String ISLAND_SETUP_NOTIFICATION =
-            SUCCESS + "You can complete your %slot% island setup by running " +
-            runCommand("/sb setup %slot%") + ", and setting up the spawn point.";
-
-    public final String VALID_SELECT =
-            SUCCESS + "Island %s has selected" + " \"%s\" " + "as a " + "%s!";
-
-    public final String UNKNOWN_SCHEMATIC = ERROR + "Schematic \"%s\" cannot be found";
-
-    public final String INVALID_ISLAND_ARGUMENT =
-            ERROR + "Invalid argument. Please choose a slot, or an island category" +
-            ".\n" + ERROR + "Alternatively, you could run the '" +
-            runCommand("/randomjoin") + "' command.";
-
-    public final String INVALID_ISLAND = ERROR + "Island %s cannot be found!";
-    public final String NO_AVAILABLE_ISLAND = ERROR + "There is no island available " +
-                                              "at the moment... please try again " +
-                                              "later!";
-
-    public final String ALREADY_IN_A_ISLAND = ERROR + "You're already on an island!";
-
-    @IgnoreMessage
-    public final String SCORE_TITLE_BAR = MessageUtil.CHAT_BAR.substring(0,
+    public static final String SCORE_TITLE_BAR = MessageUtil.CHAT_BAR.substring(0,
             MessageUtil.CHAT_BAR.length() / 6);
-
-    public final String SCORE_TITLE =
-            "<yellow>" + SCORE_TITLE_BAR + "  " + "<gold><bold" +
-            "> YOUR SCORES</bold></gold>" + " " + SCORE_TITLE_BAR;
-
-    public final String JOINED_AN_ISLAND = SUCCESS + "You're now on island %s!";
-    public final String LEFT_AN_ISLAND = SUCCESS + "You left from island" + " %s!";
-    public final String NOT_IN_A_ISLAND = ERROR + "You're not on an island!";
-
-    public final String DELETED_AN_ISLAND = SUCCESS + "Island %s has been deleted!";
-
-    public final String EMPTY_SELECT = ERROR + "You haven't modified anything...";
-
-    public final String RELOADED = SUCCESS + "The config has been reloaded!";
-
-    public final String LOBBY_SET_LOCATION = SUCCESS + "The lobby location has been set!";
-
-    public final String EMPTY_SESSION_LEADERBOARD = "<strikethrough><gray>----";
-
     @IgnoreMessage
-    public final String STYLE =
+    public static final String STYLE =
             "<gold>" + MessageUtil.Symbols.CLOCK.getSymbol() + "<yellow> ";
     @IgnoreMessage
-    public final String SECOND_STYLE =
+    public static final String SECOND_STYLE =
             "<gold>" + MessageUtil.Symbols.STAR.getSymbol() + "<yellow> ";
-
-    public final String TIME_STARTED = STYLE + "The timer is now ticking!";
-    public final String SCORED =
+    @IgnoreMessage
+    public final String error = "<red>" + MessageUtil.Symbols.WARNING.getSymbol() + " ";
+    @IgnoreMessage
+    public final String success =
+            "<gold><bold>" + MessageUtil.Symbols.ARROW_RIGHT.getSymbol() +
+            "</bold> <yellow>";
+    public final String noArgument =
+            success + "Type " + runCommand("/speedbridge help") + " for further " +
+            "information.";
+    public final String islandAlreadyExists = error + "Island %s already exists!";
+    public final String islandHasBeenCreatedSchematic =
+            success + "Island %s has been created with '%s' chosen as a " + "schematic!";
+    public final String islandSetupNotification =
+            success + "You can complete your %slot% island setup by running " +
+            runCommand("/sb setup %slot%") + ", and setting up the spawn point.";
+    public final String validSelect =
+            success + "Island %s has selected" + " \"%s\" " + "as a " + "%s!";
+    public final String unknownSchematic = error + "Schematic \"%s\" cannot be found";
+    public final String invalidIslandArgument =
+            error + "Invalid argument. Please choose a slot, or an island category" +
+            ".\n" + error + "Alternatively, you could run the '" +
+            runCommand("/randomjoin") + "' command.";
+    public final String invalidIsland = error + "Island %s cannot be found!";
+    public final String noAvailableIsland = error + "There is no island available " +
+                                            "at the moment... please try again " +
+                                            "later!";
+    public final String alreadyInAIsland = error + "You're already on an island!";
+    public final String scoreTitle = "<yellow>" + SCORE_TITLE_BAR + "  " + "<gold><bold" +
+                                     "> YOUR SCORES</bold></gold>" + " " +
+                                     SCORE_TITLE_BAR;
+    public final String joinedAnIsland = success + "You're now on island %s!";
+    public final String leftAnIsland = success + "You left from island" + " %s!";
+    public final String notInAIsland = error + "You're not on an island!";
+    public final String deletedAnIsland = success + "Island %s has been deleted!";
+    public final String emptySelect = error + "You haven't modified anything...";
+    public final String reloaded = success + "The config has been reloaded!";
+    public final String lobbySetLocation = success + "The lobby location has been set!";
+    public final String emptySessionLeaderboard = "<strikethrough><gray>----";
+    public final String timeStarted = STYLE + "The timer is now ticking!";
+    public final String scored =
             SECOND_STYLE + "You scored <yellow>%s</yellow> " + "seconds!";
 
-    public final String LOBBY_MISSING =
-            ERROR + "Incomplete setup. Please ensure to set up SpeedBridge's lobby to " +
-            "complete the " + "process." +
-            "\n<red>Type " + runCommand("/speedbridge setlobby") + " to set the " + "lobby.";
+    public final String lobbyMissing =
+            error + "Incomplete setup. Please ensure to set up SpeedBridge's lobby to " +
+            "complete the " + "process." + "\n<red>Type " +
+            runCommand("/speedbridge setlobby") + " to set the " + "lobby.";
 
-    public final String GENERAL_SETUP_INCOMPLETE =
-            ERROR + "Incomplete setup. Please try again " + "later.";
+    public final String generalSetupIncomplete =
+            error + "Incomplete setup. Please try again " + "later.";
 
-    public final String STARTING_SETUP_PROCESS =
-            SUCCESS + "You're now setting up %s " + "island.";
+    public final String startingSetupProcess =
+            success + "You're now setting up %s " + "island.";
 
-    public final String NOT_IN_A_SETUP = ERROR + "You're not setting up anything.";
-    public final String SET_SPAWN_POINT =
-            SUCCESS + "You have set the island's " + "spawnpoint.";
+    public final String notInASetup = error + "You're not setting up anything.";
+    public final String setSpawnPoint =
+            success + "You have set the island's " + "spawnpoint.";
 
-    public final String COMPLETE_NOTIFICATION =
-            SUCCESS + "You can complete the setup " + "by typing " +
+    public final String completeNotification =
+            success + "You can complete the setup " + "by typing " +
             runCommand("/sb setup finish");
 
-    public final String SETUP_INCOMPLETE = ERROR + "The setup is incomplete. Please " +
-                                           "ensure that the spawn point is set.";
-    public final String SETUP_COMPLETE = SUCCESS + "The setup is now complete.";
+    public final String setupIncomplete = error + "The setup is incomplete. Please " +
+                                          "ensure that the spawn point is set.";
+    public final String setupComplete = success + "The setup is now complete.";
 
-    public final String EMPTY_SCORE_FORMAT = "";
+    public final String emptyScoreFormat = "";
 
-    public final String INVALID_SPAWN_POINT =
-            ERROR + "The spawn point has to be set inside the regions.";
+    public final String invalidSpawnPoint =
+            error + "The spawn point has to be set inside the regions.";
 
-    public final String SETUP_CANCELLED = SUCCESS + "The setup has been cancelled.";
+    public final String setupCancelled = success + "The setup has been cancelled.";
 
-    public final String PLAYER_DOESNT_EXIST = ERROR + "%s does not exist.";
-    public final String PLAYER_WIPED = SUCCESS + "%s data has been wiped.";
+    public final String playerDoesntExist = error + "%s does not exist.";
+    public final String playerWiped = success + "%s data has been wiped.";
 
-    public final String SOMETHING_WENT_WRONG = ERROR + "Something went wrong... check " +
-                                               "your console";
+    public final String somethingWentWrong =
+            error + "Something went wrong... check " + "your console";
+    public final String inASetup = error + "You're already in a setup.";
 
     private static String runCommand(final String command) {
         return "<hover:show_text:'<yellow>Click to run " +
                "%command%'><click:run_command:'%command%'>%command%".replace(
                        "%command" + "%", command);
     }
-    public final String IN_A_SETUP = ERROR + "You're already in a setup.";
 
     public static @NotNull CompletableFuture<Void> load(final File directory) {
         return CompletableFuture.runAsync(() -> {

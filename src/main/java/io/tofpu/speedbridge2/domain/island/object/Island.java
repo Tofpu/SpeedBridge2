@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.island.object;
 
+import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
@@ -18,12 +19,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Island extends IslandSchematic {
+public class Island {
     private final int slot;
     private final Map<GamePlayer, GameIsland> islandMap = new HashMap<>();
     private String category;
 
     private final LeaderboardMap leaderboardMap = new LeaderboardMap();
+    private final IslandSchematic islandSchematic = new IslandSchematic();
     private Location absoluteLocation = null;
 
     public Island(final int slot, final String category) {
@@ -35,25 +37,17 @@ public class Island extends IslandSchematic {
         return leaderboardMap.get(position);
     }
 
-    public BoardPlayer retrieveBy(final UUID uniqueId) {
-        for (final BoardPlayer boardPlayer : leaderboardMap.values()) {
-            if (boardPlayer.getOwner()
-                    .equals(uniqueId)) {
-                return boardPlayer;
-            }
-        }
-        return null;
-    }
-
-    public Map.Entry<GamePlayer, GameIsland> generateGame(final BridgePlayer player) {
+    public Map.Entry<GamePlayer, GameIsland> join(final BridgePlayer player) {
         // if a schematic cannot be found, return null
-        if (getSchematicClipboard() == null) {
+        if (islandSchematic.getSchematicClipboard() == null) {
             return null;
         }
 
         final GamePlayer gamePlayer = GamePlayer.of(player);
         final GameIsland gameIsland = GameIsland.of(this, gamePlayer);
-        player.setGamePlayer(gamePlayer);
+
+        // starting the plot process
+        gameIsland.start();
 
         this.islandMap.put(gamePlayer, gameIsland);
         return new AbstractMap.SimpleImmutableEntry<>(gamePlayer, gameIsland);
@@ -65,9 +59,12 @@ public class Island extends IslandSchematic {
         if (gameIsland == null) {
             return;
         }
-        BridgeUtil.sendMessage(bridgePlayer.getPlayer(),
-                String.format(Message.INSTANCE.LEFT_AN_ISLAND,
-                slot));
+
+        bridgePlayer.getPlayer()
+                .getInventory()
+                .clear();
+
+        BridgeUtil.sendMessage(bridgePlayer.getPlayer(), String.format(Message.INSTANCE.leftAnIsland, slot));
         bridgePlayer.setGamePlayer(null);
 
         // remove the game player
@@ -86,7 +83,7 @@ public class Island extends IslandSchematic {
     }
 
     public boolean selectSchematic(final @NotNull String schematicName) {
-        final boolean successful = super.selectSchematic(schematicName);
+        final boolean successful = islandSchematic.selectSchematic(schematicName);
         // if the operation was successful, update the database
         if (successful) {
             update();
@@ -104,7 +101,8 @@ public class Island extends IslandSchematic {
     }
 
     public boolean isReady() {
-        return getSchematicClipboard() != null && absoluteLocation != null;
+        return islandSchematic.getSchematicClipboard() != null &&
+               absoluteLocation != null;
     }
 
     private void update() {
@@ -149,5 +147,13 @@ public class Island extends IslandSchematic {
 
     public void resetPlayer(final UUID uuid) {
         this.leaderboardMap.reset(uuid);
+    }
+
+    public Clipboard getSchematicClipboard() {
+        return islandSchematic.getSchematicClipboard();
+    }
+
+    public String getSchematicName() {
+        return islandSchematic.getSchematicName();
     }
 }

@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
-import java.util.Map;
 
 public final class IslandService {
     public static final @NotNull IslandService INSTANCE = new IslandService();
@@ -33,22 +32,12 @@ public final class IslandService {
         return this.islandHandler.createIsland(slot, category, schematic);
     }
 
-    public @NotNull IslandHandler.IslandCreationResult createIsland(final int slot,
-            final @NotNull String category) {
-        return this.islandHandler.createIsland(slot, category);
-    }
-
     public @Nullable Island findIslandBy(final int slot) {
         return this.islandHandler.findIslandBy(slot);
     }
 
     public @Nullable Island findIslandBy(final @NotNull String category) {
         return this.islandHandler.findIslandBy(category);
-    }
-
-    public @NotNull Map.Entry<GamePlayer, GameIsland> generateGame(final @NotNull BridgePlayer player,
-            final @NotNull Island island) {
-        return island.generateGame(player);
     }
 
     public @Nullable GameIsland findGameByPlayer(final BridgePlayer player, final Island island) {

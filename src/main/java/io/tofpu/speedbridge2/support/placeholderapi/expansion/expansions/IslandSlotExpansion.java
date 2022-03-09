@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.support.placeholderapi.expansion.expansions;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
+import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import io.tofpu.speedbridge2.support.placeholderapi.expansion.AbstractExpansion;
@@ -25,6 +26,10 @@ public final class IslandSlotExpansion extends AbstractExpansion {
     @Override
     public String runAction(final BridgePlayer bridgePlayer,
             final GamePlayer gamePlayer, final String[] args) {
-        return gamePlayer.getCurrentGame().getIsland().getSlot() + "";
+        final GameIsland currentGame = bridgePlayer.getCurrentGame();
+        if (currentGame == null) {
+            return "";
+        }
+        return currentGame.getIsland().getSlot() + "";
     }
 }

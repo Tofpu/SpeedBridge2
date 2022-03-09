@@ -16,14 +16,14 @@ public class NullIsland extends Island {
     }
 
     @Override
-    public Map.Entry<GamePlayer, GameIsland> generateGame(final BridgePlayer player) {
+    public Map.Entry<GamePlayer, GameIsland> join(final BridgePlayer player) {
         return new AbstractMap.SimpleImmutableEntry<>(null, null);
     }
 
     @Override
     public void leaveGame(final BridgePlayer bridgePlayer) {
         BridgeUtil.sendMessage(bridgePlayer.getPlayer(),
-                Message.INSTANCE.NOT_IN_A_ISLAND);
+                Message.INSTANCE.notInAIsland);
     }
 
     @Override

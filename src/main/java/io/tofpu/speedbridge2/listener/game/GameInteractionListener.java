@@ -4,6 +4,7 @@ import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.object.Island;
+import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
@@ -31,26 +32,29 @@ public final class GameInteractionListener extends GameListener {
         }
 
         gamePlayer.startTimer();
-        BridgeUtil.sendMessage(event.getPlayer(), Message.INSTANCE.TIME_STARTED);
+        BridgeUtil.sendMessage(event.getPlayer(), Message.INSTANCE.timeStarted);
     }
 
     @EventHandler
     private void whenPlayerScore(final @NotNull PlayerInteractEventWrapper eventWrapper) {
-        final BridgePlayer bridgePlayer = eventWrapper.getBridgePlayer();
-        final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
+        final BridgePlayer player = eventWrapper.getBridgePlayer();
 
-        final Island island = gamePlayer.getCurrentGame()
-                .getIsland();
-        final long startedAt = gamePlayer.getTimer();
+        final GameIsland currentGame = player.getCurrentGame();
+        if (currentGame == null) {
+            return;
+        }
+
+        final Island island = currentGame.getIsland();
+        final long startedAt = player.getTimer();
 
         final double seconds = BridgeUtil.nanoToSeconds(startedAt);
         final Score score = new Score(island.getSlot(), seconds);
 
-        bridgePlayer.setScoreIfLower(island.getSlot(), score.getScore());
-        bridgePlayer.increment(PlayerStatType.TOTAL_WINS);
+        player.setScoreIfLower(island.getSlot(), score.getScore());
+        player.increment(PlayerStatType.TOTAL_WINS);
 
-        BridgeUtil.sendMessage(bridgePlayer, String.format(Message.INSTANCE.SCORED, BridgeUtil.formatNumber(score.getScore())));
+        BridgeUtil.sendMessage(player, String.format(Message.INSTANCE.scored, BridgeUtil.formatNumber(score.getScore())));
 
-        gamePlayer.getCurrentGame().resetGame(false);
+        currentGame.resetGame(false);
     }
 }

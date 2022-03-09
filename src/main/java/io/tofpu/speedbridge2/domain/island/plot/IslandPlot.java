@@ -124,11 +124,11 @@ public final class IslandPlot {
         }
 
         // otherwise, add plot's location to the absolute location
-        return getPlotLocation().add(absoluteLocation);
+        return getPlotLocation().subtract(absoluteLocation);
     }
 
     public Location getPlotLocation() {
-        return this.location;
+        return this.location.clone();
     }
 
     public CuboidRegion region() {
@@ -149,5 +149,34 @@ public final class IslandPlot {
 
     public boolean isPlotFree() {
         return plotState.isPlotFree();
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("IslandPlot{");
+        sb.append("island=")
+                .append(island);
+        sb.append(", world=")
+                .append(world);
+        sb.append(", x=")
+                .append(x);
+        sb.append(", y=")
+                .append(y);
+        sb.append(", z=")
+                .append(z);
+        sb.append(", yaw=")
+                .append(yaw);
+        sb.append(", pitch=")
+                .append(pitch);
+        sb.append(", location=")
+                .append(location);
+        sb.append(", minPoint=")
+                .append(minPoint);
+        sb.append(", maxPoint=")
+                .append(maxPoint);
+        sb.append(", plotState=")
+                .append(plotState);
+        sb.append('}');
+        return sb.toString();
     }
 }

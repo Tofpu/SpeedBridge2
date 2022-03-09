@@ -18,7 +18,7 @@ public class IslandSchematic {
 
     public IslandSchematic() {}
 
-    protected boolean selectSchematic(final @NotNull String schematicName) {
+    public boolean selectSchematic(final @NotNull String schematicName) {
         final File directory = Bukkit.getPluginManager()
                 .getPlugin("WorldEdit")
                 .getDataFolder()

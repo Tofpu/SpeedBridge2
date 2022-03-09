@@ -20,4 +20,13 @@ public final class PlotState {
     public GameIsland getGameIsland() {
         return gameIsland;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("PlotState{");
+        sb.append("gameIsland=")
+                .append(gameIsland);
+        sb.append('}');
+        return sb.toString();
+    }
 }

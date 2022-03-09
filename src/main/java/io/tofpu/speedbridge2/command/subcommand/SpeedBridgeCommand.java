@@ -45,11 +45,11 @@ public final class SpeedBridgeCommand {
     @CommandPermission("speedbridge.lobby.set")
     public void onLobbySet(final BridgePlayer bridgePlayer) {
         if (bridgePlayer.isInSetup()) {
-            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.IN_A_SETUP);
+            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.inASetup);
         }
 
         ConfigurationManager.INSTANCE.getLobbyCategory().setLobbyLocation(bridgePlayer.getPlayer().getLocation()).whenComplete((unused, throwable) -> {
-            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.LOBBY_SET_LOCATION);
+            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.lobbySetLocation);
         });
     }
 
@@ -68,17 +68,17 @@ public final class SpeedBridgeCommand {
 
         final IslandHandler.IslandCreationResult result = islandService.createIsland(slot, category, schematic);
         if (result == IslandHandler.IslandCreationResult.ISLAND_ALREADY_EXISTS) {
-            BridgeUtil.sendMessage(sender, String.format(INSTANCE.ISLAND_ALREADY_EXISTS,
+            BridgeUtil.sendMessage(sender, String.format(INSTANCE.islandAlreadyExists,
                     slot + ""));
             return;
         }
 
         final String message;
         if (result == IslandHandler.IslandCreationResult.UNKNOWN_SCHEMATIC) {
-            message = String.format(INSTANCE.UNKNOWN_SCHEMATIC, schematic);
+            message = String.format(INSTANCE.unknownSchematic, schematic);
         } else {
-            message = String.format(INSTANCE.ISLAND_HAS_BEEN_CREATED_SCHEMATIC,
-                    slot + "", schematic) + "\n" + INSTANCE.ISLAND_SETUP_NOTIFICATION.replace("%slot%", slot + "");
+            message = String.format(INSTANCE.islandHasBeenCreatedSchematic,
+                    slot + "", schematic) + "\n" + INSTANCE.islandSetupNotification.replace("%slot%", slot + "");
         }
         BridgeUtil.sendMessage(sender, message);
     }
@@ -92,9 +92,9 @@ public final class SpeedBridgeCommand {
 
         final String message;
         if (island == null) {
-            message = String.format(INSTANCE.INVALID_ISLAND, slot + "");
+            message = String.format(INSTANCE.invalidIsland, slot + "");
         } else {
-            message = String.format(INSTANCE.DELETED_AN_ISLAND, slot);
+            message = String.format(INSTANCE.deletedAnIsland, slot);
         }
         BridgeUtil.sendMessage(player, message);
     }
@@ -113,7 +113,7 @@ public final class SpeedBridgeCommand {
 
                     final UUID uuidResult = BridgeUtil.findUUIDBy(playerName);
                     if (uuidResult == null) {
-                        BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.PLAYER_DOESNT_EXIST, playerName));
+                        BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerDoesntExist, playerName));
                         return;
                     }
 
@@ -123,14 +123,14 @@ public final class SpeedBridgeCommand {
                             PlayerService.INSTANCE.load(uuidResult)
                                     .get();
                         } catch (InterruptedException | ExecutionException e) {
-                            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.SOMETHING_WENT_WRONG);
+                            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.somethingWentWrong);
                             throw new IllegalStateException(e);
                         }
                     }
 
                     if (target == null) {
                         BridgeUtil.sendMessage(bridgePlayer,
-                                String.format(INSTANCE.PLAYER_DOESNT_EXIST, playerName));
+                                String.format(INSTANCE.playerDoesntExist, playerName));
                         return;
                     }
 
@@ -138,11 +138,11 @@ public final class SpeedBridgeCommand {
                         target.reset()
                                 .get();
                     } catch (InterruptedException | ExecutionException e) {
-                        BridgeUtil.sendMessage(bridgePlayer, INSTANCE.SOMETHING_WENT_WRONG);
+                        BridgeUtil.sendMessage(bridgePlayer, INSTANCE.somethingWentWrong);
                         throw new IllegalStateException(e);
                     }
 
-                    BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.PLAYER_WIPED, playerName));
+                    BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerWiped, playerName));
                 });
     }
 
@@ -156,10 +156,10 @@ public final class SpeedBridgeCommand {
         final CommandSender sender = commonBridgePlayer.getPlayer();
         final Island island = islandService.findIslandBy(slot);
 
-        String message = INSTANCE.EMPTY_SELECT;
+        String message = INSTANCE.emptySelect;
         boolean successful = false;
         if (island == null) {
-            message = String.format(INSTANCE.INVALID_ISLAND, slot + "");
+            message = String.format(INSTANCE.invalidIsland, slot + "");
         } else {
             String selectType = "";
             if (category != null && !category.isEmpty()) {
@@ -174,16 +174,16 @@ public final class SpeedBridgeCommand {
 
             switch (selectType) {
                 case "category":
-                    message = String.format(INSTANCE.VALID_SELECT,
+                    message = String.format(INSTANCE.validSelect,
                             slot + "", category, selectType);
                     break;
                 case "schematic":
                     if (successful) {
-                        message = String.format(INSTANCE.VALID_SELECT,
+                        message = String.format(INSTANCE.validSelect,
                                 slot + "", schematic, selectType);
                         break;
                     }
-                    message = String.format(INSTANCE.UNKNOWN_SCHEMATIC, schematic);
+                    message = String.format(INSTANCE.unknownSchematic, schematic);
                     break;
             }
         }
@@ -203,7 +203,7 @@ public final class SpeedBridgeCommand {
         }
 
         if (bridgePlayer.isInSetup()) {
-            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.IN_A_SETUP);
+            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.inASetup);
             return;
         }
 
@@ -233,15 +233,15 @@ public final class SpeedBridgeCommand {
         final String message;
         if (island == null || !island.isReady()) {
             if (slot == -1) {
-                message = INSTANCE.INVALID_ISLAND_ARGUMENT;
+                message = INSTANCE.invalidIslandArgument;
             } else {
-                message = String.format(INSTANCE.INVALID_ISLAND, slot + "");
+                message = String.format(INSTANCE.invalidIsland, slot + "");
             }
         } else if (bridgePlayer.isPlaying()) {
-            message = INSTANCE.ALREADY_IN_A_ISLAND;
+            message = INSTANCE.alreadyInAIsland;
         } else {
-            message = String.format(INSTANCE.JOINED_AN_ISLAND, slot + "");
-            island.generateGame(bridgePlayer);
+            message = String.format(INSTANCE.joinedAnIsland, slot + "");
+            island.join(bridgePlayer);
         }
 
         if (!message.isEmpty()) {
@@ -263,11 +263,11 @@ public final class SpeedBridgeCommand {
         // if the player is an operator, or has the "speedbridge.lobby.set" permission
         // node
         if (player.isOp() || player.hasPermission("speedbridge.lobby.set")) {
-            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.LOBBY_MISSING);
+            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.lobbyMissing);
         } else {
-            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.GENERAL_SETUP_INCOMPLETE);
+            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.generalSetupIncomplete);
             // forwarding the message to console
-            BridgeUtil.sendMessage(Bukkit.getConsoleSender(), INSTANCE.LOBBY_MISSING);
+            BridgeUtil.sendMessage(Bukkit.getConsoleSender(), INSTANCE.lobbyMissing);
         }
 
         return false;
@@ -292,7 +292,7 @@ public final class SpeedBridgeCommand {
 
         for (final Score score : bridgePlayer.getScores()) {
             if (scoreList.isEmpty()) {
-                scoreList.add(INSTANCE.SCORE_TITLE);
+                scoreList.add(INSTANCE.scoreTitle);
             }
             // Your scores:
             // Island X scored X seconds;
@@ -334,7 +334,7 @@ public final class SpeedBridgeCommand {
             BlockMenuManager.INSTANCE.reload();
 
             if (player.getPlayer() != null) {
-                BridgeUtil.sendMessage(player, INSTANCE.RELOADED);
+                BridgeUtil.sendMessage(player, INSTANCE.reloaded);
             }
         });
     }
@@ -345,7 +345,7 @@ public final class SpeedBridgeCommand {
     @Hidden
     public void onNoArgument(final CommonBridgePlayer<?> bridgePlayer) {
         final CommandSender player = bridgePlayer.getPlayer();
-        BridgeUtil.sendMessage(player, INSTANCE.NO_ARGUMENT);
+        BridgeUtil.sendMessage(player, INSTANCE.noArgument);
     }
 
     @CommandMethod("speedbridge|sb help")
@@ -366,9 +366,9 @@ public final class SpeedBridgeCommand {
 
         final String message;
         if (bridgePlayer.isInSetup()) {
-            message = INSTANCE.IN_A_SETUP;
+            message = INSTANCE.inASetup;
         } else if (bridgePlayer.isPlaying()) {
-            message = INSTANCE.ALREADY_IN_A_ISLAND;
+            message = INSTANCE.alreadyInAIsland;
         } else {
             final Optional<Island> optionalIsland = islandService.getAllIslands()
                     .stream()
@@ -377,12 +377,12 @@ public final class SpeedBridgeCommand {
                     .findAny();
 
             if (optionalIsland.isPresent()) {
-                message = INSTANCE.NO_AVAILABLE_ISLAND;
+                message = INSTANCE.noAvailableIsland;
             } else {
                 final Island island = optionalIsland.get();
-                island.generateGame(bridgePlayer);
+                island.join(bridgePlayer);
 
-                message = String.format(INSTANCE.JOINED_AN_ISLAND, island.getSlot() + "");
+                message = String.format(INSTANCE.joinedAnIsland, island.getSlot() + "");
             }
         }
 
@@ -402,12 +402,12 @@ public final class SpeedBridgeCommand {
 
         final String message;
         if (island == null) {
-            message = String.format(INSTANCE.INVALID_ISLAND, slot);
+            message = String.format(INSTANCE.invalidIsland, slot);
         } else {
             if (bridgePlayer.isInSetup()) {
-                message = INSTANCE.IN_A_SETUP;
+                message = INSTANCE.inASetup;
             } else {
-                message = String.format(INSTANCE.STARTING_SETUP_PROCESS, slot);
+                message = String.format(INSTANCE.startingSetupProcess, slot);
                 IslandSetupManager.INSTANCE.startSetup(bridgePlayer, island);
             }
         }
@@ -423,18 +423,18 @@ public final class SpeedBridgeCommand {
 
         final String message;
         if (!bridgePlayer.isInSetup()) {
-            message = INSTANCE.NOT_IN_A_SETUP;
+            message = INSTANCE.notInASetup;
         } else {
             final Location playerLocation = bridgePlayer.getPlayer()
                     .getLocation();
 
             // if the location given was not valid
             if (!islandSetup.isLocationValid(playerLocation)) {
-                message = INSTANCE.INVALID_SPAWN_POINT;
+                message = INSTANCE.invalidSpawnPoint;
             } else {
                 // otherwise, set the location point
                 message =
-                        INSTANCE.SET_SPAWN_POINT + "\n" + INSTANCE.COMPLETE_NOTIFICATION;
+                        INSTANCE.setSpawnPoint + "\n" + INSTANCE.completeNotification;
 
                 islandSetup.setPlayerSpawnPoint(playerLocation);
             }
@@ -450,11 +450,11 @@ public final class SpeedBridgeCommand {
 
         final String message;
         if (!bridgePlayer.isInSetup()) {
-            message = INSTANCE.NOT_IN_A_SETUP;
+            message = INSTANCE.notInASetup;
         } else if (!islandSetup.isReady()) {
-            message = INSTANCE.SETUP_INCOMPLETE;
+            message = INSTANCE.setupIncomplete;
         } else {
-            message = INSTANCE.SETUP_COMPLETE;
+            message = INSTANCE.setupComplete;
             islandSetup.finish();
         }
 
@@ -469,9 +469,9 @@ public final class SpeedBridgeCommand {
 
         final String message;
         if (!bridgePlayer.isInSetup()) {
-            message = INSTANCE.NOT_IN_A_SETUP;
+            message = INSTANCE.notInASetup;
         } else {
-            message = INSTANCE.SETUP_CANCELLED;
+            message = INSTANCE.setupCancelled;
 
             islandSetup.cancel();
         }

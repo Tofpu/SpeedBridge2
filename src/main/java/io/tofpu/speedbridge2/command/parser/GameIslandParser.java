@@ -2,9 +2,8 @@ package io.tofpu.speedbridge2.command.parser;
 
 import cloud.commandframework.annotations.AnnotationAccessor;
 import cloud.commandframework.context.CommandContext;
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
-import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
+import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 //@AutoRegister
@@ -16,12 +15,6 @@ public final class GameIslandParser<C> {
         }
 
         final BridgePlayer bridgePlayer = (BridgePlayer) context.getSender();
-        final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
-
-        if (gamePlayer == null) {
-            return null;
-        } else {
-            return gamePlayer.getCurrentGame();
-        }
+        return bridgePlayer.getCurrentGame();
     }
 }

@@ -24,18 +24,13 @@ public final class IslandSetupManager {
 
     public boolean startSetup(final BridgePlayer bridgePlayer, final Island island) {
         final UUID playerUid = bridgePlayer.getPlayerUid();
-        IslandSetup islandSetup = islandSetupMap.get(playerUid);
 
-        if (islandSetup != null) {
+        if (islandSetupMap.get(playerUid) != null) {
             return false;
         }
         bridgePlayer.toggleSetup();
 
-        final double[] positions = {100 * (islandSetupMap.size() + 100), 100, 0};
-
-        islandSetup = new IslandSetup(bridgePlayer, island, new IslandPlot(island, world, positions));
-        islandSetupMap.put(playerUid, islandSetup);
-
+        final IslandSetup islandSetup = create(bridgePlayer, island);
         final IslandPlot islandPlot = islandSetup.getIslandPlot();
         try {
             islandPlot.generatePlot();
@@ -45,9 +40,17 @@ public final class IslandSetupManager {
 
         // teleporting the player to the setup location
         bridgePlayer.getPlayer()
-                .teleport(islandPlot.getPlotLocation()
-                        .add(0, 2, 0));
+                .teleport(islandPlot.getPlotLocation());
         return true;
+    }
+
+    private IslandSetup create(final BridgePlayer player, final Island target) {
+        final double[] positions = {100 * (islandSetupMap.size() + 100), 100, 0};
+        final IslandSetup islandSetup = new IslandSetup(player, target, new IslandPlot(target, world, positions));
+
+        islandSetupMap.put(player.getPlayerUid(), islandSetup);
+
+        return islandSetup;
     }
 
     public IslandSetup findSetupBy(final UUID uuid) {

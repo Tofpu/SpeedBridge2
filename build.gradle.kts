@@ -1,10 +1,12 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     java
     id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 group = "io.tofpu"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 tasks {
     compileJava {
@@ -14,6 +16,7 @@ tasks {
     named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
         mergeServiceFiles()
         minimize()
+        classifier = "";
 
         dependencies {
             relocate("org.xerial", "io.tofpu.speedbridge2.lib.sqlite")

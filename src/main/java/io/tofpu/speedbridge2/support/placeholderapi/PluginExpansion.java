@@ -24,7 +24,7 @@ public final class PluginExpansion extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getIdentifier() {
-        return "speedbridge";
+        return "sb";
     }
 
     @Override
