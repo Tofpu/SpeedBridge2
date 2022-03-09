@@ -241,7 +241,7 @@ public final class SpeedBridgeCommand {
             message = INSTANCE.ALREADY_IN_A_ISLAND;
         } else {
             message = String.format(INSTANCE.JOINED_AN_ISLAND, slot + "");
-            island.generateGame(bridgePlayer);
+            island.join(bridgePlayer);
         }
 
         if (!message.isEmpty()) {
@@ -380,7 +380,7 @@ public final class SpeedBridgeCommand {
                 message = INSTANCE.NO_AVAILABLE_ISLAND;
             } else {
                 final Island island = optionalIsland.get();
-                island.generateGame(bridgePlayer);
+                island.join(bridgePlayer);
 
                 message = String.format(INSTANCE.JOINED_AN_ISLAND, island.getSlot() + "");
             }

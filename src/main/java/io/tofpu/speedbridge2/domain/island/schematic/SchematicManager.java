@@ -25,6 +25,7 @@ public final class SchematicManager {
             new HashMap<>();
     private static final AtomicInteger COUNTER = new AtomicInteger();
 
+    private File worldFile;
     private @Nullable World world;
 
     private SchematicManager() {}
@@ -37,12 +38,8 @@ public final class SchematicManager {
         }
         this.world = world;
 
-        final File bridgeWorld = new File(plugin.getDataFolder()
+        worldFile = new File(plugin.getDataFolder()
                 .getParentFile(), "speedbridge2");
-        // if the bridge world exists, delete it on exit
-        if (bridgeWorld.exists()) {
-            bridgeWorld.deleteOnExit();
-        }
 
         protectWorld(world);
     }
@@ -128,6 +125,10 @@ public final class SchematicManager {
 
     public void clearPlot(final int slot) {
         ISLAND_PLOTS.remove(slot);
+    }
+
+    public File getWorldFile() {
+        return worldFile;
     }
 
     public static final class EmptyChunkGenerator extends ChunkGenerator {

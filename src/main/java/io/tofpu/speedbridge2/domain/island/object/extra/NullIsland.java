@@ -16,7 +16,7 @@ public class NullIsland extends Island {
     }
 
     @Override
-    public Map.Entry<GamePlayer, GameIsland> generateGame(final BridgePlayer player) {
+    public Map.Entry<GamePlayer, GameIsland> join(final BridgePlayer player) {
         return new AbstractMap.SimpleImmutableEntry<>(null, null);
     }
 

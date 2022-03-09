@@ -70,10 +70,10 @@ public final class GamePlayer {
             return;
         }
 
-        player.getPlayer().teleport(selectedPlot.getPlotLocation());
+        System.out.println("island: " + selectedPlot.getIslandLocation());
+        System.out.println("plot: " + selectedPlot.getPlotLocation());
 
-//        player.getPlayer()
-//                .teleport(selectedPlot.getIslandLocation());
+        player.getPlayer().teleport(selectedPlot.getIslandLocation());
     }
 
     public boolean hasPlaced(final Block block) {

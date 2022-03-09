@@ -21,7 +21,7 @@ public final class GameIsland {
 
     private final Island island;
     private final GamePlayer gamePlayer;
-    private final IslandPlot islandPlot;
+    private IslandPlot islandPlot;
 
     public static GameIsland of(final Island island, final GamePlayer gamePlayer) {
         return new GameIsland(island, gamePlayer);
@@ -30,11 +30,15 @@ public final class GameIsland {
     private GameIsland(final Island island, final GamePlayer gamePlayer) {
         this.island = island;
         this.gamePlayer = gamePlayer;
+    }
 
+    public void start() {
         // setting the player's queue to true
         this.gamePlayer.startQueue();
 
         this.islandPlot = SchematicManager.INSTANCE.reservePlot(this);
+
+        gamePlayer.getBridgePlayer().setGamePlayer(gamePlayer);
 
         // reset the player's queue
         this.gamePlayer.resetQueue();

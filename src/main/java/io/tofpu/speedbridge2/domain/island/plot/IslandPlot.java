@@ -124,11 +124,11 @@ public final class IslandPlot {
         }
 
         // otherwise, add plot's location to the absolute location
-        return getPlotLocation().add(absoluteLocation);
+        return getPlotLocation().subtract(absoluteLocation);
     }
 
     public Location getPlotLocation() {
-        return this.location;
+        return this.location.clone();
     }
 
     public CuboidRegion region() {

@@ -45,8 +45,7 @@ public final class IslandSetupManager {
 
         // teleporting the player to the setup location
         bridgePlayer.getPlayer()
-                .teleport(islandPlot.getPlotLocation()
-                        .add(0, 2, 0));
+                .teleport(islandPlot.getPlotLocation());
         return true;
     }
 

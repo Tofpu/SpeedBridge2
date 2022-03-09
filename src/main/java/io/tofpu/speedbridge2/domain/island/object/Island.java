@@ -35,17 +35,7 @@ public class Island extends IslandSchematic {
         return leaderboardMap.get(position);
     }
 
-    public BoardPlayer retrieveBy(final UUID uniqueId) {
-        for (final BoardPlayer boardPlayer : leaderboardMap.values()) {
-            if (boardPlayer.getOwner()
-                    .equals(uniqueId)) {
-                return boardPlayer;
-            }
-        }
-        return null;
-    }
-
-    public Map.Entry<GamePlayer, GameIsland> generateGame(final BridgePlayer player) {
+    public Map.Entry<GamePlayer, GameIsland> join(final BridgePlayer player) {
         // if a schematic cannot be found, return null
         if (getSchematicClipboard() == null) {
             return null;
@@ -53,7 +43,9 @@ public class Island extends IslandSchematic {
 
         final GamePlayer gamePlayer = GamePlayer.of(player);
         final GameIsland gameIsland = GameIsland.of(this, gamePlayer);
-        player.setGamePlayer(gamePlayer);
+
+        // starting the plot process
+        gameIsland.start();
 
         this.islandMap.put(gamePlayer, gameIsland);
         return new AbstractMap.SimpleImmutableEntry<>(gamePlayer, gameIsland);

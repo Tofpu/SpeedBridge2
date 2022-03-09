@@ -44,7 +44,7 @@ public final class IslandSetup {
         this.removed = true;
         playerEditor.toggleSetup();
 
-        final Location absoluteLocation = islandPlot.getIslandLocation()
+        final Location absoluteLocation = islandPlot.getPlotLocation()
                 .subtract(this.playerSpawnPoint);
         island.setAbsoluteLocation(absoluteLocation);
 

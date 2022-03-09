@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.io.IOException;
 
 public final class SpeedBridge {
@@ -91,6 +92,14 @@ public final class SpeedBridge {
     public void shutdown() {
         DatabaseManager.shutdown();
         PluginExecutor.INSTANCE.shutdown();
+
+        final File worldFile = SchematicManager.INSTANCE.getWorldFile();
+        if (worldFile != null && worldFile.exists()) {
+            if (!worldFile.delete()) {
+                javaPlugin.getLogger().warning("The SpeedBridge2 World file couldn't be " +
+                                              "deleted due to being locked.");
+            }
+        }
     }
 
     public static BukkitAudiences getAdventure() {

@@ -48,7 +48,7 @@ public final class IslandService {
 
     public @NotNull Map.Entry<GamePlayer, GameIsland> generateGame(final @NotNull BridgePlayer player,
             final @NotNull Island island) {
-        return island.generateGame(player);
+        return island.join(player);
     }
 
     public @Nullable GameIsland findGameByPlayer(final BridgePlayer player, final Island island) {
