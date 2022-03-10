@@ -18,7 +18,7 @@ public final class HelpCommandGenerator {
     private static final String HELP_BAR = "<yellow>" + MessageUtil.CHAT_BAR.substring(0,
             MessageUtil.CHAT_BAR.length() / 6);
     private static final String HELP_TITLE =
-            HELP_BAR + "  " + "<gold" + "><bold> " + "SPEEDBRIDE V2</bold></gold>" + " " +
+            HELP_BAR + "  " + "<gold><bold>" + "SPEEDBRIDE V2</bold></gold>" + " " +
             HELP_BAR;
     private static Component helpMessageComponent = null;
 

@@ -25,6 +25,8 @@ tasks {
             relocate("net.kyori.adventure", "io.tofpu.speedbridge2.lib.adventure")
             relocate("com.zaxxer.HikariCP", "io.tofpu.speedbridge2.lib.hikaricp")
         }
+
+        exclude("META-INF/**")
     }
 
     processResources {
@@ -55,9 +57,9 @@ dependencies {
     implementation("cloud.commandframework:cloud-bukkit:1.6.2")
     implementation("cloud.commandframework:cloud-annotations:1.6.1")
 
-    implementation("net.kyori:adventure-api:4.10.0-SNAPSHOT")
+    implementation("net.kyori:adventure-api:4.10.1")
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
-    implementation("net.kyori:adventure-text-minimessage:4.10.0-SNAPSHOT")
+    implementation("net.kyori:adventure-text-minimessage:4.10.1")
 
     implementation("com.github.tofpu:DynamicClass:2ea7dee04c") {
         exclude("com.google.guava", "guava")
