@@ -4,7 +4,6 @@ import cloud.commandframework.annotations.CommandDescription;
 import cloud.commandframework.annotations.CommandMethod;
 import cloud.commandframework.annotations.Hidden;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -15,35 +14,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class HelpCommandGenerator {
-    private static final String HELP_BAR = "<yellow>" + MessageUtil.CHAT_BAR.substring(0,
-            MessageUtil.CHAT_BAR.length() / 6);
-    private static final String HELP_TITLE =
-            HELP_BAR + "  " + "<gold><bold>" + "SPEEDBRIDE V2</bold></gold>" + " " +
-            HELP_BAR;
+    private static final String FIRST_CHARACTER = "<dark_gray>| ";
+    private static final String TITLE = FIRST_CHARACTER + "- <white><bold>%s</bold>";
+    private static final String SUBTITLE = FIRST_CHARACTER + "-- <yellow>%s";
+    private static final String PAIR_FORMAT = String.format(SUBTITLE, "%s: <white>%s");
+
+    private static final String HEADER = FIRST_CHARACTER +
+                                         "<<gold>-</gold>> <yellow><bold>SpeedBridge <white>V2</bold>";
+    private static final String COMMAND_FORMAT = String.format(SUBTITLE, "/%s " +
+                                                                         "<dark_gray>- <white>%s");
+
     private static Component helpMessageComponent = null;
 
     public static void generateHelpCommand(final @NotNull Plugin plugin) {
         final Method[] declaredMethods = SpeedBridgeCommand.class.getDeclaredMethods();
 
         final List<String> messages = new ArrayList<>();
-        messages.add(HELP_TITLE);
+        messages.add(HEADER);
         messages.add("");
 
-        final String prefix =
-                " <gold><bold>" + MessageUtil.Symbols.ARROW_RIGHT.getSymbol() + " ";
-        final String infoPrefix = " <gold><bold>│ ";
-        final String infoFormat = prefix + "<bold><yellow>%s:<reset> <yellow>%s";
-
-        messages.add(infoPrefix + "INFORMATION");
-        messages.add(String.format(infoFormat, "Author", "Tofpu"));
-        messages.add(String.format(infoFormat, "Version", plugin.getDescription()
+        messages.add(String.format(TITLE, "Information"));
+        messages.add(String.format(PAIR_FORMAT, "Author", "Tofpu"));
+        messages.add(String.format(PAIR_FORMAT, "Version", plugin.getDescription()
                 .getVersion()));
-
         messages.add("");
 
-        final String format = prefix + "<reset><gold>/<yellow>%s <gray>-</gray> %s";
-
-        messages.add(infoPrefix + "SPEEDBRIDGE COMMANDS");
+        messages.add(String.format(TITLE, "Commands"));
         for (final Method method : declaredMethods) {
             final CommandMethod commandMethod = method.getAnnotation(CommandMethod.class);
             final CommandDescription commandDescription = method.getAnnotation(CommandDescription.class);
@@ -51,16 +47,14 @@ public final class HelpCommandGenerator {
                 continue;
             }
 
-            messages.add(String.format(format, commandMethod.value().replace(
-                    "speedbridge|sb", "sb"),
-                    commandDescription.value()));
+            messages.add(String.format(COMMAND_FORMAT, commandMethod.value()
+                    .replace("speedbridge|sb", "sb"), commandDescription.value()));
         }
 
         messages.add("");
-        messages.add(infoPrefix + "NEED ASSISTANCE?");
-        messages.add(prefix + "<yellow>Join our discord at <reset>https://discord" +
-                     ".gg/rjks6D5Ynq");
-        messages.add(MessageUtil.MENU_BAR);
+        messages.add(String.format(TITLE, "Support"));
+        messages.add(String.format(PAIR_FORMAT, "Discord",
+                "<click:OPEN_URL:https://tofpu.me/discord>tofpu.me/discord"));
 
         final StringBuilder builder = new StringBuilder();
         for (final String message : messages) {

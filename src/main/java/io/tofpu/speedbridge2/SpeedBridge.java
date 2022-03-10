@@ -37,6 +37,7 @@ public final class SpeedBridge {
 
         MultiWorldEditAPI.load(javaPlugin);
 
+        log("Loading the `config.yml`...");
         ConfigurationManager.INSTANCE.load(javaPlugin);
         ExpansionHandler.INSTANCE.load();
 
@@ -44,36 +45,47 @@ public final class SpeedBridge {
             DynamicClass.addParameters(javaPlugin);
             DynamicClass.alternativeScan(getClass().getClassLoader(), "io.tofpu" +
                     ".speedbridge2");
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final IOException e) {
+            throw new IllegalStateException(e);
         }
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            log("Hooking into PlaceholderAPI...");
             new PluginExpansion(javaPlugin);
         }
 
+        log("Loading the `speedbridge2` world...");
         SchematicManager.INSTANCE.load(javaPlugin);
+
         IslandSetupManager.INSTANCE.load();
+
+        log("Registering the commands...");
         CommandManager.load(javaPlugin);
+
+        log("Loading the Block Menu GUI.");
         BlockMenuManager.INSTANCE.load();
 
+        log("Loading the database...");
         DatabaseManager.load(javaPlugin).whenComplete((unused, throwable) -> {
             if (throwable != null) {
                 throw new IllegalStateException(throwable);
             }
 
             final IslandService islandService = IslandService.INSTANCE;
+            log("Loading the island data...");
             islandService.load().whenComplete((integerIslandMap, throwable1) -> {
                 if (throwable1 != null) {
                     throw new IllegalStateException(throwable1);
                 }
 
+                log("Loading the global/session leaderboard...");
                 Leaderboard.INSTANCE.load(javaPlugin)
                         .whenComplete((unused1, throwable2) -> {
                             if (throwable2 != null) {
                                 throw new IllegalStateException(throwable2);
                             }
 
+                            log("Loading the island leaderboard...");
                             // when the global leaderboard is complete, load the per-island
                             // leaderboard
                             IslandBoard.load(javaPlugin).whenComplete((o, throwable3) -> {
@@ -86,23 +98,36 @@ public final class SpeedBridge {
                                 for (final Player player : Bukkit.getOnlinePlayers()) {
                                     PlayerService.INSTANCE.internalRefresh(player);
                                 }
+
+                                log("Complete.");
                             });
                         });
             });
 
+            log("Loading the messages...");
             Message.load(javaPlugin.getDataFolder());
         });
 
+        log("Generating `/sb help` message...");
         HelpCommandGenerator.generateHelpCommand(javaPlugin);
     }
 
     public void shutdown() {
+        log("Shutting down the database...");
         DatabaseManager.shutdown();
         PluginExecutor.INSTANCE.shutdown();
 
+        log("Doing clean-up operations...");
         PlayerService.INSTANCE.shutdown();
 
+        log("Unloading the `speedbridge2` world...");
         Bukkit.unloadWorld("speedbridge2", false);
+
+        log("Complete.");
+    }
+
+    private void log(final String content) {
+        javaPlugin.getLogger().info(content);
     }
 
     public static BukkitAudiences getAdventure() {

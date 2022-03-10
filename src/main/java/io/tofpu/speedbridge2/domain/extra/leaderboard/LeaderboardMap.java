@@ -45,10 +45,16 @@ public final class LeaderboardMap extends LinkedHashMap<Integer, BoardPlayer> {
         // sorting the board clone by the key
         final Map<Integer, BoardPlayer> newBoardMap = globalBoardCopy.entrySet()
                 .stream()
-                .filter(uuidScoreEntry -> !removeUserList.contains(uuidScoreEntry.getValue().getOwner()))
+                .filter(uuidScoreEntry -> !removeUserList.contains(uuidScoreEntry.getValue()
+                        .getOwner()))
                 .sorted(Map.Entry.comparingByKey())
                 .limit(10)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (boardPlayer, boardPlayer2) -> {
+                    if (boardPlayer.getPosition() > boardPlayer2.getPosition()) {
+                        return boardPlayer2;
+                    }
+                    return boardPlayer;
+                }));
 
         // clearing the global map
         this.clear();
