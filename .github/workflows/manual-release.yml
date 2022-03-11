@@ -20,14 +20,14 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
         
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
-      with:
-        arguments: shadowJar
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
+        with:
+          arguments: shadowJar
           
-    - name: Upload jar
-      uses: AButler/upload-release-assets@v2.0
-      with:
-        release-tag: ${{ github.event.inputs.release-tag }}
-        files: ${{ github.event.inputs.path }}
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload jar
+        uses: AButler/upload-release-assets@v2.0
+        with:
+          release-tag: ${{ github.event.inputs.release-tag }}
+          files: ${{ github.event.inputs.path }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
