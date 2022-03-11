@@ -1,7 +1,5 @@
 package io.tofpu.speedbridge2.domain.common.database;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
@@ -13,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -20,7 +19,8 @@ import java.util.concurrent.CompletableFuture;
 
 public final class DatabaseManager {
     private static final @NotNull Queue<String> TABLE_QUEUE = new LinkedList<>();
-    private static @Nullable HikariDataSource dataSource;
+    private static File databaseFile;
+    private static Connection connection;
 
     public static CompletableFuture<Void> load(final @NotNull Plugin plugin) {
         return PluginExecutor.runAsync(() -> {
@@ -35,25 +35,14 @@ public final class DatabaseManager {
                 parentFolder.mkdir();
             }
 
-            final File databaseFile = new File(plugin.getDataFolder(), "data.db");
+            databaseFile = new File(plugin.getDataFolder(), "data.db");
             try {
                 databaseFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            final HikariConfig config = new HikariConfig();
-            config.setJdbcUrl("jdbc:sqlite:" + databaseFile);
-            config.setUsername("test");
-            config.setPassword("test");
-            config.addDataSourceProperty("cachePrepStmts", "true");
-            config.addDataSourceProperty("prepStmtCacheSize", "250");
-            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-            config.setConnectionTestQuery("SELECT 1;");
-
-            System.out.println("Loading Hikari now!");
-
-            DatabaseManager.dataSource = new HikariDataSource(config);
+            connection = getConnection();
 
             loadTables();
         });
@@ -77,15 +66,19 @@ public final class DatabaseManager {
             try (final DatabaseQuery query = new DatabaseQuery(table)) {
                 query.execute();
                 BridgeUtil.debug("Attempted to create " + table + " table!");
-            } catch (Exception exception) {
-                exception.printStackTrace();
+            } catch (final Exception exception) {
+                throw new IllegalStateException(exception);
             }
         }
     }
 
     public static void shutdown() {
-        if (dataSource != null) {
-            dataSource.close();
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new IllegalStateException(e);
+            }
         }
     }
 
@@ -95,12 +88,12 @@ public final class DatabaseManager {
 
     public static @Nullable Connection getConnection() {
         try {
-            if (dataSource != null) {
-                return dataSource.getConnection();
+            if (connection != null && !connection.isClosed()) {
+                return connection;
             }
+            return DriverManager.getConnection("jdbc:sqlite:" + databaseFile);
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            throw new IllegalStateException(exception);
         }
-        return null;
     }
 }

@@ -15,14 +15,12 @@ public class DatabaseQuery implements AutoCloseable {
     private final @NotNull AtomicInteger setterCounter;
 
     public DatabaseQuery(final @NotNull String query) {
-        PreparedStatement preparedStatement;
         try {
-            preparedStatement = DatabaseManager.getConnection().prepareStatement(query);
+            this.preparedStatement =
+                    DatabaseManager.getConnection().prepareStatement(query);
         } catch (final SQLException exception) {
-            exception.printStackTrace();
-            preparedStatement = null;
+            throw new IllegalStateException(exception);
         }
-        this.preparedStatement = preparedStatement;
         this.setterCounter = new AtomicInteger(0);
     }
 
