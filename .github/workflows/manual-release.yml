@@ -8,7 +8,7 @@ on:
         required: true
       path:
         description: 'build/libs/SpeedBridge2-*.jar'
-        required: true
+        required: false
 
 jobs:
   build:
@@ -29,5 +29,5 @@ jobs:
         uses: AButler/upload-release-assets@v2.0
         with:
           release-tag: ${{ github.event.inputs.release-tag }}
-          files: ${{ github.event.inputs.path }}
+          files: ${{ github.workspace }}/build/libs/*.jar
           repo-token: ${{ secrets.GITHUB_TOKEN }}
