@@ -41,8 +41,6 @@ public final class StatsDatabase extends Database {
             databaseQuery.setString(playerStat.getOwner()
                     .toString());
             databaseQuery.setString(playerStat.getKey());
-
-            System.out.println(playerStat);
         });
     }
 

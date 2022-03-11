@@ -17,6 +17,7 @@ public final class ReflectionUtil {
                 BridgeUtil.debug("object: " + message);
                 strings.add(field.getName() + ": " + message);
             } catch (IllegalAccessException ignored) {
+                // do nothing
             }
         }
 

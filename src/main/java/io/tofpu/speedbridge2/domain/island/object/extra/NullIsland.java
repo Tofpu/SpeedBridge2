@@ -32,7 +32,9 @@ public class NullIsland extends Island {
     }
 
     @Override
-    public void setCategory(final String anotherCategory) {}
+    public void setCategory(final String anotherCategory) {
+        // does nothing
+    }
 
     @Override
     public boolean selectSchematic(final @NotNull String schematicName) {

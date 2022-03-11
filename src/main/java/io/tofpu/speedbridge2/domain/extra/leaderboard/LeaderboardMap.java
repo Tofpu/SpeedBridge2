@@ -88,14 +88,4 @@ public final class LeaderboardMap extends LinkedHashMap<Integer, BoardPlayer> {
     public void reset(final UUID uuid) {
         removeUserList.add(uuid);
     }
-
-    private int getPlayerPosition(final UUID key) {
-        for (final Map.Entry<Integer, BoardPlayer> playerEntry : this.entrySet()) {
-            if (playerEntry.getValue().getOwner() != key) {
-                continue;
-            }
-            return playerEntry.getKey();
-        }
-        return -1;
-    }
 }

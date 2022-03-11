@@ -1,14 +1,11 @@
 package io.tofpu.speedbridge2.listener.wrapper;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
-import io.tofpu.speedbridge2.domain.player.PlayerService;
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.listener.GameListener;
 import io.tofpu.speedbridge2.listener.wrapper.wrappers.BlockBreakEventWrapper;
 import io.tofpu.speedbridge2.listener.wrapper.wrappers.BlockPlaceEventWrapper;
 import io.tofpu.speedbridge2.listener.wrapper.wrappers.PlayerInteractEventWrapper;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -55,9 +52,5 @@ public final class SpeedBridgeListener extends GameListener {
         }
 
         callEvent(eventWrapper);
-    }
-
-    private BridgePlayer getBridgePlayer(final @NotNull Player player) {
-        return PlayerService.INSTANCE.get(player.getUniqueId());
     }
 }

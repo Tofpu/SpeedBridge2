@@ -48,6 +48,7 @@ public final class LocationSerializer implements TypeSerializer<Location> {
                     .get(0);
             return world.getSpawnLocation();
         } catch (final NullPointerException ignored) {
+            // do nothing
         }
         return null;
     }
