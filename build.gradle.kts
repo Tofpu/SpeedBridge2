@@ -25,6 +25,7 @@ tasks {
             relocate("org.spongepowered", "io.tofpu.speedbridge2.lib.configurate")
             relocate("net.kyori.adventure", "io.tofpu.speedbridge2.lib.adventure")
             relocate("com.zaxxer.HikariCP", "io.tofpu.speedbridge2.lib.hikaricp")
+            relocate("org.bstats", "io.tofpu.speedbridge2.lib.bstats")
         }
 
         exclude("META-INF/**")
@@ -75,6 +76,8 @@ dependencies {
 
     implementation("org.spongepowered:configurate-hocon:4.1.2")
     implementation("commons-lang:commons-lang:2.6")
+
+    implementation("org.bstats:bstats-bukkit:3.0.0")
 
     compileOnly("me.clip:placeholderapi:2.10.10")
 

@@ -19,6 +19,7 @@ import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.support.placeholderapi.PluginExpansion;
 import io.tofpu.speedbridge2.support.placeholderapi.expansion.ExpansionHandler;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -35,6 +36,8 @@ public final class SpeedBridge {
 
     public void load() {
         adventure = BukkitAudiences.create(javaPlugin);
+
+        new Metrics(javaPlugin, 100619);
 
         MultiWorldEditAPI.load(javaPlugin);
 
