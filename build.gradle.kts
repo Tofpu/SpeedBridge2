@@ -3,9 +3,10 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     java
     id("com.github.johnrengelman.shadow") version "7.0.0"
+    `maven-publish`
 }
 
-group = "io.tofpu"
+group = "io.tofpu.speedbridge2"
 version = "1.0.0"
 
 tasks {
@@ -32,6 +33,14 @@ tasks {
     processResources {
         filesMatching("plugin.yml") {
             expand(project.properties)
+        }
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            from(components["java"])
         }
     }
 }
