@@ -26,6 +26,13 @@ public final class PlayerHandler {
                 .build(PlayerLoader.INSTANCE);
     }
 
+    /**
+     * It returns a CompletableFuture that will eventually return the player with the given
+     * uniqueId
+     *
+     * @param uniqueId The unique ID of the player.
+     * @return A CompletableFuture<BridgePlayer>
+     */
     public CompletableFuture<BridgePlayer> load(final UUID uniqueId) {
         return PluginExecutor.supply(() -> {
             // for loading purposes
@@ -33,14 +40,34 @@ public final class PlayerHandler {
         });
     }
 
+    /**
+     * Returns the player with the given unique ID, or null if no such player exists
+     *
+     * @param uniqueId The unique ID of the player.
+     * @return A BridgePlayer object.
+     */
     public @Nullable BridgePlayer get(final UUID uniqueId) {
         return this.playerMap.asMap().get(uniqueId);
     }
 
+    /**
+     * Remove a player from the player map
+     *
+     * @param uniqueId The unique ID of the player to remove.
+     * @return The BridgePlayer object that was removed from the map.
+     */
     public @Nullable BridgePlayer remove(final UUID uniqueId) {
         return this.playerMap.asMap().remove(uniqueId);
     }
 
+    /**
+     * If the player is in the
+     * database, update the name and refresh the player
+     *
+     * @param name The name of the player.
+     * @param uniqueId The unique ID of the player.
+     * @return A BridgePlayer object.
+     */
     public @Nullable BridgePlayer internalRefresh(final String name,
             final UUID uniqueId) {
         final BridgePlayer bridgePlayer = get(uniqueId);
@@ -58,6 +85,13 @@ public final class PlayerHandler {
         return bridgePlayer;
     }
 
+    /**
+     * This function invalidates a player by removing them from the bridge and the island
+     * setup manager
+     *
+     * @param uniqueId The unique ID of the player to invalidate.
+     * @return The bridge player that was invalidated.
+     */
     public @Nullable BridgePlayer invalidate(final UUID uniqueId) {
         final BridgePlayer bridgePlayer = get(uniqueId);
         if (bridgePlayer == null) {
@@ -70,10 +104,20 @@ public final class PlayerHandler {
         return bridgePlayer;
     }
 
+    /**
+     * Returns a collection of all the players in the game
+     *
+     * @return A collection of all the players in the game.
+     */
     public Collection<BridgePlayer> getBridgePlayers() {
         return Collections.unmodifiableCollection(playerMap.asMap().values());
     }
 
+    /**
+     * Resets the player's data
+     *
+     * @param uuid The UUID of the player to reset.
+     */
     public void reset(final UUID uuid) {
         final BridgePlayer bridgePlayer = get(uuid);
         if (bridgePlayer == null) {
@@ -82,6 +126,9 @@ public final class PlayerHandler {
         bridgePlayer.reset();
     }
 
+    /**
+     * This function resets the blocks of all the players in the bridge game
+     */
     public void shutdown() {
         for (final BridgePlayer bridgePlayer : getBridgePlayers()) {
             final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();

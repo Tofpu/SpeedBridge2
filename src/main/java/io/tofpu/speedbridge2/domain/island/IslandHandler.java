@@ -15,6 +15,11 @@ import java.util.Map;
 public final class IslandHandler {
     private final @NotNull Map<Integer, Island> islands = new HashMap<>();
 
+    /**
+     * Loads the islands from the map of islands
+     *
+     * @param loadedIslands A map of island ids to island objects.
+     */
     public void load(final @NotNull Map<Integer, Island> loadedIslands) {
         for (final Island island : loadedIslands.values()) {
             IslandBoard.add(island);
@@ -27,6 +32,15 @@ public final class IslandHandler {
         return createIsland(slot, category, "");
     }
 
+    /**
+     * If the island doesn't exist, create it
+     *
+     * @param slot The island's slot.
+     * @param category The category of the island.
+     * @param schematic The name of the schematic to load. If it's empty, the island will be
+     * empty.
+     * @return The IslandCreationResult enum.
+     */
     public @NotNull IslandCreationResult createIsland(final int slot,
             final @NotNull String category,
             final String schematic) {
@@ -50,10 +64,22 @@ public final class IslandHandler {
         }
     }
 
+    /**
+     * Return the island at the given slot.
+     *
+     * @param slot The slot number of the island.
+     * @return The Island object that is stored in the slot that is passed in.
+     */
     public @Nullable Island findIslandBy(final int slot) {
         return this.islands.get(slot);
     }
 
+    /**
+     * Find an island by its category.
+     *
+     * @param category The category of the island to find.
+     * @return The Island object that matches the category.
+     */
     public @Nullable Island findIslandBy(final String category) {
         for (final Island island : this.islands.values()) {
             if (island.getCategory().equals(category)) {
@@ -63,6 +89,12 @@ public final class IslandHandler {
         return null;
     }
 
+    /**
+     * This function deletes an island from the database and removes it from the island board
+     *
+     * @param slot The slot of the island you want to delete.
+     * @return The Island that was deleted.
+     */
     public @Nullable Island deleteIsland(final int slot) {
         final Island island = this.islands.remove(slot);
 
@@ -78,10 +110,16 @@ public final class IslandHandler {
         return null;
     }
 
+    /**
+     * Return a collection of all the islands in the map
+     *
+     * @return The unmodifiable collection of all the islands in the world.
+     */
     public @NotNull Collection<Island> getIslands() {
         return Collections.unmodifiableCollection(this.islands.values());
     }
 
+    // This is a Java enum. It's a way to create a set of constants.
     public enum IslandCreationResult {
         UNKNOWN_SCHEMATIC, ISLAND_ALREADY_EXISTS, SUCCESS
     }

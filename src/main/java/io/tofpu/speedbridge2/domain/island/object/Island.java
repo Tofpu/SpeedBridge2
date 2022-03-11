@@ -34,10 +34,22 @@ public class Island {
         this.category = category;
     }
 
+    /**
+     * Given a position, return the player at that position
+     *
+     * @param position The position of the player in the leaderboard.
+     * @return A BoardPlayer object.
+     */
     public BoardPlayer retrieveBy(final int position) {
         return leaderboardMap.get(position);
     }
 
+    /**
+     * This function will create a new GameIsland object and add it to the islandMap
+     *
+     * @param player The player who is joining the island.
+     * @return A Map.Entry<GamePlayer, GameIsland>
+     */
     public Map.Entry<GamePlayer, GameIsland> join(final BridgePlayer player) {
         // if a schematic cannot be found, return null
         if (islandSchematic.getSchematicClipboard() == null) {
@@ -54,6 +66,12 @@ public class Island {
         return new AbstractMap.SimpleImmutableEntry<>(gamePlayer, gameIsland);
     }
 
+    /**
+     * When a player leaves the island, the island is removed from the island map and the
+     * game player is removed from the game player map
+     *
+     * @param bridgePlayer The bridge player that is leaving the game island.
+     */
     public void leaveGame(final BridgePlayer bridgePlayer) {
         final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
         final GameIsland gameIsland = this.islandMap.remove(gamePlayer);
@@ -76,15 +94,32 @@ public class Island {
         gameIsland.remove();
     }
 
+    /**
+     * Find the game island that the player is currently in
+     *
+     * @param gamePlayer The player who is trying to join the game.
+     * @return The island that the player is on.
+     */
     public GameIsland findGameByPlayer(final GamePlayer gamePlayer) {
         return this.islandMap.get(gamePlayer);
     }
 
+    /**
+     * It sets the category of the question.
+     *
+     * @param anotherCategory The new category to set.
+     */
     public void setCategory(final String anotherCategory) {
         this.category = anotherCategory;
         update();
     }
 
+    /**
+     * Selects a schematic from the list of available schematics
+     *
+     * @param schematicName The name of the schematic to select.
+     * @return A boolean value indicating whether the operation was successful.
+     */
     public boolean selectSchematic(final @NotNull String schematicName) {
         final boolean successful = islandSchematic.selectSchematic(schematicName);
         // if the operation was successful, update the database
@@ -94,40 +129,82 @@ public class Island {
         return successful;
     }
 
+    /**
+     * This function sets the absolute location of the object
+     *
+     * @param newAbsoluteLocation The new location to set the object to.
+     */
     public void setAbsoluteLocation(final Location newAbsoluteLocation) {
         this.absoluteLocation = newAbsoluteLocation;
         update();
     }
 
+    /**
+     * Returns the absolute location of the object
+     *
+     * @return The absolute location of the object.
+     */
     public Location getAbsoluteLocation() {
         return this.absoluteLocation;
     }
 
+    /**
+     * This function checks to see if the island schematic is ready to be copied
+     *
+     * @return A boolean value.
+     */
     public boolean isReady() {
         return islandSchematic.getSchematicClipboard() != null &&
                absoluteLocation != null;
     }
 
+    /**
+     * This function updates the database with the current values of the object
+     */
     private void update() {
         Databases.ISLAND_DATABASE.update(this);
     }
 
+    /**
+     * Returns the slot number of the given item
+     *
+     * @return The slot number of the item.
+     */
     public int getSlot() {
         return slot;
     }
 
+    /**
+     * It returns the category of the question.
+     *
+     * @return The category of the question.
+     */
     public String getCategory() {
         return category;
     }
 
+    /**
+     * Load the leaderboard map with the given map
+     *
+     * @param boardMap The map of player IDs to BoardPlayer objects.
+     */
     public void loadBoard(final Map<Integer, BoardPlayer> boardMap) {
         this.leaderboardMap.load(boardMap);
     }
 
+    /**
+     * Add a score to the leaderboard for a given player
+     *
+     * @param bridgePlayer The player who's score is being added to the leaderboard.
+     * @param score The score to add to the leaderboard.
+     */
     public void addLeaderboardScore(final BridgePlayer bridgePlayer, final Score score) {
         leaderboardMap.append(bridgePlayer, score);
     }
 
+    /**
+     * Update the leaderboard map
+     */
     public void updateLeaderboard() {
         this.leaderboardMap.updateLeaderboard();
     }
@@ -148,14 +225,29 @@ public class Island {
         return sb.toString();
     }
 
+    /**
+     * Reset the player's score to 0
+     *
+     * @param uuid The UUID of the player to reset.
+     */
     public void resetPlayer(final UUID uuid) {
         this.leaderboardMap.reset(uuid);
     }
 
+    /**
+     * Returns the clipboard of the island schematic
+     *
+     * @return A Clipboard object.
+     */
     public Clipboard getSchematicClipboard() {
         return islandSchematic.getSchematicClipboard();
     }
 
+    /**
+     * Returns the name of the schematic
+     *
+     * @return The name of the schematic.
+     */
     public String getSchematicName() {
         return islandSchematic.getSchematicName();
     }

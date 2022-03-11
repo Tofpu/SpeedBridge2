@@ -19,33 +19,63 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.Vector;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * This class is a utility class that provides utility methods for the SpeedBridge plugin
+ */
 public final class BridgeUtil {
-    public static Vector toVector(final com.sk89q.worldedit.Vector vector) {
-        return new Vector(vector.getX(), vector.getY(), vector.getZ());
-    }
-
+    /**
+     * Convert nanoseconds to seconds
+     *
+     * @param end The time at which the timer should stop.
+     * @return The time in seconds.
+     */
     public static double nanoToSeconds(final long end) {
         return (double) (System.nanoTime() - end) / 1_000_000_000;
     }
 
+    /**
+     * Given a double, return a string of that double rounded to 3 decimal places
+     *
+     * @param score The score to format.
+     * @return The string "0.000"
+     */
     public static String formatNumber(final double score) {
         return String.format("%.3f", score);
     }
 
+    /**
+     * It takes a string, and returns a string
+     *
+     * @param content The content of the message.
+     * @return The translated message.
+     */
     public static String translateMiniMessageLegacy(final String content) {
         return BukkitComponentSerializer.legacy().serialize(translateMiniMessage(content));
     }
 
+    /**
+     * It takes a string and returns a component
+     *
+     * @param content The content of the message.
+     * @return Nothing.
+     */
     public static Component translateMiniMessage(final String content) {
         return MiniMessage.miniMessage().deserializeOrNull(content);
     }
 
+    /**
+     * Send a message to a
+     * command sender
+     *
+     * @param sender The CommandSender who is sending the message.
+     * @param component The component to send.
+     * @return The component that was sent.
+     */
     public static Component sendMessage(final CommandSender sender,
             final Component component) {
         final Audience audience = SpeedBridge.getAdventure()
@@ -54,6 +84,13 @@ public final class BridgeUtil {
         return component;
     }
 
+    /**
+     * This function sends a message to a player
+     *
+     * @param sender The player who sent the message.
+     * @param content The message to send.
+     * @return Nothing.
+     */
     public static Component sendMessage(final CommonBridgePlayer<?> sender,
             final String content) {
         final Component component = translateMiniMessage(content);
@@ -61,6 +98,14 @@ public final class BridgeUtil {
         return component;
     }
 
+    /**
+     * Send a message to a
+     * command sender
+     *
+     * @param sender The CommandSender who will receive the message.
+     * @param content The content of the message.
+     * @return Nothing.
+     */
     public static Component sendMessage(final CommandSender sender,
             final String content) {
         final Component component = translateMiniMessage(content);
@@ -68,6 +113,12 @@ public final class BridgeUtil {
         return component;
     }
 
+    /**
+     * If the debug flag is
+     * enabled, print the message to the console
+     *
+     * @param message The message to be logged.
+     */
     public static void debug(final String message) {
         if (ConfigurationManager.INSTANCE.getGeneralCategory()
                 .isDebugEnabled()) {
@@ -76,10 +127,24 @@ public final class BridgeUtil {
         }
     }
 
+    /**
+     * It takes a string and replaces all instances of the color codes with the actual color
+     * codes
+     *
+     * @param replace The string to replace.
+     * @return Nothing.
+     */
     public static String translate(final String replace) {
         return ChatColor.translateAlternateColorCodes('&', replace);
     }
 
+    /**
+     * Given a row or column, and a database set, return a BoardPlayer
+     *
+     * @param row boolean
+     * @param databaseSet The database set that is being converted to a BoardPlayer.
+     * @return A BoardPlayer object.
+     */
     public static BoardPlayer toBoardPlayer(final boolean row, final DatabaseSet databaseSet) {
         final String resultUid = databaseSet.getString("uid");
         if (resultUid == null) {
@@ -110,6 +175,12 @@ public final class BridgeUtil {
         return new BoardPlayer(name, position, uid, score);
     }
 
+    /**
+     * Find the UUID of a player by their name
+     *
+     * @param playerName The name of the player to find the UUID of.
+     * @return Nothing.
+     */
     public static UUID findUUIDBy(final String playerName) {
         final AtomicReference<UUID> uuid = new AtomicReference<>();
         try (final DatabaseQuery databaseQuery = DatabaseQuery.query("SELECT uid FROM " +
@@ -132,15 +203,34 @@ public final class BridgeUtil {
         return uuid.get();
     }
 
+    /**
+     * This function runs a runnable on the bukkit scheduler asynchronously
+     *
+     * @param runnable The Runnable to run.
+     */
     public static void runBukkitAsync(final Runnable runnable) {
         Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(SpeedBridgePlugin.class), runnable);
     }
 
+    /**
+     * This function will run a task asynchronously
+     *
+     * @param runnable The Runnable to run.
+     * @param delay The delay is the amount of time to wait before the first execution.
+     * @param interval How often the task should run.
+     */
     public static void runBukkitAsync(final Runnable runnable, final long delay,
             final long interval) {
         Bukkit.getScheduler().runTaskTimerAsynchronously(JavaPlugin.getPlugin(SpeedBridgePlugin.class), runnable, delay, interval);
     }
 
+    /**
+     * It runs the given Runnable when the CompletableFuture is completed.
+     *
+     * @param completableFuture The completable future to be completed.
+     * @param whenComplete A Runnable that will be run when the CompletableFuture is
+     * completed.
+     */
     public static void whenComplete(final CompletableFuture<?> completableFuture,
             final Runnable whenComplete) {
         completableFuture.whenComplete((o, throwable) -> {

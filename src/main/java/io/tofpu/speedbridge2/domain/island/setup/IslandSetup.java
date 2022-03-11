@@ -29,14 +29,30 @@ public final class IslandSetup {
         this.cuboidRegion = islandPlot.region();
     }
 
+    /**
+     * This function sets the player spawn point to the given location
+     *
+     * @param playerSpawnPoint The location where the player will spawn.
+     */
     public void setPlayerSpawnPoint(final Location playerSpawnPoint) {
         this.playerSpawnPoint = playerSpawnPoint;
     }
 
+    /**
+     * Check if the new location is within the cuboid region.
+     *
+     * @param newLocation The location to check.
+     * @return A boolean value.
+     */
     public boolean isLocationValid(final Location newLocation) {
         return cuboidRegion.contains(newLocation.toVector());
     }
 
+    /**
+     * This function is called when the player clicks the "Finish" button in the setup GUI
+     *
+     * @return A boolean value.
+     */
     public boolean finish() {
         if (!isReady()) {
             return false;
@@ -61,10 +77,18 @@ public final class IslandSetup {
         return true;
     }
 
+    /**
+     * Returns true if the node is removed from the tree
+     *
+     * @return The boolean value of the removed variable.
+     */
     public boolean isRemoved() {
         return removed;
     }
 
+    /**
+     * It resets the plot to air
+     */
     private void resetPlot() {
         final ClipboardWrapper clipboardWrapper = MultiWorldEditAPI.getMultiWorldEdit()
                 .create(island.getSchematicClipboard());
@@ -95,10 +119,19 @@ public final class IslandSetup {
         }
     }
 
+    /**
+     * Returns true if the player is not removed and has a player spawn point
+     *
+     * @return A boolean value.
+    */
     public boolean isReady() {
         return !isRemoved() && playerSpawnPoint != null;
     }
 
+    /**
+     * This function is called when the player clicks the "Cancel" button. It removes the
+     * island from the IslandSetupManager and teleports the player to the lobby location
+     */
     public void cancel() {
         if (isRemoved()) {
             return;
@@ -116,14 +149,30 @@ public final class IslandSetup {
         resetPlot();
     }
 
+    /**
+     * Returns the UUID of the player that is currently editing this object
+     *
+     * @return The UUID of the player that is currently editing the object.
+    */
     public UUID getEditorUid() {
         return playerEditor.getPlayerUid();
     }
 
+    /**
+     * Returns the island that the player is currently on
+     *
+     * @return The Island object that is being returned is the Island object that is being
+     * passed in.
+     */
     public Island getIsland() {
         return island;
     }
 
+    /**
+     * Returns the plot that the island is on
+     *
+     * @return The IslandPlot object that is associated with the current plot.
+     */
     public IslandPlot getIslandPlot() {
         return islandPlot;
     }

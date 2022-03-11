@@ -18,6 +18,9 @@ public final class IslandSetupManager {
 
     private World world;
 
+    /**
+     * This function is called when the plugin is loaded
+     */
     public void load() {
         this.world = Bukkit.getWorld("speedbridge2");
     }
@@ -44,23 +47,47 @@ public final class IslandSetupManager {
         return true;
     }
 
+    /**
+     * This function creates a new IslandSetup object and adds it to the islandSetupMap
+     *
+     * @param player The player who is creating the island.
+     * @param target The Island that the player is setting up.
+     * @return The IslandSetup object.
+     */
+
     private IslandSetup create(final BridgePlayer player, final Island target) {
         final double[] positions = {100 * (islandSetupMap.size() + 100), 100, 0};
         final IslandSetup islandSetup = new IslandSetup(player, target, new IslandPlot(target, world, positions));
 
         islandSetupMap.put(player.getPlayerUid(), islandSetup);
-
         return islandSetup;
     }
 
+    /**
+     * Finds the IslandSetup object with the given UUID
+     *
+     * @param uuid The UUID of the setup you want to find.
+     * @return The IslandSetup object that matches the UUID.
+     */
     public IslandSetup findSetupBy(final UUID uuid) {
         return islandSetupMap.get(uuid);
     }
 
-    public void invalidate(final IslandSetup islandSetup) {
+     /**
+      * Remove the given island setup from the island setup map
+      *
+      * @param islandSetup The island setup that is being invalidated.
+      */
+     public void invalidate(final IslandSetup islandSetup) {
         islandSetupMap.remove(islandSetup.getEditorUid());
     }
 
+    /**
+     * Remove the island setup from the island setup map and cancel it if it's not already
+     * removed
+     *
+     * @param uuid The UUID of the island to invalidate.
+     */
     public void invalidate(final UUID uuid) {
         final IslandSetup islandSetup = islandSetupMap.remove(uuid);
         if (islandSetup != null && !islandSetup.isRemoved()) {

@@ -13,7 +13,6 @@ import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.IslandBoardPlayer;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -44,7 +43,13 @@ public final class Leaderboard {
                 .build(IslandLoader.INSTANCE);
     }
 
-    public CompletableFuture<Void> load(final JavaPlugin javaPlugin) {
+    /**
+     * Load the leaderboard from the database
+     *
+     * @param javaPlugin The plugin that is calling this method.
+     * @return Nothing.
+     */
+    public CompletableFuture<Void> load() {
         final CompletableFuture<Void> loadFuture = new CompletableFuture<>();
 
         BridgeUtil.runBukkitAsync(() -> {
@@ -148,6 +153,13 @@ public final class Leaderboard {
         return loadFuture;
     }
 
+    /**
+     * Retrieve a player board from the cache, or load it from the database if it's not in
+     * the cache.
+     *
+     * @param uniqueId The unique ID of the player.
+     * @return A CompletableFuture<BoardPlayer>
+     */
     public CompletableFuture<BoardPlayer> retrieve(final UUID uniqueId) {
         final BoardPlayer player = playerCache.asMap()
                 .get(uniqueId);
@@ -161,6 +173,13 @@ public final class Leaderboard {
         return CompletableFuture.supplyAsync(() -> playerCache.getUnchecked(uniqueId));
     }
 
+    /**
+     * Given a position, retrieve the player at that position from the leaderboard
+     *
+     * @param leaderboardRetrieveType The type of leaderboard to retrieve.
+     * @param position The position of the player in the leaderboard.
+     * @return A BoardPlayer object.
+     */
     public BoardPlayer retrieve(final LeaderboardRetrieveType leaderboardRetrieveType,
             final int position) {
         switch (leaderboardRetrieveType) {
@@ -168,10 +187,18 @@ public final class Leaderboard {
                 return globalMap.get(position);
             case SESSION:
                 return sessionalMap.get(position);
+            default:
+                throw new IllegalStateException("Invalid LeaderboardRetrieveType: " + leaderboardRetrieveType.name());
         }
-        return null;
     }
 
+    /**
+     * Retrieve the island board for the given player and island slot.
+     *
+     * @param uniqueId The UUID of the player.
+     * @param islandSlot The slot of the island board to retrieve.
+     * @return The IslandBoard object.
+     */
     public CompletableFuture<IslandBoardPlayer.IslandBoard> retrieve(final UUID uniqueId, final int islandSlot) {
         final IslandBoardPlayer player = islandPositionMap.asMap()
                 .get(uniqueId);
@@ -188,10 +215,21 @@ public final class Leaderboard {
                 .retrieve(islandSlot));
     }
 
+    /**
+     * Add a score to the global map
+     *
+     * @param owner The player who owns the score.
+     * @param score The score to add to the global map.
+     */
     public void addScore(final BridgePlayer owner, final Score score) {
         this.globalMap.append(owner, score);
     }
 
+    /**
+     * This function resets the global map for the player with the given playerUid
+     *
+     * @param playerUid The UUID of the player who's map is being reset.
+     */
     public void reset(final UUID playerUid) {
         this.globalMap.reset(playerUid);
     }
