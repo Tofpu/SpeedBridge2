@@ -17,39 +17,37 @@ import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class PlayerConnectionListener extends GameListener {
-    final PlayerService playerService = PlayerService.INSTANCE;
+  final PlayerService playerService = PlayerService.INSTANCE;
 
-    @EventHandler
-    private void onPlayerJoin(final @NotNull PlayerJoinEvent event) {
-        // internally refreshing the BridgePlayer object, to avoid the Player object
-        // from breaking
-        final Player player = event.getPlayer();
-        playerService.internalRefresh(player);
+  @EventHandler
+  private void onPlayerJoin(final @NotNull PlayerJoinEvent event) {
+    // internally refreshing the BridgePlayer object, to avoid the Player object
+    // from breaking
+    final Player player = event.getPlayer();
+    playerService.internalRefresh(player);
 
-        teleportToLobby(player);
+    teleportToLobby(player);
+  }
+
+  private void teleportToLobby(final Player player) {
+    final LobbyCategory lobbyCategory = ConfigurationManager.INSTANCE.getLobbyCategory();
+
+    // if teleport_on_join is set to true, teleport the player to the lobby location
+    if (lobbyCategory.isTeleportOnJoin()) {
+      final Location location = lobbyCategory.getLobbyLocation();
+      if (location != null) {
+        player.teleport(location);
+        return;
+      }
+
+      BridgeUtil.sendMessage(player, Message.INSTANCE.lobbyMissing);
     }
+  }
 
-    private void teleportToLobby(final Player player) {
-        final LobbyCategory lobbyCategory =
-                ConfigurationManager.INSTANCE.getLobbyCategory();
+  @EventHandler(priority = EventPriority.LOWEST)
+  private void onPlayerQuit(final @NotNull PlayerQuitEvent event) {
+    final Player player = event.getPlayer();
 
-
-        // if teleport_on_join is set to true, teleport the player to the lobby location
-        if (lobbyCategory.isTeleportOnJoin()) {
-            final Location location = lobbyCategory.getLobbyLocation();
-            if (location != null) {
-                player.teleport(location);
-                return;
-            }
-
-            BridgeUtil.sendMessage(player, Message.INSTANCE.lobbyMissing);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    private void onPlayerQuit(final @NotNull PlayerQuitEvent event) {
-        final Player player = event.getPlayer();
-
-        playerService.invalidate(player);
-    }
+    playerService.invalidate(player);
+  }
 }

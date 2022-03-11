@@ -4,95 +4,102 @@ import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.BoardPlayer;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public final class IslandBoard {
-    public static final long INTERVAL = ConfigurationManager.INSTANCE.getLeaderboardCategory()
-            .getGlobalUpdateInterval();
+  public static final long INTERVAL =
+      ConfigurationManager.INSTANCE.getLeaderboardCategory().getGlobalUpdateInterval();
 
-    private static final Queue<Island> ISLAND_QUEUE = new ConcurrentLinkedQueue<>();
+  private static final Queue<Island> ISLAND_QUEUE = new ConcurrentLinkedQueue<>();
 
-    public static void add(final Island island) {
-        BridgeUtil.debug(island.getSlot() + " has been added to the queue!");
-        ISLAND_QUEUE.add(island);
-    }
+  public static void add(final Island island) {
+    BridgeUtil.debug(island.getSlot() + " has been added to the queue!");
+    ISLAND_QUEUE.add(island);
+  }
 
-    public static void remove(final Island island) {
-        ISLAND_QUEUE.remove(island);
-    }
+  public static void remove(final Island island) {
+    ISLAND_QUEUE.remove(island);
+  }
 
-    public static CompletableFuture<?> load(final JavaPlugin javaPlugin) {
-        final CompletableFuture<?> completableFuture = new CompletableFuture<>();
-        Bukkit.getScheduler()
-                .runTaskAsynchronously(javaPlugin, () -> {
-                    BridgeUtil.debug("IslandBoard#load(): loading the island's " +
-                                     "leaderboard");
+  public static CompletableFuture<?> load(final JavaPlugin javaPlugin) {
+    final CompletableFuture<?> completableFuture = new CompletableFuture<>();
+    Bukkit.getScheduler()
+        .runTaskAsynchronously(
+            javaPlugin,
+            () -> {
+              BridgeUtil.debug("IslandBoard#load(): loading the island's " + "leaderboard");
 
-                    for (final Island island : ISLAND_QUEUE) {
-                        BridgeUtil.debug("IslandBoard#load(): Loading " + island.getSlot() + " leaderboard " +
-                                         "now!");
-                        final Map<Integer, BoardPlayer> boardMap = new HashMap<>();
+              for (final Island island : ISLAND_QUEUE) {
+                BridgeUtil.debug(
+                    "IslandBoard#load(): Loading " + island.getSlot() + " leaderboard " + "now!");
+                final Map<Integer, BoardPlayer> boardMap = new HashMap<>();
 
-                        try (final DatabaseQuery databaseQuery = DatabaseQuery.query(
-                                "SELECT * FROM scores WHERE island_slot = ? ORDER BY" +
-                                " " +
-                                "score " + "LIMIT 10 OFFSET 0")) {
-                            databaseQuery.setInt(island.getSlot());
+                try (final DatabaseQuery databaseQuery =
+                    DatabaseQuery.query(
+                        "SELECT * FROM scores WHERE island_slot = ? ORDER BY"
+                            + " "
+                            + "score "
+                            + "LIMIT 10 OFFSET 0")) {
+                  databaseQuery.setInt(island.getSlot());
 
-                            final Map<UUID, BoardPlayer> boardPlayerMap =
-                                    new HashMap<>();
+                  final Map<UUID, BoardPlayer> boardPlayerMap = new HashMap<>();
 
-                            databaseQuery.executeQuery(resultSet -> {
-                                while (resultSet.next()) {
-                                    final BoardPlayer value = BridgeUtil.toBoardPlayer(true, resultSet);
-                                    if (value == null) {
-                                        continue;
-                                    }
+                  databaseQuery.executeQuery(
+                      resultSet -> {
+                        while (resultSet.next()) {
+                          final BoardPlayer value = BridgeUtil.toBoardPlayer(true, resultSet);
+                          if (value == null) {
+                            continue;
+                          }
 
-                                    final UUID owner = value.getOwner();
-                                    if (boardPlayerMap.containsKey(owner)) {
-                                        continue;
-                                    }
+                          final UUID owner = value.getOwner();
+                          if (boardPlayerMap.containsKey(owner)) {
+                            continue;
+                          }
 
-                                    boardMap.put(value.getPosition(), value);
-                                    boardPlayerMap.put(owner, value);
-                                }
-                            });
-
-                            BridgeUtil.debug("IslandBoard#load(): Successfully loaded " + island.getSlot() +
-                                             " island leaderboard!");
-                            BridgeUtil.debug(String.valueOf(boardMap));
-                            island.loadBoard(boardMap);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                          boardMap.put(value.getPosition(), value);
+                          boardPlayerMap.put(owner, value);
                         }
-                    }
-                    completableFuture.complete(null);
-                });
+                      });
 
-        Bukkit.getScheduler()
-                .runTaskTimerAsynchronously(javaPlugin, () -> {
-                    BridgeUtil.debug("IslandBoard#load(): Starting the leaderboard " +
-                                     "update process!");
+                  BridgeUtil.debug(
+                      "IslandBoard#load(): Successfully loaded "
+                          + island.getSlot()
+                          + " island leaderboard!");
+                  BridgeUtil.debug(String.valueOf(boardMap));
+                  island.loadBoard(boardMap);
+                } catch (Exception e) {
+                  e.printStackTrace();
+                }
+              }
+              completableFuture.complete(null);
+            });
 
-                    for (final Island island : ISLAND_QUEUE) {
-                        BridgeUtil.debug("IslandBoard#load(): Updating " + island.getSlot() + " now!");
+    Bukkit.getScheduler()
+        .runTaskTimerAsynchronously(
+            javaPlugin,
+            () -> {
+              BridgeUtil.debug("IslandBoard#load(): Starting the leaderboard " + "update process!");
 
-                        island.updateLeaderboard();
-                    }
-                }, 1L, 20 * INTERVAL);
+              for (final Island island : ISLAND_QUEUE) {
+                BridgeUtil.debug("IslandBoard#load(): Updating " + island.getSlot() + " now!");
 
-        return completableFuture;
+                island.updateLeaderboard();
+              }
+            },
+            1L,
+            20 * INTERVAL);
+
+    return completableFuture;
+  }
+
+  public static void reset(final UUID uuid) {
+    for (final Island island : ISLAND_QUEUE) {
+      island.resetPlayer(uuid);
     }
-
-    public static void reset(final UUID uuid) {
-        for (final Island island : ISLAND_QUEUE) {
-            island.resetPlayer(uuid);
-        }
-    }
+  }
 }

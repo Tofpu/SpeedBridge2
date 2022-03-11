@@ -14,30 +14,29 @@ import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class IslandRegionListener extends GameListener {
-    @EventHandler(ignoreCancelled = true)
-    private void onPlayerMove(final @NotNull PlayerMoveEvent event) {
-        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
-                .getUniqueId());
-        if (bridgePlayer == null ||!bridgePlayer.isPlaying()) {
-            return;
-        }
-        final GameIsland currentGame = bridgePlayer.getCurrentGame();
-        if (currentGame == null) {
-            return;
-        }
-
-        final CuboidRegion islandRegion = currentGame.region();
-        if (islandRegion == null) {
-            return;
-        }
-
-        final Location location = event.getTo();
-        final Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
-
-        final boolean isInRegion = islandRegion.contains(vector);
-
-        if (!isInRegion) {
-            currentGame.resetGame();
-        }
+  @EventHandler(ignoreCancelled = true)
+  private void onPlayerMove(final @NotNull PlayerMoveEvent event) {
+    final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer().getUniqueId());
+    if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
+      return;
     }
+    final GameIsland currentGame = bridgePlayer.getCurrentGame();
+    if (currentGame == null) {
+      return;
+    }
+
+    final CuboidRegion islandRegion = currentGame.region();
+    if (islandRegion == null) {
+      return;
+    }
+
+    final Location location = event.getTo();
+    final Vector vector = new Vector(location.getX(), location.getY(), location.getZ());
+
+    final boolean isInRegion = islandRegion.contains(vector);
+
+    if (!isInRegion) {
+      currentGame.resetGame();
+    }
+  }
 }

@@ -5,8 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
 public class GameListener implements Listener {
-    public GameListener() {
-        Bukkit.getPluginManager()
-                .registerEvents(this, SpeedBridgePlugin.getPlugin(SpeedBridgePlugin.class));
-    }
+  public GameListener() {
+    Bukkit.getPluginManager()
+        .registerEvents(this, SpeedBridgePlugin.getPlugin(SpeedBridgePlugin.class));
+  }
 }

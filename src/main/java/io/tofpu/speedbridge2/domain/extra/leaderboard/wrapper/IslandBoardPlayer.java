@@ -4,95 +4,105 @@ import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class IslandBoardPlayer {
-    private static final String ISLAND_POSITION =
-            "SELECT 1 + COUNT(*) AS position FROM scores WHERE island_slot = ? AND " +
-            "score" +
-            " < " + "(SELECT score " + "FROM scores WHERE uid = ?)";
+  private static final String ISLAND_POSITION =
+      "SELECT 1 + COUNT(*) AS position FROM scores WHERE island_slot = ? AND "
+          + "score"
+          + " < "
+          + "(SELECT score "
+          + "FROM scores WHERE uid = ?)";
 
-    private final UUID owner;
-    private final Map<Integer, IslandBoard> boardMap;
+  private final UUID owner;
+  private final Map<Integer, IslandBoard> boardMap;
 
-    public IslandBoardPlayer(final UUID owner) {
-        this.owner = owner;
-        this.boardMap = new ConcurrentHashMap<>();
+  public IslandBoardPlayer(final UUID owner) {
+    this.owner = owner;
+    this.boardMap = new ConcurrentHashMap<>();
+  }
+
+  public @Nullable IslandBoard findDefault(final int islandSlot) {
+    return boardMap.get(islandSlot);
+  }
+
+  public @NotNull CompletableFuture<IslandBoard> retrieve(final int islandSlot) {
+    BridgeUtil.debug(
+        "IslandBoardPlayer#retrieve(): Attempting to retrieve board "
+            + "for "
+            + owner
+            + ", "
+            + islandSlot);
+
+    final IslandBoard cachedValue = boardMap.get(islandSlot);
+    // if the cached value is not null
+    if (cachedValue != null) {
+      // return the cached value
+      BridgeUtil.debug(
+          "IslandBoardPlayer#retrieve(): Found existing value " + owner + ", " + islandSlot);
+      return CompletableFuture.completedFuture(cachedValue);
     }
 
-    public @Nullable IslandBoard findDefault(final int islandSlot) {
-        return boardMap.get(islandSlot);
+    BridgeUtil.debug(
+        "IslandBoardPlayer#retrieve(): Attempting to query to database"
+            + " for position for "
+            + owner
+            + ", "
+            + islandSlot);
+    try (final DatabaseQuery databaseQuery = DatabaseQuery.query(ISLAND_POSITION)) {
+      databaseQuery.setInt(islandSlot);
+      databaseQuery.setString(owner.toString());
+
+      final AtomicReference<IslandBoard> islandBoard = new AtomicReference<>();
+      databaseQuery.executeQuery(
+          resultSet -> {
+            if (!resultSet.next()) {
+              BridgeUtil.debug("IslandBoardPlayer#retrieve(): next: " + "false");
+              return;
+            }
+
+            IslandBoard value = new IslandBoard(resultSet.getInt("position"), islandSlot);
+            final BridgePlayer player = PlayerService.INSTANCE.get(owner);
+            if (player != null && player.getScores().isEmpty()) {
+              value = new IslandBoard(0, islandSlot);
+            }
+
+            islandBoard.set(value);
+            boardMap.put(islandSlot, islandBoard.get());
+          });
+      return CompletableFuture.completedFuture(islandBoard.get());
+    } catch (Exception e) {
+      e.printStackTrace();
     }
 
-    public @NotNull CompletableFuture<IslandBoard> retrieve(final int islandSlot) {
-        BridgeUtil.debug("IslandBoardPlayer#retrieve(): Attempting to retrieve board " +
-                         "for " + owner + ", " + islandSlot);
+    return CompletableFuture.completedFuture(null);
+  }
 
-        final IslandBoard cachedValue = boardMap.get(islandSlot);
-        // if the cached value is not null
-        if (cachedValue != null) {
-            // return the cached value
-            BridgeUtil.debug("IslandBoardPlayer#retrieve(): Found existing value " + owner + ", " + islandSlot);
-            return CompletableFuture.completedFuture(cachedValue);
-        }
+  public UUID getOwner() {
+    return owner;
+  }
 
-        BridgeUtil.debug("IslandBoardPlayer#retrieve(): Attempting to query to database" +
-                         " for position for " + owner +
-                         ", " + islandSlot);
-        try (final DatabaseQuery databaseQuery = DatabaseQuery.query(ISLAND_POSITION)) {
-            databaseQuery.setInt(islandSlot);
-            databaseQuery.setString(owner.toString());
+  public static class IslandBoard {
+    private final int position;
+    private final int islandSlot;
 
-            final AtomicReference<IslandBoard> islandBoard = new AtomicReference<>();
-            databaseQuery.executeQuery(resultSet -> {
-                if (!resultSet.next()) {
-                    BridgeUtil.debug("IslandBoardPlayer#retrieve(): next: " + "false");
-                    return;
-                }
-
-                IslandBoard value = new IslandBoard(resultSet.getInt("position"), islandSlot);
-                final BridgePlayer player = PlayerService.INSTANCE.get(owner);
-                if (player != null && player.getScores().isEmpty()) {
-                    value = new IslandBoard(0, islandSlot);
-                }
-
-                islandBoard.set(value);
-                boardMap.put(islandSlot, islandBoard.get());
-            });
-            return CompletableFuture.completedFuture(islandBoard.get());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return CompletableFuture.completedFuture(null);
+    public IslandBoard(final int position, final int islandSlot) {
+      this.position = position;
+      this.islandSlot = islandSlot;
     }
 
-    public UUID getOwner() {
-        return owner;
+    public int getPosition() {
+      return position;
     }
 
-    public static class IslandBoard {
-        private final int position;
-        private final int islandSlot;
-
-        public IslandBoard(final int position, final int islandSlot) {
-            this.position = position;
-            this.islandSlot = islandSlot;
-        }
-
-        public int getPosition() {
-            return position;
-        }
-
-        public int getIslandSlot() {
-            return islandSlot;
-        }
+    public int getIslandSlot() {
+      return islandSlot;
     }
+  }
 }

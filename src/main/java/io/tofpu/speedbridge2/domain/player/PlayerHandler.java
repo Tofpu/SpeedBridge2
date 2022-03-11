@@ -8,87 +8,87 @@ import io.tofpu.speedbridge2.domain.island.setup.IslandSetupManager;
 import io.tofpu.speedbridge2.domain.player.loader.PlayerLoader;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class PlayerHandler {
-    private final @NotNull LoadingCache<UUID, BridgePlayer> playerMap;
+  private final @NotNull LoadingCache<UUID, BridgePlayer> playerMap;
 
-    public PlayerHandler() {
-        this.playerMap = CacheBuilder.newBuilder()
-                .expireAfterAccess(5, TimeUnit.MINUTES)
-                .build(PlayerLoader.INSTANCE);
-    }
+  public PlayerHandler() {
+    this.playerMap =
+        CacheBuilder.newBuilder()
+            .expireAfterAccess(5, TimeUnit.MINUTES)
+            .build(PlayerLoader.INSTANCE);
+  }
 
-    public CompletableFuture<BridgePlayer> load(final UUID uniqueId) {
-        return PluginExecutor.supply(() -> {
-            // for loading purposes
-            return this.playerMap.getUnchecked(uniqueId);
+  public CompletableFuture<BridgePlayer> load(final UUID uniqueId) {
+    return PluginExecutor.supply(
+        () -> {
+          // for loading purposes
+          return this.playerMap.getUnchecked(uniqueId);
         });
+  }
+
+  public @Nullable BridgePlayer get(final UUID uniqueId) {
+    return this.playerMap.asMap().get(uniqueId);
+  }
+
+  public @Nullable BridgePlayer remove(final UUID uniqueId) {
+    return this.playerMap.asMap().remove(uniqueId);
+  }
+
+  public @Nullable BridgePlayer internalRefresh(final String name, final UUID uniqueId) {
+    final BridgePlayer bridgePlayer = get(uniqueId);
+    if (bridgePlayer == null) {
+      load(uniqueId);
+      return null;
     }
 
-    public @Nullable BridgePlayer get(final UUID uniqueId) {
-        return this.playerMap.asMap().get(uniqueId);
+    if (!bridgePlayer.getName().equals(name)) {
+      Databases.PLAYER_DATABASE.updateName(name, bridgePlayer);
     }
 
-    public @Nullable BridgePlayer remove(final UUID uniqueId) {
-        return this.playerMap.asMap().remove(uniqueId);
+    bridgePlayer.internalRefresh(uniqueId);
+
+    return bridgePlayer;
+  }
+
+  public @Nullable BridgePlayer invalidate(final UUID uniqueId) {
+    final BridgePlayer bridgePlayer = get(uniqueId);
+    if (bridgePlayer == null) {
+      return null;
     }
+    bridgePlayer.invalidatePlayer();
 
-    public @Nullable BridgePlayer internalRefresh(final String name,
-            final UUID uniqueId) {
-        final BridgePlayer bridgePlayer = get(uniqueId);
-        if (bridgePlayer == null) {
-            load(uniqueId);
-            return null;
-        }
+    IslandSetupManager.INSTANCE.invalidate(uniqueId);
 
-        if (!bridgePlayer.getName().equals(name)) {
-            Databases.PLAYER_DATABASE.updateName(name, bridgePlayer);
-        }
+    return bridgePlayer;
+  }
 
-        bridgePlayer.internalRefresh(uniqueId);
+  public Collection<BridgePlayer> getBridgePlayers() {
+    return Collections.unmodifiableCollection(playerMap.asMap().values());
+  }
 
-        return bridgePlayer;
+  public void reset(final UUID uuid) {
+    final BridgePlayer bridgePlayer = get(uuid);
+    if (bridgePlayer == null) {
+      return;
     }
+    bridgePlayer.reset();
+  }
 
-    public @Nullable BridgePlayer invalidate(final UUID uniqueId) {
-        final BridgePlayer bridgePlayer = get(uniqueId);
-        if (bridgePlayer == null) {
-            return null;
-        }
-        bridgePlayer.invalidatePlayer();
-
-        IslandSetupManager.INSTANCE.invalidate(uniqueId);
-
-        return bridgePlayer;
+  public void shutdown() {
+    for (final BridgePlayer bridgePlayer : getBridgePlayers()) {
+      final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
+      if (gamePlayer == null) {
+        return;
+      }
+      gamePlayer.resetBlocks();
     }
-
-    public Collection<BridgePlayer> getBridgePlayers() {
-        return Collections.unmodifiableCollection(playerMap.asMap().values());
-    }
-
-    public void reset(final UUID uuid) {
-        final BridgePlayer bridgePlayer = get(uuid);
-        if (bridgePlayer == null) {
-            return;
-        }
-        bridgePlayer.reset();
-    }
-
-    public void shutdown() {
-        for (final BridgePlayer bridgePlayer : getBridgePlayers()) {
-            final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
-            if (gamePlayer == null) {
-                return;
-            }
-            gamePlayer.resetBlocks();
-        }
-    }
+  }
 }

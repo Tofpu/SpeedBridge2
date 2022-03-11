@@ -6,12 +6,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerInteractEventWrapper extends EventWrapper<PlayerInteractEvent> {
-    public static PlayerInteractEventWrapper wrap(final @NotNull PlayerInteractEvent event) {
-        return new PlayerInteractEventWrapper(event);
-    }
+  public static PlayerInteractEventWrapper wrap(final @NotNull PlayerInteractEvent event) {
+    return new PlayerInteractEventWrapper(event);
+  }
 
-    private PlayerInteractEventWrapper(final @NotNull PlayerInteractEvent event) {
-        super(PlayerService.INSTANCE.get(event.getPlayer()
-                .getUniqueId()), event);
-    }
+  private PlayerInteractEventWrapper(final @NotNull PlayerInteractEvent event) {
+    super(PlayerService.INSTANCE.get(event.getPlayer().getUniqueId()), event);
+  }
 }

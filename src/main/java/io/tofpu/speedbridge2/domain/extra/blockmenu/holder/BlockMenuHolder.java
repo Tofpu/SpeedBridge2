@@ -6,16 +6,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 public final class BlockMenuHolder implements InventoryHolder {
-    public static final String INVENTORY_TITLE = "Blocks Menu";
-    public static final BlockMenuHolder INSTANCE = new BlockMenuHolder();
+  public static final String INVENTORY_TITLE = "Blocks Menu";
+  public static final BlockMenuHolder INSTANCE = new BlockMenuHolder();
 
-    private final Inventory inventory = Bukkit.createInventory(this,
-            InventoryType.CHEST, INVENTORY_TITLE);
+  private final Inventory inventory =
+      Bukkit.createInventory(this, InventoryType.CHEST, INVENTORY_TITLE);
 
-    private BlockMenuHolder() {}
+  private BlockMenuHolder() {}
 
-    @Override
-    public Inventory getInventory() {
-        return this.inventory;
-    }
+  @Override
+  public Inventory getInventory() {
+    return this.inventory;
+  }
 }

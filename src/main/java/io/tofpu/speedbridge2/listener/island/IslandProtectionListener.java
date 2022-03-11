@@ -18,36 +18,37 @@ import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class IslandProtectionListener extends GameListener {
-    @EventHandler(ignoreCancelled = true)
-    private void onBlockBreak(final @NotNull BlockBreakEventWrapper eventWrapper) {
-        final BlockBreakEvent event = eventWrapper.getEvent();
+  @EventHandler(ignoreCancelled = true)
+  private void onBlockBreak(final @NotNull BlockBreakEventWrapper eventWrapper) {
+    final BlockBreakEvent event = eventWrapper.getEvent();
 
-        final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
-        final Block block = event.getBlock();
+    final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
+    final Block block = event.getBlock();
 
-        // if the player haven't placed this block, return
-        event.setCancelled(true);
-        if (gamePlayer.hasPlaced(block)) {
-            gamePlayer.removeBlock(block);
-            block.setType(Material.AIR);
-        }
+    // if the player haven't placed this block, return
+    event.setCancelled(true);
+    if (gamePlayer.hasPlaced(block)) {
+      gamePlayer.removeBlock(block);
+      block.setType(Material.AIR);
+    }
+  }
+
+  @EventHandler(ignoreCancelled = true)
+  private void onBlockPlaceEvent(final @NotNull BlockPlaceEventWrapper eventWrapper) {
+    final GameIsland gameIsland = eventWrapper.getCurrentGame();
+    final CuboidRegion region = gameIsland.getIslandPlot().region();
+
+    final BlockPlaceEvent event = eventWrapper.getEvent();
+    final Location location = event.getBlockPlaced().getLocation();
+    final boolean isInRegion =
+        region.contains(new Vector(location.getX(), location.getY(), location.getZ()));
+
+    // if the block placement was outside of the island's region, prevent the block placement
+    if (!isInRegion) {
+      event.setCancelled(true);
+      return;
     }
 
-    @EventHandler(ignoreCancelled = true)
-    private void onBlockPlaceEvent(final @NotNull BlockPlaceEventWrapper eventWrapper) {
-        final GameIsland gameIsland = eventWrapper.getCurrentGame();
-        final CuboidRegion region = gameIsland.getIslandPlot().region();
-
-        final BlockPlaceEvent event = eventWrapper.getEvent();
-        final Location location = event.getBlockPlaced().getLocation();
-        final boolean isInRegion = region.contains(new Vector(location.getX(), location.getY(), location.getZ()));
-
-        // if the block placement was outside of the island's region, prevent the block placement
-        if (!isInRegion) {
-            event.setCancelled(true);
-            return;
-        }
-
-        eventWrapper.getGamePlayer().addBlock(event.getBlockPlaced());
-    }
+    eventWrapper.getGamePlayer().addBlock(event.getBlockPlaced());
+  }
 }

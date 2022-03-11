@@ -6,12 +6,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.jetbrains.annotations.NotNull;
 
 public final class BlockPlaceEventWrapper extends EventWrapper<BlockPlaceEvent> {
-    public static BlockPlaceEventWrapper wrap(final @NotNull BlockPlaceEvent event) {
-        return new BlockPlaceEventWrapper(event);
-    }
+  public static BlockPlaceEventWrapper wrap(final @NotNull BlockPlaceEvent event) {
+    return new BlockPlaceEventWrapper(event);
+  }
 
-    private BlockPlaceEventWrapper(final @NotNull BlockPlaceEvent event) {
-        super(PlayerService.INSTANCE.get(event.getPlayer()
-                .getUniqueId()), event);
-    }
+  private BlockPlaceEventWrapper(final @NotNull BlockPlaceEvent event) {
+    super(PlayerService.INSTANCE.get(event.getPlayer().getUniqueId()), event);
+  }
 }

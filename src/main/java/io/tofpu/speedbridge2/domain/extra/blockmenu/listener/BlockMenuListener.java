@@ -14,28 +14,27 @@ import org.bukkit.inventory.ItemStack;
 
 @AutoRegister
 public final class BlockMenuListener extends GameListener {
-    @EventHandler
-    public void onInventoryClick(final InventoryClickEvent event) {
-        final Inventory clickedInventory = event.getClickedInventory();
-        if (clickedInventory == null ||
-            (!(clickedInventory.getHolder() instanceof BlockMenuHolder))) {
-            return;
-        }
-        event.setCancelled(true);
-
-        final ItemStack itemStack = event.getCurrentItem();
-        final Material type = itemStack == null ? null : itemStack.getType();
-        if (itemStack == null || type == Material.AIR) {
-            return;
-        }
-
-        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getWhoClicked()
-                .getUniqueId());
-        if (bridgePlayer == null || bridgePlayer.getChoseMaterial() == type) {
-            return;
-        }
-
-        bridgePlayer.setChosenMaterial(type);
-        BlockMenuManager.INSTANCE.showInventory(bridgePlayer);
+  @EventHandler
+  public void onInventoryClick(final InventoryClickEvent event) {
+    final Inventory clickedInventory = event.getClickedInventory();
+    if (clickedInventory == null || (!(clickedInventory.getHolder() instanceof BlockMenuHolder))) {
+      return;
     }
+    event.setCancelled(true);
+
+    final ItemStack itemStack = event.getCurrentItem();
+    final Material type = itemStack == null ? null : itemStack.getType();
+    if (itemStack == null || type == Material.AIR) {
+      return;
+    }
+
+    final BridgePlayer bridgePlayer =
+        PlayerService.INSTANCE.get(event.getWhoClicked().getUniqueId());
+    if (bridgePlayer == null || bridgePlayer.getChoseMaterial() == type) {
+      return;
+    }
+
+    bridgePlayer.setChosenMaterial(type);
+    BlockMenuManager.INSTANCE.showInventory(bridgePlayer);
+  }
 }

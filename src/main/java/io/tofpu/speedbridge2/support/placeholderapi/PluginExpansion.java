@@ -10,56 +10,55 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.jetbrains.annotations.NotNull;
 
 public final class PluginExpansion extends PlaceholderExpansion {
-    private final Plugin plugin;
-    private final PluginDescriptionFile descriptionFile;
+  private final Plugin plugin;
+  private final PluginDescriptionFile descriptionFile;
 
-    private final PlayerService playerService = PlayerService.INSTANCE;
+  private final PlayerService playerService = PlayerService.INSTANCE;
 
-    public PluginExpansion(final Plugin plugin) {
-        this.plugin = plugin;
-        this.descriptionFile = this.plugin.getDescription();
+  public PluginExpansion(final Plugin plugin) {
+    this.plugin = plugin;
+    this.descriptionFile = this.plugin.getDescription();
 
-        register();
+    register();
+  }
+
+  @Override
+  public @NotNull String getIdentifier() {
+    return "sb";
+  }
+
+  @Override
+  public @NotNull String getAuthor() {
+    return String.valueOf(this.descriptionFile.getAuthors());
+  }
+
+  @Override
+  public @NotNull String getVersion() {
+    return this.descriptionFile.getVersion();
+  }
+
+  @Override
+  public boolean persist() {
+    return true;
+  }
+
+  @Override
+  public boolean canRegister() {
+    return true;
+  }
+
+  @Override
+  public String onPlaceholderRequest(final Player player, @NotNull final String params) {
+    if (player == null) {
+      return "";
     }
 
-    @Override
-    public @NotNull String getIdentifier() {
-        return "sb";
+    final BridgePlayer bridgePlayer = playerService.get(player.getUniqueId());
+    if (bridgePlayer == null) {
+      return "";
     }
 
-    @Override
-    public @NotNull String getAuthor() {
-        return String.valueOf(this.descriptionFile.getAuthors());
-    }
-
-    @Override
-    public @NotNull String getVersion() {
-        return this.descriptionFile.getVersion();
-    }
-
-    @Override
-    public boolean persist() {
-        return true;
-    }
-
-    @Override
-    public boolean canRegister() {
-        return true;
-    }
-
-    @Override
-    public String onPlaceholderRequest(final Player player,
-            @NotNull final String params) {
-        if (player == null) {
-            return "";
-        }
-
-        final BridgePlayer bridgePlayer = playerService.get(player.getUniqueId());
-        if (bridgePlayer == null) {
-            return "";
-        }
-
-        final String[] args = params.split("_");
-        return ExpansionHandler.INSTANCE.match(bridgePlayer, args);
-    }
+    final String[] args = params.split("_");
+    return ExpansionHandler.INSTANCE.match(bridgePlayer, args);
+  }
 }

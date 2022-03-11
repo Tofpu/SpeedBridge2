@@ -19,42 +19,42 @@ import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class GameInteractionListener extends GameListener {
-    @EventHandler
-    private void whenPlayerPlaceBlock(final @NotNull BlockPlaceEventWrapper eventWrapper) {
-        final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
+  @EventHandler
+  private void whenPlayerPlaceBlock(final @NotNull BlockPlaceEventWrapper eventWrapper) {
+    final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
 
-        final BlockPlaceEvent event = eventWrapper.getEvent();
-        if (gamePlayer.hasTimerStarted()) {
-            final ItemStack itemStack = event.getItemInHand();
-            event.getPlayer()
-                    .setItemInHand(itemStack);
-            return;
-        }
-
-        gamePlayer.startTimer();
-        BridgeUtil.sendMessage(event.getPlayer(), Message.INSTANCE.timeStarted);
+    final BlockPlaceEvent event = eventWrapper.getEvent();
+    if (gamePlayer.hasTimerStarted()) {
+      final ItemStack itemStack = event.getItemInHand();
+      event.getPlayer().setItemInHand(itemStack);
+      return;
     }
 
-    @EventHandler
-    private void whenPlayerScore(final @NotNull PlayerInteractEventWrapper eventWrapper) {
-        final BridgePlayer player = eventWrapper.getBridgePlayer();
+    gamePlayer.startTimer();
+    BridgeUtil.sendMessage(event.getPlayer(), Message.INSTANCE.timeStarted);
+  }
 
-        final GameIsland currentGame = player.getCurrentGame();
-        if (currentGame == null) {
-            return;
-        }
+  @EventHandler
+  private void whenPlayerScore(final @NotNull PlayerInteractEventWrapper eventWrapper) {
+    final BridgePlayer player = eventWrapper.getBridgePlayer();
 
-        final Island island = currentGame.getIsland();
-        final long startedAt = player.getTimer();
-
-        final double seconds = BridgeUtil.nanoToSeconds(startedAt);
-        final Score score = new Score(island.getSlot(), seconds);
-
-        player.setScoreIfLower(island.getSlot(), score.getScore());
-        player.increment(PlayerStatType.TOTAL_WINS);
-
-        BridgeUtil.sendMessage(player, String.format(Message.INSTANCE.scored, BridgeUtil.formatNumber(score.getScore())));
-
-        currentGame.resetGame(false);
+    final GameIsland currentGame = player.getCurrentGame();
+    if (currentGame == null) {
+      return;
     }
+
+    final Island island = currentGame.getIsland();
+    final long startedAt = player.getTimer();
+
+    final double seconds = BridgeUtil.nanoToSeconds(startedAt);
+    final Score score = new Score(island.getSlot(), seconds);
+
+    player.setScoreIfLower(island.getSlot(), score.getScore());
+    player.increment(PlayerStatType.TOTAL_WINS);
+
+    BridgeUtil.sendMessage(
+        player, String.format(Message.INSTANCE.scored, BridgeUtil.formatNumber(score.getScore())));
+
+    currentGame.resetGame(false);
+  }
 }

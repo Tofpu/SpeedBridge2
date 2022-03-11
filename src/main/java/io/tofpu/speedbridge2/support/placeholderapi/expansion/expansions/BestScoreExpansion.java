@@ -10,35 +10,36 @@ import io.tofpu.speedbridge2.support.placeholderapi.expansion.AbstractExpansion;
 
 @AutoRegister
 public final class BestScoreExpansion extends AbstractExpansion {
-    @Override
-    public String getIdentifier() {
-        return "best_score";
+  @Override
+  public String getIdentifier() {
+    return "best_score";
+  }
+
+  @Override
+  public String getDefaultAction(final BridgePlayer bridgePlayer) {
+    return BridgeUtil.translateMiniMessageLegacy(Message.INSTANCE.emptyScoreFormat);
+  }
+
+  @Override
+  public boolean passedRequirement(final BridgePlayer bridgePlayer, final String[] args) {
+    return args.length == 2;
+  }
+
+  @Override
+  public String runAction(
+      final BridgePlayer bridgePlayer, final GamePlayer gamePlayer, final String[] args) {
+    Score bestScore = null;
+    for (final Score score : bridgePlayer.getScores()) {
+      if (bestScore != null && score.compareTo(bestScore) >= 1) {
+        continue;
+      }
+      bestScore = score;
     }
 
-    @Override
-    public String getDefaultAction(final BridgePlayer bridgePlayer) {
-        return BridgeUtil.translateMiniMessageLegacy(Message.INSTANCE.emptyScoreFormat);
+    if (bestScore == null) {
+      return "0";
     }
 
-    @Override
-    public boolean passedRequirement(final BridgePlayer bridgePlayer, final String[] args) {
-        return args.length == 2;
-    }
-
-    @Override
-    public String runAction(final BridgePlayer bridgePlayer, final GamePlayer gamePlayer, final String[] args) {
-        Score bestScore = null;
-        for (final Score score : bridgePlayer.getScores()) {
-            if (bestScore != null && score.compareTo(bestScore) >= 1) {
-                continue;
-            }
-            bestScore = score;
-        }
-
-        if (bestScore == null) {
-            return "0";
-        }
-
-        return BridgeUtil.formatNumber(bestScore.getScore());
-    }
+    return BridgeUtil.formatNumber(bestScore.getScore());
+  }
 }

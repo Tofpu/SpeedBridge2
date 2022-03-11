@@ -1,9 +1,8 @@
 package io.tofpu.speedbridge2.domain.extra.leaderboard.meta;
 
+import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
-
 public interface BoardRetrieve<T> {
-    T retrieve(final @NotNull UUID uniqueId);
+  T retrieve(final @NotNull UUID uniqueId);
 }

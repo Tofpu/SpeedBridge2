@@ -8,47 +8,46 @@ import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 public class EventWrapper<E extends Event> extends Event {
-    private static final @NotNull HandlerList handlers = new HandlerList();
+  private static final @NotNull HandlerList handlers = new HandlerList();
 
-    private final @NotNull BridgePlayer bridgePlayer;
-    private final @NotNull E event;
+  private final @NotNull BridgePlayer bridgePlayer;
+  private final @NotNull E event;
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+  public static HandlerList getHandlerList() {
+    return handlers;
+  }
 
-    public EventWrapper(final @NotNull BridgePlayer bridgePlayer,
-            final @NotNull E event) {
-        this.bridgePlayer = bridgePlayer;
-        this.event = event;
-    }
+  public EventWrapper(final @NotNull BridgePlayer bridgePlayer, final @NotNull E event) {
+    this.bridgePlayer = bridgePlayer;
+    this.event = event;
+  }
 
-    public @NotNull E getEvent() {
-        return event;
-    }
+  public @NotNull E getEvent() {
+    return event;
+  }
 
-    public boolean isPlaying() {
-        return bridgePlayer.isPlaying();
-    }
+  public boolean isPlaying() {
+    return bridgePlayer.isPlaying();
+  }
 
-    public @NotNull BridgePlayer getBridgePlayer() {
-        return bridgePlayer;
-    }
+  public @NotNull BridgePlayer getBridgePlayer() {
+    return bridgePlayer;
+  }
 
-    public boolean hasTimerStarted() {
-        return getGamePlayer().hasTimerStarted();
-    }
+  public boolean hasTimerStarted() {
+    return getGamePlayer().hasTimerStarted();
+  }
 
-    public @NotNull GamePlayer getGamePlayer() {
-        return bridgePlayer.getGamePlayer();
-    }
+  public @NotNull GamePlayer getGamePlayer() {
+    return bridgePlayer.getGamePlayer();
+  }
 
-    public @NotNull GameIsland getCurrentGame() {
-        return getGamePlayer().getCurrentGame();
-    }
+  public @NotNull GameIsland getCurrentGame() {
+    return getGamePlayer().getCurrentGame();
+  }
 
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
+  @Override
+  public HandlerList getHandlers() {
+    return handlers;
+  }
 }

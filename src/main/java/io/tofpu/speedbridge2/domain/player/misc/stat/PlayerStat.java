@@ -3,10 +3,11 @@ package io.tofpu.speedbridge2.domain.player.misc.stat;
 import java.util.UUID;
 
 public interface PlayerStat {
-    UUID getOwner();
+  UUID getOwner();
 
-    String getKey();
-    String getValue();
+  String getKey();
 
-    void increment();
+  String getValue();
+
+  void increment();
 }

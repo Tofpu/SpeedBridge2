@@ -6,20 +6,19 @@ import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 @ConfigSerializable
 public final class GeneralCategory {
-    @Setting("show-debug-message")
-    @Comment("Useful when debugging")
-    private boolean showDebugMessage = false;
+  @Setting("show-debug-message")
+  @Comment("Useful when debugging")
+  private boolean showDebugMessage = false;
 
-    public boolean isDebugEnabled() {
-        return showDebugMessage;
-    }
+  public boolean isDebugEnabled() {
+    return showDebugMessage;
+  }
 
-    @Setting("default-island-category")
-    @Comment("This will set the default island category when they're not provided upon " +
-             "creation")
-    private String defaultIslandCategory = "standard";
+  @Setting("default-island-category")
+  @Comment("This will set the default island category when they're not provided upon " + "creation")
+  private String defaultIslandCategory = "standard";
 
-    public String getDefaultIslandCategory() {
-        return defaultIslandCategory;
-    }
+  public String getDefaultIslandCategory() {
+    return defaultIslandCategory;
+  }
 }

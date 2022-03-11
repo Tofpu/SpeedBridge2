@@ -8,28 +8,28 @@ import io.tofpu.speedbridge2.support.placeholderapi.expansion.AbstractExpansion;
 
 @AutoRegister
 public final class IslandSlotExpansion extends AbstractExpansion {
-    @Override
-    public String getIdentifier() {
-        return "island_slot";
-    }
+  @Override
+  public String getIdentifier() {
+    return "island_slot";
+  }
 
-    @Override
-    public String getDefaultAction(final BridgePlayer bridgePlayer) {
-        return "";
-    }
+  @Override
+  public String getDefaultAction(final BridgePlayer bridgePlayer) {
+    return "";
+  }
 
-    @Override
-    public boolean passedRequirement(final BridgePlayer bridgePlayer, final String[] args) {
-        return args.length == 2;
-    }
+  @Override
+  public boolean passedRequirement(final BridgePlayer bridgePlayer, final String[] args) {
+    return args.length == 2;
+  }
 
-    @Override
-    public String runAction(final BridgePlayer bridgePlayer,
-            final GamePlayer gamePlayer, final String[] args) {
-        final GameIsland currentGame = bridgePlayer.getCurrentGame();
-        if (currentGame == null) {
-            return "";
-        }
-        return currentGame.getIsland().getSlot() + "";
+  @Override
+  public String runAction(
+      final BridgePlayer bridgePlayer, final GamePlayer gamePlayer, final String[] args) {
+    final GameIsland currentGame = bridgePlayer.getCurrentGame();
+    if (currentGame == null) {
+      return "";
     }
+    return currentGame.getIsland().getSlot() + "";
+  }
 }

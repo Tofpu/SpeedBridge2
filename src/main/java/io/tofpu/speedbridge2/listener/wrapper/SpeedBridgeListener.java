@@ -16,41 +16,39 @@ import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class SpeedBridgeListener extends GameListener {
-    @EventHandler
-    private void onBlockPlace(final @NotNull BlockPlaceEvent event) {
-        final EventWrapper<BlockPlaceEvent> eventWrapper =
-                BlockPlaceEventWrapper.wrap(event);
-        if (!eventWrapper.isPlaying()) {
-            return;
-        }
-
-        callEvent(eventWrapper);
+  @EventHandler
+  private void onBlockPlace(final @NotNull BlockPlaceEvent event) {
+    final EventWrapper<BlockPlaceEvent> eventWrapper = BlockPlaceEventWrapper.wrap(event);
+    if (!eventWrapper.isPlaying()) {
+      return;
     }
 
-    @EventHandler
-    private void onBlockPlace(final @NotNull BlockBreakEvent event) {
-        final EventWrapper<BlockBreakEvent> eventWrapper = BlockBreakEventWrapper.wrap(event);
-        if (!eventWrapper.isPlaying()) {
-            return;
-        }
+    callEvent(eventWrapper);
+  }
 
-        callEvent(eventWrapper);
+  @EventHandler
+  private void onBlockPlace(final @NotNull BlockBreakEvent event) {
+    final EventWrapper<BlockBreakEvent> eventWrapper = BlockBreakEventWrapper.wrap(event);
+    if (!eventWrapper.isPlaying()) {
+      return;
     }
 
-    private void callEvent(final @NotNull Event event) {
-        Bukkit.getPluginManager()
-                .callEvent(event);
+    callEvent(eventWrapper);
+  }
+
+  private void callEvent(final @NotNull Event event) {
+    Bukkit.getPluginManager().callEvent(event);
+  }
+
+  @EventHandler
+  private void onPlayerInteract(final @NotNull PlayerInteractEvent event) {
+    final EventWrapper<PlayerInteractEvent> eventWrapper = PlayerInteractEventWrapper.wrap(event);
+    if (event.getAction() != Action.PHYSICAL
+        || !eventWrapper.isPlaying()
+        || !eventWrapper.hasTimerStarted()) {
+      return;
     }
 
-    @EventHandler
-    private void onPlayerInteract(final @NotNull PlayerInteractEvent event) {
-        final EventWrapper<PlayerInteractEvent> eventWrapper =
-                PlayerInteractEventWrapper.wrap(event);
-        if (event.getAction() != Action.PHYSICAL || !eventWrapper.isPlaying() ||
-            !eventWrapper.hasTimerStarted()) {
-            return;
-        }
-
-        callEvent(eventWrapper);
-    }
+    callEvent(eventWrapper);
+  }
 }

@@ -18,111 +18,115 @@ import io.tofpu.speedbridge2.domain.island.setup.IslandSetupManager;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.support.placeholderapi.PluginExpansion;
 import io.tofpu.speedbridge2.support.placeholderapi.expansion.ExpansionHandler;
+import java.io.IOException;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.IOException;
-
 public final class SpeedBridge {
-    private final JavaPlugin javaPlugin;
-    private static BukkitAudiences adventure;
+  private final JavaPlugin javaPlugin;
+  private static BukkitAudiences adventure;
 
-    public SpeedBridge(final JavaPlugin javaPlugin) {
-        this.javaPlugin = javaPlugin;
+  public SpeedBridge(final JavaPlugin javaPlugin) {
+    this.javaPlugin = javaPlugin;
+  }
+
+  public void load() {
+    adventure = BukkitAudiences.create(javaPlugin);
+
+    MultiWorldEditAPI.load(javaPlugin);
+
+    log("Loading the `config.yml`...");
+    ConfigurationManager.INSTANCE.load(javaPlugin);
+    ExpansionHandler.INSTANCE.load();
+
+    try {
+      DynamicClass.addParameters(javaPlugin);
+      DynamicClass.alternativeScan(getClass().getClassLoader(), "io.tofpu" + ".speedbridge2");
+    } catch (final IOException e) {
+      throw new IllegalStateException(e);
     }
 
-    public void load() {
-        adventure = BukkitAudiences.create(javaPlugin);
+    if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+      log("Hooking into PlaceholderAPI...");
+      new PluginExpansion(javaPlugin);
+    }
 
-        MultiWorldEditAPI.load(javaPlugin);
+    log("Loading the `speedbridge2` world...");
+    SchematicManager.INSTANCE.load(javaPlugin);
 
-        log("Loading the `config.yml`...");
-        ConfigurationManager.INSTANCE.load(javaPlugin);
-        ExpansionHandler.INSTANCE.load();
+    IslandSetupManager.INSTANCE.load();
 
-        try {
-            DynamicClass.addParameters(javaPlugin);
-            DynamicClass.alternativeScan(getClass().getClassLoader(), "io.tofpu" +
-                    ".speedbridge2");
-        } catch (final IOException e) {
-            throw new IllegalStateException(e);
-        }
+    log("Registering the commands...");
+    CommandManager.load(javaPlugin);
 
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            log("Hooking into PlaceholderAPI...");
-            new PluginExpansion(javaPlugin);
-        }
+    log("Loading the Block Menu GUI.");
+    BlockMenuManager.INSTANCE.load();
 
-        log("Loading the `speedbridge2` world...");
-        SchematicManager.INSTANCE.load(javaPlugin);
+    log("Loading the database...");
 
-        IslandSetupManager.INSTANCE.load();
+    BridgeUtil.whenComplete(
+        DatabaseManager.load(javaPlugin),
+        () -> {
+          final IslandService islandService = IslandService.INSTANCE;
+          log("Loading the island data...");
 
-        log("Registering the commands...");
-        CommandManager.load(javaPlugin);
-
-        log("Loading the Block Menu GUI.");
-        BlockMenuManager.INSTANCE.load();
-
-        log("Loading the database...");
-
-        BridgeUtil.whenComplete(DatabaseManager.load(javaPlugin), () -> {
-            final IslandService islandService = IslandService.INSTANCE;
-            log("Loading the island data...");
-
-            BridgeUtil.whenComplete(islandService.load(), () -> {
-
+          BridgeUtil.whenComplete(
+              islandService.load(),
+              () -> {
                 log("Loading the global/session leaderboard...");
-                BridgeUtil.whenComplete(Leaderboard.INSTANCE.load(javaPlugin), () -> {
+                BridgeUtil.whenComplete(
+                    Leaderboard.INSTANCE.load(javaPlugin),
+                    () -> {
+                      log("Loading the island leaderboard...");
+                      // when the global leaderboard is complete, load the per-island
+                      // leaderboard
+                      BridgeUtil.whenComplete(
+                          IslandBoard.load(javaPlugin),
+                          () -> {
 
-                    log("Loading the island leaderboard...");
-                    // when the global leaderboard is complete, load the per-island
-                    // leaderboard
-                    BridgeUtil.whenComplete(IslandBoard.load(javaPlugin), () -> {
+                            // once the database is loaded once, and for all - load
+                            // the players that are currently online
+                            for (final Player player : Bukkit.getOnlinePlayers()) {
+                              PlayerService.INSTANCE.internalRefresh(player);
+                            }
 
-                        // once the database is loaded once, and for all - load
-                        // the players that are currently online
-                        for (final Player player : Bukkit.getOnlinePlayers()) {
-                            PlayerService.INSTANCE.internalRefresh(player);
-                        }
-
-                        log("Complete.");
+                            log("Complete.");
+                          });
                     });
-                });
-            });
+              });
         });
 
-        log("Loading the messages...");
-        Message.load(javaPlugin.getDataFolder());
+    log("Loading the messages...");
+    Message.load(javaPlugin.getDataFolder());
 
-        log("Generating `/sb help` message...");
-        HelpCommandGenerator.generateHelpCommand(javaPlugin);
+    log("Generating `/sb help` message...");
+    HelpCommandGenerator.generateHelpCommand(javaPlugin);
+  }
+
+  public void shutdown() {
+    log("Shutting down the database...");
+    DatabaseManager.shutdown();
+    PluginExecutor.INSTANCE.shutdown();
+
+    log("Doing clean-up operations...");
+    PlayerService.INSTANCE.shutdown();
+
+    log("Unloading the `speedbridge2` world...");
+    Bukkit.unloadWorld("speedbridge2", false);
+
+    log("Complete.");
+  }
+
+  private void log(final String content) {
+    javaPlugin.getLogger().info(content);
+  }
+
+  public static BukkitAudiences getAdventure() {
+    if (adventure == null) {
+      throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
     }
-
-    public void shutdown() {
-        log("Shutting down the database...");
-        DatabaseManager.shutdown();
-        PluginExecutor.INSTANCE.shutdown();
-
-        log("Doing clean-up operations...");
-        PlayerService.INSTANCE.shutdown();
-
-        log("Unloading the `speedbridge2` world...");
-        Bukkit.unloadWorld("speedbridge2", false);
-
-        log("Complete.");
-    }
-
-    private void log(final String content) {
-        javaPlugin.getLogger().info(content);
-    }
-
-    public static BukkitAudiences getAdventure() {
-        if(adventure == null) {
-            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
-        }
-        return adventure;
-    }
+    return adventure;
+  }
 }

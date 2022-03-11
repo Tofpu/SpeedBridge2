@@ -15,61 +15,64 @@ import io.tofpu.speedbridge2.support.placeholderapi.expansion.AbstractExpansion;
 
 @AutoRegister
 public final class LeaderboardExpansion extends AbstractExpansion {
-    @Override
-    public String getIdentifier() {
-        return "leaderboard";
-    }
+  @Override
+  public String getIdentifier() {
+    return "leaderboard";
+  }
 
-    @Override
-    public String getDefaultAction(final BridgePlayer bridgePlayer) {
+  @Override
+  public String getDefaultAction(final BridgePlayer bridgePlayer) {
+    return "";
+  }
+
+  @Override
+  public boolean passedRequirement(final BridgePlayer bridgePlayer, final String[] args) {
+    // this placeholder requires four arguments
+    return args.length == 3;
+  }
+
+  @Override
+  public String runAction(
+      final BridgePlayer bridgePlayer, final GamePlayer gamePlayer, final String[] args) {
+    final int position = Integer.parseInt(args[2]);
+
+    final BoardPlayer boardPlayer;
+    if (args[1].equalsIgnoreCase("global")) {
+      boardPlayer =
+          Leaderboard.INSTANCE.retrieve(Leaderboard.LeaderboardRetrieveType.GLOBAL, position);
+    } else if (args[1].equalsIgnoreCase("session")) {
+      boardPlayer =
+          Leaderboard.INSTANCE.retrieve(Leaderboard.LeaderboardRetrieveType.SESSION, position);
+
+      // if board player is null, return the empty session leaderboard message
+      if (boardPlayer == null) {
+        return BridgeUtil.translateMiniMessageLegacy(Message.INSTANCE.emptySessionLeaderboard);
+      }
+    } else {
+      final Island island = IslandService.INSTANCE.findIslandBy(Integer.parseInt(args[1]));
+
+      if (island == null) {
         return "";
+      }
+
+      boardPlayer = island.retrieveBy(position);
     }
 
-    @Override
-    public boolean passedRequirement(final BridgePlayer bridgePlayer,
-            final String[] args) {
-        // this placeholder requires four arguments
-        return args.length == 3;
+    if (boardPlayer == null) {
+      return "";
     }
 
-    @Override
-    public String runAction(final BridgePlayer bridgePlayer,
-            final GamePlayer gamePlayer, final String[] args) {
-        final int position = Integer.parseInt(args[2]);
-
-        final BoardPlayer boardPlayer;
-        if (args[1].equalsIgnoreCase("global")) {
-            boardPlayer = Leaderboard.INSTANCE.retrieve(Leaderboard.LeaderboardRetrieveType.GLOBAL, position);
-        } else if (args[1].equalsIgnoreCase("session")) {
-            boardPlayer = Leaderboard.INSTANCE.retrieve(Leaderboard.LeaderboardRetrieveType.SESSION, position);
-
-            // if board player is null, return the empty session leaderboard message
-            if (boardPlayer == null) {
-                return BridgeUtil.translateMiniMessageLegacy(Message.INSTANCE.emptySessionLeaderboard);
-            }
-        } else {
-            final Island island = IslandService.INSTANCE.findIslandBy(Integer.parseInt(args[1]));
-
-            if (island == null) {
-                return "";
-            }
-
-            boardPlayer = island.retrieveBy(position);
-        }
-
-        if (boardPlayer == null) {
-            return "";
-        }
-
-        final Score bestScore = boardPlayer.getScore();
-        if (bestScore == null) {
-            return "";
-        }
-
-        return BridgeUtil.translate(ConfigurationManager.INSTANCE.getLeaderboardCategory()
-                .getLeaderboardFormat()
-                .replace("%position%", boardPlayer.getPosition() + "")
-                .replace("%name%", boardPlayer.getName())
-                .replace("%score%", BridgeUtil.formatNumber(bestScore.getScore())));
+    final Score bestScore = boardPlayer.getScore();
+    if (bestScore == null) {
+      return "";
     }
+
+    return BridgeUtil.translate(
+        ConfigurationManager.INSTANCE
+            .getLeaderboardCategory()
+            .getLeaderboardFormat()
+            .replace("%position%", boardPlayer.getPosition() + "")
+            .replace("%name%", boardPlayer.getName())
+            .replace("%score%", BridgeUtil.formatNumber(bestScore.getScore())));
+  }
 }
