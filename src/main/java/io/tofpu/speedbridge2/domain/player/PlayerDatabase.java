@@ -62,7 +62,7 @@ public final class PlayerDatabase extends Database {
 
     public CompletableFuture<Void> updateName(final String newName, final BridgePlayer bridgePlayer) {
         return runAsync(() -> {
-            try (final DatabaseQuery databaseQuery = new DatabaseQuery(
+            try (final DatabaseQuery databaseQuery = DatabaseQuery.query(
                     "UPDATE players SET name = ? WHERE uid" + " = ?")) {
                 databaseQuery.setString(newName);
                 databaseQuery.setString(bridgePlayer.getPlayerUid()
@@ -92,7 +92,7 @@ public final class PlayerDatabase extends Database {
         return runAsync(() -> {
             final BridgePlayer bridgePlayer = BridgePlayer.of(uniqueId);
 
-            try (final DatabaseQuery query = new DatabaseQuery(
+            try (final DatabaseQuery query = DatabaseQuery.query(
                     "SELECT * FROM players " + "where uid = ?")) {
                 query.setString(uniqueId.toString());
 

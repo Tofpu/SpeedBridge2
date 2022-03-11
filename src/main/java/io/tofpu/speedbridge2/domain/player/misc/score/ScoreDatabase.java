@@ -57,7 +57,7 @@ public final class ScoreDatabase extends Database {
         return PluginExecutor.supply(() -> {
             final List<Score> scores = new ArrayList<>();
 
-            try (final DatabaseQuery query = new DatabaseQuery("SELECT * FROM scores WHERE uid = ?")) {
+            try (final DatabaseQuery query = DatabaseQuery.query("SELECT * FROM scores WHERE uid = ?")) {
                 query.setString(uniqueId.toString());
 
                 query.executeQuery(resultSet -> {
@@ -77,7 +77,7 @@ public final class ScoreDatabase extends Database {
 
     public CompletableFuture<?> delete(final UUID uuid) {
         return PluginExecutor.runAsync(() -> {
-            try (final DatabaseQuery query = new DatabaseQuery("DELETE FROM scores " +
+            try (final DatabaseQuery query = DatabaseQuery.query("DELETE FROM scores " +
                                                                "WHERE uid = ?")) {
                 query.setString(uuid.toString());
                 query.execute();

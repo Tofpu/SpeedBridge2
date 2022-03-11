@@ -38,7 +38,7 @@ public final class IslandBoard {
                                          "now!");
                         final Map<Integer, BoardPlayer> boardMap = new HashMap<>();
 
-                        try (final DatabaseQuery databaseQuery = new DatabaseQuery(
+                        try (final DatabaseQuery databaseQuery = DatabaseQuery.query(
                                 "SELECT * FROM scores WHERE island_slot = ? ORDER BY" +
                                 " " +
                                 "score " + "LIMIT 10 OFFSET 0")) {

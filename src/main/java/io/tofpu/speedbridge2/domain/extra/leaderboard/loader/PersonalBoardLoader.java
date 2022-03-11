@@ -38,7 +38,7 @@ public final class PersonalBoardLoader extends CacheLoader<UUID, BoardPlayer> im
     @Override
     public @Nullable BoardPlayer retrieve(final @NotNull UUID key) {
         BridgeUtil.debug("PersonalBoardLoader#retrieve(): key: " + key);
-        try (final DatabaseQuery databaseQuery = new DatabaseQuery(GLOBAL_POSITION)) {
+        try (final DatabaseQuery databaseQuery = DatabaseQuery.query(GLOBAL_POSITION)) {
             databaseQuery.setString(key.toString());
 
             final AtomicReference<BoardPlayer> boardPlayer = new AtomicReference<>();

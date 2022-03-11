@@ -13,7 +13,6 @@ import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.IslandBoardPlayer;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
@@ -47,57 +46,57 @@ public final class Leaderboard {
 
     public CompletableFuture<Void> load(final JavaPlugin javaPlugin) {
         final CompletableFuture<Void> loadFuture = new CompletableFuture<>();
-        Bukkit.getScheduler()
-                .runTaskAsynchronously(javaPlugin, () -> {
-                    BridgeUtil.debug("Leaderboard#load(): loading the leaderboard!");
 
-                    // global leaderboard operation
-                    try (final DatabaseQuery databaseQuery = new DatabaseQuery("SELECT DISTINCT * FROM scores ORDER BY score")) {
-                        final List<UUID> uuidList = new ArrayList<>();
-                        final Map<Integer, BoardPlayer> globalBoardMap = new HashMap<>();
+        BridgeUtil.runBukkitAsync(() -> {
+            BridgeUtil.debug("Leaderboard#load(): loading the leaderboard!");
 
-                        databaseQuery.executeQuery(resultSet -> {
-                            while (resultSet.next()) {
-                                // if we reached the 10 limit, break the loop
-                                if (globalBoardMap.size() == 10) {
-                                    break;
-                                }
+            // global leaderboard operation
+            try (final DatabaseQuery databaseQuery = DatabaseQuery.query("SELECT DISTINCT *" +
+                                                                     " FROM scores ORDER BY score")) {
+                final List<UUID> uuidList = new ArrayList<>();
+                final Map<Integer, BoardPlayer> globalBoardMap = new HashMap<>();
 
-                                final String uid = resultSet.getString("uid");
-                                if (uid == null) {
-                                    continue;
-                                }
+                databaseQuery.executeQuery(resultSet -> {
+                    while (resultSet.next()) {
+                        // if we reached the 10 limit, break the loop
+                        if (globalBoardMap.size() == 10) {
+                            break;
+                        }
 
-                                final UUID uuid = UUID.fromString(uid);
-                                BridgeUtil.debug("Leaderboard#load(): uuid == " + uuid);
-                                // if we already have the given uuid, continue through the loop!
-                                if (uuidList.contains(uuid)) {
-                                    BridgeUtil.debug("Leaderboard#load(): uuidList contains " + uuid + "; continuing");
-                                    continue;
-                                }
+                        final String uid = resultSet.getString("uid");
+                        if (uid == null) {
+                            continue;
+                        }
 
-                                final BoardPlayer value = BridgeUtil.toBoardPlayer(true, resultSet);
-                                BridgeUtil.debug("Leaderboard#load(): value == " + value);
-                                if (value == null) {
-                                    BridgeUtil.debug("Leaderboard#load(): value == null; " +
-                                                       "continuing");
-                                    continue;
-                                }
+                        final UUID uuid = UUID.fromString(uid);
+                        BridgeUtil.debug("Leaderboard#load(): uuid == " + uuid);
+                        // if we already have the given uuid, continue through the loop!
+                        if (uuidList.contains(uuid)) {
+                            BridgeUtil.debug("Leaderboard#load(): uuidList contains " + uuid + "; continuing");
+                            continue;
+                        }
 
-                                uuidList.add(uuid);
-                                globalBoardMap.put(value.getPosition(), value);
-                            }
-                        });
+                        final BoardPlayer value = BridgeUtil.toBoardPlayer(true, resultSet);
+                        BridgeUtil.debug("Leaderboard#load(): value == " + value);
+                        if (value == null) {
+                            BridgeUtil.debug("Leaderboard#load(): value == null; " +
+                                             "continuing");
+                            continue;
+                        }
 
-                        this.globalMap.load(globalBoardMap);
-                        loadFuture.complete(null);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        uuidList.add(uuid);
+                        globalBoardMap.put(value.getPosition(), value);
                     }
                 });
 
-        Bukkit.getScheduler()
-                .runTaskTimerAsynchronously(javaPlugin, () -> {
+                this.globalMap.load(globalBoardMap);
+                loadFuture.complete(null);
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
+            }
+        });
+
+        BridgeUtil.runBukkitAsync(() -> {
                     BridgeUtil.debug("Leaderboard#load(): refreshing the leaderboard!");
 
                     // per-player based position operation
@@ -112,8 +111,7 @@ public final class Leaderboard {
                         .getGlobalUpdateInterval(), 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
                         .getGlobalUpdateInterval());
 
-        Bukkit.getScheduler()
-                .runTaskTimerAsynchronously(javaPlugin, () -> {
+        BridgeUtil.runBukkitAsync(() -> {
                     // sessional leaderboard operation
                     final Map<UUID, BoardPlayer> scoreMap = new HashMap<>();
                     for (final BridgePlayer bridgePlayer : PlayerService.INSTANCE.getBridgePlayers()) {

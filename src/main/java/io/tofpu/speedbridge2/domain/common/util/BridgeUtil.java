@@ -10,6 +10,7 @@ import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
+import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.Component;
@@ -17,9 +18,11 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
 public final class BridgeUtil {
@@ -109,7 +112,7 @@ public final class BridgeUtil {
 
     public static UUID findUUIDBy(final String playerName) {
         final AtomicReference<UUID> uuid = new AtomicReference<>();
-        try (final DatabaseQuery databaseQuery = new DatabaseQuery("SELECT uid FROM " +
+        try (final DatabaseQuery databaseQuery = DatabaseQuery.query("SELECT uid FROM " +
                                                                    "players WHERE name " +
                                                                    "= ?")) {
             databaseQuery.setString(playerName);
@@ -127,5 +130,24 @@ public final class BridgeUtil {
             throw new IllegalStateException(e);
         }
         return uuid.get();
+    }
+
+    public static void runBukkitAsync(final Runnable runnable) {
+        Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(SpeedBridgePlugin.class), runnable);
+    }
+
+    public static void runBukkitAsync(final Runnable runnable, final long delay,
+            final long interval) {
+        Bukkit.getScheduler().runTaskTimerAsynchronously(JavaPlugin.getPlugin(SpeedBridgePlugin.class), runnable, delay, interval);
+    }
+
+    public static void whenComplete(final CompletableFuture<?> completableFuture,
+            final Runnable whenComplete) {
+        completableFuture.whenComplete((o, throwable) -> {
+            if (throwable != null) {
+                throw new IllegalStateException(throwable);
+            }
+            whenComplete.run();
+        });
     }
 }

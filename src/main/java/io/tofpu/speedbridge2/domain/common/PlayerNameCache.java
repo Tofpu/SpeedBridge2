@@ -61,7 +61,7 @@ public final class PlayerNameCache {
 
     private static String getPlayerName(final UUID uuid) {
         final AtomicReference<String> result = new AtomicReference<>("");
-        try (final DatabaseQuery databaseQuery = new DatabaseQuery("SELECT * FROM " +
+        try (final DatabaseQuery databaseQuery = DatabaseQuery.query("SELECT * FROM " +
                                                                    "players " + "where uid = ?")) {
             databaseQuery.setString(uuid.toString());
 

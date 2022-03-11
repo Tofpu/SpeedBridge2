@@ -79,7 +79,7 @@ public final class StatsDatabase extends Database {
 
     public CompletableFuture<?> delete(final UUID uuid) {
         return PluginExecutor.runAsync(() -> {
-            try (final DatabaseQuery query = new DatabaseQuery(
+            try (final DatabaseQuery query = DatabaseQuery.query(
                     "SELECT * FROM stats WHERE " + "uid = ?")) {
                 query.setString(uuid.toString());
                 query.execute();

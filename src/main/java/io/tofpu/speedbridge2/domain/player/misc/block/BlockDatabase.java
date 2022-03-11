@@ -41,7 +41,7 @@ public final class BlockDatabase extends Database {
         return DatabaseUtil.runAsync(() -> {
             final AtomicReference<Material> material = new AtomicReference<>(null);
 
-            try (final DatabaseQuery databaseQuery = new DatabaseQuery(
+            try (final DatabaseQuery databaseQuery = DatabaseQuery.query(
                     "SELECT * FROM " + "blocks WHERE " + "uid = ?")) {
                 databaseQuery.setString(uniqueId.toString());
 
@@ -66,7 +66,7 @@ public final class BlockDatabase extends Database {
 
     public CompletableFuture<?> delete(final UUID uuid) {
         return PluginExecutor.runAsync(() -> {
-            try (final DatabaseQuery query = new DatabaseQuery(
+            try (final DatabaseQuery query = DatabaseQuery.query(
                     "SELECT * FROM blocks WHERE " + "uid = ?")) {
                 query.setString(uuid.toString());
                 query.execute();

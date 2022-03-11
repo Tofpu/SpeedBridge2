@@ -63,7 +63,7 @@ public final class DatabaseManager {
         Databases.STATS_DATABASE.toString();
 
         for (final String table : TABLE_QUEUE) {
-            try (final DatabaseQuery query = new DatabaseQuery(table)) {
+            try (final DatabaseQuery query = DatabaseQuery.query(table)) {
                 query.execute();
                 BridgeUtil.debug("Attempted to create " + table + " table!");
             } catch (final Exception exception) {

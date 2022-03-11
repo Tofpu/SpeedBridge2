@@ -46,7 +46,7 @@ public final class IslandBoardPlayer {
         BridgeUtil.debug("IslandBoardPlayer#retrieve(): Attempting to query to database" +
                          " for position for " + owner +
                          ", " + islandSlot);
-        try (final DatabaseQuery databaseQuery = new DatabaseQuery(ISLAND_POSITION)) {
+        try (final DatabaseQuery databaseQuery = DatabaseQuery.query(ISLAND_POSITION)) {
             databaseQuery.setInt(islandSlot);
             databaseQuery.setString(owner.toString());
 

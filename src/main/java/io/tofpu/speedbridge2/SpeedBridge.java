@@ -8,6 +8,7 @@ import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.DatabaseManager;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.extra.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.domain.extra.leaderboard.Leaderboard;
 import io.tofpu.speedbridge2.domain.island.IslandService;
@@ -66,47 +67,35 @@ public final class SpeedBridge {
         BlockMenuManager.INSTANCE.load();
 
         log("Loading the database...");
-        DatabaseManager.load(javaPlugin).whenComplete((unused, throwable) -> {
-            if (throwable != null) {
-                throw new IllegalStateException(throwable);
-            }
 
+        BridgeUtil.whenComplete(DatabaseManager.load(javaPlugin), () -> {
             final IslandService islandService = IslandService.INSTANCE;
             log("Loading the island data...");
-            islandService.load().whenComplete((integerIslandMap, throwable1) -> {
-                if (throwable1 != null) {
-                    throw new IllegalStateException(throwable1);
-                }
+
+            BridgeUtil.whenComplete(islandService.load(), () -> {
 
                 log("Loading the global/session leaderboard...");
-                Leaderboard.INSTANCE.load(javaPlugin)
-                        .whenComplete((unused1, throwable2) -> {
-                            if (throwable2 != null) {
-                                throw new IllegalStateException(throwable2);
-                            }
+                BridgeUtil.whenComplete(Leaderboard.INSTANCE.load(javaPlugin), () -> {
 
-                            log("Loading the island leaderboard...");
-                            // when the global leaderboard is complete, load the per-island
-                            // leaderboard
-                            IslandBoard.load(javaPlugin).whenComplete((o, throwable3) -> {
-                                if (throwable3 != null) {
-                                    throw new IllegalStateException(throwable3);
-                                }
+                    log("Loading the island leaderboard...");
+                    // when the global leaderboard is complete, load the per-island
+                    // leaderboard
+                    BridgeUtil.whenComplete(IslandBoard.load(javaPlugin), () -> {
 
-                                // once the database is loaded once, and for all - load
-                                // the players that are currently online
-                                for (final Player player : Bukkit.getOnlinePlayers()) {
-                                    PlayerService.INSTANCE.internalRefresh(player);
-                                }
+                        // once the database is loaded once, and for all - load
+                        // the players that are currently online
+                        for (final Player player : Bukkit.getOnlinePlayers()) {
+                            PlayerService.INSTANCE.internalRefresh(player);
+                        }
 
-                                log("Complete.");
-                            });
-                        });
+                        log("Complete.");
+                    });
+                });
             });
-
-            log("Loading the messages...");
-            Message.load(javaPlugin.getDataFolder());
         });
+
+        log("Loading the messages...");
+        Message.load(javaPlugin.getDataFolder());
 
         log("Generating `/sb help` message...");
         HelpCommandGenerator.generateHelpCommand(javaPlugin);

@@ -19,7 +19,7 @@ public final class PluginExecutor implements Executor {
     private final @NotNull ExecutorService executor;
 
     public PluginExecutor() {
-        this.executor = Executors.newCachedThreadPool();
+        this.executor = Executors.newFixedThreadPool(4);
     }
 
     @Override
