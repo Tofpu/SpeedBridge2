@@ -37,7 +37,7 @@ public final class SpeedBridge {
     public void load() {
         adventure = BukkitAudiences.create(javaPlugin);
 
-        new Metrics(javaPlugin, 100619);
+        new Metrics(javaPlugin, 14597);
 
         MultiWorldEditAPI.load(javaPlugin);
 
