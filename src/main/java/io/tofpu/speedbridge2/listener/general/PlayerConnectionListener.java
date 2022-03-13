@@ -5,6 +5,7 @@ import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.config.category.LobbyCategory;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.domain.common.util.UpdateChecker;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.Location;
@@ -25,6 +26,10 @@ public final class PlayerConnectionListener extends GameListener {
         // from breaking
         final Player player = event.getPlayer();
         playerService.internalRefresh(player);
+
+        if (player.isOp()) {
+            UpdateChecker.get().updateNotification(player);
+        }
 
         teleportToLobby(player);
     }

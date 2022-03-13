@@ -35,7 +35,12 @@ public final class LeaderboardExpansion extends AbstractExpansion {
     @Override
     public String runAction(final BridgePlayer bridgePlayer,
             final GamePlayer gamePlayer, final String[] args) {
-        final int position = Integer.parseInt(args[2]);
+        final int position;
+        try {
+            position = Integer.parseInt(args[2]);
+        } catch (final NumberFormatException exception) {
+            return "invalid placeholder";
+        }
 
         final BoardPlayer boardPlayer;
         if (args[1].equalsIgnoreCase("global")) {

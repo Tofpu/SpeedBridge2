@@ -34,11 +34,14 @@ public final class ExpansionHandler {
         final String joinedArg = String.join("_", args);
         for (final AbstractExpansion abstractExpansion : expansionMap.values()) {
             final String identifier = abstractExpansion.getIdentifier();
-            // if the identifier is not identical with the joined args, or if it
-            // doesn't pass the requirements, continue through the collection
-            if (!joinedArg.contains(identifier) ||
-                !abstractExpansion.passedRequirement(bridgePlayer, args)) {
+            // if the identifier is not identical with the joined args, continue through the collection
+            if (!joinedArg.contains(identifier)) {
                 continue;
+            }
+
+            // if the expansion doesn't pass the requirements, return the default action
+            if (!abstractExpansion.passedRequirement(bridgePlayer, args)) {
+                return abstractExpansion.getDefaultAction(bridgePlayer);
             }
 
             // running the action

@@ -9,6 +9,7 @@ import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.DatabaseManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.domain.common.util.UpdateChecker;
 import io.tofpu.speedbridge2.domain.extra.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.domain.extra.leaderboard.Leaderboard;
 import io.tofpu.speedbridge2.domain.island.IslandService;
@@ -43,17 +44,18 @@ public final class SpeedBridge {
 
         log("Loading the `config.yml`...");
         ConfigurationManager.INSTANCE.load(javaPlugin);
-        ExpansionHandler.INSTANCE.load();
 
         try {
             DynamicClass.addParameters(javaPlugin);
             DynamicClass.alternativeScan(getClass().getClassLoader(), "io.tofpu" +
                     ".speedbridge2");
-        } catch (final IOException e) {
+        } catch (final IOException | NoClassDefFoundError e) {
             throw new IllegalStateException(e);
         }
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            ExpansionHandler.INSTANCE.load();
+
             log("Hooking into PlaceholderAPI...");
             new PluginExpansion(javaPlugin);
         }
@@ -102,6 +104,23 @@ public final class SpeedBridge {
 
         log("Generating `/sb help` message...");
         HelpCommandGenerator.generateHelpCommand(javaPlugin);
+
+        log("Checking for an update...");
+        UpdateChecker.init(javaPlugin, 100619)
+                .requestUpdateCheck()
+                .whenComplete((updateResult, throwable) -> {
+                    if (throwable != null) {
+                        log("Couldn't check for an update...");
+                        return;
+                    }
+
+                    if (updateResult.requiresUpdate()) {
+                        log("You're using an outdated version of SpeedBridge!");
+                        log("You can download the latest version at https://www.spigotmc.org/resources/.100619/");
+                    } else {
+                        log("You're using the latest version!");
+                    }
+                });
     }
 
     public void shutdown() {

@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.tofpu.speedbridge2"
-version = "1.0.1"
+version = "1.0.2"
 
 tasks {
     compileJava {
@@ -70,7 +70,7 @@ dependencies {
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
     implementation("net.kyori:adventure-text-minimessage:4.10.1")
 
-    implementation("com.github.tofpu:DynamicClass:2ea7dee04c") {
+    implementation("com.github.tofpu:DynamicClass:fdc123593b") {
         exclude("com.google.guava", "guava")
     }
 

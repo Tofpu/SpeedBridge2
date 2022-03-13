@@ -1,5 +1,5 @@
 name: SpeedBridge2
-version: ${project.version}
+version: ${version}
 main: io.tofpu.speedbridge2.plugin.SpeedBridgePlugin
 authors: [ Tofpu ]
 website: https://tofpu.me
