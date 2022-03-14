@@ -1,5 +1,3 @@
-import org.apache.tools.ant.filters.ReplaceTokens
-
 plugins {
     java
     id("com.github.johnrengelman.shadow") version "7.0.0"
@@ -7,7 +5,7 @@ plugins {
 }
 
 group = "io.tofpu.speedbridge2"
-version = "1.0.2"
+version = "1.0.3"
 
 tasks {
     compileJava {
