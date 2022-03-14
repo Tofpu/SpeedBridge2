@@ -40,6 +40,16 @@ public final class PlayerService {
     }
 
     /**
+     * Returns the player with the given unique ID, or get a dummy object
+     *
+     * @param uuid The unique ID of the player.
+     * @return A BridgePlayer object.
+     */
+    public @NotNull BridgePlayer getOrDefault(final @NotNull UUID uuid) {
+        return this.playerHandler.getOrDefault(uuid);
+    }
+
+    /**
      * Remove a player from the player map
      *
      * @param uniqueId The unique ID of the player to remove.

@@ -11,7 +11,7 @@ public final class BlockPlaceEventWrapper extends EventWrapper<BlockPlaceEvent> 
     }
 
     private BlockPlaceEventWrapper(final @NotNull BlockPlaceEvent event) {
-        super(PlayerService.INSTANCE.get(event.getPlayer()
+        super(PlayerService.INSTANCE.getOrDefault(event.getPlayer()
                 .getUniqueId()), event);
     }
 }

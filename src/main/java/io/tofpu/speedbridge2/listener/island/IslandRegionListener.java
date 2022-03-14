@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class IslandRegionListener extends GameListener {
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true) // skipcq: JAVA-W0324
     private void onPlayerMove(final @NotNull PlayerMoveEvent event) {
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
                 .getUniqueId());

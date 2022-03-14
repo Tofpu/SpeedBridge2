@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class SpeedBridgeListener extends GameListener {
-    @EventHandler
+    @EventHandler // skipcq: JAVA-W0324
     private void onBlockPlace(final @NotNull BlockPlaceEvent event) {
         final EventWrapper<BlockPlaceEvent> eventWrapper =
                 BlockPlaceEventWrapper.wrap(event);
@@ -27,7 +27,7 @@ public final class SpeedBridgeListener extends GameListener {
         callEvent(eventWrapper);
     }
 
-    @EventHandler
+    @EventHandler // skipcq: JAVA-W0324
     private void onBlockPlace(final @NotNull BlockBreakEvent event) {
         final EventWrapper<BlockBreakEvent> eventWrapper = BlockBreakEventWrapper.wrap(event);
         if (!eventWrapper.isPlaying()) {
@@ -42,7 +42,7 @@ public final class SpeedBridgeListener extends GameListener {
                 .callEvent(event);
     }
 
-    @EventHandler
+    @EventHandler // skipcq: JAVA-W0324
     private void onPlayerInteract(final @NotNull PlayerInteractEvent event) {
         final EventWrapper<PlayerInteractEvent> eventWrapper =
                 PlayerInteractEventWrapper.wrap(event);

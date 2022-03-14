@@ -18,15 +18,11 @@ import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class IslandProtectionListener extends GameListener {
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true) // skipcq: JAVA-W0324
     private void onBlockBreak(final @NotNull BlockBreakEventWrapper eventWrapper) {
         final BlockBreakEvent event = eventWrapper.getEvent();
 
         final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
-        if (gamePlayer == null) {
-            return;
-        }
-
         final Block block = event.getBlock();
 
         // if the player haven't placed this block, return
@@ -41,9 +37,6 @@ public final class IslandProtectionListener extends GameListener {
     private void onBlockPlaceEvent(final @NotNull BlockPlaceEventWrapper eventWrapper) {
         final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
         final GameIsland gameIsland = eventWrapper.getCurrentGame();
-        if (gamePlayer == null || gameIsland == null) {
-            return;
-        }
 
         final CuboidRegion region = gameIsland.getIslandPlot().region();
 

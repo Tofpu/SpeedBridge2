@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class GameProtectionListener extends GameListener {
-    @EventHandler
+    @EventHandler // skipcq: JAVA-W0324
     private void onItemDrop(final @NotNull PlayerDropItemEvent event) {
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getPlayer()
                 .getUniqueId());
@@ -24,7 +24,7 @@ public final class GameProtectionListener extends GameListener {
         event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler // skipcq: JAVA-W0324
     private void onEntityDamage(final @NotNull EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) {
             return;
@@ -39,7 +39,7 @@ public final class GameProtectionListener extends GameListener {
         event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler // skipcq: JAVA-W0324
     private void onFoodLevelChange(final @NotNull FoodLevelChangeEvent event) {
         final Player player = (Player) event.getEntity();
         final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(player
