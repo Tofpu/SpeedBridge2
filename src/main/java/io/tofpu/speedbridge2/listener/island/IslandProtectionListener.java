@@ -23,6 +23,10 @@ public final class IslandProtectionListener extends GameListener {
         final BlockBreakEvent event = eventWrapper.getEvent();
 
         final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
+        if (gamePlayer == null) {
+            return;
+        }
+
         final Block block = event.getBlock();
 
         // if the player haven't placed this block, return
@@ -35,7 +39,12 @@ public final class IslandProtectionListener extends GameListener {
 
     @EventHandler(ignoreCancelled = true)
     private void onBlockPlaceEvent(final @NotNull BlockPlaceEventWrapper eventWrapper) {
+        final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
         final GameIsland gameIsland = eventWrapper.getCurrentGame();
+        if (gamePlayer == null || gameIsland == null) {
+            return;
+        }
+
         final CuboidRegion region = gameIsland.getIslandPlot().region();
 
         final BlockPlaceEvent event = eventWrapper.getEvent();
@@ -48,6 +57,6 @@ public final class IslandProtectionListener extends GameListener {
             return;
         }
 
-        eventWrapper.getGamePlayer().addBlock(event.getBlockPlaced());
+        gamePlayer.addBlock(event.getBlockPlaced());
     }
 }

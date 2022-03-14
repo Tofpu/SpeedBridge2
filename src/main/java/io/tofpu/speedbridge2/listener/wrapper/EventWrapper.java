@@ -6,18 +6,19 @@ import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class EventWrapper<E extends Event> extends Event {
     private static final @NotNull HandlerList handlers = new HandlerList();
 
-    private final @NotNull BridgePlayer bridgePlayer;
+    private final @Nullable BridgePlayer bridgePlayer;
     private final @NotNull E event;
 
     public static HandlerList getHandlerList() {
         return handlers;
     }
 
-    public EventWrapper(final @NotNull BridgePlayer bridgePlayer,
+    public EventWrapper(final @Nullable BridgePlayer bridgePlayer,
             final @NotNull E event) {
         this.bridgePlayer = bridgePlayer;
         this.event = event;
@@ -28,23 +29,34 @@ public class EventWrapper<E extends Event> extends Event {
     }
 
     public boolean isPlaying() {
-        return bridgePlayer.isPlaying();
+        return bridgePlayer != null && bridgePlayer.isPlaying();
     }
 
-    public @NotNull BridgePlayer getBridgePlayer() {
+    public @Nullable BridgePlayer getBridgePlayer() {
         return bridgePlayer;
     }
 
     public boolean hasTimerStarted() {
-        return getGamePlayer().hasTimerStarted();
+        final GamePlayer gamePlayer = getGamePlayer();
+        if (gamePlayer == null) {
+            return false;
+        }
+        return gamePlayer.hasTimerStarted();
     }
 
-    public @NotNull GamePlayer getGamePlayer() {
+    public @Nullable GamePlayer getGamePlayer() {
+        if (bridgePlayer == null) {
+            return null;
+        }
         return bridgePlayer.getGamePlayer();
     }
 
-    public @NotNull GameIsland getCurrentGame() {
-        return getGamePlayer().getCurrentGame();
+    public @Nullable GameIsland getCurrentGame() {
+        final GamePlayer gamePlayer = getGamePlayer();
+        if (gamePlayer == null) {
+            return null;
+        }
+        return gamePlayer.getCurrentGame();
     }
 
     @Override

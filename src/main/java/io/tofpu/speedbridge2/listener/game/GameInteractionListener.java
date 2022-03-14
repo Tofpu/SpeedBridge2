@@ -22,6 +22,9 @@ public final class GameInteractionListener extends GameListener {
     @EventHandler
     private void whenPlayerPlaceBlock(final @NotNull BlockPlaceEventWrapper eventWrapper) {
         final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
+        if (gamePlayer == null) {
+            return;
+        }
 
         final BlockPlaceEvent event = eventWrapper.getEvent();
         if (gamePlayer.hasTimerStarted()) {
@@ -38,6 +41,9 @@ public final class GameInteractionListener extends GameListener {
     @EventHandler
     private void whenPlayerScore(final @NotNull PlayerInteractEventWrapper eventWrapper) {
         final BridgePlayer player = eventWrapper.getBridgePlayer();
+        if (player == null) {
+            return;
+        }
 
         final GameIsland currentGame = player.getCurrentGame();
         if (currentGame == null) {
