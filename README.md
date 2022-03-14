@@ -5,7 +5,7 @@
   
 <div align="center">
   <p>You can download the plugin at <a href="https://www.spigotmc.org/resources/speedbridge-v2.100619/">Spigot</a>.<br/>
-  You can visit the wiki at <a href="https://tofpuu.gitbook.io/speedbridge-v2">GitBook</a>.<br/>
+  You can visit the wiki at <a href="https://docs.speedbridge.tofpu.me/">GitBook</a>.<br/>
   You can join the community at <a href="https://tofpu.me/discord">Discord</a>.</p>
 </div>
   
