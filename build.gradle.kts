@@ -80,7 +80,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.10.10")
 
     implementation("com.github.cryptomorin:XSeries:8.6.1")
-    implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:c2bef1ac3b") {
+    implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:f9ad4ce832") {
         exclude("de.schlichtherle", "truezip")
         exclude("rhino", "js")
         exclude("com.sk89q", "worldedit")

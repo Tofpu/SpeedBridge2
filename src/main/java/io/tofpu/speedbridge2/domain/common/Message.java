@@ -105,6 +105,8 @@ public final class Message {
     public final String somethingWentWrong =
             error + "Something went wrong... check " + "your console";
     public final String inASetup = error + "You're already in a setup.";
+    public final String notLoaded = error + "Your data has not been loaded yet. Please " +
+                                    "try again later!";
 
     private static String runCommand(final String command) {
         return "<hover:show_text:'<yellow>Click to run " +

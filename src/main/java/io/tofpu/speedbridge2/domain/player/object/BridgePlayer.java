@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public final class BridgePlayer extends CommonBridgePlayer<Player> implements SessionScore, BlockChoice, SetupMeta {
+public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionScore, BlockChoice, SetupMeta {
     private final UUID playerUid;
     private final Map<Integer, Score> scoreMap;
     private final Map<String, PlayerStat> statsMap;
@@ -77,7 +77,7 @@ public final class BridgePlayer extends CommonBridgePlayer<Player> implements Se
         this.chosenBlock = copy.chosenBlock;
     }
 
-    private BridgePlayer(final UUID playerUid) {
+    protected BridgePlayer(final UUID playerUid) {
         this("null", playerUid);
 
         if (player != null) {

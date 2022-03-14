@@ -18,6 +18,7 @@ import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
+import io.tofpu.speedbridge2.domain.player.object.extra.DummyBridgePlayer;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -201,6 +202,9 @@ public final class SpeedBridgeCommand {
         if (!isGeneralSetupComplete(bridgePlayer)) {
             return;
         }
+        if (isDummy(bridgePlayer)) {
+            return;
+        }
 
         if (bridgePlayer.isInSetup()) {
             BridgeUtil.sendMessage(bridgePlayer, INSTANCE.inASetup);
@@ -318,6 +322,10 @@ public final class SpeedBridgeCommand {
     @CommandAlias("speedbridge|sb choose")
     @CommandDescription("Lets you choose a block")
     public void chooseBlock(final BridgePlayer bridgePlayer) {
+        if (isDummy(bridgePlayer)) {
+            return;
+        }
+
         BlockMenuManager.INSTANCE.showInventory(bridgePlayer);
     }
 
@@ -363,6 +371,9 @@ public final class SpeedBridgeCommand {
         if (!isGeneralSetupComplete(bridgePlayer)) {
             return;
         }
+        if (isDummy(bridgePlayer)) {
+            return;
+        }
 
         final String message;
         if (bridgePlayer.isInSetup()) {
@@ -395,6 +406,9 @@ public final class SpeedBridgeCommand {
     public void onStartSetup(final BridgePlayer bridgePlayer,
             final @Argument("slot") int slot) {
         if (!isGeneralSetupComplete(bridgePlayer)) {
+            return;
+        }
+        if (isDummy(bridgePlayer)) {
             return;
         }
 
@@ -479,5 +493,14 @@ public final class SpeedBridgeCommand {
         }
 
         BridgeUtil.sendMessage(bridgePlayer, message);
+    }
+
+    private boolean isDummy(final BridgePlayer bridgePlayer) {
+        final boolean dummy = bridgePlayer instanceof DummyBridgePlayer;
+
+        if (dummy) {
+            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.notLoaded);
+        }
+        return dummy;
     }
 }
