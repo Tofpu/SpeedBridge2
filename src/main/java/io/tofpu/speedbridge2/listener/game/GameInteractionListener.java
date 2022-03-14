@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class GameInteractionListener extends GameListener {
-    @EventHandler
+    @EventHandler // skipcq: JAVA-W0324
     private void whenPlayerPlaceBlock(final @NotNull BlockPlaceEventWrapper eventWrapper) {
         final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
 
@@ -35,11 +35,11 @@ public final class GameInteractionListener extends GameListener {
         BridgeUtil.sendMessage(event.getPlayer(), Message.INSTANCE.timeStarted);
     }
 
-    @EventHandler
+    @EventHandler // skipcq: JAVA-W0324
     private void whenPlayerScore(final @NotNull PlayerInteractEventWrapper eventWrapper) {
         final BridgePlayer player = eventWrapper.getBridgePlayer();
-
         final GameIsland currentGame = player.getCurrentGame();
+
         if (currentGame == null) {
             return;
         }

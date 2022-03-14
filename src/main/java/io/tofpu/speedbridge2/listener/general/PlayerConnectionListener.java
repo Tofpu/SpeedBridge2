@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public final class PlayerConnectionListener extends GameListener {
     final PlayerService playerService = PlayerService.INSTANCE;
 
-    @EventHandler
+    @EventHandler // skipcq: JAVA-W0324
     private void onPlayerJoin(final @NotNull PlayerJoinEvent event) {
         // internally refreshing the BridgePlayer object, to avoid the Player object
         // from breaking
@@ -51,7 +51,7 @@ public final class PlayerConnectionListener extends GameListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST) // skipcq: JAVA-W0324
     private void onPlayerQuit(final @NotNull PlayerQuitEvent event) {
         final Player player = event.getPlayer();
 

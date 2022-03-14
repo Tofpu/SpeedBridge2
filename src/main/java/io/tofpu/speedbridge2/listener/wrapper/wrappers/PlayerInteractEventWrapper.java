@@ -11,7 +11,7 @@ public class PlayerInteractEventWrapper extends EventWrapper<PlayerInteractEvent
     }
 
     private PlayerInteractEventWrapper(final @NotNull PlayerInteractEvent event) {
-        super(PlayerService.INSTANCE.get(event.getPlayer()
+        super(PlayerService.INSTANCE.getOrDefault(event.getPlayer()
                 .getUniqueId()), event);
     }
 }

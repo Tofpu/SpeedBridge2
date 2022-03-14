@@ -62,6 +62,7 @@ public final class GamePlayer {
         for (final Location blockLocation : this.blockLocations) {
             blockLocation.getBlock().setType(Material.AIR);
         }
+        this.blockLocations.clear();
     }
 
     /**
@@ -172,5 +173,9 @@ public final class GamePlayer {
 
         GAME_PLAYER_MAP.remove(this.getBridgePlayer().getPlayerUid());
         return this;
+    }
+
+    public Collection<Location> getPlacedBlocks() {
+        return Collections.unmodifiableCollection(blockLocations);
     }
 }

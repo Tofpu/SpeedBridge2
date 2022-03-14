@@ -11,7 +11,7 @@ public final class BlockBreakEventWrapper extends EventWrapper<BlockBreakEvent> 
     }
 
     private BlockBreakEventWrapper(final @NotNull BlockBreakEvent event) {
-        super(PlayerService.INSTANCE.get(event.getPlayer()
+        super(PlayerService.INSTANCE.getOrDefault(event.getPlayer()
                 .getUniqueId()), event);
     }
 }

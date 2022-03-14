@@ -4,8 +4,7 @@
 name: Artifact Builder
 
 on:
-  push:
-    branches: [ main ]
+  push
 
 jobs:
   build:
