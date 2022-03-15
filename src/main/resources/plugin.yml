@@ -3,7 +3,8 @@ version: ${version}
 main: io.tofpu.speedbridge2.plugin.SpeedBridgePlugin
 authors: [ Tofpu ]
 website: https://tofpu.me
-softdepend:
-  - PlaceholderAPI
+api-version: 1.13
 depend:
   - WorldEdit
+softdepend:
+  - PlaceholderAPI

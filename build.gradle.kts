@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.tofpu.speedbridge2"
-version = "1.0.3"
+version = "1.0.4"
 
 tasks {
     compileJava {
@@ -80,7 +80,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.10.10")
 
     implementation("com.github.cryptomorin:XSeries:8.6.1")
-    implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:321a69d3e8") {
+    implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:f9ad4ce832") {
         exclude("de.schlichtherle", "truezip")
         exclude("rhino", "js")
         exclude("com.sk89q", "worldedit")
