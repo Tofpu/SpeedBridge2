@@ -20,13 +20,16 @@ import org.jetbrains.annotations.NotNull;
 public final class PlayerConnectionListener extends GameListener {
     final PlayerService playerService = PlayerService.INSTANCE;
 
-    @EventHandler // skipcq: JAVA-W0324
+    @EventHandler(priority = EventPriority.LOWEST) // skipcq: JAVA-W0324
     private void onPlayerJoin(final @NotNull PlayerJoinEvent event) {
         // internally refreshing the BridgePlayer object, to avoid the Player object
         // from breaking
         final Player player = event.getPlayer();
-        playerService.internalRefresh(player);
 
+        // clears the player's inventory. in-case the PlayerQuitEvent missed it.
+        player.getInventory().clear();
+
+        playerService.internalRefresh(player);
         if (player.isOp()) {
             UpdateChecker.get().updateNotification(player);
         }
@@ -37,7 +40,6 @@ public final class PlayerConnectionListener extends GameListener {
     private void teleportToLobby(final Player player) {
         final LobbyCategory lobbyCategory =
                 ConfigurationManager.INSTANCE.getLobbyCategory();
-
 
         // if teleport_on_join is set to true, teleport the player to the lobby location
         if (lobbyCategory.isTeleportOnJoin()) {

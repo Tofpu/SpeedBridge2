@@ -38,9 +38,9 @@ public final class GameIsland {
         // setting the player's queue to true
         this.gamePlayer.startQueue();
 
-        this.islandPlot = SchematicManager.INSTANCE.reservePlot(this);
+        this.gamePlayer.getBridgePlayer().setGamePlayer(gamePlayer);
 
-        gamePlayer.getBridgePlayer().setGamePlayer(gamePlayer);
+        this.islandPlot = SchematicManager.INSTANCE.reservePlot(this);
 
         // reset the player's queue
         this.gamePlayer.resetQueue();
