@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.common.config.category;
 
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
@@ -10,7 +11,8 @@ import java.util.*;
 public final class BlockMenuCategory {
 
     @Setting("blocks")
-    private List<Material> materials = new ArrayList<>(Arrays.asList(Material.WOOL,
+    private List<Material> materials =
+            new ArrayList<>(Arrays.asList(toMaterial(XMaterial.WHITE_WOOL),
             Material.DIAMOND_BLOCK, Material.GOLD_BLOCK, Material.IRON_BLOCK,
             Material.REDSTONE_BLOCK, Material.LAPIS_BLOCK, Material.QUARTZ_BLOCK));
 
@@ -23,5 +25,9 @@ public final class BlockMenuCategory {
 
     public Material getDefaultBlock() {
         return defaultBlock;
+    }
+
+    public static Material toMaterial(final XMaterial xMaterial) {
+        return xMaterial.parseMaterial();
     }
 }
