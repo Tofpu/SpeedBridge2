@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2.domain.extra.leaderboard;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.LoadingCache;
+import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
@@ -17,6 +17,7 @@ import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public final class Leaderboard {
@@ -25,31 +26,30 @@ public final class Leaderboard {
     private final LeaderboardMap globalMap;
     private final Map<Integer, BoardPlayer> sessionalMap;
 
-    private final LoadingCache<UUID, BoardPlayer> playerCache;
-    private final LoadingCache<UUID, IslandBoardPlayer> islandPositionMap;
+    private final AsyncLoadingCache<UUID, BoardPlayer> playerCache;
+    private final AsyncLoadingCache<UUID, IslandBoardPlayer> islandPositionMap;
 
     private Leaderboard() {
         this.globalMap = new LeaderboardMap();
         this.sessionalMap = new ConcurrentHashMap<>();
 
         // player's personal global position
-        this.playerCache = CacheBuilder.newBuilder()
+        this.playerCache = Caffeine.newBuilder()
                 .expireAfterAccess(5, TimeUnit.SECONDS)
-                .build(PersonalBoardLoader.INSTANCE);
+                .buildAsync(PersonalBoardLoader.INSTANCE);
 
         // player's global position that based on an island
-        this.islandPositionMap = CacheBuilder.newBuilder()
+        this.islandPositionMap = Caffeine.newBuilder()
                 .expireAfterAccess(5, TimeUnit.SECONDS)
-                .build(IslandLoader.INSTANCE);
+                .buildAsync(IslandLoader.INSTANCE);
     }
 
     /**
      * Load the leaderboard from the database
      *
-     * @param javaPlugin The plugin that is calling this method.
      * @return Nothing.
      */
-    public CompletableFuture<Void> load() {
+    public CompletableFuture<Void> loadAsync() {
         final CompletableFuture<Void> loadFuture = new CompletableFuture<>();
 
         BridgeUtil.runBukkitAsync(() -> {
@@ -107,7 +107,7 @@ public final class Leaderboard {
                     // per-player based position operation
                     for (final UUID uuid : playerCache.asMap()
                             .keySet()) {
-                        this.playerCache.refresh(uuid);
+                        this.playerCache.synchronous().refresh(uuid);
                     }
 
                     // update the global leaderboard
@@ -161,16 +161,15 @@ public final class Leaderboard {
      * @return A CompletableFuture<BoardPlayer>
      */
     public CompletableFuture<BoardPlayer> retrieve(final UUID uniqueId) {
-        final BoardPlayer player = playerCache.asMap()
+        final CompletableFuture<BoardPlayer> completableFuture = playerCache.asMap()
                 .get(uniqueId);
 
-        // if the board player is found, return the completed value
-        if (player != null) {
-            return CompletableFuture.completedFuture(player);
+        if (completableFuture == null) {
+            // loading the board player
+            return playerCache.get(uniqueId);
         }
 
-        // otherwise, attempt to load the player board async
-        return CompletableFuture.supplyAsync(() -> playerCache.getUnchecked(uniqueId));
+        return completableFuture;
     }
 
     /**
@@ -200,8 +199,8 @@ public final class Leaderboard {
      * @return The IslandBoard object.
      */
     public CompletableFuture<IslandBoardPlayer.IslandBoard> retrieve(final UUID uniqueId, final int islandSlot) {
-        final IslandBoardPlayer player = islandPositionMap.asMap()
-                .get(uniqueId);
+        final IslandBoardPlayer player =
+                islandPositionMap.synchronous().getIfPresent(uniqueId);
         final IslandBoardPlayer.IslandBoard islandBoard =
                 player == null ? null : player.findDefault(islandSlot);
 
@@ -211,8 +210,13 @@ public final class Leaderboard {
         }
 
         // otherwise, attempt to retrieve the board async
-        return PluginExecutor.supply(() -> islandPositionMap.getUnchecked(uniqueId)
-                .retrieve(islandSlot));
+        return PluginExecutor.supply(() -> {
+            try {
+                return islandPositionMap.get(uniqueId).get().retrieve(islandSlot);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new IllegalStateException(e);
+            }
+        });
     }
 
     /**

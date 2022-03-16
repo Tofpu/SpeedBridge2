@@ -11,8 +11,13 @@ public final class SpeedBridgePlugin extends JavaPlugin {
     }
 
     @Override
-    public void onEnable() {
+    public void onLoad() {
         speedBridge.load();
+    }
+
+    @Override
+    public void onEnable() {
+        speedBridge.enable();
     }
 
     @Override

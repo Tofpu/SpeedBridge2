@@ -1,16 +1,17 @@
 package io.tofpu.speedbridge2.domain.extra.leaderboard.loader;
 
-import com.google.common.cache.CacheLoader;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
+import com.github.benmanes.caffeine.cache.CacheLoader;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.extra.leaderboard.meta.BoardRetrieve;
 import io.tofpu.speedbridge2.domain.extra.leaderboard.wrapper.IslandBoardPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
-public final class IslandLoader extends CacheLoader<UUID, IslandBoardPlayer> implements BoardRetrieve<IslandBoardPlayer> {
+public final class IslandLoader implements CacheLoader<UUID, IslandBoardPlayer>,
+        BoardRetrieve<IslandBoardPlayer> {
     public static final IslandLoader INSTANCE = new IslandLoader();
 
     private IslandLoader() {}
@@ -22,14 +23,20 @@ public final class IslandLoader extends CacheLoader<UUID, IslandBoardPlayer> imp
     }
 
     @Override
-    public ListenableFuture<IslandBoardPlayer> reload(final @NotNull UUID key, final @NotNull IslandBoardPlayer oldValue) {
+    public CompletableFuture<? extends IslandBoardPlayer> asyncReload(final UUID key, final IslandBoardPlayer oldValue, final Executor executor) throws Exception {
         BridgeUtil.debug("attempting to reload " + key);
-        return Futures.immediateFuture(retrieve(key));
+        return retrieveAsync(key, executor);
     }
 
     @Override
-    public @NotNull IslandBoardPlayer retrieve(final @NotNull UUID key) {
+    public IslandBoardPlayer retrieve(final @NotNull UUID uniqueId) {
+        return new IslandBoardPlayer(uniqueId);
+    }
+
+    @Override
+    public @NotNull CompletableFuture<IslandBoardPlayer> retrieveAsync(final @NotNull UUID key,
+            final @NotNull Executor executor) {
         BridgeUtil.debug("retrieving " + key);
-        return new IslandBoardPlayer(key);
+        return CompletableFuture.supplyAsync(() -> retrieve(key), executor);
     }
 }

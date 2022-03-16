@@ -5,6 +5,7 @@ import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 
 import java.util.HashMap;
@@ -32,6 +33,7 @@ public final class IslandSetupManager {
             return false;
         }
         bridgePlayer.toggleSetup();
+        bridgePlayer.getPlayer().setGameMode(GameMode.CREATIVE);
 
         final IslandSetup islandSetup = create(bridgePlayer, island);
         final IslandPlot islandPlot = islandSetup.getIslandPlot();

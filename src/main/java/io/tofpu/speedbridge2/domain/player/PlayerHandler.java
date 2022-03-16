@@ -1,13 +1,13 @@
 package io.tofpu.speedbridge2.domain.player;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.LoadingCache;
-import io.tofpu.speedbridge2.domain.common.PluginExecutor;
+import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.island.setup.IslandSetupManager;
 import io.tofpu.speedbridge2.domain.player.loader.PlayerLoader;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
+import io.tofpu.speedbridge2.domain.player.object.extra.DummyBridgePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,15 +15,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 public final class PlayerHandler {
-    private final @NotNull LoadingCache<UUID, BridgePlayer> playerMap;
+    private final @NotNull AsyncLoadingCache<UUID, BridgePlayer> playerMap;
 
     public PlayerHandler() {
-        this.playerMap = CacheBuilder.newBuilder()
-                .expireAfterAccess(5, TimeUnit.MINUTES)
-                .build(PlayerLoader.INSTANCE);
+        this.playerMap = Caffeine.newBuilder()
+                .expireAfter(PlayerLoader.PlayerRemovalListener.INSTANCE)
+                .buildAsync(PlayerLoader.INSTANCE);
     }
 
     /**
@@ -33,11 +32,8 @@ public final class PlayerHandler {
      * @param uniqueId The unique ID of the player.
      * @return A CompletableFuture<BridgePlayer>
      */
-    public CompletableFuture<BridgePlayer> load(final UUID uniqueId) {
-        return PluginExecutor.supply(() -> {
-            // for loading purposes
-            return this.playerMap.getUnchecked(uniqueId);
-        });
+    public CompletableFuture<BridgePlayer> loadAsync(final UUID uniqueId) {
+        return this.playerMap.get(uniqueId);
     }
 
     /**
@@ -47,7 +43,7 @@ public final class PlayerHandler {
      * @return A BridgePlayer object.
      */
     public @Nullable BridgePlayer get(final UUID uniqueId) {
-        return this.playerMap.asMap().get(uniqueId);
+        return this.playerMap.synchronous().getIfPresent(uniqueId);
     }
 
     /**
@@ -57,33 +53,38 @@ public final class PlayerHandler {
      * @return A BridgePlayer object.
      */
     public @NotNull BridgePlayer getOrDefault(final UUID uniqueId) {
-        return this.playerMap.asMap().getOrDefault(uniqueId, BridgePlayer.of(uniqueId));
+        final BridgePlayer bridgePlayer = get(uniqueId);
+        if (bridgePlayer == null) {
+            return DummyBridgePlayer.of(uniqueId);
+        }
+        return bridgePlayer;
     }
 
     /**
-     * Remove a player from the player map
+     * Remove a player from the player map if present
      *
      * @param uniqueId The unique ID of the player to remove.
-     * @return The BridgePlayer object that was removed from the map.
      */
-    public @Nullable BridgePlayer remove(final UUID uniqueId) {
-        return this.playerMap.asMap().remove(uniqueId);
+    public void remove(final UUID uniqueId) {
+        if (uniqueId == null) {
+            return;
+        }
+        this.playerMap.synchronous().invalidate(uniqueId);
     }
 
     /**
      * If the player is in the
-     * database, update the name and refresh the player
+     * database, update the name and refresh the player instance
      *
      * @param name The name of the player.
      * @param uniqueId The unique ID of the player.
-     * @return A BridgePlayer object.
      */
-    public @Nullable BridgePlayer internalRefresh(final String name,
+    public void internalRefresh(final String name,
             final UUID uniqueId) {
         final BridgePlayer bridgePlayer = get(uniqueId);
         if (bridgePlayer == null) {
-            load(uniqueId);
-            return null;
+            loadAsync(uniqueId);
+            return;
         }
 
         if (!bridgePlayer.getName().equals(name)) {
@@ -91,8 +92,6 @@ public final class PlayerHandler {
         }
 
         bridgePlayer.internalRefresh(uniqueId);
-
-        return bridgePlayer;
     }
 
     /**
@@ -108,6 +107,7 @@ public final class PlayerHandler {
             return null;
         }
         bridgePlayer.invalidatePlayer();
+        playerMap.asMap().compute(uniqueId, (uuid, bridgePlayerCompletableFuture) -> CompletableFuture.completedFuture(bridgePlayer));
 
         IslandSetupManager.INSTANCE.invalidate(uniqueId);
 
@@ -120,7 +120,8 @@ public final class PlayerHandler {
      * @return A collection of all the players in the game.
      */
     public Collection<BridgePlayer> getBridgePlayers() {
-        return Collections.unmodifiableCollection(playerMap.asMap().values());
+        return Collections.unmodifiableCollection(playerMap.synchronous().asMap()
+                .values());
     }
 
     /**

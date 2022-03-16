@@ -121,7 +121,7 @@ public final class SpeedBridgeCommand {
                     BridgePlayer target = PlayerService.INSTANCE.get(uuidResult);
                     if (target == null) {
                         try {
-                            PlayerService.INSTANCE.load(uuidResult)
+                            PlayerService.INSTANCE.loadAsync(uuidResult)
                                     .get();
                         } catch (InterruptedException | ExecutionException e) {
                             BridgeUtil.sendMessage(bridgePlayer, INSTANCE.somethingWentWrong);
@@ -349,7 +349,6 @@ public final class SpeedBridgeCommand {
 
     @CommandMethod("speedbridge|sb")
     @CommandDescription("Shows a list of commands")
-    @CommandPermission("speedbridge.help")
     @Hidden
     public void onNoArgument(final CommonBridgePlayer<?> bridgePlayer) {
         final CommandSender player = bridgePlayer.getPlayer();

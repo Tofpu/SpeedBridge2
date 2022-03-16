@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.tofpu.speedbridge2"
-version = "1.0.4"
+version = "1.0.5"
 
 tasks {
     compileJava {
@@ -24,6 +24,8 @@ tasks {
             relocate("net.kyori.adventure", "io.tofpu.speedbridge2.lib.adventure")
             relocate("com.zaxxer.HikariCP", "io.tofpu.speedbridge2.lib.hikaricp")
             relocate("org.bstats", "io.tofpu.speedbridge2.lib.bstats")
+            relocate("com.github.benmanes.caffeine", "io.tofpu.speedbridge2.lib.caffeine")
+            relocate("org.apache.commons", "io.tofpu.speedbridge2.lib.commons")
         }
 
         exclude("META-INF/**")
@@ -57,7 +59,7 @@ repositories {
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
 
-    implementation("org.xerial:sqlite-jdbc:3.36.0.3")
+    compileOnly("org.xerial:sqlite-jdbc:3.36.0.3")
 
     compileOnly("com.sk89q:worldedit:6.0.0-SNAPSHOT")
 
@@ -74,10 +76,13 @@ dependencies {
 
     implementation("org.spongepowered:configurate-hocon:4.1.2")
     implementation("commons-lang:commons-lang:2.6")
+    implementation("commons-io:commons-io:2.11.0")
 
     implementation("org.bstats:bstats-bukkit:3.0.0")
 
     compileOnly("me.clip:placeholderapi:2.10.10")
+
+    implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
 
     implementation("com.github.cryptomorin:XSeries:8.6.1")
     implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:f9ad4ce832") {

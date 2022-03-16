@@ -1,20 +1,24 @@
 package io.tofpu.speedbridge2.domain.island.schematic;
 
 import com.sk89q.worldedit.WorldEditException;
+import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,21 +29,19 @@ public final class SchematicManager {
             new HashMap<>();
     private static final AtomicInteger COUNTER = new AtomicInteger();
 
-    private File worldFile;
+    private File worldDirectory;
     private @Nullable World world;
 
     private SchematicManager() {}
 
-    public void load(final @NotNull Plugin plugin) {
+    public void load() {
         World world = Bukkit.getWorld("speedbridge2");
         if (world == null) {
             world = Bukkit.createWorld(WorldCreator.name("speedbridge2")
                     .generator(new EmptyChunkGenerator()));
         }
-        this.world = world;
 
-        worldFile = new File(plugin.getDataFolder()
-                .getParentFile(), "speedbridge2");
+        this.world = world;
 
         protectWorld(world);
     }
@@ -126,6 +128,18 @@ public final class SchematicManager {
         return islandPlot;
     }
 
+    public void resetWorld() {
+        final File worldFile = getWorldDirectory();
+        if (worldFile != null && worldFile.exists()) {
+            try {
+                // delete the world outright
+                FileUtils.forceDelete(worldFile);
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+    }
+
     public Collection<IslandPlot> retrieve(final int slot) {
         return ISLAND_PLOTS.getOrDefault(slot, new ArrayList<>());
     }
@@ -134,8 +148,39 @@ public final class SchematicManager {
         ISLAND_PLOTS.remove(slot);
     }
 
-    public File getWorldFile() {
-        return worldFile;
+    public File getWorldDirectory() {
+        if (worldDirectory == null || !worldDirectory.exists()) {
+            this.worldDirectory = new File( "speedbridge2");
+        }
+        return worldDirectory;
+    }
+
+    public void unloadWorld() {
+        if (world == null) {
+            return;
+        }
+
+        movePlayersFromIslandWorld();
+
+        Bukkit.unloadWorld(world, false);
+    }
+
+    private void movePlayersFromIslandWorld() {
+        for (final Player player : Bukkit.getOnlinePlayers()) {
+            if (!player.getWorld()
+                    .getName()
+                    .equals(world.getName())) {
+                continue;
+            }
+            Location lobbyLocation = ConfigurationManager.INSTANCE.getLobbyCategory()
+                    .getLobbyLocation();
+
+            if (lobbyLocation == null) {
+                lobbyLocation = Bukkit.getServer().getWorlds().get(0).getSpawnLocation();
+            }
+
+            player.teleport(lobbyLocation);
+        }
     }
 
     public static final class EmptyChunkGenerator extends ChunkGenerator {
