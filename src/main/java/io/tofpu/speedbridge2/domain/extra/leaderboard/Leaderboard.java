@@ -49,7 +49,7 @@ public final class Leaderboard {
      *
      * @return Nothing.
      */
-    public CompletableFuture<Void> load() {
+    public CompletableFuture<Void> loadAsync() {
         final CompletableFuture<Void> loadFuture = new CompletableFuture<>();
 
         BridgeUtil.runBukkitAsync(() -> {

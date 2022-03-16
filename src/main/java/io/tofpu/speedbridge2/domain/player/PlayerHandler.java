@@ -32,7 +32,7 @@ public final class PlayerHandler {
      * @param uniqueId The unique ID of the player.
      * @return A CompletableFuture<BridgePlayer>
      */
-    public CompletableFuture<BridgePlayer> load(final UUID uniqueId) {
+    public CompletableFuture<BridgePlayer> loadAsync(final UUID uniqueId) {
         return this.playerMap.get(uniqueId);
     }
 
@@ -74,18 +74,17 @@ public final class PlayerHandler {
 
     /**
      * If the player is in the
-     * database, update the name and refresh the player
+     * database, update the name and refresh the player instance
      *
      * @param name The name of the player.
      * @param uniqueId The unique ID of the player.
-     * @return A BridgePlayer object.
      */
-    public @Nullable BridgePlayer internalRefresh(final String name,
+    public void internalRefresh(final String name,
             final UUID uniqueId) {
         final BridgePlayer bridgePlayer = get(uniqueId);
         if (bridgePlayer == null) {
-            load(uniqueId);
-            return null;
+            loadAsync(uniqueId);
+            return;
         }
 
         if (!bridgePlayer.getName().equals(name)) {
@@ -93,7 +92,6 @@ public final class PlayerHandler {
         }
 
         bridgePlayer.internalRefresh(uniqueId);
-        return bridgePlayer;
     }
 
     /**

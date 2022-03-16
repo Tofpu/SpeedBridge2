@@ -25,8 +25,8 @@ public final class PlayerService {
      * @param uid The unique ID of the player.
      * @return A CompletableFuture<BridgePlayer>
      */
-    public CompletableFuture<BridgePlayer> load(final UUID uid) {
-        return playerHandler.load(uid);
+    public CompletableFuture<BridgePlayer> loadAsync(final UUID uid) {
+        return playerHandler.loadAsync(uid);
     }
 
     /**
@@ -60,14 +60,13 @@ public final class PlayerService {
 
     /**
      * If the player is in the
-     * database, update the name and refresh the player
+     * database, update the name and refresh the player instance
      *
      * @param name The name of the player.
      * @param uniqueId The unique ID of the player.
-     * @return A BridgePlayer object.
      */
-    public @Nullable BridgePlayer internalRefresh(final @NotNull Player player) {
-        return playerHandler.internalRefresh(player.getName(), player.getUniqueId());
+    public void internalRefresh(final @NotNull Player player) {
+        playerHandler.internalRefresh(player.getName(), player.getUniqueId());
     }
 
     /**

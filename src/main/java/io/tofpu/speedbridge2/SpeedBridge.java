@@ -85,7 +85,7 @@ public final class SpeedBridge {
             BridgeUtil.whenComplete(islandService.load(), () -> {
 
                 log("Loading the global/session leaderboard...");
-                BridgeUtil.whenComplete(Leaderboard.INSTANCE.load(), () -> {
+                BridgeUtil.whenComplete(Leaderboard.INSTANCE.loadAsync(), () -> {
 
                     log("Loading the island leaderboard...");
                     // when the global leaderboard is complete, load the per-island
