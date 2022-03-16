@@ -59,7 +59,7 @@ repositories {
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
 
-    implementation("org.xerial:sqlite-jdbc:3.36.0.3")
+    compileOnly("org.xerial:sqlite-jdbc:3.36.0.3")
 
     compileOnly("com.sk89q:worldedit:6.0.0-SNAPSHOT")
 
