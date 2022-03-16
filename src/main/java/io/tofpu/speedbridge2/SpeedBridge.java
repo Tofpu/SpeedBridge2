@@ -36,6 +36,11 @@ public final class SpeedBridge {
     }
 
     public void load() {
+        // reset the world, in-case it does exist
+        SchematicManager.INSTANCE.resetWorld();
+    }
+
+    public void enable() {
         adventure = BukkitAudiences.create(javaPlugin);
 
         new Metrics(javaPlugin, 14597);
@@ -61,7 +66,7 @@ public final class SpeedBridge {
         }
 
         log("Loading the `speedbridge2` world...");
-        SchematicManager.INSTANCE.load(javaPlugin);
+        SchematicManager.INSTANCE.load();
 
         IslandSetupManager.INSTANCE.load();
 
@@ -132,7 +137,8 @@ public final class SpeedBridge {
         PlayerService.INSTANCE.shutdown();
 
         log("Unloading the `speedbridge2` world...");
-        Bukkit.unloadWorld("speedbridge2", false);
+        SchematicManager.INSTANCE.unloadWorld();
+        SchematicManager.INSTANCE.resetWorld();
 
         log("Complete.");
     }

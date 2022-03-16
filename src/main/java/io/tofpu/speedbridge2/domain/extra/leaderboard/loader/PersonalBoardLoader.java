@@ -30,7 +30,7 @@ public final class PersonalBoardLoader implements CacheLoader<UUID, BoardPlayer>
 
     @Override
     public @Nullable BoardPlayer load(final UUID key) throws Exception {
-        return retrieveAsync(key, PluginExecutor.INSTANCE).get();
+        return retrieve(key);
     }
 
     @Override

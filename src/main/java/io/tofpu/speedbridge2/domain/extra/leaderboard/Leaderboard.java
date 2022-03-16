@@ -166,7 +166,7 @@ public final class Leaderboard {
 
         if (completableFuture == null) {
             // loading the board player
-            return PluginExecutor.supply(() -> playerCache.get(uniqueId));
+            return playerCache.get(uniqueId);
         }
 
         return completableFuture;
