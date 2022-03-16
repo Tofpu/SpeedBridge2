@@ -8,6 +8,7 @@ import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.support.worldedit.CuboidRegion;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -58,7 +59,6 @@ public final class IslandSetup {
             return false;
         }
         this.removed = true;
-        playerEditor.toggleSetup();
 
         final Location absoluteLocation = islandPlot.getPlotLocation()
                 .subtract(this.playerSpawnPoint);
@@ -66,6 +66,8 @@ public final class IslandSetup {
         absoluteLocation.setPitch(this.playerSpawnPoint.getPitch());
 
         island.setAbsoluteLocation(absoluteLocation);
+
+        resetState();
 
         // teleporting the player to the lobby location
         playerEditor.getPlayer()
@@ -139,7 +141,7 @@ public final class IslandSetup {
         this.removed = true;
         IslandSetupManager.INSTANCE.invalidate(this);
 
-        playerEditor.toggleSetup();
+        resetState();
 
         // teleporting the player to the lobby location
         playerEditor.getPlayer()
@@ -147,6 +149,13 @@ public final class IslandSetup {
                         .getLobbyLocation());
 
         resetPlot();
+    }
+
+    private void resetState() {
+        playerEditor.toggleSetup();
+
+        // setting the player's gamemode back to survival
+        playerEditor.getPlayer().setGameMode(GameMode.SURVIVAL);
     }
 
     /**
