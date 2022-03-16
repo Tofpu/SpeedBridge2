@@ -1,9 +1,8 @@
 package io.tofpu.speedbridge2.domain.extra.leaderboard.loader;
 
-import com.google.common.cache.CacheLoader;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
+import com.github.benmanes.caffeine.cache.CacheLoader;
 import io.tofpu.speedbridge2.domain.common.PlayerNameCache;
+import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseSet;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
@@ -16,60 +15,86 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicReference;
 
-public final class PersonalBoardLoader extends CacheLoader<UUID, BoardPlayer> implements BoardRetrieve<BoardPlayer> {
+public final class PersonalBoardLoader implements CacheLoader<UUID, BoardPlayer>, BoardRetrieve<BoardPlayer> {
     public static final PersonalBoardLoader INSTANCE = new PersonalBoardLoader();
     private static final String GLOBAL_POSITION = "SELECT DISTINCT 1 + COUNT(*) AS " +
                                                   "position FROM scores WHERE score < (SELECT score FROM scores WHERE uid = ?)";
 
     private PersonalBoardLoader() {}
 
+
     @Override
-    public @Nullable BoardPlayer load(final @NotNull UUID key) throws Exception {
-        return retrieve(key);
+    public @Nullable BoardPlayer load(final UUID key) throws Exception {
+        return retrieveAsync(key, PluginExecutor.INSTANCE).get();
     }
 
     @Override
-    public ListenableFuture<BoardPlayer> reload(final @NotNull UUID key, final @NotNull BoardPlayer oldValue) {
-        return Futures.immediateFuture(retrieve(key));
+    public CompletableFuture<? extends BoardPlayer> asyncLoad(final UUID key, final Executor executor) {
+        return retrieveAsync(key, executor);
     }
 
     @Override
-    public @Nullable BoardPlayer retrieve(final @NotNull UUID key) {
-        BridgeUtil.debug("PersonalBoardLoader#retrieve(): key: " + key);
-        try (final DatabaseQuery databaseQuery = DatabaseQuery.query(GLOBAL_POSITION)) {
-            databaseQuery.setString(key.toString());
+    public CompletableFuture<? extends BoardPlayer> asyncReload(final UUID key, final BoardPlayer oldValue, final Executor executor) throws Exception {
+        return retrieveAsync(key, executor);
+    }
 
-            final AtomicReference<BoardPlayer> boardPlayer = new AtomicReference<>();
-            databaseQuery.executeQuery(resultSet -> {
-                BridgeUtil.debug("PersonalBoardLoader#retrieve(): executeQuery:");
-                if (!resultSet.next()) {
-                    System.out.println("PersonalBoardLoader#retrieve(): next: " + "false");
-                    return;
-                }
+    @Override
+    public BoardPlayer retrieve(final @NotNull UUID uniqueId) {
+        final CompletableFuture<BoardPlayer> future = retrieveAsync(uniqueId, PluginExecutor.INSTANCE);
+        if (!future.isDone()) {
+            return null;
+        }
 
-                BridgeUtil.debug("PersonalBoardLoader#retrieve(): next: " + "true");
-                BoardPlayer value = toBoardPlayer(key, resultSet);
-                final BridgePlayer player = PlayerService.INSTANCE.get(key);
-                if (player != null && player.getScores().isEmpty()) {
-                    value = new BoardPlayer(value.getName(), 0, key, value.getScore());
-                }
-
-                boardPlayer.set(value);
-            });
-
-            final BoardPlayer player = boardPlayer.get();
-
-            BridgeUtil.debug("PersonalBoardLoader#retrieve(): player: " + player);
-            if (player == null) {
-                return new BoardPlayer(PlayerNameCache.INSTANCE.getOrDefault(key),
-                        0, key, new Score(-1, -1));
-            }
-            return player;
-        } catch (final Exception e) {
+        try {
+            return future.get();
+        } catch (InterruptedException | ExecutionException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    @Override
+    public @NotNull CompletableFuture<BoardPlayer> retrieveAsync(final @NotNull UUID key,
+            final @NotNull Executor executor) {
+        return CompletableFuture.supplyAsync(() -> {
+            BridgeUtil.debug("PersonalBoardLoader#retrieve(): key: " + key);
+            try (final DatabaseQuery databaseQuery = DatabaseQuery.query(GLOBAL_POSITION)) {
+                databaseQuery.setString(key.toString());
+
+                final AtomicReference<BoardPlayer> boardPlayer = new AtomicReference<>();
+                databaseQuery.executeQuery(resultSet -> {
+                    BridgeUtil.debug("PersonalBoardLoader#retrieve(): executeQuery:");
+                    if (!resultSet.next()) {
+                        System.out.println("PersonalBoardLoader#retrieve(): next: " + "false");
+                        return;
+                    }
+
+                    BridgeUtil.debug("PersonalBoardLoader#retrieve(): next: " + "true");
+                    BoardPlayer value = toBoardPlayer(key, resultSet);
+                    final BridgePlayer player = PlayerService.INSTANCE.get(key);
+                    if (player != null && player.getScores().isEmpty()) {
+                        value = new BoardPlayer(value.getName(), 0, key, value.getScore());
+                    }
+
+                    boardPlayer.set(value);
+                });
+
+                final BoardPlayer player = boardPlayer.get();
+
+                BridgeUtil.debug("PersonalBoardLoader#retrieve(): player: " + player);
+                if (player == null) {
+                    return new BoardPlayer(PlayerNameCache.INSTANCE.getOrDefault(key),
+                            0, key, new Score(-1, -1));
+                }
+                return player;
+            } catch (final Exception e) {
+                throw new IllegalStateException(e);
+            }
+        }, executor);
     }
 
     public BoardPlayer toBoardPlayer(final UUID uid, final DatabaseSet databaseSet) {

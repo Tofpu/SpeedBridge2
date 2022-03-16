@@ -50,13 +50,12 @@ public final class PlayerService {
     }
 
     /**
-     * Remove a player from the player map
+     * Remove a player from the player map if present
      *
      * @param uniqueId The unique ID of the player to remove.
-     * @return The BridgePlayer object that was removed from the map.
      */
-    public @Nullable BridgePlayer remove(final @NotNull UUID uniqueId) {
-        return playerHandler.remove(uniqueId);
+    public void remove(final @NotNull UUID uniqueId) {
+        playerHandler.remove(uniqueId);
     }
 
     /**

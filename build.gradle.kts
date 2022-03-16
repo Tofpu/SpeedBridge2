@@ -24,6 +24,7 @@ tasks {
             relocate("net.kyori.adventure", "io.tofpu.speedbridge2.lib.adventure")
             relocate("com.zaxxer.HikariCP", "io.tofpu.speedbridge2.lib.hikaricp")
             relocate("org.bstats", "io.tofpu.speedbridge2.lib.bstats")
+//            relocate("com.github.benmases.caffie", "io.tofpu.speedbridge2.lib.bstats")
         }
 
         exclude("META-INF/**")
@@ -78,6 +79,8 @@ dependencies {
     implementation("org.bstats:bstats-bukkit:3.0.0")
 
     compileOnly("me.clip:placeholderapi:2.10.10")
+
+    implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
 
     implementation("com.github.cryptomorin:XSeries:8.6.1")
     implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:f9ad4ce832") {
