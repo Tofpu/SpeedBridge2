@@ -349,7 +349,6 @@ public final class SpeedBridgeCommand {
 
     @CommandMethod("speedbridge|sb")
     @CommandDescription("Shows a list of commands")
-    @CommandPermission("speedbridge.help")
     @Hidden
     public void onNoArgument(final CommonBridgePlayer<?> bridgePlayer) {
         final CommandSender player = bridgePlayer.getPlayer();
