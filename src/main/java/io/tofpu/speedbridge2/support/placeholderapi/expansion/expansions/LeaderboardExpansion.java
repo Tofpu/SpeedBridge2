@@ -35,11 +35,9 @@ public final class LeaderboardExpansion extends AbstractExpansion {
     @Override
     public String runAction(final BridgePlayer bridgePlayer,
             final GamePlayer gamePlayer, final String[] args) {
-        final int position;
-        try {
-            position = Integer.parseInt(args[2]);
-        } catch (final NumberFormatException exception) {
-            return "invalid placeholder";
+        final int position = parse(args, 2);
+        if (position == -1) {
+            return "Invalid Placeholder";
         }
 
         final BoardPlayer boardPlayer;
@@ -53,7 +51,11 @@ public final class LeaderboardExpansion extends AbstractExpansion {
                 return BridgeUtil.translateMiniMessageLegacy(Message.INSTANCE.emptySessionLeaderboard);
             }
         } else {
-            final Island island = IslandService.INSTANCE.findIslandBy(Integer.parseInt(args[1]));
+            final int slot = parse(args, 1);
+            if (slot == -1) {
+                return "Invalid Placeholder";
+            }
+            final Island island = IslandService.INSTANCE.findIslandBy(slot);
 
             if (island == null) {
                 return "";
@@ -76,5 +78,13 @@ public final class LeaderboardExpansion extends AbstractExpansion {
                 .replace("%position%", boardPlayer.getPosition() + "")
                 .replace("%name%", boardPlayer.getName())
                 .replace("%score%", BridgeUtil.formatNumber(bestScore.getScore())));
+    }
+
+    public int parse(final String[] args, final int index) {
+        try {
+            return Integer.parseInt(args[index]);
+        } catch (final NumberFormatException exception) {
+            return -1;
+        }
     }
 }
