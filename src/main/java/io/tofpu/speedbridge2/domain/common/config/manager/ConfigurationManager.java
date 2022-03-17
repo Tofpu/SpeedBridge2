@@ -72,8 +72,9 @@ public final class ConfigurationManager {
     public CompletableFuture<Void> reload() {
         return CompletableFuture.runAsync(() -> {
             try {
+                this.node = loader.load();
                 this.configuration = node.get(PluginConfiguration.class);
-            } catch (SerializationException e) {
+            } catch (ConfigurateException e) {
                 plugin.getLogger()
                         .warning("An error occurred while converting MyConfiguration: " +
                                  e.getMessage());
