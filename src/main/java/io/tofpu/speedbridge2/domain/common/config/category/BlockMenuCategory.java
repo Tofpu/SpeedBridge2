@@ -20,7 +20,7 @@ public final class BlockMenuCategory {
     private Material defaultBlock = materials.isEmpty() ? Material.AIR : materials.get(0);
 
     public Collection<Material> getMaterialBlocks() {
-        return materials;
+        return materials.subList(0, Math.min(7, materials.size()));
     }
 
     public Material getDefaultBlock() {
