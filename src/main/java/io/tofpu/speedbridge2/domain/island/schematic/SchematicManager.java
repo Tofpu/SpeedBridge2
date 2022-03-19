@@ -82,15 +82,13 @@ public final class SchematicManager {
 
         // setting the player island slot
         gamePlayer.setCurrentGame(gameIsland);
+        // teleport the player to the island plot
+        gamePlayer.teleport(availablePlot);
 
-        final IslandPlot finalAvailablePlot = availablePlot;
-        BridgeUtil.runBukkitSync(() -> {
-            // teleports the player to plot
-            gamePlayer.teleport(finalAvailablePlot);
+        // execute the on join method on game island
+        gameIsland.onJoin();
 
-            gameIsland.onJoin();
-        }, 10);
-
+        // return the available plot
         return availablePlot;
     }
 
