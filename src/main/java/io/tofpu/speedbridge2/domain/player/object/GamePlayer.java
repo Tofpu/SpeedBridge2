@@ -173,14 +173,9 @@ public final class GamePlayer {
 
     /**
      * Remove the player from the game
-     *
-     * @return The GamePlayer object that was removed.
      */
-    public GamePlayer remove() {
-        resetBlocks();
-
+    public void remove() {
         GAME_PLAYER_MAP.remove(this.getBridgePlayer().getPlayerUid());
-        return this;
     }
 
     public Collection<Location> getPlacedBlocks() {
