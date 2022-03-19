@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.player.object;
 
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import org.bukkit.Location;
@@ -59,9 +60,16 @@ public final class GamePlayer {
      * It iterates through the list of block locations and sets each block to air
      */
     public void resetBlocks() {
+        BridgeUtil.debug("GamePlayer(): Resetting the blocks now!");
         for (final Location blockLocation : this.blockLocations) {
-            blockLocation.getBlock().setType(Material.AIR);
+            final Block block = blockLocation.getBlock();
+            BridgeUtil.debug("GamePlayer(): Resetting " + block.getType() + " at " + block.getX() +
+                             ", " + block.getY() + ", " + block.getZ() + " location!");
+            block.setType(Material.AIR);
         }
+        BridgeUtil.debug("GamePlayer(): Finished resetting the blocks! clearing the " +
+                         "block locations " +
+                         "immediately!");
         this.blockLocations.clear();
     }
 
