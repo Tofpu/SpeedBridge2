@@ -240,4 +240,9 @@ public final class BridgeUtil {
             whenComplete.run();
         });
     }
+
+    public static void runBukkitSync(final Runnable runnable, final int delay) {
+        Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(SpeedBridgePlugin.class),
+                runnable, delay);
+    }
 }

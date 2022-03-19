@@ -82,11 +82,13 @@ public final class SchematicManager {
 
         // setting the player island slot
         gamePlayer.setCurrentGame(gameIsland);
-        // teleports the player to plot
+        // teleport the player to the island plot
         gamePlayer.teleport(availablePlot);
 
+        // execute the on join method on game island
         gameIsland.onJoin();
 
+        // return the available plot
         return availablePlot;
     }
 

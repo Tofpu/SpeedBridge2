@@ -26,9 +26,6 @@ public final class PlayerConnectionListener extends GameListener {
         // from breaking
         final Player player = event.getPlayer();
 
-        // clears the player's inventory. in-case the PlayerQuitEvent missed it.
-        player.getInventory().clear();
-
         playerService.internalRefresh(player);
         if (player.isOp()) {
             UpdateChecker.get().updateNotification(player);
@@ -40,16 +37,21 @@ public final class PlayerConnectionListener extends GameListener {
     private void teleportToLobby(final Player player) {
         final LobbyCategory lobbyCategory =
                 ConfigurationManager.INSTANCE.getLobbyCategory();
+        final Location location = lobbyCategory.getLobbyLocation();
 
         // if teleport_on_join is set to true, teleport the player to the lobby location
         if (lobbyCategory.isTeleportOnJoin()) {
-            final Location location = lobbyCategory.getLobbyLocation();
             if (location != null) {
                 player.teleport(location);
                 return;
             }
 
             BridgeUtil.sendMessage(player, Message.INSTANCE.lobbyMissing);
+        }
+
+        if (location != null && player.getWorld().equals(location.getWorld())) {
+            // clears the player's inventory. in-case the PlayerQuitEvent missed it.
+            player.getInventory().clear();
         }
     }
 

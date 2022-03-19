@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.island.object.extra;
 
+import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.config.category.LobbyCategory;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
@@ -17,10 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public final class GameIsland {
-    private static final String STYLE =
-            "<gold>" + MessageUtil.Symbols.WARNING.getSymbol() + "<yellow> ";
-    private static final String ISLAND_RESET = STYLE + "The island has been reset!";
-
     private final Island island;
     private final GamePlayer gamePlayer;
     private IslandPlot islandPlot;
@@ -75,7 +72,7 @@ public final class GameIsland {
                         64));
 
         if (notify) {
-            BridgeUtil.sendMessage(player, ISLAND_RESET);
+            BridgeUtil.sendMessage(player, Message.INSTANCE.islandReset);
         }
     }
 
