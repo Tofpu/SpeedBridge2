@@ -34,9 +34,14 @@ public final class GameIsland {
         // setting the player's queue to true
         this.gamePlayer.startQueue();
 
+        // binding the game player instance to bridge player
         this.gamePlayer.getBridgePlayer().setGamePlayer(gamePlayer);
 
+        // reverse an island plot for this game
         this.islandPlot = SchematicManager.reservePlot(this);
+
+        // execute the on join method on game island
+        onJoin();
 
         // reset the player's queue
         this.gamePlayer.resetQueue();

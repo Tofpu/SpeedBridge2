@@ -63,9 +63,6 @@ public final class SchematicManager {
         final Island island = gameIsland.getIsland();
         final IslandPlot availablePlot = getPlot(island, gameIsland);
 
-        // execute the on join method on game island
-        gameIsland.onJoin();
-
         // return the available plot
         return availablePlot;
     }
