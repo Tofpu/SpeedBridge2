@@ -29,3 +29,6 @@ __Features__
 __Dependencies__
 - WorldEdit (Required)
 - PlaceholderAPI (Optional)
+
+__Thanks to__
+- [GitBook](https://gitbook.com) for giving me an open-source licence! <3

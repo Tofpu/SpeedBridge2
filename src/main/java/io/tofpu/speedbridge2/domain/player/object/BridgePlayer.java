@@ -233,7 +233,7 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
     /**
      * This function resets the player's stats, score, and session data
      *
-     * @return Nothing.
+     * @return a completable future when the player is wiped from the database
      */
     public CompletableFuture<Void> reset() {
         this.scoreMap.clear();
