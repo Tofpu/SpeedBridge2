@@ -90,4 +90,6 @@ dependencies {
         exclude("rhino", "js")
         exclude("com.sk89q", "worldedit")
     }
+
+    implementation("com.github.tofpu:umbrella:fde19195cf")
 }

@@ -2,7 +2,9 @@ package io.tofpu.speedbridge2.domain.island.setup;
 
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
+import io.tofpu.speedbridge2.domain.island.setup.umbrella.IslandSetupUmbrella;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
+import io.tofpu.umbrella.domain.Umbrella;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -13,7 +15,12 @@ import java.util.UUID;
 public final class IslandSetupManager {
     public static final IslandSetupManager INSTANCE = new IslandSetupManager();
 
+    private final Umbrella umbrella;
     private final Map<UUID, IslandSetup> islandSetupMap = new HashMap<>();
+
+    private IslandSetupManager() {
+        this.umbrella = new IslandSetupUmbrella().getUmbrella();
+    }
 
     private World world;
 
@@ -42,7 +49,8 @@ public final class IslandSetupManager {
 
     private IslandSetup create(final BridgePlayer player, final Island target) {
         final double[] positions = {100 * (islandSetupMap.size() + 100), 100, 0};
-        final IslandSetup islandSetup = new IslandSetup(player, target, new IslandPlot(target, world, positions));
+        final IslandSetup islandSetup = new IslandSetup(umbrella, player, target,
+                new IslandPlot(target, world, positions));
 
         islandSetupMap.put(player.getPlayerUid(), islandSetup);
         return islandSetup;

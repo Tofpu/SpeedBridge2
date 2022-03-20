@@ -9,6 +9,7 @@ import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.support.worldedit.CuboidRegion;
+import io.tofpu.umbrella.domain.Umbrella;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +17,7 @@ import org.bukkit.Material;
 import java.util.UUID;
 
 public final class IslandSetup {
+    private final Umbrella umbrella;
     private final BridgePlayer player;
     private final Island island;
     private final IslandPlot islandPlot;
@@ -24,7 +26,8 @@ public final class IslandSetup {
 
     private boolean removed = false;
 
-    public IslandSetup(final BridgePlayer player, final Island island, final IslandPlot islandPlot) {
+    public IslandSetup(final Umbrella umbrella, final BridgePlayer player, final Island island, final IslandPlot islandPlot) {
+        this.umbrella = umbrella;
         this.player = player;
         this.island = island;
         this.islandPlot = islandPlot;
@@ -48,6 +51,9 @@ public final class IslandSetup {
         // teleporting the player to the setup location
         player.getPlayer()
                 .teleport(islandPlot.getPlotLocation());
+
+        // activate the player umbrella
+        umbrella.activate(player.getPlayer());
     }
 
     /**
@@ -173,6 +179,9 @@ public final class IslandSetup {
 
     private void resetState() {
         player.toggleSetup();
+
+        // inactivate the setup umbrella
+        umbrella.inactivate(player.getPlayer());
 
         // setting the player's gamemode back to survival
         player.getPlayer().setGameMode(GameMode.SURVIVAL);
