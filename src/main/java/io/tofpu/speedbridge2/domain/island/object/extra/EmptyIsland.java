@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.AbstractMap;
 import java.util.Map;
 
-public class NullIsland extends Island {
-    public NullIsland() {
+public class EmptyIsland extends Island {
+    public EmptyIsland() {
         super(-1, "null");
     }
 

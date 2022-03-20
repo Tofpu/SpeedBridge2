@@ -1,11 +1,9 @@
 package io.tofpu.speedbridge2.domain.island.setup;
 
-import com.sk89q.worldedit.WorldEditException;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.World;
 
 import java.util.HashMap;
@@ -26,27 +24,12 @@ public final class IslandSetupManager {
         this.world = Bukkit.getWorld("speedbridge2");
     }
 
-    public boolean startSetup(final BridgePlayer bridgePlayer, final Island island) {
-        final UUID playerUid = bridgePlayer.getPlayerUid();
-
-        if (islandSetupMap.get(playerUid) != null) {
-            return false;
+    public boolean startSetup(final BridgePlayer player, final Island island) {
+        if (!islandSetupMap.containsKey(player.getPlayerUid())) {
+            create(player, island).start();
+            return true;
         }
-        bridgePlayer.toggleSetup();
-        bridgePlayer.getPlayer().setGameMode(GameMode.CREATIVE);
-
-        final IslandSetup islandSetup = create(bridgePlayer, island);
-        final IslandPlot islandPlot = islandSetup.getIslandPlot();
-        try {
-            islandPlot.generatePlot();
-        } catch (WorldEditException e) {
-            throw new IllegalStateException(e);
-        }
-
-        // teleporting the player to the setup location
-        bridgePlayer.getPlayer()
-                .teleport(islandPlot.getPlotLocation());
-        return true;
+        return false;
     }
 
     /**

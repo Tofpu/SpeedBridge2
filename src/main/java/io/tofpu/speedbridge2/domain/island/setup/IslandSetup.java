@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.island.setup;
 
+import com.sk89q.worldedit.WorldEditException;
 import io.tofpu.multiworldedit.ClipboardWrapper;
 import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import io.tofpu.multiworldedit.VectorWrapper;
@@ -15,7 +16,7 @@ import org.bukkit.Material;
 import java.util.UUID;
 
 public final class IslandSetup {
-    private final BridgePlayer playerEditor;
+    private final BridgePlayer player;
     private final Island island;
     private final IslandPlot islandPlot;
     private final CuboidRegion cuboidRegion;
@@ -23,11 +24,30 @@ public final class IslandSetup {
 
     private boolean removed = false;
 
-    public IslandSetup(final BridgePlayer playerEditor, final Island island, final IslandPlot islandPlot) {
-        this.playerEditor = playerEditor;
+    public IslandSetup(final BridgePlayer player, final Island island, final IslandPlot islandPlot) {
+        this.player = player;
         this.island = island;
         this.islandPlot = islandPlot;
         this.cuboidRegion = islandPlot.region();
+    }
+
+    /**
+     * This function starts the island setup process
+     */
+    public void start() {
+        player.toggleSetup();
+        player.getPlayer().setGameMode(GameMode.CREATIVE);
+
+        final IslandPlot islandPlot = getIslandPlot();
+        try {
+            islandPlot.generatePlot();
+        } catch (WorldEditException e) {
+            throw new IllegalStateException(e);
+        }
+
+        // teleporting the player to the setup location
+        player.getPlayer()
+                .teleport(islandPlot.getPlotLocation());
     }
 
     /**
@@ -70,7 +90,7 @@ public final class IslandSetup {
         resetState();
 
         // teleporting the player to the lobby location
-        playerEditor.getPlayer()
+        player.getPlayer()
                 .teleport(ConfigurationManager.INSTANCE.getLobbyCategory()
                         .getLobbyLocation());
 
@@ -144,7 +164,7 @@ public final class IslandSetup {
         resetState();
 
         // teleporting the player to the lobby location
-        playerEditor.getPlayer()
+        player.getPlayer()
                 .teleport(ConfigurationManager.INSTANCE.getLobbyCategory()
                         .getLobbyLocation());
 
@@ -152,10 +172,10 @@ public final class IslandSetup {
     }
 
     private void resetState() {
-        playerEditor.toggleSetup();
+        player.toggleSetup();
 
         // setting the player's gamemode back to survival
-        playerEditor.getPlayer().setGameMode(GameMode.SURVIVAL);
+        player.getPlayer().setGameMode(GameMode.SURVIVAL);
     }
 
     /**
@@ -164,7 +184,7 @@ public final class IslandSetup {
      * @return The UUID of the player that is currently editing the object.
     */
     public UUID getEditorUid() {
-        return playerEditor.getPlayerUid();
+        return player.getPlayerUid();
     }
 
     /**
