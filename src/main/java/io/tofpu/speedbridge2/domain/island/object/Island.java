@@ -88,8 +88,6 @@ public class Island {
         BridgeUtil.sendMessage(player, String.format(Message.INSTANCE.leftAnIsland, slot));
         bridgePlayer.setGamePlayer(null);
 
-        // remove the game player
-        gamePlayer.remove();
         // reset the game island
         gameIsland.remove();
     }

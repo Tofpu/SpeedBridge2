@@ -10,7 +10,6 @@ import org.bukkit.block.Block;
 import java.util.*;
 
 public final class GamePlayer {
-    private static final Map<UUID, GamePlayer> GAME_PLAYER_MAP = new HashMap<>();
     private final BridgePlayer player;
     private final List<Location> blockLocations;
 
@@ -25,8 +24,7 @@ public final class GamePlayer {
      * @return A GamePlayer object.
      */
     public static GamePlayer of(final BridgePlayer player) {
-        return GAME_PLAYER_MAP.computeIfAbsent(player.getPlayerUid(),
-                uuid -> new GamePlayer(player));
+        return new GamePlayer(player);
     }
 
     private GamePlayer(final BridgePlayer player) {
@@ -169,13 +167,6 @@ public final class GamePlayer {
      */
     public boolean hasTimerStarted() {
         return this.timer != -1;
-    }
-
-    /**
-     * Remove the player from the game
-     */
-    public void remove() {
-        GAME_PLAYER_MAP.remove(this.getBridgePlayer().getPlayerUid());
     }
 
     public Collection<Location> getPlacedBlocks() {
