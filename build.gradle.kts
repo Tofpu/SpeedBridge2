@@ -85,7 +85,7 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
 
     implementation("com.github.cryptomorin:XSeries:8.6.1")
-    implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:f9ad4ce832") {
+    implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:0eb85d6cbd") {
         exclude("de.schlichtherle", "truezip")
         exclude("rhino", "js")
         exclude("com.sk89q", "worldedit")

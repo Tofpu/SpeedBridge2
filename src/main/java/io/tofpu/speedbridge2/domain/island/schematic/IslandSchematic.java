@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.domain.island.schematic;
 
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import io.tofpu.multiworldedit.ClipboardWrapper;
 import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import org.bukkit.Bukkit;
@@ -14,7 +15,7 @@ public class IslandSchematic {
     private static final String[] SCHEMATIC_TYPES = {"schematic", "schem"};
 
     private @NotNull String schematicName = "";
-    private @Nullable Clipboard schematicClipboard;
+    private @Nullable ClipboardWrapper schematicClipboard;
 
     public boolean selectSchematic(final @NotNull String schematicName) {
         final File directory = Bukkit.getPluginManager()
@@ -60,6 +61,13 @@ public class IslandSchematic {
     }
 
     public @Nullable Clipboard getSchematicClipboard() {
+        if (this.schematicClipboard == null) {
+            return null;
+        }
+        return this.schematicClipboard.to();
+    }
+
+    public @Nullable ClipboardWrapper getSchematicClipboardWrapper() {
         return this.schematicClipboard;
     }
 

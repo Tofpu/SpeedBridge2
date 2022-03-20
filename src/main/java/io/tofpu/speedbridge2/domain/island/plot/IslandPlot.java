@@ -40,11 +40,9 @@ public final class IslandPlot {
         this.y = positions[1];
         this.z = positions[2];
 
-        final MultiWorldEdit worldEdit = MultiWorldEditAPI.getMultiWorldEdit();
-        final ClipboardWrapper schematicPlot = worldEdit.create(island.getSchematicClipboard());
+        final ClipboardWrapper schematicPlot = island.getSchematicClipboardWrapper();
 
-        final RegionWrapper regionWrapper = worldEdit.create(schematicPlot.to()
-                .getRegion());
+        final RegionWrapper regionWrapper = schematicPlot.region();
         final VectorWrapper origin = schematicPlot.getOrigin();
 
         this.yaw = 0f;

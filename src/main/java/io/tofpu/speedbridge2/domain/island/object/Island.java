@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.domain.island.object;
 
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
+import io.tofpu.multiworldedit.ClipboardWrapper;
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.database.Databases;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
@@ -15,23 +16,25 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class Island {
     private final int slot;
-    private final Map<GamePlayer, GameIsland> islandMap = new HashMap<>();
+    private final Map<GamePlayer, GameIsland> islandMap;
     private String category;
 
-    private final LeaderboardMap leaderboardMap = new LeaderboardMap();
-    private final IslandSchematic islandSchematic = new IslandSchematic();
-    private Location absoluteLocation = null;
+    private final LeaderboardMap leaderboardMap;
+    private final IslandSchematic islandSchematic;
+    private Location absoluteLocation;
 
     public Island(final int slot, final String category) {
         this.slot = slot;
+        this.islandMap = new HashMap<>();
         this.category = category;
+
+        this.leaderboardMap = new LeaderboardMap();
+        this.islandSchematic = new IslandSchematic();
+        this.absoluteLocation = null;
     }
 
     /**
@@ -74,6 +77,10 @@ public class Island {
      */
     public void leaveGame(final BridgePlayer bridgePlayer) {
         final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
+        if (gamePlayer == null) {
+            return;
+        }
+
         final GameIsland gameIsland = this.islandMap.remove(gamePlayer);
         if (gameIsland == null) {
             return;
@@ -239,6 +246,15 @@ public class Island {
      */
     public Clipboard getSchematicClipboard() {
         return islandSchematic.getSchematicClipboard();
+    }
+
+    /**
+     * Returns the clipboard of the island schematic
+     *
+     * @return A Clipboard object.
+     */
+    public ClipboardWrapper getSchematicClipboardWrapper() {
+        return islandSchematic.getSchematicClipboardWrapper();
     }
 
     /**
