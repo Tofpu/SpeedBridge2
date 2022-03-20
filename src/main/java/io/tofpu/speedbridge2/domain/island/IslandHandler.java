@@ -103,7 +103,7 @@ public final class IslandHandler {
             Databases.ISLAND_DATABASE.delete(slot);
             IslandBoard.remove(island);
 
-            SchematicManager.INSTANCE.clearPlot(slot);
+            SchematicManager.clearPlot(slot);
 
             return island;
         }

@@ -23,30 +23,26 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class SchematicManager {
-    public static final @NotNull SchematicManager INSTANCE = new SchematicManager();
-
     private static final @NotNull Map<Integer, Collection<IslandPlot>> ISLAND_PLOTS =
             new HashMap<>();
     private static final AtomicInteger COUNTER = new AtomicInteger();
 
-    private File worldDirectory;
-    private @Nullable World world;
+    private static File worldDirectory;
+    private static @Nullable World world;
 
-    private SchematicManager() {}
-
-    public void load() {
+    public static void load() {
         World world = Bukkit.getWorld("speedbridge2");
         if (world == null) {
             world = Bukkit.createWorld(WorldCreator.name("speedbridge2")
                     .generator(new EmptyChunkGenerator()));
         }
 
-        this.world = world;
+        SchematicManager.world = world;
 
         protectWorld(world);
     }
 
-    private void protectWorld(final @NotNull World world) {
+    private static void protectWorld(final @NotNull World world) {
         world.setFullTime(1000);
         world.setWeatherDuration(0);
         world.setStorm(false);
@@ -58,7 +54,7 @@ public final class SchematicManager {
         world.setGameRuleValue("doDaylightCycle", "false");
     }
 
-    public @Nullable IslandPlot reservePlot(final GameIsland gameIsland) {
+    public static @Nullable IslandPlot reservePlot(final GameIsland gameIsland) {
         if (world == null) {
             Bukkit.getLogger()
                     .severe("The SpeedBridge2 world cannot be found! cancelled player's request to reserve a plot.");
@@ -92,7 +88,8 @@ public final class SchematicManager {
         return availablePlot;
     }
 
-    private IslandPlot getAvailablePlot(final Collection<IslandPlot> islandPlots, final int slot) {
+    private static IslandPlot getAvailablePlot(final Collection<IslandPlot> islandPlots,
+            final int slot) {
         for (final IslandPlot islandPlot : islandPlots) {
             // if it's not the same island plot, or the plot is not free; continue
             if (islandPlot.getIsland().getSlot() != slot || !islandPlot.isPlotFree()) {
@@ -105,7 +102,8 @@ public final class SchematicManager {
         return null;
     }
 
-    private IslandPlot createIslandPlot(final Collection<IslandPlot> islandPlots, final Island target, final GameIsland gameIsland) {
+    private static IslandPlot createIslandPlot(final Collection<IslandPlot> islandPlots
+            , final Island target, final GameIsland gameIsland) {
         BridgeUtil.debug("no free plot available, creating our own plot!");
 
         final double[] positions = {100 * (COUNTER.getAndIncrement() + 100), 100, 100};
@@ -130,7 +128,7 @@ public final class SchematicManager {
         return islandPlot;
     }
 
-    public void resetWorld() {
+    public static void resetWorld() {
         final File worldFile = getWorldDirectory();
         if (worldFile != null && worldFile.exists()) {
             try {
@@ -142,22 +140,22 @@ public final class SchematicManager {
         }
     }
 
-    public Collection<IslandPlot> retrieve(final int slot) {
+    public static Collection<IslandPlot> retrieve(final int slot) {
         return ISLAND_PLOTS.getOrDefault(slot, new ArrayList<>());
     }
 
-    public void clearPlot(final int slot) {
+    public static void clearPlot(final int slot) {
         ISLAND_PLOTS.remove(slot);
     }
 
-    public File getWorldDirectory() {
+    public static File getWorldDirectory() {
         if (worldDirectory == null || !worldDirectory.exists()) {
-            this.worldDirectory = new File( "speedbridge2");
+            worldDirectory = new File( "speedbridge2");
         }
         return worldDirectory;
     }
 
-    public void unloadWorld() {
+    public static void unloadWorld() {
         if (world == null) {
             return;
         }
@@ -167,7 +165,7 @@ public final class SchematicManager {
         Bukkit.unloadWorld(world, false);
     }
 
-    private void movePlayersFromIslandWorld() {
+    private static void movePlayersFromIslandWorld() {
         for (final Player player : Bukkit.getOnlinePlayers()) {
             if (!player.getWorld()
                     .getName()
@@ -183,6 +181,10 @@ public final class SchematicManager {
 
             player.teleport(lobbyLocation);
         }
+    }
+
+    public static World getWorld() {
+        return world;
     }
 
     public static final class EmptyChunkGenerator extends ChunkGenerator {

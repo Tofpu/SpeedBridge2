@@ -4,7 +4,6 @@ import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.config.category.LobbyCategory;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
@@ -37,7 +36,7 @@ public final class GameIsland {
 
         this.gamePlayer.getBridgePlayer().setGamePlayer(gamePlayer);
 
-        this.islandPlot = SchematicManager.INSTANCE.reservePlot(this);
+        this.islandPlot = SchematicManager.reservePlot(this);
 
         // reset the player's queue
         this.gamePlayer.resetQueue();

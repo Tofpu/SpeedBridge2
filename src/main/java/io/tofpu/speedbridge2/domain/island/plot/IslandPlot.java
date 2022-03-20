@@ -47,7 +47,6 @@ public final class IslandPlot {
                 .getRegion());
         final VectorWrapper origin = schematicPlot.getOrigin();
 
-        // TODO: setup this
         this.yaw = 0f;
         this.pitch = 0f;
 

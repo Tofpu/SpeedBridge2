@@ -37,7 +37,7 @@ public final class SpeedBridge {
 
     public void load() {
         // reset the world, in-case it does exist
-        SchematicManager.INSTANCE.resetWorld();
+        SchematicManager.resetWorld();
     }
 
     public void enable() {
@@ -66,7 +66,7 @@ public final class SpeedBridge {
         }
 
         log("Loading the `speedbridge2` world...");
-        SchematicManager.INSTANCE.load();
+        SchematicManager.load();
 
         IslandSetupManager.INSTANCE.load();
 
@@ -137,8 +137,8 @@ public final class SpeedBridge {
         PlayerService.INSTANCE.shutdown();
 
         log("Unloading the `speedbridge2` world...");
-        SchematicManager.INSTANCE.unloadWorld();
-        SchematicManager.INSTANCE.resetWorld();
+        SchematicManager.unloadWorld();
+        SchematicManager.resetWorld();
 
         log("Complete.");
     }
