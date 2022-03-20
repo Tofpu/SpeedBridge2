@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.tofpu.speedbridge2"
-version = "1.0.7"
+version = "1.0.8"
 
 tasks {
     compileJava {
