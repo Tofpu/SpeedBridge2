@@ -54,6 +54,8 @@ repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://maven.enginehub.org/repo/")
     maven("https://oss.sonatype.org/content/groups/public/")
+    maven("https://repo.codemc.org/repository/maven-public/")
+
 }
 
 dependencies {
