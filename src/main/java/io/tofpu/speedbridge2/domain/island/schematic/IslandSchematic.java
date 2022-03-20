@@ -13,10 +13,8 @@ import java.nio.file.Path;
 public class IslandSchematic {
     private static final String[] SCHEMATIC_TYPES = {"schematic", "schem"};
 
-    private @Nullable String schematicName = "";
+    private @NotNull String schematicName = "";
     private @Nullable Clipboard schematicClipboard;
-
-    public IslandSchematic() {}
 
     public boolean selectSchematic(final @NotNull String schematicName) {
         final File directory = Bukkit.getPluginManager()
@@ -57,7 +55,7 @@ public class IslandSchematic {
         return file;
     }
 
-    public @Nullable String getSchematicName() {
+    public @NotNull String getSchematicName() {
         return schematicName;
     }
 

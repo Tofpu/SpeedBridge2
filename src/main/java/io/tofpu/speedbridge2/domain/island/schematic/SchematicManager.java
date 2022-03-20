@@ -6,7 +6,6 @@ import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
-import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -62,30 +61,32 @@ public final class SchematicManager {
         }
 
         final Island island = gameIsland.getIsland();
-        final int islandSlot = island.getSlot();
-        final Collection<IslandPlot> islandPlots = retrieve(islandSlot);
-        IslandPlot availablePlot = getAvailablePlot(islandPlots, islandSlot);
-
-        // if we found an available plot, start reserving the plot
-        if (availablePlot != null) {
-            availablePlot.reservePlot(gameIsland);
-        } else {
-            // otherwise, create our own island plot
-            availablePlot = createIslandPlot(islandPlots, island, gameIsland);
-        }
-
-        final GamePlayer gamePlayer = gameIsland.getGamePlayer();
-
-        // setting the player island slot
-        gamePlayer.setCurrentGame(gameIsland);
-        // teleport the player to the island plot
-        gamePlayer.teleport(availablePlot);
+        final IslandPlot availablePlot = getPlot(island, gameIsland);
 
         // execute the on join method on game island
         gameIsland.onJoin();
 
         // return the available plot
         return availablePlot;
+    }
+
+    private static IslandPlot getPlot(final Island island, final GameIsland gameIsland) {
+        final int islandSlot = island.getSlot();
+
+        // retrieving a collection of plots that is associated with the given island slot
+        final Collection<IslandPlot> islandPlots = retrieve(islandSlot);
+
+        // attempt to get an available plot with the given island slot
+        IslandPlot islandPlot = getAvailablePlot(islandPlots, islandSlot);
+
+        // if we found an available plot, start reserving the plot
+        if (islandPlot != null) {
+            islandPlot.reservePlot(gameIsland);
+        } else {
+            // otherwise, create our own island plot
+            islandPlot = createIslandPlot(islandPlots, island, gameIsland);
+        }
+        return islandPlot;
     }
 
     private static IslandPlot getAvailablePlot(final Collection<IslandPlot> islandPlots,

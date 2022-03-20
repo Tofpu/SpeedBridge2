@@ -45,6 +45,11 @@ public final class GameIsland {
     public void onJoin() {
         final Player player = gamePlayer.getBridgePlayer().getPlayer();
 
+        // setting the player island slot
+        gamePlayer.setCurrentGame(this);
+        // teleport the player to the island plot
+        gamePlayer.teleport(islandPlot);
+
         player.getInventory().clear();
         player.getInventory()
                 .setItem(0, new ItemStack(gamePlayer.getBridgePlayer()
