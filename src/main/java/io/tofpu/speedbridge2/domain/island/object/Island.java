@@ -16,7 +16,10 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class Island {
     private final int slot;

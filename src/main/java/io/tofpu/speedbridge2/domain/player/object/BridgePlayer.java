@@ -380,7 +380,7 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
         if (currentGame == null) {
             return;
         }
-        currentGame.leave(this);
+        currentGame.stopGame();
     }
 
     /**

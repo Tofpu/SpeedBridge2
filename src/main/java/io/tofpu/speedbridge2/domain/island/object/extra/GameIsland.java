@@ -5,18 +5,20 @@ import io.tofpu.speedbridge2.domain.common.config.category.LobbyCategory;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.object.Island;
+import io.tofpu.speedbridge2.domain.island.object.umbrella.GameIslandUmbrella;
 import io.tofpu.speedbridge2.domain.island.plot.IslandPlot;
 import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
 import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
 import io.tofpu.speedbridge2.support.worldedit.CuboidRegion;
+import io.tofpu.umbrella.domain.Umbrella;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public final class GameIsland {
+    private final Umbrella umbrella;
     private final Island island;
     private final GamePlayer gamePlayer;
     private IslandPlot islandPlot;
@@ -26,6 +28,7 @@ public final class GameIsland {
     }
 
     private GameIsland(final Island island, final GamePlayer gamePlayer) {
+        this.umbrella = new GameIslandUmbrella(this).getUmbrella();
         this.island = island;
         this.gamePlayer = gamePlayer;
     }
@@ -55,7 +58,13 @@ public final class GameIsland {
         // teleport the player to the island plot
         gamePlayer.teleport(islandPlot);
 
+        // clears the player's inventory
         player.getInventory().clear();
+
+        // active the game umbrella
+        umbrella.activate(player);
+
+        // add the block
         player.getInventory()
                 .setItem(0, new ItemStack(gamePlayer.getBridgePlayer()
                         .getChoseMaterial(), 64));
@@ -99,6 +108,8 @@ public final class GameIsland {
 
             final LobbyCategory lobbyCategory = ConfigurationManager.INSTANCE.getLobbyCategory();
 
+            umbrella.inactivate(player);
+
             // teleport the player to the lobby location
             final Location location = lobbyCategory.getLobbyLocation();
             if (location != null) {
@@ -136,7 +147,7 @@ public final class GameIsland {
         return islandPlot;
     }
 
-    public void leave(final BridgePlayer bridgePlayer) {
-        getIsland().leaveGame(bridgePlayer);
+    public void stopGame() {
+        getIsland().leaveGame(getGamePlayer().getBridgePlayer());
     }
 }
