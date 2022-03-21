@@ -2,14 +2,14 @@ package io.tofpu.speedbridge2.domain.common.config.manager;
 
 import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.config.PluginConfiguration;
-import io.tofpu.speedbridge2.domain.common.config.category.BlockMenuCategory;
-import io.tofpu.speedbridge2.domain.common.config.category.GeneralCategory;
-import io.tofpu.speedbridge2.domain.common.config.category.LeaderboardCategory;
-import io.tofpu.speedbridge2.domain.common.config.category.LobbyCategory;
-import io.tofpu.speedbridge2.domain.common.config.serializer.LocationSerializer;
-import io.tofpu.speedbridge2.domain.common.config.serializer.MaterialSerializer;
+import io.tofpu.speedbridge2.domain.common.config.category.*;
+import io.tofpu.speedbridge2.domain.common.config.serializer.*;
+import io.tofpu.speedbridge2.domain.common.umbrella.SerializableUmbrellaItem;
+import io.tofpu.umbrella.domain.item.action.AbstractItemAction;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -37,9 +37,12 @@ public final class ConfigurationManager {
                         .toPath()
                         .resolve("config.conf"))
                 .defaultOptions(configurationOptions -> configurationOptions.shouldCopyDefaults(true)
-                        .serializers(builder -> builder.register(Location.class,
-                                LocationSerializer.INSTANCE).register(Material.class,
-                                MaterialSerializer.INSTANCE)))
+                        .serializers(builder -> builder.register(Location.class, LocationSerializer.INSTANCE)
+                                .register(Material.class, MaterialSerializer.INSTANCE)
+                                .register(SerializableUmbrellaItem.class, UmbrellaItemSerializer.INSTANCE)
+                                .register(ItemStack.class, ItemStackSerializer.INSTANCE)
+                                .register(ItemMeta.class, ItemMetaSerializer.INSTANCE)
+                                .register(AbstractItemAction.class, AbstractItemActionSerializer.INSTANCE)))
                 .build();
 
         try {
@@ -118,6 +121,10 @@ public final class ConfigurationManager {
 
     public LobbyCategory getLobbyCategory() {
         return configuration.getLobbyCategory();
+    }
+
+    public GameCategory getGameCategory() {
+        return configuration.getGameCategory();
     }
 
     public PluginConfiguration getConfiguration() {

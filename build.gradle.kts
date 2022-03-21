@@ -93,5 +93,5 @@ dependencies {
         exclude("com.sk89q", "worldedit")
     }
 
-    implementation("com.github.tofpu:umbrella:fde19195cf")
+    implementation("com.github.tofpu:umbrella:1ce46ae04a")
 }

@@ -1,9 +1,6 @@
 package io.tofpu.speedbridge2.domain.common.config;
 
-import io.tofpu.speedbridge2.domain.common.config.category.BlockMenuCategory;
-import io.tofpu.speedbridge2.domain.common.config.category.GeneralCategory;
-import io.tofpu.speedbridge2.domain.common.config.category.LeaderboardCategory;
-import io.tofpu.speedbridge2.domain.common.config.category.LobbyCategory;
+import io.tofpu.speedbridge2.domain.common.config.category.*;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
@@ -21,6 +18,9 @@ public final class PluginConfiguration {
     @Setting
     private final LobbyCategory lobbyCategory = new LobbyCategory();
 
+    @Setting
+    private final GameCategory gameCategory = new GameCategory();
+
     public LobbyCategory getLobbyCategory() {
         return lobbyCategory;
     }
@@ -35,5 +35,9 @@ public final class PluginConfiguration {
 
     public GeneralCategory getGeneralCategory() {
         return generalCategory;
+    }
+
+    public GameCategory getGameCategory() {
+        return gameCategory;
     }
 }
