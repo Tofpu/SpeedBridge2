@@ -6,12 +6,14 @@ import io.tofpu.speedbridge2.domain.common.umbrella.SerializableUmbrellaItem;
 import io.tofpu.speedbridge2.domain.common.util.UmbrellaUtil;
 import org.bukkit.inventory.ItemStack;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @ConfigSerializable
 public final class GameCategory {
+    @Setting("items")
     private List<SerializableUmbrellaItem> umbrellaItems = new ArrayList<>() {{
         final ItemStack resetItem = UmbrellaUtil.create(XMaterial.RED_DYE, "Reset", "reset the game!");
         final ItemStack leaveItem = UmbrellaUtil.create(XMaterial.RED_BED, "Leave", "leave the game!");
