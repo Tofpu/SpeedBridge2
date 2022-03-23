@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.common.database;
 
+import com.google.common.io.Files;
 import io.tofpu.speedbridge2.domain.common.PluginExecutor;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.domain.common.database.wrapper.DatabaseTable;
@@ -30,22 +31,37 @@ public final class DatabaseManager {
                 e.printStackTrace();
             }
 
-            final File parentFolder = plugin.getDataFolder();
+            final File parentFolder = new File(plugin.getDataFolder(), "data");
+            final File storageFile = new File(parentFolder, "storage.db");
             if (!parentFolder.exists()) {
-                parentFolder.mkdir();
+                parentFolder.mkdirs();
             }
 
-            databaseFile = new File(plugin.getDataFolder(), "data.db");
+            // if the server used a version anything lower
+            // than 1.0.8, then the migration process will be executed
+            migrateDataFile(plugin.getDataFolder(), storageFile);
+
             try {
-                databaseFile.createNewFile();
+                storageFile.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new IllegalStateException(e);
             }
 
             connection = getConnection();
 
             loadTables();
         });
+    }
+
+    private static void migrateDataFile(final File fromDirectory, final File toFile) {
+        final File previousFile = new File(fromDirectory, "data.db");
+        if (previousFile.exists()) {
+            try {
+                Files.move(previousFile, toFile);
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
+        }
     }
 
     private static void loadTables() {

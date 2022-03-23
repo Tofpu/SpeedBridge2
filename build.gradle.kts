@@ -26,6 +26,7 @@ tasks {
             relocate("org.bstats", "io.tofpu.speedbridge2.lib.bstats")
             relocate("com.github.benmanes.caffeine", "io.tofpu.speedbridge2.lib.caffeine")
             relocate("org.apache.commons", "io.tofpu.speedbridge2.lib.commons")
+            relocate("org.yaml.snakeyaml", "io.tofpu.speedbridge2.lib.snakeyml")
         }
 
         exclude("META-INF/**")

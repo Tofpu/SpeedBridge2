@@ -31,9 +31,13 @@ public class ConfigurateFile<T> {
     private Class<?> bindTo;
     private T configuration;
 
-    public ConfigurateFile(final Plugin plugin, final File file, final String name) {
+    public ConfigurateFile(final Plugin plugin, final File targetFile) {
         this.plugin = plugin;
-        this.file = new File(file, name);
+        this.file = targetFile;
+    }
+
+    public ConfigurateFile(final Plugin plugin, final File file, final String name) {
+        this(plugin, new File(file, name));
     }
 
     public void load(final Class<T> bindTo, final FileConfigurationType type) {
@@ -52,7 +56,7 @@ public class ConfigurateFile<T> {
             case YAML:
                 this.loader = YamlConfigurationLoader.builder()
                         .path(file.toPath())
-                        .nodeStyle(NodeStyle.FLOW)
+                        .nodeStyle(NodeStyle.BLOCK)
                         .defaultOptions(configurationOptions)
                         .build();
                 break;
