@@ -76,6 +76,7 @@ dependencies {
         exclude("com.google.guava", "guava")
     }
 
+    implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("org.spongepowered:configurate-hocon:4.1.2")
     implementation("commons-lang:commons-lang:2.6")
     implementation("commons-io:commons-io:2.11.0")
