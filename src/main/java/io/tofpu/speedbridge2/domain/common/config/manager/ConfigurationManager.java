@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.domain.common.config.manager;
 
+import io.tofpu.speedbridge2.domain.common.config.ItemConfiguration;
 import io.tofpu.speedbridge2.domain.common.config.PluginConfiguration;
 import io.tofpu.speedbridge2.domain.common.config.category.*;
 import io.tofpu.speedbridge2.domain.common.wrapper.ConfigurateFile;
@@ -11,46 +12,54 @@ import java.util.concurrent.CompletableFuture;
 public final class ConfigurationManager {
     public static final ConfigurationManager INSTANCE = new ConfigurationManager();
 
-    private ConfigurateFile<PluginConfiguration> configuration;
+    private ConfigurateFile<PluginConfiguration> pluginConfiguration;
+    private ConfigurateFile<ItemConfiguration> itemConfiguration;
 
-    private ConfigurationManager() {}
+    private ConfigurationManager() {
+        // preventing direct initialization of ConfigurationManager
+    }
 
     public void load(final Plugin plugin) {
-        this.configuration = new ConfigurateFile<>(plugin,
-                plugin.getDataFolder(), "config.conf");
+        this.pluginConfiguration = new ConfigurateFile<>(plugin, plugin.getDataFolder(), "config.conf");
+        this.itemConfiguration = new ConfigurateFile<>(plugin, plugin.getDataFolder(), "items.conf");
 
-        this.configuration.load(PluginConfiguration.class, FileConfigurationType.HOCON);
+        this.pluginConfiguration.load(PluginConfiguration.class, FileConfigurationType.HOCON);
+        this.itemConfiguration.load(ItemConfiguration.class, FileConfigurationType.YAML);
     }
 
     public CompletableFuture<Void> reload() {
-        return configuration.reload();
+        return pluginConfiguration.reload();
     }
 
     public GeneralCategory getGeneralCategory() {
-        return getConfiguration().getGeneralCategory();
+        return getPluginConfiguration().getGeneralCategory();
+    }
+
+    public PluginConfiguration getPluginConfiguration() {
+        return pluginConfiguration.getConfiguration();
+    }
+
+    public ItemConfiguration getConfiguration() {
+        return itemConfiguration.getConfiguration();
     }
 
     public LeaderboardCategory getLeaderboardCategory() {
-        return getConfiguration().getLeaderboardCategory();
+        return getPluginConfiguration().getLeaderboardCategory();
     }
 
     public BlockMenuCategory getBlockMenuCategory() {
-        return getConfiguration().getBlockMenuCategory();
+        return getPluginConfiguration().getBlockMenuCategory();
     }
 
     public LobbyCategory getLobbyCategory() {
-        return getConfiguration().getLobbyCategory();
+        return getPluginConfiguration().getLobbyCategory();
     }
 
     public GameCategory getGameCategory() {
         return getConfiguration().getGameCategory();
     }
 
-    public PluginConfiguration getConfiguration() {
-        return configuration.getConfiguration();
-    }
-
     public CompletableFuture<Void> update() {
-        return configuration.update();
+        return pluginConfiguration.update();
     }
 }

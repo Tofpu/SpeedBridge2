@@ -18,9 +18,6 @@ public final class PluginConfiguration {
     @Setting
     private final LobbyCategory lobbyCategory = new LobbyCategory();
 
-    @Setting
-    private final GameCategory gameCategory = new GameCategory();
-
     public LobbyCategory getLobbyCategory() {
         return lobbyCategory;
     }
@@ -35,9 +32,5 @@ public final class PluginConfiguration {
 
     public GeneralCategory getGeneralCategory() {
         return generalCategory;
-    }
-
-    public GameCategory getGameCategory() {
-        return gameCategory;
     }
 }
