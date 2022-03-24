@@ -31,4 +31,7 @@ __Dependencies__
 - PlaceholderAPI (Optional)
 
 __Thanks to__
-- [GitBook](https://gitbook.com) for giving me an open-source licence! <3
+- [GitBook](https://gitbook.com)
+- [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html)
+
+For providing us with an open-source licence! <3
