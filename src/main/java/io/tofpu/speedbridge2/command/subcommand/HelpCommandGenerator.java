@@ -1,13 +1,12 @@
 package io.tofpu.speedbridge2.command.subcommand;
 
-import cloud.commandframework.annotations.CommandDescription;
-import cloud.commandframework.annotations.CommandMethod;
-import cloud.commandframework.annotations.Hidden;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Subcommand;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -41,13 +40,13 @@ public final class HelpCommandGenerator {
 
         messages.add(String.format(TITLE, "Commands"));
         for (final Method method : declaredMethods) {
-            final CommandMethod commandMethod = method.getAnnotation(CommandMethod.class);
-            final CommandDescription commandDescription = method.getAnnotation(CommandDescription.class);
-            if (commandMethod == null || method.isAnnotationPresent(Hidden.class)) {
+            final Subcommand commandMethod = method.getAnnotation(Subcommand.class);
+            final Description commandDescription = method.getAnnotation(Description.class);
+            if (commandMethod == null) {
                 continue;
             }
 
-            messages.add(String.format(COMMAND_FORMAT, commandMethod.value()
+            messages.add(String.format(COMMAND_FORMAT, commandMethod.value()[0]
                     .replace("speedbridge|sb", "sb"), commandDescription.value()));
         }
 
