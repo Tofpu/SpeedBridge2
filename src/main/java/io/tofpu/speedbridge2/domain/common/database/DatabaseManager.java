@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 
 public final class DatabaseManager {
     private static final @NotNull Queue<String> TABLE_QUEUE = new LinkedList<>();
-    private static File databaseFile;
+    private static File storageFile;
     private static Connection connection;
 
     public static CompletableFuture<Void> load(final @NotNull Plugin plugin) {
@@ -32,7 +32,7 @@ public final class DatabaseManager {
             }
 
             final File parentFolder = new File(plugin.getDataFolder(), "data");
-            final File storageFile = new File(parentFolder, "storage.db");
+            storageFile = new File(parentFolder, "storage.db");
             if (!parentFolder.exists()) {
                 parentFolder.mkdirs();
             }
@@ -107,7 +107,7 @@ public final class DatabaseManager {
             if (connection != null && !connection.isClosed()) {
                 return connection;
             }
-            return DriverManager.getConnection("jdbc:sqlite:" + databaseFile);
+            return DriverManager.getConnection("jdbc:sqlite:" + storageFile);
         } catch (SQLException exception) {
             throw new IllegalStateException(exception);
         }
