@@ -33,7 +33,7 @@ public final class ConfigurationManager {
         oldConfigMigration(plugin.getDataFolder(), directory);
 
         this.pluginConfiguration = new ConfigurateFile<>(plugin, directory, "config.conf");
-        this.itemConfiguration = new ConfigurateFile<>(plugin, directory, "items.conf");
+        this.itemConfiguration = new ConfigurateFile<>(plugin, directory, "items.yml");
 
         this.pluginConfiguration.load(PluginConfiguration.class, FileConfigurationType.HOCON);
         this.itemConfiguration.load(ItemConfiguration.class, FileConfigurationType.YAML);
@@ -52,7 +52,11 @@ public final class ConfigurationManager {
     }
 
     public CompletableFuture<Void> reload() {
-        return pluginConfiguration.reload();
+        final CompletableFuture<?>[] futures = new CompletableFuture[2];
+        futures[0] = pluginConfiguration.reload();
+        futures[1] = itemConfiguration.reload();
+
+        return CompletableFuture.allOf(futures);
     }
 
     public GeneralCategory getGeneralCategory() {
