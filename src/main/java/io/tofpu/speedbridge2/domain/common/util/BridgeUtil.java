@@ -54,7 +54,7 @@ public final class BridgeUtil {
      * @param content The content of the message.
      * @return The translated message.
      */
-    public static String translateMiniMessageLegacy(final String content) {
+    public static String miniMessageToLegacy(final String content) {
         return BukkitComponentSerializer.legacy().serialize(translateMiniMessage(content));
     }
 

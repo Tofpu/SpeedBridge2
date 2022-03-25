@@ -48,7 +48,7 @@ public final class LeaderboardExpansion extends AbstractExpansion {
 
             // if board player is null, return the empty session leaderboard message
             if (boardPlayer == null) {
-                return BridgeUtil.translateMiniMessageLegacy(Message.INSTANCE.emptySessionLeaderboard);
+                return BridgeUtil.miniMessageToLegacy(Message.INSTANCE.emptySessionLeaderboard);
             }
         } else {
             final int slot = parse(args, 1);

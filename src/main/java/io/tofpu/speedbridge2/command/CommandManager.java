@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.command;
 
 import io.tofpu.speedbridge2.command.subcommand.CommandCompletion;
 import io.tofpu.speedbridge2.command.subcommand.SpeedBridgeCommand;
+import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.Island;
 import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
@@ -21,6 +22,8 @@ import revxrsal.commands.exception.CommandErrorException;
 import revxrsal.commands.process.SenderResolver;
 
 import java.util.UUID;
+
+import static io.tofpu.speedbridge2.domain.common.Message.INSTANCE;
 
 public final class CommandManager {
     private static BukkitCommandHandler commandHandler;
@@ -57,18 +60,50 @@ public final class CommandManager {
                 .registerParameterSuggestions(Island.class, CommandCompletion::islands);
 
         commandHandler.registerValueResolver(Island.class, context -> {
-           final int slot = context.popInt();
-           final Island island = IslandService.INSTANCE.findIslandBy(slot);
+            final BridgePlayer player = PlayerService.INSTANCE.get(context.actor().getUniqueId());
+
+            if (player == null) {
+                throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(INSTANCE.notLoaded));
+            }
+
+            if (player.isInSetup()) {
+                throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(INSTANCE.inASetup));
+            }
+
+            if (player.isPlaying()) {
+                throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(INSTANCE.alreadyInAIsland));
+            }
+
+            final String input = context.pop();
+            final IslandService islandService = IslandService.INSTANCE;
+
+            int slot;
+            try {
+                slot = Integer.parseInt(input);
+            } catch (NumberFormatException exception) {
+                slot = -1;
+            }
+
+            Island island = null;
+            if (slot != -1) {
+                island = islandService.findIslandBy(slot);
+            } else if (input != null && !input.isEmpty()) {
+                island = islandService.findIslandBy(input);
+            }
+
            if (island == null) {
-               throw new CommandErrorException("Invalid Island: &e" + slot);
+               if (slot == -1) {
+                   throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(INSTANCE.invalidIslandArgument));
+               }
+               throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(String.format(INSTANCE.invalidIsland, slot + "")));
            }
+
            return island;
         });
 
         commandHandler.registerValueResolver(GameIsland.class, context -> {
             final BridgePlayer bridgePlayer = context.actor();
             return bridgePlayer.getCurrentGame();
-
         });
 
         commandHandler.register(new SpeedBridgeCommand());

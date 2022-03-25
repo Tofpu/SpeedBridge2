@@ -16,6 +16,8 @@ public final class CommandCompletion {
         for (final Integer integer : islandService.getIntegerIslands()) {
             suggestions.add(integer + "");
         }
+        System.out.println("CommandCompletion#islands: suggestions - " + suggestions);
+
         return suggestions;
     }
 }

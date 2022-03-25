@@ -10,6 +10,7 @@ import io.tofpu.speedbridge2.domain.extra.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.domain.island.IslandHandler;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.Island;
+import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
 import io.tofpu.speedbridge2.domain.island.setup.IslandSetup;
 import io.tofpu.speedbridge2.domain.island.setup.IslandSetupManager;
 import io.tofpu.speedbridge2.domain.player.PlayerService;
@@ -23,7 +24,6 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -231,7 +231,7 @@ public final class SpeedBridgeCommand {
     @Command("join")
     @Subcommand("join")
     @Description("Join an island")
-    public void onIslandJoin(final BridgePlayer bridgePlayer, final String category) {
+    public void onIslandJoin(final BridgePlayer bridgePlayer, final Island island) {
         if (!isGeneralSetupComplete(bridgePlayer)) {
             return;
         }
@@ -239,47 +239,8 @@ public final class SpeedBridgeCommand {
             return;
         }
 
-        if (bridgePlayer.isInSetup()) {
-            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.inASetup);
-            return;
-        }
-
-        // /join 2
-        // /join default
-
-        // /randomjoin
-
-        int slot;
-        try {
-            slot = Integer.parseInt(category);
-        } catch (NumberFormatException exception) {
-            slot = -1;
-        }
-
-        Island island = null;
-        if (slot != -1) {
-            island = islandService.findIslandBy(slot);
-        } else if (category != null && !category.isEmpty()) {
-            island = islandService.findIslandBy(category);
-        }
-
-        if (island != null) {
-            slot = island.getSlot();
-        }
-
-        final String message;
-        if (island == null || !island.isReady()) {
-            if (slot == -1) {
-                message = INSTANCE.invalidIslandArgument;
-            } else {
-                message = String.format(INSTANCE.invalidIsland, slot + "");
-            }
-        } else if (bridgePlayer.isPlaying()) {
-            message = INSTANCE.alreadyInAIsland;
-        } else {
-            message = String.format(INSTANCE.joinedAnIsland, slot + "");
-            island.join(bridgePlayer);
-        }
+        final String message = String.format(INSTANCE.joinedAnIsland, island.getSlot() + "");
+        island.join(bridgePlayer);
 
         if (!message.isEmpty()) {
             BridgeUtil.sendMessage(bridgePlayer, message);
@@ -289,8 +250,8 @@ public final class SpeedBridgeCommand {
     @Command("leave")
     @Subcommand("leave")
     @Description("Leave an island")
-    public void onIslandLeave(final BridgePlayer bridgePlayer, final @NotNull Island island) {
-        island.leaveGame(bridgePlayer);
+    public void onIslandLeave(final BridgePlayer bridgePlayer, final GameIsland gameIsland) {
+        gameIsland.stopGame();
     }
 
     @Command("score")

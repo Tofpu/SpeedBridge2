@@ -119,6 +119,15 @@ public final class IslandHandler {
         return Collections.unmodifiableCollection(this.islands.values());
     }
 
+    /**
+     * Return a collection of all the islands integers in the map
+     *
+     * @return The unmodifiable collection of all the islands integers in the world.
+     */
+    public @NotNull Collection<Integer> getIntegerIslands() {
+        return Collections.unmodifiableCollection(this.islands.keySet());
+    }
+
     // This is a Java enum. It's a way to create a set of constants.
     public enum IslandCreationResult {
         UNKNOWN_SCHEMATIC, ISLAND_ALREADY_EXISTS, SUCCESS

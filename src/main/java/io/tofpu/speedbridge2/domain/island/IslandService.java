@@ -81,4 +81,13 @@ public final class IslandService {
     public @NotNull Collection<Island> getAllIslands() {
         return this.islandHandler.getIslands();
     }
+
+    /**
+     * Return a collection of all the islands integers in the map
+     *
+     * @return The unmodifiable collection of all the islands integers in the world.
+     */
+    public @NotNull Collection<Integer> getIntegerIslands() {
+        return this.islandHandler.getIntegerIslands();
+    }
 }

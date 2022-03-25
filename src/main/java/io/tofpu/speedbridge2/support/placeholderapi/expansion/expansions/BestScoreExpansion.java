@@ -17,7 +17,7 @@ public final class BestScoreExpansion extends AbstractExpansion {
 
     @Override
     public String getDefaultAction(final BridgePlayer bridgePlayer) {
-        return BridgeUtil.translateMiniMessageLegacy(Message.INSTANCE.emptyScoreFormat);
+        return BridgeUtil.miniMessageToLegacy(Message.INSTANCE.emptyScoreFormat);
     }
 
     @Override

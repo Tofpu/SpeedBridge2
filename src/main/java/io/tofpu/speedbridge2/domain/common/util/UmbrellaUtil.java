@@ -19,9 +19,9 @@ public class UmbrellaUtil {
         final ItemStack itemStack = material.parseItem();
         final ItemMeta meta = itemStack.getItemMeta();
 
-        meta.setDisplayName(BridgeUtil.translateMiniMessageLegacy(
+        meta.setDisplayName(BridgeUtil.miniMessageToLegacy(
                 "<yellow>" + displayName));
-        meta.setLore(Collections.singletonList(BridgeUtil.translateMiniMessageLegacy(
+        meta.setLore(Collections.singletonList(BridgeUtil.miniMessageToLegacy(
                 "<gray>Click to " + lore)));
 
         itemStack.setItemMeta(meta);

@@ -51,7 +51,7 @@ public final class SpeedBridge {
 
         MultiWorldEditAPI.load(javaPlugin);
 
-        log("Loading the `config.yml`...");
+        log("Loading the `config.conf` & 'items.yml'...");
         ConfigurationManager.INSTANCE.load(javaPlugin);
 
         try {

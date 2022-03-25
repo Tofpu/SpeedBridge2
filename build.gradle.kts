@@ -10,6 +10,7 @@ version = "1.0.8"
 tasks {
     compileJava {
         options.encoding = "UTF-8"
+        sourceCompatibility = "11"
     }
 
     named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
@@ -27,6 +28,7 @@ tasks {
             relocate("com.github.benmanes.caffeine", "io.tofpu.speedbridge2.lib.caffeine")
             relocate("org.apache.commons", "io.tofpu.speedbridge2.lib.commons")
             relocate("org.yaml.snakeyaml", "io.tofpu.speedbridge2.lib.snakeyml")
+            relocate("revxrsal", "io.tofpu.speedbridge2.lib.lamp")
         }
 
         exclude("META-INF/**")
@@ -48,15 +50,15 @@ publishing {
 }
 
 repositories {
-    mavenCentral()
     mavenLocal()
+    mavenCentral()
 
     maven("https://jitpack.io")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://maven.enginehub.org/repo/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.codemc.org/repository/maven-public/")
-
+    maven("https://libraries.minecraft.net")
 }
 
 dependencies {
@@ -66,8 +68,8 @@ dependencies {
 
     compileOnly("com.sk89q:worldedit:6.0.0-SNAPSHOT")
 
-    implementation("cloud.commandframework:cloud-bukkit:1.6.2")
-    implementation("cloud.commandframework:cloud-annotations:1.6.1")
+    implementation("com.github.Revxrsal.Lamp:common:3.0.0")
+    implementation("com.github.Revxrsal.Lamp:bukkit:3.0.1")
 
     implementation("net.kyori:adventure-api:4.10.1")
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
