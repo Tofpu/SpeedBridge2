@@ -20,7 +20,7 @@ public final class HelpCommandGenerator {
 
     private static final String HEADER = FIRST_CHARACTER +
                                          "<<gold>-</gold>> <yellow><bold>SpeedBridge <white>V2</bold>";
-    private static final String COMMAND_FORMAT = String.format(SUBTITLE, "/%s " +
+    private static final String COMMAND_FORMAT = String.format(SUBTITLE, "/sb %s " +
                                                                          "<dark_gray>- <white>%s");
 
     private static Component helpMessageComponent = null;
@@ -46,8 +46,7 @@ public final class HelpCommandGenerator {
                 continue;
             }
 
-            messages.add(String.format(COMMAND_FORMAT, commandMethod.value()[0]
-                    .replace("speedbridge|sb", "sb"), commandDescription.value()));
+            messages.add(String.format(COMMAND_FORMAT, commandMethod.value()[0], commandDescription.value()));
         }
 
         messages.add("");

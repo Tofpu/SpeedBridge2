@@ -1,6 +1,8 @@
 package io.tofpu.speedbridge2.command;
 
 import io.tofpu.dynamicclass.DynamicClass;
+import io.tofpu.speedbridge2.command.condition.AbstractCommandConditionWrapper;
+import io.tofpu.speedbridge2.command.condition.LampConditionRegistry;
 import io.tofpu.speedbridge2.command.parser.AbstractLampParser;
 import io.tofpu.speedbridge2.command.parser.LampParseRegistry;
 import io.tofpu.speedbridge2.command.subcommand.CommandCompletion;
@@ -56,6 +58,7 @@ public final class CommandManager {
 
         constructTabCompleter();
         constructParsers();
+        constructCommandConditions();
 
         commandHandler.register(new SpeedBridgeCommand());
     }
@@ -66,16 +69,28 @@ public final class CommandManager {
     }
 
     private static void constructParsers() {
-        final LampParseRegistry lampParseRegistry = DynamicClass.getInstance(LampParseRegistry.class);
+        final AbstractLampRegistry<?, AbstractLampParser<?>> lampParseRegistry = DynamicClass.getInstance(LampParseRegistry.class);
         if (lampParseRegistry == null) {
             return;
         }
 
         BridgeUtil.debug("Registering the command parsers now...");
-        for (final AbstractLampParser<?> parser : lampParseRegistry
-                .values()) {
+        for (final AbstractLampParser<?> parser : lampParseRegistry.values()) {
             parser.register(commandHandler);
             BridgeUtil.debug("Registered " + parser.getType() + " type parser!");
+        }
+    }
+
+    private static void constructCommandConditions() {
+        final AbstractLampRegistry<?, AbstractCommandConditionWrapper> registry = DynamicClass.getInstance(LampConditionRegistry.class);
+        if (registry == null) {
+            return;
+        }
+
+        BridgeUtil.debug("Registering the command conditions now...");
+        for (final AbstractCommandConditionWrapper condition : registry.values()) {
+            condition.register(commandHandler);
+            BridgeUtil.debug("Registered " + condition.getType() + " type condition!");
         }
     }
 }

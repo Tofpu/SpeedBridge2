@@ -10,7 +10,7 @@ import revxrsal.commands.process.ValueResolver;
 
 import static io.tofpu.speedbridge2.domain.common.Message.INSTANCE;
 
-public class IslandParser extends AbstractLampParser<Island> {
+public final class IslandParser extends AbstractLampParser<Island> {
     public IslandParser(final LampParseRegistry registry) {
         super(Island.class, registry);
     }

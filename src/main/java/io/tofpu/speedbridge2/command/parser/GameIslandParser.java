@@ -6,7 +6,7 @@ import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import revxrsal.commands.process.ValueResolver;
 
 @AutoRegister
-public class GameIslandParser extends AbstractLampParser<GameIsland> {
+public final class GameIslandParser extends AbstractLampParser<GameIsland> {
     public GameIslandParser(final LampParseRegistry registry) {
         super(GameIsland.class, registry);
     }

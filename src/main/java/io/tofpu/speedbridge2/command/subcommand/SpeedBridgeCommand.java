@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.command.subcommand;
 
 
 import com.sk89q.minecraft.util.commands.CommandAlias;
+import io.tofpu.speedbridge2.command.condition.annotation.RestrictSetup;
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
@@ -43,20 +44,16 @@ public final class SpeedBridgeCommand {
     private final IslandService islandService = IslandService.INSTANCE;
 
     @Default
-    @Description("The General Command")
-    public void onNoArgument(final CommonBridgePlayer<?>bridgePlayer) {
-        final CommandSender player = bridgePlayer.getPlayer();
+    @Description("The Main Command")
+    public void defaultCommand(final CommonBridgePlayer<?> player) {
         BridgeUtil.sendMessage(player, INSTANCE.noArgument);
     }
 
     @Subcommand("setlobby")
     @Description("Sets the lobby location")
     @CommandPermission("speedbridge.lobby.set")
+    @RestrictSetup
     public void onLobbySet(final BridgePlayer bridgePlayer) {
-        if (bridgePlayer.isInSetup()) {
-            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.inASetup);
-        }
-
         ConfigurationManager.INSTANCE.getLobbyCategory()
                 .setLobbyLocation(bridgePlayer.getPlayer()
                         .getLocation())
@@ -329,6 +326,7 @@ public final class SpeedBridgeCommand {
     @Command("randomjoin")
     @Subcommand("randomjoin")
     @Description("Chooses a random island for you")
+    @RestrictSetup
     public void onRandomJoin(final BridgePlayer bridgePlayer) {
         if (!isGeneralSetupComplete(bridgePlayer)) {
             return;
@@ -338,9 +336,7 @@ public final class SpeedBridgeCommand {
         }
 
         final String message;
-        if (bridgePlayer.isInSetup()) {
-            message = INSTANCE.inASetup;
-        } else if (bridgePlayer.isPlaying()) {
+        if (bridgePlayer.isPlaying()) {
             message = INSTANCE.alreadyInAIsland;
         } else {
             final Optional<Island> optionalIsland = islandService.getAllIslands()
@@ -365,6 +361,7 @@ public final class SpeedBridgeCommand {
     @Subcommand("setup")
     @Description("Creates an island setup")
     @CommandPermission("speedbridge.setup.admin")
+    @RestrictSetup
     public void onStartSetup(final BridgePlayer bridgePlayer, final int slot) {
         if (!isGeneralSetupComplete(bridgePlayer)) {
             return;
@@ -381,12 +378,8 @@ public final class SpeedBridgeCommand {
         } else if (island == null) {
             message = String.format(INSTANCE.invalidIsland, slot);
         } else {
-            if (bridgePlayer.isInSetup()) {
-                message = INSTANCE.inASetup;
-            } else {
-                message = String.format(INSTANCE.startingSetupProcess, slot);
-                IslandSetupManager.INSTANCE.startSetup(bridgePlayer, island);
-            }
+            message = String.format(INSTANCE.startingSetupProcess, slot);
+            IslandSetupManager.INSTANCE.startSetup(bridgePlayer, island);
         }
         BridgeUtil.sendMessage(bridgePlayer, message);
     }
@@ -394,25 +387,22 @@ public final class SpeedBridgeCommand {
     @Subcommand("setup setspawn")
     @Description("Sets the island's spawnpoint")
     @CommandPermission("speedbridge.setup.admin")
+    @RestrictSetup
     public void setupSetSpawn(final BridgePlayer bridgePlayer) {
         final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
+        final Location playerLocation = bridgePlayer.getPlayer()
+                .getLocation();
+
         final String message;
-        if (!bridgePlayer.isInSetup()) {
-            message = INSTANCE.notInASetup;
+        // if the location given was not valid
+        if (!islandSetup.isLocationValid(playerLocation)) {
+            message = INSTANCE.invalidSpawnPoint;
         } else {
-            final Location playerLocation = bridgePlayer.getPlayer()
-                    .getLocation();
+            // otherwise, set the location point
+            message = INSTANCE.setSpawnPoint + "\n" + INSTANCE.completeNotification;
 
-            // if the location given was not valid
-            if (!islandSetup.isLocationValid(playerLocation)) {
-                message = INSTANCE.invalidSpawnPoint;
-            } else {
-                // otherwise, set the location point
-                message = INSTANCE.setSpawnPoint + "\n" + INSTANCE.completeNotification;
-
-                islandSetup.setPlayerSpawnPoint(playerLocation);
-            }
+            islandSetup.setPlayerSpawnPoint(playerLocation);
         }
         BridgeUtil.sendMessage(bridgePlayer, message);
     }
