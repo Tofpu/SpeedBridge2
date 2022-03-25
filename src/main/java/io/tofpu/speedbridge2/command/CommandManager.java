@@ -60,6 +60,13 @@ public final class CommandManager {
         constructParsers();
         constructCommandConditions();
 
+        commandHandler.registerResponseHandler(String.class, (response, actor, command) -> {
+            if (response.isEmpty()) {
+                return;
+            }
+            actor.reply(BridgeUtil.miniMessageToLegacy(response));
+        });
+
         commandHandler.register(new SpeedBridgeCommand());
     }
 
@@ -74,10 +81,13 @@ public final class CommandManager {
             return;
         }
 
-        BridgeUtil.debug("Registering the command parsers now...");
+        BridgeUtil.debug("Constructing parsers...");
+
         for (final AbstractLampParser<?> parser : lampParseRegistry.values()) {
             parser.register(commandHandler);
-            BridgeUtil.debug("Registered " + parser.getType() + " type parser!");
+
+            BridgeUtil.debug("Registered parser: " + parser.getClass()
+                    .getName());
         }
     }
 
@@ -87,10 +97,12 @@ public final class CommandManager {
             return;
         }
 
-        BridgeUtil.debug("Registering the command conditions now...");
+        BridgeUtil.debug("Constructing command conditions...");
+
         for (final AbstractCommandConditionWrapper condition : registry.values()) {
             condition.register(commandHandler);
-            BridgeUtil.debug("Registered " + condition.getType() + " type condition!");
+            BridgeUtil.debug("Registered command condition: " + condition.getClass()
+                    .getName());
         }
     }
 }

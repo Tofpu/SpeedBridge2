@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2.command.subcommand;
 
-
 import com.sk89q.minecraft.util.commands.CommandAlias;
+import io.tofpu.speedbridge2.command.condition.annotation.RestrictDummyModel;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictSetup;
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
@@ -18,7 +18,6 @@ import io.tofpu.speedbridge2.domain.player.PlayerService;
 import io.tofpu.speedbridge2.domain.player.misc.score.Score;
 import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
-import io.tofpu.speedbridge2.domain.player.object.extra.DummyBridgePlayer;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -45,8 +44,8 @@ public final class SpeedBridgeCommand {
 
     @Default
     @Description("The Main Command")
-    public void defaultCommand(final CommonBridgePlayer<?> player) {
-        BridgeUtil.sendMessage(player, INSTANCE.noArgument);
+    public String defaultCommand(final CommonBridgePlayer<?> player) {
+        return INSTANCE.noArgument;
     }
 
     @Subcommand("setlobby")
@@ -66,10 +65,8 @@ public final class SpeedBridgeCommand {
     @Usage("create <slot> <schematic> [-c category]")
     @Description("Create an island with a defined slot")
     @CommandPermission("speedbridge.island.create")
-    public void onIslandCreate(final CommonBridgePlayer<?> player, final int slot, final String schematic,
+    public String onIslandCreate(final CommonBridgePlayer<?> player, final int slot, final String schematic,
             @Flag("c") String category) {
-        final CommandSender sender = player.getPlayer();
-
         if (category == null || category.isEmpty()) {
             category = ConfigurationManager.INSTANCE.getGeneralCategory()
                     .getDefaultIslandCategory();
@@ -77,35 +74,28 @@ public final class SpeedBridgeCommand {
 
         final IslandHandler.IslandCreationResult result = islandService.createIsland(slot, category, schematic);
         if (result == IslandHandler.IslandCreationResult.ISLAND_ALREADY_EXISTS) {
-            BridgeUtil.sendMessage(sender, String.format(INSTANCE.islandAlreadyExists,
-                    slot + ""));
-            return;
+            return String.format(INSTANCE.islandAlreadyExists, slot + "");
         }
 
-        final String message;
         if (result == IslandHandler.IslandCreationResult.UNKNOWN_SCHEMATIC) {
-            message = String.format(INSTANCE.unknownSchematic, schematic);
-        } else {
-            message = String.format(INSTANCE.islandHasBeenCreatedSchematic,
-                    slot + "", schematic) + "\n" +
-                      INSTANCE.islandSetupNotification.replace("%slot%", slot + "");
+            return String.format(INSTANCE.unknownSchematic, schematic);
         }
-        BridgeUtil.sendMessage(sender, message);
+
+        return String.format(INSTANCE.islandHasBeenCreatedSchematic,
+                slot + "", schematic) + "\n" +
+               INSTANCE.islandSetupNotification.replace("%slot%", slot + "");
     }
 
     @Subcommand("delete")
     @Description("Delete an island")
     @CommandPermission("speedbridge.island.delete")
-    public void onIslandDelete(final CommonBridgePlayer<?> player, final int slot) {
+    public String onIslandDelete(final CommonBridgePlayer<?> player, final int slot) {
         final Island island = islandService.deleteIsland(slot);
 
-        final String message;
         if (island == null) {
-            message = String.format(INSTANCE.invalidIsland, slot + "");
-        } else {
-            message = String.format(INSTANCE.deletedAnIsland, slot);
+            return String.format(INSTANCE.invalidIsland, slot + "");
         }
-        BridgeUtil.sendMessage(player, message);
+        return String.format(INSTANCE.deletedAnIsland, slot);
     }
 
     @Subcommand("reset")
@@ -157,48 +147,34 @@ public final class SpeedBridgeCommand {
     @Usage("select <slot> [-c category|-s schematic]")
     @Description("Select an island to modify their properties")
     @CommandPermission("speedbridge.island.island.select")
-    public void onIslandSelect(final CommonBridgePlayer<?> commonBridgePlayer,
-            final int slot, final @Flag(value = "c")
-            String category, final @Flag(value = "s")
-            String schematic) {
-        final CommandSender sender = commonBridgePlayer.getPlayer();
+    public String onIslandSelect(final CommonBridgePlayer<?> commonBridgePlayer, final int slot, final @Flag(value = "c")
+            String category, final @Flag(value = "s") String schematic) {
         final Island island = islandService.findIslandBy(slot);
 
         String message = INSTANCE.emptySelect;
-        boolean successful = false;
+        boolean successful;
         if (island == null) {
-            message = String.format(INSTANCE.invalidIsland, slot + "");
-        } else {
-            String selectType = "";
-            if (category != null && !category.isEmpty()) {
-                selectType = "category";
-
-                island.setCategory(category);
-            } else if (schematic != null && !schematic.isEmpty()) {
-                selectType = "schematic";
-
-                successful = island.selectSchematic(schematic);
-            }
-
-            switch (selectType) {
-                case "category":
-                    message = String.format(INSTANCE.validSelect,
-                            slot + "", category, selectType);
-                    break;
-                case "schematic":
-                    if (successful) {
-                        message = String.format(INSTANCE.validSelect,
-                                slot + "", schematic, selectType);
-                        break;
-                    }
-                    message = String.format(INSTANCE.unknownSchematic, schematic);
-                    break;
-            }
+            return String.format(INSTANCE.invalidIsland, slot + "");
         }
 
-        if (!message.isEmpty()) {
-            BridgeUtil.sendMessage(sender, message);
+        if (category != null && !category.isEmpty()) {
+            island.setCategory(category);
+
+            return String.format(INSTANCE.validSelect, slot + "", category, "category");
         }
+
+        if (schematic != null && !schematic.isEmpty()) {
+            successful = island.selectSchematic(schematic);
+
+            if (successful) {
+                return String.format(INSTANCE.validSelect,
+                        slot + "", schematic, "schematic");
+            }
+
+            return String.format(INSTANCE.unknownSchematic, schematic);
+        }
+
+        return message;
     }
 
     private boolean isGeneralSetupComplete(final BridgePlayer bridgePlayer) {
@@ -228,20 +204,14 @@ public final class SpeedBridgeCommand {
     @Command("join")
     @Subcommand("join")
     @Description("Join an island")
-    public void onIslandJoin(final BridgePlayer bridgePlayer, final Island island) {
+    @RestrictDummyModel
+    public String onIslandJoin(final BridgePlayer bridgePlayer, final Island island) {
         if (!isGeneralSetupComplete(bridgePlayer)) {
-            return;
-        }
-        if (isDummy(bridgePlayer)) {
-            return;
+            return "";
         }
 
-        final String message = String.format(INSTANCE.joinedAnIsland, island.getSlot() + "");
         island.join(bridgePlayer);
-
-        if (!message.isEmpty()) {
-            BridgeUtil.sendMessage(bridgePlayer, message);
-        }
+        return String.format(INSTANCE.joinedAnIsland, island.getSlot() + "");
     }
 
     @Command("leave")
@@ -255,10 +225,8 @@ public final class SpeedBridgeCommand {
     @Subcommand("score")
     @CommandAlias("score")
     @Description("Shows a list of your scores")
-    public void onScore(final BridgePlayer bridgePlayer) {
-        final Player player = bridgePlayer.getPlayer();
+    public String onScore(final BridgePlayer bridgePlayer) {
         final List<String> scoreList = new ArrayList<>();
-        final String message;
 
         for (final Score score : bridgePlayer.getScores()) {
             if (scoreList.isEmpty()) {
@@ -266,32 +234,27 @@ public final class SpeedBridgeCommand {
             }
             // Your scores:
             // Island X scored X seconds;
-            final String formattedScore = " <gold><bold>" + CROSS.getSymbol() + " " + "<reset><yellow>Island " + "<gold>%s</gold>" + " " + ARROW_RIGHT
-                    .getSymbol() + " <gold>%s</gold> seconds";
-            scoreList.add(String.format(formattedScore, score.getScoredOn(), BridgeUtil.formatNumber(score
-                    .getScore())));
+            final String formattedScore =
+                    " <gold><bold>" + CROSS.getSymbol() + " " + "<reset><yellow>Island " +
+                    "<gold>%s</gold>" + " " + ARROW_RIGHT.getSymbol() +
+                    " <gold>%s</gold> seconds";
+            scoreList.add(String.format(formattedScore, score.getScoredOn(), BridgeUtil.formatNumber(score.getScore())));
         }
 
         if (scoreList.isEmpty()) {
-            message = "<red>You haven't scored anything yet";
-        } else {
-            scoreList.add(MessageUtil.MENU_BAR);
-
-            message = String.join("\n", scoreList);
+            return "<red>You haven't scored anything yet";
         }
 
-        BridgeUtil.sendMessage(player, message);
+        scoreList.add(MessageUtil.MENU_BAR);
+        return String.join("\n", scoreList);
     }
 
     @Command("choose")
     @Subcommand("choose")
     @CommandAlias("choose")
     @Description("Lets you choose a block")
+    @RestrictDummyModel
     public void chooseBlock(final BridgePlayer bridgePlayer) {
-        if (isDummy(bridgePlayer)) {
-            return;
-        }
-
         BlockMenuManager.INSTANCE.showInventory(bridgePlayer);
     }
 
@@ -327,129 +290,104 @@ public final class SpeedBridgeCommand {
     @Subcommand("randomjoin")
     @Description("Chooses a random island for you")
     @RestrictSetup
-    public void onRandomJoin(final BridgePlayer bridgePlayer) {
+    @RestrictDummyModel
+    public String onRandomJoin(final BridgePlayer bridgePlayer) {
         if (!isGeneralSetupComplete(bridgePlayer)) {
-            return;
-        }
-        if (isDummy(bridgePlayer)) {
-            return;
+            return "";
         }
 
-        final String message;
         if (bridgePlayer.isPlaying()) {
-            message = INSTANCE.alreadyInAIsland;
-        } else {
-            final Optional<Island> optionalIsland = islandService.getAllIslands()
-                    .stream()
-                    .parallel()
-                    .filter(Island::isReady)
-                    .findAny();
-
-            if (!optionalIsland.isPresent()) {
-                message = INSTANCE.noAvailableIsland;
-            } else {
-                final Island island = optionalIsland.get();
-                island.join(bridgePlayer);
-
-                message = String.format(INSTANCE.joinedAnIsland, island.getSlot() + "");
-            }
+            return INSTANCE.alreadyInAIsland;
         }
 
-        BridgeUtil.sendMessage(bridgePlayer, message);
+        final Optional<Island> optionalIsland = islandService.getAllIslands()
+                .stream()
+                .parallel()
+                .filter(Island::isReady)
+                .findAny();
+
+        if (!optionalIsland.isPresent()) {
+            return INSTANCE.noAvailableIsland;
+        }
+
+        final Island island = optionalIsland.get();
+        island.join(bridgePlayer);
+
+        return String.format(INSTANCE.joinedAnIsland, island.getSlot() + "");
     }
 
     @Subcommand("setup")
     @Description("Creates an island setup")
     @CommandPermission("speedbridge.setup.admin")
     @RestrictSetup
-    public void onStartSetup(final BridgePlayer bridgePlayer, final int slot) {
+    @RestrictDummyModel
+    public String onStartSetup(final BridgePlayer bridgePlayer, final int slot) {
         if (!isGeneralSetupComplete(bridgePlayer)) {
-            return;
-        }
-        if (isDummy(bridgePlayer)) {
-            return;
+            return "";
         }
 
         final Island island = IslandService.INSTANCE.findIslandBy(slot);
 
-        final String message;
         if (bridgePlayer.isPlaying()) {
-            message = INSTANCE.inAGame;
+            return INSTANCE.inAGame;
         } else if (island == null) {
-            message = String.format(INSTANCE.invalidIsland, slot);
-        } else {
-            message = String.format(INSTANCE.startingSetupProcess, slot);
-            IslandSetupManager.INSTANCE.startSetup(bridgePlayer, island);
+            return String.format(INSTANCE.invalidIsland, slot);
         }
-        BridgeUtil.sendMessage(bridgePlayer, message);
+
+        IslandSetupManager.INSTANCE.startSetup(bridgePlayer, island);
+        return String.format(INSTANCE.startingSetupProcess, slot);
     }
 
     @Subcommand("setup setspawn")
     @Description("Sets the island's spawnpoint")
     @CommandPermission("speedbridge.setup.admin")
     @RestrictSetup
-    public void setupSetSpawn(final BridgePlayer bridgePlayer) {
+    public String setupSetSpawn(final BridgePlayer bridgePlayer) {
         final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
         final Location playerLocation = bridgePlayer.getPlayer()
                 .getLocation();
 
-        final String message;
         // if the location given was not valid
         if (!islandSetup.isLocationValid(playerLocation)) {
-            message = INSTANCE.invalidSpawnPoint;
-        } else {
-            // otherwise, set the location point
-            message = INSTANCE.setSpawnPoint + "\n" + INSTANCE.completeNotification;
-
-            islandSetup.setPlayerSpawnPoint(playerLocation);
+            return INSTANCE.invalidSpawnPoint;
         }
-        BridgeUtil.sendMessage(bridgePlayer, message);
+
+        // otherwise, set the location point
+        islandSetup.setPlayerSpawnPoint(playerLocation);
+
+        return INSTANCE.setSpawnPoint + "\n" + INSTANCE.completeNotification;
     }
 
     @Subcommand("setup finish")
     @Description("Completes the island's setup")
     @CommandPermission("speedbridge.setup.admin")
-    public void setupFinish(final BridgePlayer bridgePlayer) {
+    public String setupFinish(final BridgePlayer bridgePlayer) {
         final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
-        final String message;
         if (!bridgePlayer.isInSetup()) {
-            message = INSTANCE.notInASetup;
-        } else if (!islandSetup.isReady()) {
-            message = INSTANCE.setupIncomplete;
-        } else {
-            message = INSTANCE.setupComplete;
-            islandSetup.finish();
+            return INSTANCE.notInASetup;
         }
 
-        BridgeUtil.sendMessage(bridgePlayer, message);
+        if (!islandSetup.isReady()) {
+            return INSTANCE.setupIncomplete;
+        }
+
+        islandSetup.finish();
+        return INSTANCE.setupComplete;
     }
 
     @Subcommand("setup cancel")
     @Description("Cancels the island's setup")
     @CommandPermission("speedbridge.setup.admin")
-    public void cancelSetup(final BridgePlayer bridgePlayer) {
+    public String cancelSetup(final BridgePlayer bridgePlayer) {
         final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
-        final String message;
         if (!bridgePlayer.isInSetup()) {
-            message = INSTANCE.notInASetup;
-        } else {
-            message = INSTANCE.setupCancelled;
-
-            islandSetup.cancel();
+            return INSTANCE.notInASetup;
         }
 
-        BridgeUtil.sendMessage(bridgePlayer, message);
-    }
-
-    private boolean isDummy(final BridgePlayer bridgePlayer) {
-        final boolean dummy = bridgePlayer instanceof DummyBridgePlayer;
-
-        if (dummy) {
-            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.notLoaded);
-        }
-        return dummy;
+        islandSetup.cancel();
+        return INSTANCE.setupCancelled;
     }
 }

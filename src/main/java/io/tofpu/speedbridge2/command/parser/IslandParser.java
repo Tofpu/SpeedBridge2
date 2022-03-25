@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.command.parser;
 
+import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.domain.island.IslandService;
 import io.tofpu.speedbridge2.domain.island.object.Island;
@@ -10,6 +11,7 @@ import revxrsal.commands.process.ValueResolver;
 
 import static io.tofpu.speedbridge2.domain.common.Message.INSTANCE;
 
+@AutoRegister
 public final class IslandParser extends AbstractLampParser<Island> {
     public IslandParser(final LampParseRegistry registry) {
         super(Island.class, registry);
@@ -21,14 +23,6 @@ public final class IslandParser extends AbstractLampParser<Island> {
 
         if (player == null) {
             throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(INSTANCE.notLoaded));
-        }
-
-        if (player.isInSetup()) {
-            throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(INSTANCE.inASetup));
-        }
-
-        if (player.isPlaying()) {
-            throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(INSTANCE.alreadyInAIsland));
         }
 
         final String input = context.pop();
