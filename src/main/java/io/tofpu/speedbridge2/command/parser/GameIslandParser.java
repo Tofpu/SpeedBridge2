@@ -13,6 +13,8 @@ public final class GameIslandParser extends AbstractLampParser<GameIsland> {
 
     @Override
     GameIsland parse(final ValueResolver.ValueResolverContext context) {
+        context.pop();
+
         final BridgePlayer bridgePlayer = context.actor();
         return bridgePlayer.getCurrentGame();
     }

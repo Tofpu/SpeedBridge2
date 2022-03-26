@@ -31,6 +31,13 @@ public final class CommandManager {
     public static void load(final @NotNull Plugin plugin) {
         commandHandler = BukkitCommandHandler.create(plugin);
 
+        commandHandler.registerResponseHandler(String.class, (response, actor, command) -> {
+            if (response.isEmpty()) {
+                return;
+            }
+            actor.reply(BridgeUtil.miniMessageToLegacy(response));
+        });
+
         commandHandler.registerSenderResolver(new SenderResolver() {
             @Override
             public boolean isCustomType(final Class<?> type) {
@@ -56,16 +63,14 @@ public final class CommandManager {
             }
         });
 
+
+        commandHandler.setHelpWriter((command, actor) -> String.format(
+                "<white>- <yellow>/%s " + "%s - %s", command.getPath()
+                        .toRealString(), command.getUsage(), command.getDescription()));
+
         constructTabCompleter();
         constructParsers();
         constructCommandConditions();
-
-        commandHandler.registerResponseHandler(String.class, (response, actor, command) -> {
-            if (response.isEmpty()) {
-                return;
-            }
-            actor.reply(BridgeUtil.miniMessageToLegacy(response));
-        });
 
         commandHandler.register(new SpeedBridgeCommand());
     }

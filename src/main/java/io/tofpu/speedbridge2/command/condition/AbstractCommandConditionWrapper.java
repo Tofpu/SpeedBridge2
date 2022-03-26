@@ -28,7 +28,7 @@ public abstract class AbstractCommandConditionWrapper implements CommandConditio
             @NotNull final CommandActor actor,
             @NotNull final ExecutableCommand command,
             @NotNull @Unmodifiable final List<String> arguments) {
-        if (command.hasAnnotation(type)) {
+        if (!command.hasAnnotation(type)) {
             return;
         }
         execute(actor, command, arguments);

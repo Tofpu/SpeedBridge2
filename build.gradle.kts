@@ -10,6 +10,7 @@ version = "1.0.8"
 tasks {
     compileJava {
         options.encoding = "UTF-8"
+        options.compilerArgs.plusAssign("-parameters")
         sourceCompatibility = "11"
     }
 
@@ -75,7 +76,10 @@ dependencies {
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
     implementation("net.kyori:adventure-text-minimessage:4.10.1")
 
-    implementation("com.github.tofpu:DynamicClass:fdc123593b") {
+//    implementation("com.github.tofpu:DynamicClass:fdc123593b") {
+//        exclude("com.google.guava", "guava")
+//    }
+    implementation("io.tofpu:DynamicClass:1.0-SNAPSHOT") {
         exclude("com.google.guava", "guava")
     }
 
