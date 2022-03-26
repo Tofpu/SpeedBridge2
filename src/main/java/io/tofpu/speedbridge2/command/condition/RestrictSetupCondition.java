@@ -30,6 +30,14 @@ public final class RestrictSetupCondition extends AbstractCommandConditionWrappe
             return;
         }
 
+        final RestrictSetup annotation = command.getAnnotation(RestrictSetup.class);
+        if (!annotation.opposite()) {
+            if (!player.isInSetup()) {
+                throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(Message.INSTANCE.notInASetup));
+            }
+            return;
+        }
+
         if (player.isInSetup()) {
             throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(Message.INSTANCE.inASetup));
         }

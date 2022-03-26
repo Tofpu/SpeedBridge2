@@ -7,4 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface RestrictSetup {}
+public @interface RestrictSetup {
+    boolean opposite() default false;
+}

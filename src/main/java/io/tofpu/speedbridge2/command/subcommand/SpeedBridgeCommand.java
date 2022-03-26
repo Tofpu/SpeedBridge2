@@ -23,7 +23,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
@@ -99,60 +98,53 @@ public final class SpeedBridgeCommand {
     @Description("Wipes the player's data")
     @CommandPermission("speedbridge.player.reset")
     public void onPlayerReset(final CommonBridgePlayer<?> bridgePlayer, final String name) {
-        Bukkit.getScheduler()
-                .runTaskAsynchronously(JavaPlugin.getPlugin(SpeedBridgePlugin.class), () -> {
-                    final CommandSender sender = bridgePlayer.getPlayer();
-                    if (sender == null) {
-                        return;
-                    }
+        BridgeUtil.runBukkitAsync(() -> {
+            final CommandSender sender = bridgePlayer.getPlayer();
+            if (sender == null) {
+                return;
+            }
 
-                    final UUID uuidResult = BridgeUtil.findUUIDBy(name);
-                    if (uuidResult == null) {
-                        BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerDoesntExist, name));
-                        return;
-                    }
+            final UUID uuidResult = BridgeUtil.findUUIDBy(name);
+            if (uuidResult == null) {
+                BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerDoesntExist, name));
+                return;
+            }
 
-                    BridgePlayer target = PlayerService.INSTANCE.get(uuidResult);
-                    if (target == null) {
-                        try {
-                            PlayerService.INSTANCE.loadAsync(uuidResult)
-                                    .get();
-                        } catch (InterruptedException | ExecutionException e) {
-                            BridgeUtil.sendMessage(bridgePlayer, INSTANCE.somethingWentWrong);
-                            throw new IllegalStateException(e);
-                        }
-                    }
+            BridgePlayer target = PlayerService.INSTANCE.get(uuidResult);
+            if (target == null) {
+                try {
+                    PlayerService.INSTANCE.loadAsync(uuidResult)
+                            .get();
+                } catch (InterruptedException | ExecutionException e) {
+                    BridgeUtil.sendMessage(bridgePlayer, INSTANCE.somethingWentWrong);
+                    throw new IllegalStateException(e);
+                }
+            }
 
-                    if (target == null) {
-                        BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerDoesntExist, name));
-                        return;
-                    }
+            if (target == null) {
+                BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerDoesntExist, name));
+                return;
+            }
 
-                    try {
-                        target.reset()
-                                .get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        BridgeUtil.sendMessage(bridgePlayer, INSTANCE.somethingWentWrong);
-                        throw new IllegalStateException(e);
-                    }
+            try {
+                target.reset()
+                        .get();
+            } catch (InterruptedException | ExecutionException e) {
+                BridgeUtil.sendMessage(bridgePlayer, INSTANCE.somethingWentWrong);
+                throw new IllegalStateException(e);
+            }
 
-                    BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerWiped, name));
-                });
+            BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerWiped, name));
+        });
     }
 
     @Subcommand("select")
     @Usage("select <slot> [-c category|-s schematic]")
     @Description("Select an island to modify their properties")
     @CommandPermission("speedbridge.island.island.select")
-    public String onIslandSelect(final int slot, final @Flag(value = "c")
+    public String onIslandSelect(final Island island, final @Flag(value = "c")
             String category, final @Flag(value = "s") String schematic) {
-        final Island island = islandService.findIslandBy(slot);
-
-        String message = INSTANCE.emptySelect;
-        boolean successful;
-        if (island == null) {
-            return String.format(INSTANCE.invalidIsland, slot + "");
-        }
+        final int slot = island.getSlot();
 
         if (category != null && !category.isEmpty()) {
             island.setCategory(category);
@@ -161,17 +153,14 @@ public final class SpeedBridgeCommand {
         }
 
         if (schematic != null && !schematic.isEmpty()) {
-            successful = island.selectSchematic(schematic);
-
-            if (successful) {
+            if (island.selectSchematic(schematic)) {
                 return String.format(INSTANCE.validSelect,
                         slot + "", schematic, "schematic");
             }
 
             return String.format(INSTANCE.unknownSchematic, schematic);
         }
-
-        return message;
+        return INSTANCE.emptySelect;
     }
 
     private boolean isGeneralSetupComplete(final BridgePlayer bridgePlayer) {
@@ -359,12 +348,9 @@ public final class SpeedBridgeCommand {
     @Subcommand("setup finish")
     @Description("Completes the island's setup")
     @CommandPermission("speedbridge.setup.admin")
+    @RestrictSetup(opposite = true)
     public String setupFinish(final BridgePlayer bridgePlayer) {
         final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
-
-        if (!bridgePlayer.isInSetup()) {
-            return INSTANCE.notInASetup;
-        }
 
         if (!islandSetup.isReady()) {
             return INSTANCE.setupIncomplete;
@@ -377,12 +363,9 @@ public final class SpeedBridgeCommand {
     @Subcommand("setup cancel")
     @Description("Cancels the island's setup")
     @CommandPermission("speedbridge.setup.admin")
+    @RestrictSetup(opposite = true)
     public String cancelSetup(final BridgePlayer bridgePlayer) {
         final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
-
-        if (!bridgePlayer.isInSetup()) {
-            return INSTANCE.notInASetup;
-        }
 
         islandSetup.cancel();
         return INSTANCE.setupCancelled;
