@@ -268,4 +268,8 @@ public class Island {
     public String getSchematicName() {
         return islandSchematic.getSchematicName();
     }
+
+    public void delete() {
+        Databases.ISLAND_DATABASE.delete(this.getSlot());
+    }
 }

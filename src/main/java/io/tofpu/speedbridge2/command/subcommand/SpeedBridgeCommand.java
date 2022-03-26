@@ -44,7 +44,7 @@ public final class SpeedBridgeCommand {
 
     @Default
     @Description("The Main Command")
-    public String defaultCommand(final CommonBridgePlayer<?> player) {
+    public String defaultCommand() {
         return INSTANCE.noArgument;
     }
 
@@ -65,7 +65,7 @@ public final class SpeedBridgeCommand {
     @Usage("create <slot> <schematic> [-c category]")
     @Description("Create an island with a defined slot")
     @CommandPermission("speedbridge.island.create")
-    public String onIslandCreate(final CommonBridgePlayer<?> player, final int slot, final String schematic,
+    public String onIslandCreate(final int slot, final String schematic,
             @Flag("c") String category) {
         if (category == null || category.isEmpty()) {
             category = ConfigurationManager.INSTANCE.getGeneralCategory()
@@ -89,13 +89,10 @@ public final class SpeedBridgeCommand {
     @Subcommand("delete")
     @Description("Delete an island")
     @CommandPermission("speedbridge.island.delete")
-    public String onIslandDelete(final CommonBridgePlayer<?> player, final int slot) {
-        final Island island = islandService.deleteIsland(slot);
+    public String onIslandDelete(final Island target) {
+        target.delete();
 
-        if (island == null) {
-            return String.format(INSTANCE.invalidIsland, slot + "");
-        }
-        return String.format(INSTANCE.deletedAnIsland, slot);
+        return String.format(INSTANCE.deletedAnIsland, target.getSlot());
     }
 
     @Subcommand("reset")
@@ -147,7 +144,7 @@ public final class SpeedBridgeCommand {
     @Usage("select <slot> [-c category|-s schematic]")
     @Description("Select an island to modify their properties")
     @CommandPermission("speedbridge.island.island.select")
-    public String onIslandSelect(final CommonBridgePlayer<?> commonBridgePlayer, final int slot, final @Flag(value = "c")
+    public String onIslandSelect(final int slot, final @Flag(value = "c")
             String category, final @Flag(value = "s") String schematic) {
         final Island island = islandService.findIslandBy(slot);
 
@@ -217,7 +214,7 @@ public final class SpeedBridgeCommand {
     @Command("leave")
     @Subcommand("leave")
     @Description("Leave an island")
-    public void onIslandLeave(final BridgePlayer bridgePlayer, final GameIsland gameIsland) {
+    public void onIslandLeave(final GameIsland gameIsland) {
         gameIsland.stopGame();
     }
 
