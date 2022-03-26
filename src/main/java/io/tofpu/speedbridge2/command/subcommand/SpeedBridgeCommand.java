@@ -6,7 +6,6 @@ import io.tofpu.speedbridge2.command.condition.annotation.RestrictSetup;
 import io.tofpu.speedbridge2.domain.common.Message;
 import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.common.util.MessageUtil;
 import io.tofpu.speedbridge2.domain.extra.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.domain.island.IslandHandler;
 import io.tofpu.speedbridge2.domain.island.IslandService;
@@ -187,8 +186,8 @@ public final class SpeedBridgeCommand {
         return false;
     }
 
-    @Command("join")
     @Subcommand("join")
+    @Usage("join <island>")
     @Description("Join an island")
     @RestrictDummyModel
     public String onIslandJoin(final BridgePlayer bridgePlayer, final Island island) {
@@ -196,18 +195,20 @@ public final class SpeedBridgeCommand {
             return "";
         }
 
+        if (bridgePlayer.isPlaying()) {
+            return INSTANCE.alreadyInAIsland;
+        }
+
         island.join(bridgePlayer);
         return String.format(INSTANCE.joinedAnIsland, island.getSlot() + "");
     }
 
-    @Command("leave")
     @Subcommand("leave")
     @Description("Leave an island")
     public void onIslandLeave(final GameIsland gameIsland) {
         gameIsland.stopGame();
     }
 
-    @Command("score")
     @Subcommand("score")
     @CommandAlias("score")
     @Description("Shows a list of your scores")
@@ -231,7 +232,6 @@ public final class SpeedBridgeCommand {
             return "<red>You haven't scored anything yet";
         }
 
-        scoreList.add(MessageUtil.MENU_BAR);
         return String.join("\n", scoreList);
     }
 

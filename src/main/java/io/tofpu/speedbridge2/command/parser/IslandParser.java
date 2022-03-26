@@ -21,11 +21,11 @@ public final class IslandParser extends AbstractLampParser<Island> {
     Island parse(final ValueResolver.ValueResolverContext context) {
         final BridgePlayer player = PlayerService.INSTANCE.get(context.actor().getUniqueId());
 
+        final String input = context.pop();
         if (player == null) {
             throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(INSTANCE.notLoaded));
         }
 
-        final String input = context.pop();
         final IslandService islandService = IslandService.INSTANCE;
 
         int slot;
