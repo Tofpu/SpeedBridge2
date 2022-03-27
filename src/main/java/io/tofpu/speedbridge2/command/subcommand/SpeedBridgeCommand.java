@@ -3,20 +3,20 @@ package io.tofpu.speedbridge2.command.subcommand;
 import com.sk89q.minecraft.util.commands.CommandAlias;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictDummyModel;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictSetup;
-import io.tofpu.speedbridge2.domain.common.Message;
-import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
-import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.extra.blockmenu.BlockMenuManager;
-import io.tofpu.speedbridge2.domain.island.IslandHandler;
-import io.tofpu.speedbridge2.domain.island.IslandService;
-import io.tofpu.speedbridge2.domain.island.object.Island;
-import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
-import io.tofpu.speedbridge2.domain.island.setup.IslandSetup;
-import io.tofpu.speedbridge2.domain.island.setup.IslandSetupManager;
-import io.tofpu.speedbridge2.domain.player.PlayerService;
-import io.tofpu.speedbridge2.domain.player.misc.score.Score;
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
+import io.tofpu.speedbridge2.model.common.Message;
+import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
+import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.model.extra.blockmenu.BlockMenuManager;
+import io.tofpu.speedbridge2.model.island.IslandHandler;
+import io.tofpu.speedbridge2.model.island.IslandService;
+import io.tofpu.speedbridge2.model.island.object.Island;
+import io.tofpu.speedbridge2.model.island.object.extra.GameIsland;
+import io.tofpu.speedbridge2.model.island.setup.IslandSetup;
+import io.tofpu.speedbridge2.model.island.setup.IslandSetupManager;
+import io.tofpu.speedbridge2.model.player.PlayerService;
+import io.tofpu.speedbridge2.model.player.misc.score.Score;
+import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.extra.CommonBridgePlayer;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -32,9 +32,9 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static io.tofpu.speedbridge2.domain.common.Message.INSTANCE;
-import static io.tofpu.speedbridge2.domain.common.util.MessageUtil.Symbols.ARROW_RIGHT;
-import static io.tofpu.speedbridge2.domain.common.util.MessageUtil.Symbols.CROSS;
+import static io.tofpu.speedbridge2.model.common.Message.INSTANCE;
+import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.ARROW_RIGHT;
+import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.CROSS;
 
 @Command("sb")
 public final class SpeedBridgeCommand {

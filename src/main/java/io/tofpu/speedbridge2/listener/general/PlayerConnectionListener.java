@@ -1,12 +1,12 @@
 package io.tofpu.speedbridge2.listener.general;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
-import io.tofpu.speedbridge2.domain.common.Message;
-import io.tofpu.speedbridge2.domain.common.config.category.LobbyCategory;
-import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
-import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.common.util.UpdateChecker;
-import io.tofpu.speedbridge2.domain.player.PlayerService;
+import io.tofpu.speedbridge2.model.common.Message;
+import io.tofpu.speedbridge2.model.common.config.category.LobbyCategory;
+import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
+import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.model.common.util.UpdateChecker;
+import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

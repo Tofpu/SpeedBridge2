@@ -1,6 +1,6 @@
 package io.tofpu.speedbridge2.command.subcommand;
 
-import io.tofpu.speedbridge2.domain.island.IslandService;
+import io.tofpu.speedbridge2.model.island.IslandService;
 import revxrsal.commands.command.CommandActor;
 import revxrsal.commands.command.ExecutableCommand;
 
