@@ -2,9 +2,9 @@ package io.tofpu.speedbridge2.model.support.placeholderapi.expansion.expansions;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.extra.leaderboard.Leaderboard;
-import io.tofpu.speedbridge2.model.extra.leaderboard.wrapper.BoardPlayer;
-import io.tofpu.speedbridge2.model.extra.leaderboard.wrapper.IslandBoardPlayer;
+import io.tofpu.speedbridge2.model.leaderboard.Leaderboard;
+import io.tofpu.speedbridge2.model.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.model.leaderboard.wrapper.IslandBoardPlayer;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.GamePlayer;
 import io.tofpu.speedbridge2.model.support.placeholderapi.expansion.AbstractExpansion;

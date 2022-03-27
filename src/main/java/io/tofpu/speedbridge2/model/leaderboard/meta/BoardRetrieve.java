@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.model.extra.leaderboard.meta;
+package io.tofpu.speedbridge2.model.leaderboard.meta;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.model.extra.leaderboard;
+package io.tofpu.speedbridge2.model.leaderboard;
 
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
@@ -6,10 +6,10 @@ import io.tofpu.speedbridge2.model.common.PluginExecutor;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.extra.leaderboard.loader.IslandLoader;
-import io.tofpu.speedbridge2.model.extra.leaderboard.loader.PersonalBoardLoader;
-import io.tofpu.speedbridge2.model.extra.leaderboard.wrapper.BoardPlayer;
-import io.tofpu.speedbridge2.model.extra.leaderboard.wrapper.IslandBoardPlayer;
+import io.tofpu.speedbridge2.model.leaderboard.loader.IslandLoader;
+import io.tofpu.speedbridge2.model.leaderboard.loader.PersonalBoardLoader;
+import io.tofpu.speedbridge2.model.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.model.leaderboard.wrapper.IslandBoardPlayer;
 import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.model.player.misc.score.Score;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;

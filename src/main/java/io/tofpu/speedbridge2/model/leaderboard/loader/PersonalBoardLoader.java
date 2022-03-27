@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.model.extra.leaderboard.loader;
+package io.tofpu.speedbridge2.model.leaderboard.loader;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import io.tofpu.speedbridge2.model.common.PlayerNameCache;
@@ -6,8 +6,8 @@ import io.tofpu.speedbridge2.model.common.PluginExecutor;
 import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseSet;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.extra.leaderboard.meta.BoardRetrieve;
-import io.tofpu.speedbridge2.model.extra.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.model.leaderboard.meta.BoardRetrieve;
+import io.tofpu.speedbridge2.model.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.model.player.misc.score.Score;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
@@ -88,7 +88,7 @@ public final class PersonalBoardLoader implements CacheLoader<UUID, BoardPlayer>
                 BridgeUtil.debug("PersonalBoardLoader#retrieve(): player: " + player);
                 if (player == null) {
                     return new BoardPlayer(PlayerNameCache.INSTANCE.getOrDefault(key),
-                            0, key, new Score(-1, -1));
+                            0, key, Score.of(-1, -1));
                 }
                 return player;
             } catch (final Exception e) {
@@ -100,6 +100,6 @@ public final class PersonalBoardLoader implements CacheLoader<UUID, BoardPlayer>
     public BoardPlayer toBoardPlayer(final UUID uid, final DatabaseSet databaseSet) {
         return new BoardPlayer(PlayerNameCache.INSTANCE.getOrDefault(uid),
                 databaseSet.getInt("position"), uid,
-                new Score(-1, -1));
+                Score.of(-1, -1));
     }
 }

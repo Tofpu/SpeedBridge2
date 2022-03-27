@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.model.player;
 
+import io.tofpu.speedbridge2.model.island.IslandService;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -62,8 +63,7 @@ public final class PlayerService {
      * If the player is in the
      * database, update the name and refresh the player instance
      *
-     * @param name The name of the player.
-     * @param uniqueId The unique ID of the player.
+     * @param player The player to refresh
      */
     public void internalRefresh(final @NotNull Player player) {
         playerHandler.internalRefresh(player.getName(), player.getUniqueId());
@@ -73,7 +73,7 @@ public final class PlayerService {
      * This function invalidates a player by removing them from the bridge and the island
      * setup manager
      *
-     * @param uniqueId The unique ID of the player to invalidate.
+     * @param player The player to invalidate
      * @return The bridge player that was invalidated.
      */
     public @Nullable BridgePlayer invalidate(final @NotNull Player player) {

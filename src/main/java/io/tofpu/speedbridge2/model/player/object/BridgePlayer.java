@@ -2,7 +2,7 @@ package io.tofpu.speedbridge2.model.player.object;
 
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.database.Databases;
-import io.tofpu.speedbridge2.model.extra.leaderboard.Leaderboard;
+import io.tofpu.speedbridge2.model.leaderboard.Leaderboard;
 import io.tofpu.speedbridge2.model.island.IslandService;
 import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.IslandBoard;

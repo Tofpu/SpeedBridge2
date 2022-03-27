@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.model.extra.blockmenu.holder;
+package io.tofpu.speedbridge2.model.blockmenu.holder;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.inventory.InventoryType;

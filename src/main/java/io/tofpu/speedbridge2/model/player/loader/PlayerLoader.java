@@ -5,7 +5,7 @@ import com.github.benmanes.caffeine.cache.Expiry;
 import io.tofpu.speedbridge2.model.common.PluginExecutor;
 import io.tofpu.speedbridge2.model.common.database.Databases;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.extra.leaderboard.meta.BoardRetrieve;
+import io.tofpu.speedbridge2.model.leaderboard.meta.BoardRetrieve;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.NotNull;

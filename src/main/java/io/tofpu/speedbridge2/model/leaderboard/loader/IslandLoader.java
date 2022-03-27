@@ -1,9 +1,9 @@
-package io.tofpu.speedbridge2.model.extra.leaderboard.loader;
+package io.tofpu.speedbridge2.model.leaderboard.loader;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.extra.leaderboard.meta.BoardRetrieve;
-import io.tofpu.speedbridge2.model.extra.leaderboard.wrapper.IslandBoardPlayer;
+import io.tofpu.speedbridge2.model.leaderboard.meta.BoardRetrieve;
+import io.tofpu.speedbridge2.model.leaderboard.wrapper.IslandBoardPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;

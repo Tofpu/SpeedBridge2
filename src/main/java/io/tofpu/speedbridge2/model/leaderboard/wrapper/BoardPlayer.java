@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.model.extra.leaderboard.wrapper;
+package io.tofpu.speedbridge2.model.leaderboard.wrapper;
 
 import io.tofpu.speedbridge2.model.player.misc.score.Score;
 

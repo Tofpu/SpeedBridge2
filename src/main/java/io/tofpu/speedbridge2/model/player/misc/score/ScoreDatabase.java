@@ -67,8 +67,8 @@ public final class ScoreDatabase extends Database {
                         scores.add(score);
                     }
                 });
-            } catch (Exception exception) {
-                exception.printStackTrace();
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
             }
 
             return scores;

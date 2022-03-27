@@ -3,7 +3,7 @@ package io.tofpu.speedbridge2.model.island.object;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.extra.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.model.leaderboard.wrapper.BoardPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 

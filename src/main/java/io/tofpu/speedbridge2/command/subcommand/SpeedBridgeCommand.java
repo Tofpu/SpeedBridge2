@@ -6,7 +6,7 @@ import io.tofpu.speedbridge2.command.condition.annotation.RestrictSetup;
 import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.extra.blockmenu.BlockMenuManager;
+import io.tofpu.speedbridge2.model.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.model.island.IslandHandler;
 import io.tofpu.speedbridge2.model.island.IslandService;
 import io.tofpu.speedbridge2.model.island.object.Island;

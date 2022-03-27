@@ -48,7 +48,7 @@ public final class GameInteractionListener extends GameListener {
         final long startedAt = player.getTimer();
 
         final double seconds = BridgeUtil.nanoToSeconds(startedAt);
-        final Score score = new Score(island.getSlot(), seconds);
+        final Score score = Score.of(island.getSlot(), seconds);
 
         player.setScoreIfLower(island.getSlot(), score.getScore());
         player.increment(PlayerStatType.TOTAL_WINS);

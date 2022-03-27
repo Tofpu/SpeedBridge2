@@ -17,7 +17,7 @@ public final class Score implements Comparable<Score> {
         return new Score(islandSlot, score);
     }
 
-    public Score(final int scoredOn, final double score) {
+    private Score(final int scoredOn, final double score) {
         this.scoredOn = scoredOn;
         this.score = score;
     }
