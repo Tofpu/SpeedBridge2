@@ -3,10 +3,10 @@ package io.tofpu.speedbridge2.command.subcommand;
 import com.sk89q.minecraft.util.commands.CommandAlias;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictDummyModel;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictSetup;
+import io.tofpu.speedbridge2.model.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.model.island.IslandHandler;
 import io.tofpu.speedbridge2.model.island.IslandService;
 import io.tofpu.speedbridge2.model.island.object.Island;
@@ -38,6 +38,12 @@ import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.CROSS;
 
 @Command("sb")
 public final class SpeedBridgeCommand {
+    private static final String EMPTY_SCORE = "<red>You haven't scored anything yet";
+    private static final String FORMATTED_SCORE =
+            " <gold><bold>" + CROSS.getSymbol() + " " + "<reset><yellow>Island " +
+            "<gold>%s</gold>" + " " + ARROW_RIGHT.getSymbol() +
+            " <gold>%s</gold> seconds";
+
     private final IslandService islandService = IslandService.INSTANCE;
 
     @Default
@@ -64,7 +70,7 @@ public final class SpeedBridgeCommand {
     @Description("Create an island with a defined slot")
     @CommandPermission("speedbridge.island.create")
     public String onIslandCreate(final int slot, final String schematic,
-            @Flag("c") String category) {
+            @revxrsal.commands.annotation.Optional @Flag("c") String category) {
         if (category == null || category.isEmpty()) {
             category = ConfigurationManager.INSTANCE.getGeneralCategory()
                     .getDefaultIslandCategory();
@@ -141,17 +147,19 @@ public final class SpeedBridgeCommand {
     @Usage("select <slot> [-c category|-s schematic]")
     @Description("Select an island to modify their properties")
     @CommandPermission("speedbridge.island.island.select")
-    public String onIslandSelect(final Island island, final @Flag(value = "c")
-            String category, final @Flag(value = "s") String schematic) {
+    public String onIslandSelect(final Island island, final @revxrsal.commands.annotation.Optional
+    @Flag(value = "c") @Default("")
+            String category, final @revxrsal.commands.annotation.Optional
+    @Flag(value = "s") @Default("") String schematic) {
         final int slot = island.getSlot();
 
-        if (category != null && !category.isEmpty()) {
+        if (!category.isEmpty()) {
             island.setCategory(category);
 
             return String.format(INSTANCE.validSelect, slot + "", category, "category");
         }
 
-        if (schematic != null && !schematic.isEmpty()) {
+        if (!schematic.isEmpty()) {
             if (island.selectSchematic(schematic)) {
                 return String.format(INSTANCE.validSelect,
                         slot + "", schematic, "schematic");
@@ -199,6 +207,10 @@ public final class SpeedBridgeCommand {
             return INSTANCE.alreadyInAIsland;
         }
 
+        if (!island.isReady()) {
+            return String.format(INSTANCE.invalidIsland, island.getSlot());
+        }
+
         island.join(bridgePlayer);
         return String.format(INSTANCE.joinedAnIsland, island.getSlot() + "");
     }
@@ -209,8 +221,7 @@ public final class SpeedBridgeCommand {
         gameIsland.stopGame();
     }
 
-    @Subcommand("score")
-    @CommandAlias("score")
+    @Command({"sb score", "score"})
     @Description("Shows a list of your scores")
     public String onScore(final BridgePlayer bridgePlayer) {
         final List<String> scoreList = new ArrayList<>();
@@ -219,19 +230,15 @@ public final class SpeedBridgeCommand {
             if (scoreList.isEmpty()) {
                 scoreList.add(INSTANCE.scoreTitle);
             }
-            // Your scores:
-            // Island X scored X seconds;
-            final String formattedScore =
-                    " <gold><bold>" + CROSS.getSymbol() + " " + "<reset><yellow>Island " +
-                    "<gold>%s</gold>" + " " + ARROW_RIGHT.getSymbol() +
-                    " <gold>%s</gold> seconds";
-            scoreList.add(String.format(formattedScore, score.getScoredOn(), BridgeUtil.formatNumber(score.getScore())));
+
+            scoreList.add(String.format(FORMATTED_SCORE, score.getScoredOn(), BridgeUtil.formatNumber(score.getScore())));
         }
 
         if (scoreList.isEmpty()) {
-            return "<red>You haven't scored anything yet";
+            return EMPTY_SCORE;
         }
 
+        scoreList.add("\n");
         return String.join("\n", scoreList);
     }
 
@@ -305,11 +312,17 @@ public final class SpeedBridgeCommand {
     @Subcommand("setup")
     @Description("Creates an island setup")
     @CommandPermission("speedbridge.setup.admin")
-    @RestrictSetup
     @RestrictDummyModel
     public String onStartSetup(final BridgePlayer bridgePlayer, final int slot) {
         if (!isGeneralSetupComplete(bridgePlayer)) {
             return "";
+        }
+
+        // this cannot be replaced with @RestrictSetup annotation
+        // because it'll restrict the other setup commands
+        // from being used by the player
+        if (bridgePlayer.isInSetup()) {
+            return INSTANCE.inASetup;
         }
 
         final Island island = IslandService.INSTANCE.findIslandBy(slot);
@@ -327,7 +340,7 @@ public final class SpeedBridgeCommand {
     @Subcommand("setup setspawn")
     @Description("Sets the island's spawnpoint")
     @CommandPermission("speedbridge.setup.admin")
-    @RestrictSetup
+    @RestrictSetup(opposite = true)
     public String setupSetSpawn(final BridgePlayer bridgePlayer) {
         final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 

@@ -3,6 +3,8 @@ package io.tofpu.speedbridge2.command;
 import io.tofpu.dynamicclass.DynamicClass;
 import io.tofpu.speedbridge2.command.condition.AbstractCommandConditionWrapper;
 import io.tofpu.speedbridge2.command.condition.LampConditionRegistry;
+import io.tofpu.speedbridge2.command.context.AbstractLampContext;
+import io.tofpu.speedbridge2.command.context.LampContextRegistry;
 import io.tofpu.speedbridge2.command.parser.AbstractLampParser;
 import io.tofpu.speedbridge2.command.parser.LampParseRegistry;
 import io.tofpu.speedbridge2.command.subcommand.CommandCompletion;
@@ -69,6 +71,7 @@ public final class CommandManager {
                         .toRealString(), command.getUsage(), command.getDescription()));
 
         constructTabCompleter();
+        constructContext();
         constructParsers();
         constructCommandConditions();
 
@@ -76,8 +79,27 @@ public final class CommandManager {
     }
 
     private static void constructTabCompleter() {
+        BridgeUtil.debug("Constructing tab completer...");
+
         commandHandler.getAutoCompleter()
                 .registerParameterSuggestions(Island.class, CommandCompletion::islands);
+    }
+
+    private static void constructContext() {
+        final AbstractLampRegistry<?, AbstractLampContext<?>> registry =
+                DynamicClass.getInstance(LampContextRegistry.class);
+        if (registry == null) {
+            return;
+        }
+
+        BridgeUtil.debug("Constructing contexts...");
+
+        for (final AbstractLampContext<?> parser : registry.values()) {
+            parser.register(commandHandler);
+
+            BridgeUtil.debug("Registered context: " + parser.getClass()
+                    .getName());
+        }
     }
 
     private static void constructParsers() {

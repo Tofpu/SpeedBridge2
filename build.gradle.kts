@@ -76,10 +76,7 @@ dependencies {
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
     implementation("net.kyori:adventure-text-minimessage:4.10.1")
 
-//    implementation("com.github.tofpu:DynamicClass:fdc123593b") {
-//        exclude("com.google.guava", "guava")
-//    }
-    implementation("io.tofpu:DynamicClass:1.0-SNAPSHOT") {
+    implementation("com.github.tofpu:DynamicClass:1.1") {
         exclude("com.google.guava", "guava")
     }
 

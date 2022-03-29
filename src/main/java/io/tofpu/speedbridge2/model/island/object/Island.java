@@ -5,6 +5,7 @@ import io.tofpu.multiworldedit.ClipboardWrapper;
 import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.database.Databases;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.model.island.IslandService;
 import io.tofpu.speedbridge2.model.leaderboard.LeaderboardMap;
 import io.tofpu.speedbridge2.model.leaderboard.wrapper.BoardPlayer;
 import io.tofpu.speedbridge2.model.island.object.extra.GameIsland;
@@ -157,7 +158,7 @@ public class Island {
     }
 
     /**
-     * This function checks to see if the island schematic is ready to be copied
+     * This function checks to see if the island schematic is ready to be used.
      *
      * @return A boolean value.
      */
@@ -174,18 +175,14 @@ public class Island {
     }
 
     /**
-     * Returns the slot number of the given item
-     *
-     * @return The slot number of the item.
+     * @return The slot number of the island.
      */
     public int getSlot() {
         return slot;
     }
 
     /**
-     * It returns the category of the question.
-     *
-     * @return The category of the question.
+     * @return The category of the island.
      */
     public String getCategory() {
         return category;
@@ -194,24 +191,24 @@ public class Island {
     /**
      * Load the leaderboard map with the given map
      *
-     * @param boardMap The map of player IDs to BoardPlayer objects.
+     * @param boardMap The map to load into the leaderboard map.
      */
     public void loadBoard(final Map<Integer, BoardPlayer> boardMap) {
         this.leaderboardMap.load(boardMap);
     }
 
     /**
-     * Add a score to the leaderboard for a given player
+     * Add a score to the leaderboard for the given player
      *
-     * @param bridgePlayer The player who's score is being added to the leaderboard.
-     * @param score The score to add to the leaderboard.
+     * @param bridgePlayer The bridge player to add the score to.
+     * @param score The score to add.
      */
     public void addLeaderboardScore(final BridgePlayer bridgePlayer, final Score score) {
         leaderboardMap.append(bridgePlayer, score);
     }
 
     /**
-     * Update the leaderboard map
+     * Forces the leaderboard to be updated
      */
     public void updateLeaderboard() {
         this.leaderboardMap.updateLeaderboard();
@@ -236,7 +233,7 @@ public class Island {
     /**
      * Reset the player's score to 0
      *
-     * @param uuid The UUID of the player to reset.
+     * @param uuid The uuid of the player to reset.
      */
     public void resetPlayer(final UUID uuid) {
         this.leaderboardMap.reset(uuid);
@@ -245,7 +242,7 @@ public class Island {
     /**
      * Returns the clipboard of the island schematic
      *
-     * @return A Clipboard object.
+     * @return The Clipboard object.
      */
     public Clipboard getSchematicClipboard() {
         return islandSchematic.getSchematicClipboard();
@@ -254,7 +251,7 @@ public class Island {
     /**
      * Returns the clipboard of the island schematic
      *
-     * @return A Clipboard object.
+     * @return The Clipboard object.
      */
     public ClipboardWrapper getSchematicClipboardWrapper() {
         return islandSchematic.getSchematicClipboardWrapper();
@@ -269,7 +266,10 @@ public class Island {
         return islandSchematic.getSchematicName();
     }
 
+    /**
+     * Delete the island from the database and memory
+     */
     public void delete() {
-        Databases.ISLAND_DATABASE.delete(this.getSlot());
+        IslandService.INSTANCE.deleteIsland(getSlot());
     }
 }

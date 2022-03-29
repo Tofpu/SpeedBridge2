@@ -31,7 +31,7 @@ public final class RestrictSetupCondition extends AbstractCommandConditionWrappe
         }
 
         final RestrictSetup annotation = command.getAnnotation(RestrictSetup.class);
-        if (!annotation.opposite()) {
+        if (annotation.opposite()) {
             if (!player.isInSetup()) {
                 throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(Message.INSTANCE.notInASetup));
             }
