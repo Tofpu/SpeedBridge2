@@ -37,10 +37,10 @@ public final class Message {
             "information.";
     public final String islandAlreadyExists = error + "Island %s already exists!";
     public final String islandHasBeenCreatedSchematic =
-            SUCCESS + "Island %s has been created with '%s' chosen as a " + "schematic!";
+            SUCCESS + "Island %s has been created with '%s' chosen as the " +
+            "schematic!";
     public final String islandSetupNotification =
-            SUCCESS + "You can complete your %slot% island setup by running " +
-            runCommand("/sb setup %slot%") + ", and setting up the spawn point.";
+            SUCCESS + "You can complete your %slot% island setup by setting up the spawn point.";
     public final String validSelect =
             SUCCESS + "Island %s has selected" + " \"%s\" " + "as a " + "%s!";
     public final String unknownSchematic = error + "Schematic \"%s\" cannot be found";

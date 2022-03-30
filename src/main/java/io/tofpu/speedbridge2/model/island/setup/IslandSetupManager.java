@@ -1,6 +1,9 @@
 package io.tofpu.speedbridge2.model.island.setup;
 
+import io.tofpu.speedbridge2.model.common.Message;
+import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.island.object.Island;
+import io.tofpu.speedbridge2.model.island.object.extra.IslandCreation;
 import io.tofpu.speedbridge2.model.island.plot.IslandPlot;
 import io.tofpu.speedbridge2.model.island.setup.umbrella.IslandSetupUmbrella;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
@@ -31,7 +34,7 @@ public final class IslandSetupManager {
         this.world = Bukkit.getWorld("speedbridge2");
     }
 
-    public boolean startSetup(final BridgePlayer player, final Island island) {
+    public boolean initiate(final BridgePlayer player, final Island island) {
         if (!islandSetupMap.containsKey(player.getPlayerUid())) {
             create(player, island).start();
             return true;
@@ -49,8 +52,14 @@ public final class IslandSetupManager {
 
     private IslandSetup create(final BridgePlayer player, final Island target) {
         final double[] positions = {100 * (islandSetupMap.size() + 100), 100, 0};
-        final IslandSetup islandSetup = new IslandSetup(umbrella, player, target,
-                new IslandPlot(target, world, positions));
+        final IslandSetup islandSetup;
+
+        final IslandPlot islandPlot = new IslandPlot(target, world, positions);
+        if (target instanceof IslandCreation) {
+            islandSetup = new IslandCreationSetup(umbrella, player, target, islandPlot);
+        } else {
+            islandSetup = new IslandSetup(umbrella, player, target, islandPlot);
+        }
 
         islandSetupMap.put(player.getPlayerUid(), islandSetup);
         return islandSetup;
@@ -72,7 +81,7 @@ public final class IslandSetupManager {
       * @param islandSetup The island setup that is being invalidated.
       */
      public void invalidate(final IslandSetup islandSetup) {
-        islandSetupMap.remove(islandSetup.getEditorUid());
+        islandSetupMap.remove(islandSetup.getPlayerUid());
     }
 
     /**

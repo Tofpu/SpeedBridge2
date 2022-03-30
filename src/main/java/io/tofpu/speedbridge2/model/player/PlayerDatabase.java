@@ -48,7 +48,7 @@ public final class PlayerDatabase extends Database {
 
     public @NotNull CompletableFuture<Void> update(final @NotNull BridgePlayer player) {
         final List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
-        BridgeUtil.debug("player uid: " + player.getPlayerUid());
+        BridgeUtil.debug("PlayerDatabase#update(): Player: " + player.getPlayerUid());
 
         completableFutures.add(updateName(player.getPlayer()
                 .getName(), player));
@@ -151,7 +151,7 @@ public final class PlayerDatabase extends Database {
                 e.printStackTrace();
             }
 
-            BridgeUtil.debug("successfully loaded " + uniqueId + " player's data!");
+            BridgeUtil.debug("PlayerDatabase#getStoredPlayer: Successfully retrieved player " + uniqueId);
 
             return bridgePlayer;
         });

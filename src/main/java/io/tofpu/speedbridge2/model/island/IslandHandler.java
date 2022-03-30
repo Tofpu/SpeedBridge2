@@ -1,8 +1,10 @@
 package io.tofpu.speedbridge2.model.island;
 
 import io.tofpu.speedbridge2.model.common.database.Databases;
+import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.IslandBoard;
+import io.tofpu.speedbridge2.model.island.object.extra.IslandCreation;
 import io.tofpu.speedbridge2.model.island.schematic.SchematicManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class IslandHandler {
-    private final @NotNull Map<Integer, Island> islands = new HashMap<>();
+    private final @NotNull Map<Integer, Island> islandMap = new HashMap<>();
 
     /**
      * Loads the islands from the map of islands
@@ -24,44 +26,37 @@ public final class IslandHandler {
         for (final Island island : loadedIslands.values()) {
             IslandBoard.add(island);
         }
-        this.islands.putAll(loadedIslands);
-    }
-
-    public @NotNull IslandCreationResult createIsland(final int slot,
-            final @NotNull String category) {
-        return createIsland(slot, category, "");
+        this.islandMap.putAll(loadedIslands);
     }
 
     /**
-     * If the island doesn't exist, create it
+     * Creates an island
      *
      * @param slot The island's slot.
      * @param category The category of the island.
-     * @param schematic The name of the schematic to load. If it's empty, the island will be
-     * empty.
-     * @return The IslandCreationResult enum.
+     * @param schematic The name of the schematic to load. It cannot be null nor empty.
+     * @return The {@link IslandHandler.IslandCreationResult} enum.
      */
-    public @NotNull IslandCreationResult createIsland(final int slot,
-            final @NotNull String category,
-            final String schematic) {
-        final Island island = new Island(slot, category);
-
-        // if the schematic is not empty, and it doesn't exist, return UNKNOWN_SCHEMATIC!
-        if (!schematic.isEmpty() && !island.selectSchematic(schematic)) {
-            return IslandCreationResult.UNKNOWN_SCHEMATIC;
+    public @NotNull IslandHandler.IslandCreationResult createIsland(final int slot,
+            final @NotNull String category, final @NotNull String schematic) {
+        // if the island does exist, return ALREADY_EXISTS!
+        if (islandMap.containsKey(slot)) {
+            return IslandCreationResultType.ISLAND_ALREADY_EXISTS.empty();
         }
-        final Island previousIsland = this.islands.putIfAbsent(slot, island);
 
-        // if the island didn't exist beforehand, insert the object
-        if (previousIsland == null) {
-            Databases.ISLAND_DATABASE.insert(island);
-            IslandBoard.add(island);
+        final Island island = new IslandCreation(slot, category);
 
-            return IslandCreationResult.SUCCESS;
-        } else {
-            // otherwise, return ISLAND_ALREADY_EXISTS
-            return IslandCreationResult.ISLAND_ALREADY_EXISTS;
+        BridgeUtil.debug("IslandHandler#createIsland(): before: " + island);
+
+        // if the schematic is empty, or it doesn't exist, return UNKNOWN_SCHEMATIC!
+        if (schematic.isEmpty() || !island.selectSchematic(schematic)) {
+            return IslandCreationResultType.UNKNOWN_SCHEMATIC.empty();
         }
+
+        BridgeUtil.debug("IslandHandler#createIsland(): after: " + island);
+
+        // otherwise, return ISLAND_SUCCESS
+        return IslandCreationResultType.SUCCESS.create(island);
     }
 
     /**
@@ -71,7 +66,7 @@ public final class IslandHandler {
      * @return The Island object that is stored in the slot that is passed in.
      */
     public @Nullable Island findIslandBy(final int slot) {
-        return this.islands.get(slot);
+        return this.islandMap.get(slot);
     }
 
     /**
@@ -81,8 +76,9 @@ public final class IslandHandler {
      * @return The Island object that matches the category.
      */
     public @Nullable Island findIslandBy(final String category) {
-        for (final Island island : this.islands.values()) {
-            if (island.getCategory().equals(category)) {
+        for (final Island island : this.islandMap.values()) {
+            if (island.getCategory()
+                    .equals(category)) {
                 return island;
             }
         }
@@ -96,7 +92,7 @@ public final class IslandHandler {
      * @return The Island that was deleted.
      */
     public @Nullable Island deleteIsland(final int slot) {
-        final Island island = this.islands.remove(slot);
+        final Island island = this.islandMap.remove(slot);
 
         // if the island is not null, wipe said island & return deleted island!
         if (island != null) {
@@ -115,8 +111,8 @@ public final class IslandHandler {
      *
      * @return The unmodifiable collection of all the islands in the world.
      */
-    public @NotNull Collection<Island> getIslands() {
-        return Collections.unmodifiableCollection(this.islands.values());
+    public @NotNull Collection<Island> getIslandMap() {
+        return Collections.unmodifiableCollection(this.islandMap.values());
     }
 
     /**
@@ -125,11 +121,92 @@ public final class IslandHandler {
      * @return The unmodifiable collection of all the islands integers in the world.
      */
     public @NotNull Collection<Integer> getIntegerIslands() {
-        return Collections.unmodifiableCollection(this.islands.keySet());
+        return Collections.unmodifiableCollection(this.islandMap.keySet());
     }
 
-    // This is a Java enum. It's a way to create a set of constants.
-    public enum IslandCreationResult {
-        UNKNOWN_SCHEMATIC, ISLAND_ALREADY_EXISTS, SUCCESS
+    /**
+     * @param island The island to register.
+     *
+     * @return The registration result.
+     */
+    public IslandRegistrationResultType registerIsland(Island island) {
+        if (islandMap.containsKey(island.getSlot())) {
+            return IslandRegistrationResultType.ISLAND_ALREADY_EXISTS;
+        }
+
+        if (island.getSchematicClipboard() == null) {
+            return IslandRegistrationResultType.UNKNOWN_SCHEMATIC;
+        }
+
+        // print the island with BridgeUtil.debug
+        BridgeUtil.debug("IslandHandler#registerIsland(): island: " + island);
+
+        if (island instanceof IslandCreation) {
+            final IslandCreation islandCreation = (IslandCreation) island;
+            island = islandCreation.toRegularIsland();
+        }
+
+        islandMap.put(island.getSlot(), island);
+        Databases.ISLAND_DATABASE.insert(island);
+        IslandBoard.add(island);
+
+        return IslandRegistrationResultType.SUCCESS;
+    }
+
+    public enum IslandCreationResultType {
+        /**
+         * The island had an unknown schematic.
+         */
+        UNKNOWN_SCHEMATIC,
+        /**
+         * The island was already registered.
+         */
+        ISLAND_ALREADY_EXISTS,
+        /**
+         * The island was successfully registered.
+         */
+        SUCCESS;
+
+        public IslandCreationResult empty() {
+            return create(null);
+        }
+
+        public IslandCreationResult create(final Island
+                island) {
+            return new IslandCreationResult(this, island);
+        }
+    }
+
+    public enum IslandRegistrationResultType {
+        /**
+         * The island had an unknown schematic.
+         */
+        UNKNOWN_SCHEMATIC,
+        /**
+         * The island was already registered.
+         */
+        ISLAND_ALREADY_EXISTS,
+        /**
+         * The island was successfully registered.
+         */
+        SUCCESS;
+    }
+
+    public static class IslandCreationResult {
+        private final IslandCreationResultType result;
+        private final Island island;
+
+        public IslandCreationResult(final IslandCreationResultType result, final Island island) {
+            this.result = result;
+            this.island = island;
+        }
+
+        public IslandCreationResultType getResult() {
+            return result;
+        }
+
+        public Island getIsland() {
+            return island;
+        }
     }
 }

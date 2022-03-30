@@ -29,17 +29,16 @@ public final class IslandService {
     }
 
     /**
-     * If the island doesn't exist, create it
+     * Creates an island
      *
      * @param slot The island's slot.
      * @param category The category of the island.
-     * @param schematic The name of the schematic to load. If it's empty, the island will be
-     * empty.
-     * @return The IslandCreationResult enum.
+     * @param schematic The name of the schematic to load. It cannot be null nor empty.
+     * @return The {@link IslandHandler.IslandCreationResult} enum.
      */
     public @NotNull IslandHandler.IslandCreationResult createIsland(final int slot,
             final @NotNull String category,
-            final String schematic) {
+            final @NotNull String schematic) {
         return this.islandHandler.createIsland(slot, category, schematic);
     }
 
@@ -79,7 +78,7 @@ public final class IslandService {
      * @return The unmodifiable collection of all the islands in the world.
      */
     public @NotNull Collection<Island> getAllIslands() {
-        return this.islandHandler.getIslands();
+        return this.islandHandler.getIslandMap();
     }
 
     /**
@@ -89,5 +88,9 @@ public final class IslandService {
      */
     public @NotNull Collection<Integer> getIntegerIslands() {
         return this.islandHandler.getIntegerIslands();
+    }
+
+    public void registerIsland(final Island island) {
+        this.islandHandler.registerIsland(island);
     }
 }

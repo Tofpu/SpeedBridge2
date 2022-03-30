@@ -22,7 +22,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import revxrsal.commands.annotation.*;
+import revxrsal.commands.annotation.Command;
+import revxrsal.commands.annotation.Default;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Flag;
+import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.annotation.Usage;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.ArrayList;
@@ -69,7 +74,9 @@ public final class SpeedBridgeCommand {
     @Usage("create <slot> <schematic> [-c category]")
     @Description("Create an island with a defined slot")
     @CommandPermission("speedbridge.island.create")
-    public String onIslandCreate(final int slot, final String schematic,
+    @RestrictSetup
+    @RestrictDummyModel
+    public String onIslandCreate(final BridgePlayer player, final int slot, final String schematic,
             @revxrsal.commands.annotation.Optional @Flag("c") String category) {
         if (category == null || category.isEmpty()) {
             category = ConfigurationManager.INSTANCE.getGeneralCategory()
@@ -77,17 +84,26 @@ public final class SpeedBridgeCommand {
         }
 
         final IslandHandler.IslandCreationResult result = islandService.createIsland(slot, category, schematic);
-        if (result == IslandHandler.IslandCreationResult.ISLAND_ALREADY_EXISTS) {
+        final IslandHandler.IslandCreationResultType resultType = result.getResult();
+
+        BridgeUtil.debug("SpeedBridgeCommand#onIslandCreate(): resultType: " + resultType.name());
+
+        if (resultType == IslandHandler.IslandCreationResultType.ISLAND_ALREADY_EXISTS) {
             return String.format(INSTANCE.islandAlreadyExists, slot + "");
         }
 
-        if (result == IslandHandler.IslandCreationResult.UNKNOWN_SCHEMATIC) {
+        if (resultType == IslandHandler.IslandCreationResultType.UNKNOWN_SCHEMATIC) {
             return String.format(INSTANCE.unknownSchematic, schematic);
         }
 
-        return String.format(INSTANCE.islandHasBeenCreatedSchematic,
-                slot + "", schematic) + "\n" +
-               INSTANCE.islandSetupNotification.replace("%slot%", slot + "");
+        // initiate the creation setup process
+        IslandSetupManager.INSTANCE.initiate(player, result.getIsland());
+
+        // notify the player about the setup
+        BridgeUtil.sendMessage(player, Message.INSTANCE.startingSetupProcess);
+
+        return String.format(INSTANCE.islandSetupNotification.replace("%slot%",
+                slot + ""));
     }
 
     @Subcommand("delete")
@@ -194,7 +210,7 @@ public final class SpeedBridgeCommand {
         return false;
     }
 
-    @Subcommand("join")
+    @Command({"sb join", "join"})
     @Usage("join <island>")
     @Description("Join an island")
     @RestrictDummyModel
@@ -215,7 +231,7 @@ public final class SpeedBridgeCommand {
         return String.format(INSTANCE.joinedAnIsland, island.getSlot() + "");
     }
 
-    @Subcommand("leave")
+    @Command({"sb leave", "leave"})
     @Description("Leave an island")
     public void onIslandLeave(final GameIsland gameIsland) {
         gameIsland.stopGame();
@@ -279,8 +295,7 @@ public final class SpeedBridgeCommand {
         HelpCommandGenerator.showHelpMessage(player);
     }
 
-    @Command("randomjoin")
-    @Subcommand("randomjoin")
+    @Command({"sb randomjoin", "randomjoin"})
     @Description("Chooses a random island for you")
     @RestrictSetup
     @RestrictDummyModel
@@ -310,22 +325,16 @@ public final class SpeedBridgeCommand {
     }
 
     @Subcommand("setup")
-    @Description("Creates an island setup")
+    @Description("Create an island setup")
     @CommandPermission("speedbridge.setup.admin")
     @RestrictDummyModel
-    public String onStartSetup(final BridgePlayer bridgePlayer, final int slot) {
+    @RestrictSetup
+    @Default
+    public String onStartSetup(final BridgePlayer bridgePlayer, final Island island) {
         if (!isGeneralSetupComplete(bridgePlayer)) {
             return "";
         }
-
-        // this cannot be replaced with @RestrictSetup annotation
-        // because it'll restrict the other setup commands
-        // from being used by the player
-        if (bridgePlayer.isInSetup()) {
-            return INSTANCE.inASetup;
-        }
-
-        final Island island = IslandService.INSTANCE.findIslandBy(slot);
+        final int slot = island.getSlot();
 
         if (bridgePlayer.isPlaying()) {
             return INSTANCE.inAGame;
@@ -333,7 +342,7 @@ public final class SpeedBridgeCommand {
             return String.format(INSTANCE.invalidIsland, slot);
         }
 
-        IslandSetupManager.INSTANCE.startSetup(bridgePlayer, island);
+        IslandSetupManager.INSTANCE.initiate(bridgePlayer, island);
         return String.format(INSTANCE.startingSetupProcess, slot);
     }
 

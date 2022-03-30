@@ -61,10 +61,9 @@ public final class SchematicManager {
         }
 
         final Island island = gameIsland.getIsland();
-        final IslandPlot availablePlot = getPlot(island, gameIsland);
 
         // return the available plot
-        return availablePlot;
+        return getPlot(island, gameIsland);
     }
 
     private static IslandPlot getPlot(final Island island, final GameIsland gameIsland) {
@@ -94,7 +93,7 @@ public final class SchematicManager {
                 continue;
             }
 
-            BridgeUtil.debug("found an available plot!");
+            BridgeUtil.debug("SchematicManager#getAvailablePlot: Found a free plot for " + slot + " slot!");
             return islandPlot;
         }
         return null;
@@ -102,7 +101,7 @@ public final class SchematicManager {
 
     private static IslandPlot createIslandPlot(final Collection<IslandPlot> islandPlots
             , final Island target, final GameIsland gameIsland) {
-        BridgeUtil.debug("no free plot available, creating our own plot!");
+        BridgeUtil.debug("SchematicManager#createIslandPlot: Creating a new island plot for " + target.getSlot() + " slot!");
 
         final double[] positions = {100 * (COUNTER.getAndIncrement() + 100), 100, 100};
 
@@ -179,10 +178,6 @@ public final class SchematicManager {
 
             player.teleport(lobbyLocation);
         }
-    }
-
-    public static World getWorld() {
-        return world;
     }
 
     public static final class EmptyChunkGenerator extends ChunkGenerator {

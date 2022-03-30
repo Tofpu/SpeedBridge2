@@ -16,7 +16,7 @@ import org.bukkit.Material;
 
 import java.util.UUID;
 
-public final class IslandSetup {
+public class IslandSetup {
     private final Umbrella umbrella;
     private final BridgePlayer player;
     private final Island island;
@@ -188,12 +188,19 @@ public final class IslandSetup {
     }
 
     /**
-     * Returns the UUID of the player that is currently editing this object
+     * Returns the UUID of the player that is currently editing the island
      *
-     * @return The UUID of the player that is currently editing the object.
+     * @return The UUID of the player that is currently editing the island.
     */
-    public UUID getEditorUid() {
+    public UUID getPlayerUid() {
         return player.getPlayerUid();
+    }
+
+    /**
+     * @return The player that is currently editing the island.
+     */
+    public BridgePlayer getPlayer() {
+        return player;
     }
 
     /**

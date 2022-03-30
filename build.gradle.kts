@@ -69,8 +69,8 @@ dependencies {
 
     compileOnly("com.sk89q:worldedit:6.0.0-SNAPSHOT")
 
-    implementation("com.github.Revxrsal.Lamp:common:3.0.0")
-    implementation("com.github.Revxrsal.Lamp:bukkit:3.0.1")
+    implementation("com.github.Revxrsal.Lamp:common:b3af8b94a0")
+    implementation("com.github.Revxrsal.Lamp:bukkit:b3af8b94a0")
 
     implementation("net.kyori:adventure-api:4.10.1")
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")

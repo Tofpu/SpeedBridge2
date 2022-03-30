@@ -37,7 +37,7 @@ public class Island {
         this.category = category;
 
         this.leaderboardMap = new LeaderboardMap();
-        this.islandSchematic = new IslandSchematic();
+        this.islandSchematic = new IslandSchematic(this);
         this.absoluteLocation = null;
     }
 
@@ -170,7 +170,7 @@ public class Island {
     /**
      * This function updates the database with the current values of the object
      */
-    private void update() {
+    protected void update() {
         Databases.ISLAND_DATABASE.update(this);
     }
 
