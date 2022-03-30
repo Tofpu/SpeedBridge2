@@ -23,7 +23,7 @@ public final class StatsDatabase extends Database {
     }
 
     public @NotNull CompletableFuture<Void> insert(final @NotNull PlayerStat playerStat) {
-        return DatabaseUtil.databaseQueryExecute(
+        return DatabaseUtil.databaseExecute(
                 "INSERT OR IGNORE INTO stats (uid, key, value) VALUES " +
                 "(?, ?, ?)", databaseQuery -> {
                     databaseQuery.setString(playerStat.getOwner()
@@ -34,8 +34,8 @@ public final class StatsDatabase extends Database {
     }
 
     public @NotNull CompletableFuture<Void> update(final @NotNull PlayerStat playerStat) {
-        return DatabaseUtil.databaseQueryExecute("UPDATE stats SET value = ? WHERE " +
-                                                 "uid = ? AND key = ?", databaseQuery -> {
+        return DatabaseUtil.databaseExecute("UPDATE stats SET value = ? WHERE " +
+                                            "uid = ? AND key = ?", databaseQuery -> {
             databaseQuery.setString(playerStat.getValue());
 
             databaseQuery.setString(playerStat.getOwner()
@@ -49,7 +49,7 @@ public final class StatsDatabase extends Database {
             final List<PlayerStat> playerStats = new ArrayList<>();
 
             try {
-                DatabaseUtil.databaseQueryExecute("SELECT * FROM stats WHERE uid = ?", databaseQuery -> {
+                DatabaseUtil.databaseExecute("SELECT * FROM stats WHERE uid = ?", databaseQuery -> {
                     databaseQuery.setString(owner.toString());
 
                     databaseQuery.executeQuery(resultSet -> {
@@ -68,7 +68,7 @@ public final class StatsDatabase extends Database {
                         })
                         .get();
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                throw new IllegalStateException(e);
             }
 
             return playerStats;

@@ -22,7 +22,7 @@ public final class ScoreDatabase extends Database {
 
     public @NotNull CompletableFuture<Void> insert(final @NotNull UUID uuid,
             final @NotNull Score score) {
-        return DatabaseUtil.databaseQueryExecute(
+        return DatabaseUtil.databaseExecute(
                 "INSERT OR IGNORE INTO scores (uid, island_slot, score) VALUES " +
                 "(?, ?, ?)", databaseQuery -> {
                     BridgeUtil.debug("player uid: " + uuid);
@@ -39,8 +39,8 @@ public final class ScoreDatabase extends Database {
 
     public @NotNull CompletableFuture<Void> update(final @NotNull UUID uuid,
             final @NotNull Score score) {
-        return DatabaseUtil.databaseQueryExecute("UPDATE scores SET island_slot = ?, " +
-                                                 "score = ? WHERE uid = ?", databaseQuery -> {
+        return DatabaseUtil.databaseExecute("UPDATE scores SET island_slot = ?, " +
+                                            "score = ? WHERE uid = ?", databaseQuery -> {
             BridgeUtil.debug("player uid: " + uuid);
 
             BridgeUtil.debug("player score island: " + score.getScoredOn());

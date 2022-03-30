@@ -4,6 +4,7 @@ import io.tofpu.speedbridge2.model.common.database.wrapper.Database;
 import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseTable;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.common.util.DatabaseUtil;
+import io.tofpu.speedbridge2.model.island.exception.IslandLoadFailureException;
 import io.tofpu.speedbridge2.model.island.object.Island;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,8 +23,8 @@ public final class IslandDatabase extends Database {
     }
 
     public @NotNull CompletableFuture<Void> insert(final Island island) {
-        return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO islands VALUES " +
-                                                 "(?, ?, ?, ?)", databaseQuery -> {
+        return DatabaseUtil.databaseExecute("INSERT OR IGNORE INTO islands VALUES " +
+                                            "(?, ?, ?, ?)", databaseQuery -> {
             databaseQuery.setInt(island.getSlot());
             databaseQuery.setString(island.getCategory());
             databaseQuery.setString(island.getSchematicName());
@@ -32,7 +33,7 @@ public final class IslandDatabase extends Database {
     }
 
     public @NotNull CompletableFuture<Void> update(final Island island) {
-        return DatabaseUtil.databaseQueryExecute(
+        return DatabaseUtil.databaseExecute(
                 "UPDATE islands SET category = ?, schematic_name = " +
                 "?, spawn_point = ? WHERE slot = ?", databaseQuery -> {
                     BridgeUtil.debug("island category: " + island.getCategory());
@@ -53,7 +54,7 @@ public final class IslandDatabase extends Database {
     }
 
     public @NotNull CompletableFuture<Void> delete(final int slot) {
-        return DatabaseUtil.databaseQueryExecute("DELETE FROM islands WHERE slot = ?", databaseQuery -> {
+        return DatabaseUtil.databaseExecute("DELETE FROM islands WHERE slot = ?", databaseQuery -> {
             databaseQuery.setInt(slot);
         });
     }
@@ -63,7 +64,7 @@ public final class IslandDatabase extends Database {
             final List<Island> islands = new ArrayList<>();
 
             try {
-                DatabaseUtil.databaseQuery("SELECT * FROM islands", resultSet -> {
+                DatabaseUtil.databaseQueryExecute("SELECT * FROM islands", resultSet -> {
                     while (resultSet.next()) {
                         final Island island = new Island(resultSet.getInt("slot"), resultSet.getString("category"));
                         island.selectSchematic(resultSet.getString("schematic_name"));
@@ -85,7 +86,7 @@ public final class IslandDatabase extends Database {
                         })
                         .get();
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                throw new IslandLoadFailureException(e);
             }
 
             return islands;

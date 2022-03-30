@@ -18,13 +18,13 @@ public class DatabaseUtil {
      * @param databaseQueryConsumer A Consumer that takes a DatabaseQuery.
      * @return Nothing.
      */
-    public static CompletableFuture<Void> databaseQueryExecute(final String sql, final Consumer<DatabaseQuery> databaseQueryConsumer) {
+    public static CompletableFuture<Void> databaseExecute(final String sql, final Consumer<DatabaseQuery> databaseQueryConsumer) {
         return runAsync(() -> {
             try (final DatabaseQuery query = DatabaseQuery.query(sql)) {
                 databaseQueryConsumer.accept(query);
                 query.execute();
-            } catch (Exception exception) {
-                exception.printStackTrace();
+            } catch (final Exception e) {
+                throw new IllegalStateException(e);
             }
         });
     }
@@ -46,13 +46,13 @@ public class DatabaseUtil {
      * @param databaseQueryConsumer A consumer that will be called for each row of the query.
      * @return Nothing.
      */
-    public static CompletableFuture<Void> databaseQuery(final String sql,
+    public static CompletableFuture<Void> databaseQueryExecute(final String sql,
             final Consumer<DatabaseSet> databaseQueryConsumer) {
         return runAsync(() -> {
             try (final DatabaseQuery query = DatabaseQuery.query(sql)) {
                 query.executeQuery(databaseQueryConsumer);
-            } catch (Exception exception) {
-                exception.printStackTrace();
+            } catch (Exception e) {
+                throw new IllegalStateException(e);
             }
         });
     }

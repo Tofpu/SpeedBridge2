@@ -8,6 +8,9 @@ import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseTable;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.common.util.DatabaseUtil;
+import io.tofpu.speedbridge2.model.player.exception.PlayerDeletionFailureException;
+import io.tofpu.speedbridge2.model.player.exception.PlayerLoadFailureException;
+import io.tofpu.speedbridge2.model.player.exception.PlayerUpdateNameFailureException;
 import io.tofpu.speedbridge2.model.player.misc.score.Score;
 import io.tofpu.speedbridge2.model.player.misc.stat.PlayerStat;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
@@ -32,7 +35,7 @@ public final class PlayerDatabase extends Database {
     public @NotNull CompletableFuture<Void> insert(final @NotNull BridgePlayer player) {
         final CompletableFuture<?>[] completableFutures = new CompletableFuture[2];
 
-        completableFutures[0] = DatabaseUtil.databaseQueryExecute(
+        completableFutures[0] = DatabaseUtil.databaseExecute(
                 "INSERT OR IGNORE " + "INTO players VALUES (?, " +
                 "?)", databaseQuery -> {
                     databaseQuery.setString(player.getPlayerUid()
@@ -48,27 +51,33 @@ public final class PlayerDatabase extends Database {
 
     public @NotNull CompletableFuture<Void> update(final @NotNull BridgePlayer player) {
         final List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
-        BridgeUtil.debug("PlayerDatabase#update(): Player: " + player.getPlayerUid());
+        final UUID playerUid = player.getPlayerUid();
+
+        BridgeUtil.debug("PlayerDatabase#update(): Player: " + playerUid);
 
         completableFutures.add(updateName(player.getPlayer()
                 .getName(), player));
         completableFutures.add(Databases.BLOCK_DATABASE.update(player));
 
         for (final Score score : player.getScores()) {
-            completableFutures.add(Databases.SCORE_DATABASE.update(player.getPlayerUid(), score));
+            completableFutures.add(Databases.SCORE_DATABASE.update(playerUid, score));
         }
-        return CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]));
+
+        return CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]))
+                .exceptionally(throwable -> {
+                    throw new PlayerUpdateNameFailureException(playerUid, throwable);
+                });
     }
 
     public CompletableFuture<Void> updateName(final String newName, final BridgePlayer bridgePlayer) {
         return runAsync(() -> {
+            final UUID playerUid = bridgePlayer.getPlayerUid();
             try (final DatabaseQuery databaseQuery = DatabaseQuery.query(
                     "UPDATE players SET name = ? WHERE uid" + " = ?")) {
                 databaseQuery.setString(newName);
-                databaseQuery.setString(bridgePlayer.getPlayerUid()
-                        .toString());
-            } catch (Exception e) {
-                e.printStackTrace();
+                databaseQuery.setString(playerUid.toString());
+            } catch (final Exception e) {
+                throw new PlayerUpdateNameFailureException(playerUid, e);
             }
         });
     }
@@ -76,7 +85,7 @@ public final class PlayerDatabase extends Database {
     public @NotNull CompletableFuture<Void> delete(final @NotNull UUID uuid) {
         final List<CompletableFuture> completableFutures = new ArrayList<>();
 
-        completableFutures.add(DatabaseUtil.databaseQueryExecute(
+        completableFutures.add(DatabaseUtil.databaseExecute(
                 "DELETE FROM players " + "WHERE uid = ?", databaseQuery -> {
                     databaseQuery.setString(uuid.toString());
                 }));
@@ -85,7 +94,10 @@ public final class PlayerDatabase extends Database {
         completableFutures.add(Databases.BLOCK_DATABASE.delete(uuid));
         completableFutures.add(Databases.STATS_DATABASE.delete(uuid));
 
-        return CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]));
+        return CompletableFuture.allOf(completableFutures.toArray(new CompletableFuture[0]))
+                .exceptionally(throwable -> {
+                    throw new PlayerDeletionFailureException(uuid, throwable);
+                });
     }
 
     public @NotNull CompletableFuture<BridgePlayer> getStoredPlayer(final @NotNull UUID uniqueId) {
@@ -116,8 +128,8 @@ public final class PlayerDatabase extends Database {
                 if (pause.get()) {
                     return bridgePlayer;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (final Exception e) {
+                throw new PlayerLoadFailureException(uniqueId, e);
             }
 
             try {
@@ -147,8 +159,8 @@ public final class PlayerDatabase extends Database {
                 }
 
                 bridgePlayer.setIntervalMaterial(material);
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+            } catch (final InterruptedException | ExecutionException e) {
+                throw new PlayerLoadFailureException(uniqueId, e);
             }
 
             BridgeUtil.debug("PlayerDatabase#getStoredPlayer: Successfully retrieved player " + uniqueId);

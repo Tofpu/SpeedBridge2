@@ -1,6 +1,5 @@
 package io.tofpu.speedbridge2.model.player.misc.block;
 
-import io.tofpu.speedbridge2.model.common.PluginExecutor;
 import io.tofpu.speedbridge2.model.common.database.wrapper.Database;
 import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseTable;
@@ -19,7 +18,7 @@ public final class BlockDatabase extends Database {
     }
 
     public CompletableFuture<Void> insert(final @NotNull BridgePlayer player) {
-        return DatabaseUtil.databaseQueryExecute("INSERT OR IGNORE INTO blocks VALUES (?, ?)", databaseQuery -> {
+        return DatabaseUtil.databaseExecute("INSERT OR IGNORE INTO blocks VALUES (?, ?)", databaseQuery -> {
             databaseQuery.setString(player.getPlayerUid()
                     .toString());
             databaseQuery.setString(player.getChoseMaterial()
@@ -28,8 +27,8 @@ public final class BlockDatabase extends Database {
     }
 
     public CompletableFuture<Void> update(final @NotNull BridgePlayer player) {
-        return DatabaseUtil.databaseQueryExecute("UPDATE blocks SET chosen_block = ? " +
-                                                 "WHERE uid = ?", databaseQuery -> {
+        return DatabaseUtil.databaseExecute("UPDATE blocks SET chosen_block = ? " +
+                                            "WHERE uid = ?", databaseQuery -> {
             databaseQuery.setString(player.getChoseMaterial()
                     .name());
             databaseQuery.setString(player.getPlayerUid()
@@ -58,21 +57,15 @@ public final class BlockDatabase extends Database {
                     material.set(Material.matchMaterial(name));
                 });
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new IllegalStateException(e);
             }
             return material.get();
         });
     }
 
     public CompletableFuture<?> delete(final UUID uuid) {
-        return PluginExecutor.runAsync(() -> {
-            try (final DatabaseQuery query = DatabaseQuery.query(
-                    "SELECT * FROM blocks WHERE " + "uid = ?")) {
-                query.setString(uuid.toString());
-                query.execute();
-            } catch (Exception e) {
-                throw new IllegalStateException(e);
-            }
+        return DatabaseUtil.databaseExecute("DELETE FROM blocks WHERE uid = ?", query -> {
+            query.setString(uuid.toString());
         });
     }
 }

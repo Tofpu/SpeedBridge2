@@ -27,7 +27,6 @@ public final class PlayerLoader implements BoardRetrieve<BridgePlayer>, CacheLoa
 
     @Override
     public CompletableFuture<? extends BridgePlayer> asyncLoad(final UUID key, final Executor executor) {
-        // TODO: maybe pass down the executor
         return retrieveAsync(key, executor);
     }
 
@@ -36,7 +35,8 @@ public final class PlayerLoader implements BoardRetrieve<BridgePlayer>, CacheLoa
         BridgePlayer bridgePlayer;
 
         try {
-            BridgeUtil.debug("attempting to load " + uniqueId + " player's data!");
+            BridgeUtil.debug("PlayerLoader#retrieve: Attempting to load " + uniqueId +
+                             " player data!");
 
             bridgePlayer = retrieveAsync(uniqueId, PluginExecutor.INSTANCE).get();
         } catch (InterruptedException | ExecutionException e) {
@@ -67,13 +67,11 @@ public final class PlayerLoader implements BoardRetrieve<BridgePlayer>, CacheLoa
         @Override
         public long expireAfterUpdate(final UUID key, final BridgePlayer value, final long currentTime,
                 @NonNegative final long currentDuration) {
-            System.out.println("expireAfterUpdate - Start");
-            System.out.println(Duration.ofNanos(currentDuration).getSeconds());
+            BridgeUtil.debug("PlayerRemovalListener#expireAfterUpdate: Start: " + Duration.ofNanos(currentDuration).getSeconds());
             if (value.getPlayer() == null) {
-                System.out.println("expiring the bridge player after 5 minutes");
+                BridgeUtil.debug("PlayerRemovalListener#expireAfterUpdate: Expiring " + key + " player data after 5 minutes!");
                 return EXPIRY_DURATION;
             }
-            System.out.println("expireAfterUpdate - End");
             return Long.MAX_VALUE;
         }
 
