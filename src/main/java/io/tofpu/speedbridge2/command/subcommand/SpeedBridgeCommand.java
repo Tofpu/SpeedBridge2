@@ -1,6 +1,6 @@
 package io.tofpu.speedbridge2.command.subcommand;
 
-import com.sk89q.minecraft.util.commands.CommandAlias;
+import io.tofpu.speedbridge2.command.condition.annotation.RestrictConsole;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictDummyModel;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictSetup;
 import io.tofpu.speedbridge2.model.blockmenu.BlockMenuManager;
@@ -61,6 +61,7 @@ public final class SpeedBridgeCommand {
     @Description("Sets the lobby location")
     @CommandPermission("speedbridge.lobby.set")
     @RestrictSetup
+    @RestrictConsole
     public void onLobbySet(final BridgePlayer bridgePlayer) {
         ConfigurationManager.INSTANCE.getLobbyCategory()
                 .setLobbyLocation(bridgePlayer.getPlayer()
@@ -76,6 +77,7 @@ public final class SpeedBridgeCommand {
     @CommandPermission("speedbridge.island.create")
     @RestrictSetup
     @RestrictDummyModel
+    @RestrictConsole
     public String onIslandCreate(final BridgePlayer player, final int slot, final String schematic,
             @revxrsal.commands.annotation.Optional @Flag("c") String category) {
         if (category == null || category.isEmpty()) {
@@ -214,6 +216,7 @@ public final class SpeedBridgeCommand {
     @Usage("join <island>")
     @Description("Join an island")
     @RestrictDummyModel
+    @RestrictConsole
     public String onIslandJoin(final BridgePlayer bridgePlayer, final Island island) {
         if (!isGeneralSetupComplete(bridgePlayer)) {
             return "";
@@ -239,6 +242,7 @@ public final class SpeedBridgeCommand {
 
     @Command({"sb score", "score"})
     @Description("Shows a list of your scores")
+    @RestrictConsole
     public String onScore(final BridgePlayer bridgePlayer) {
         final List<String> scoreList = new ArrayList<>();
 
@@ -258,11 +262,10 @@ public final class SpeedBridgeCommand {
         return String.join("\n", scoreList);
     }
 
-    @Command("choose")
-    @Subcommand("choose")
-    @CommandAlias("choose")
+    @Command({"sb choose", "choose"})
     @Description("Lets you choose a block")
     @RestrictDummyModel
+    @RestrictConsole
     public void chooseBlock(final BridgePlayer bridgePlayer) {
         BlockMenuManager.INSTANCE.showInventory(bridgePlayer);
     }
@@ -299,6 +302,7 @@ public final class SpeedBridgeCommand {
     @Description("Chooses a random island for you")
     @RestrictSetup
     @RestrictDummyModel
+    @RestrictConsole
     public String onRandomJoin(final BridgePlayer bridgePlayer) {
         if (!isGeneralSetupComplete(bridgePlayer)) {
             return "";
@@ -329,6 +333,7 @@ public final class SpeedBridgeCommand {
     @CommandPermission("speedbridge.setup.admin")
     @RestrictDummyModel
     @RestrictSetup
+    @RestrictConsole
     @Default
     public String onStartSetup(final BridgePlayer bridgePlayer, final Island island) {
         if (!isGeneralSetupComplete(bridgePlayer)) {
@@ -350,6 +355,7 @@ public final class SpeedBridgeCommand {
     @Description("Sets the island's spawnpoint")
     @CommandPermission("speedbridge.setup.admin")
     @RestrictSetup(opposite = true)
+    @RestrictConsole
     public String setupSetSpawn(final BridgePlayer bridgePlayer) {
         final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
@@ -371,6 +377,7 @@ public final class SpeedBridgeCommand {
     @Description("Completes the island's setup")
     @CommandPermission("speedbridge.setup.admin")
     @RestrictSetup(opposite = true)
+    @RestrictConsole
     public String setupFinish(final BridgePlayer bridgePlayer) {
         final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
@@ -386,6 +393,7 @@ public final class SpeedBridgeCommand {
     @Description("Cancels the island's setup")
     @CommandPermission("speedbridge.setup.admin")
     @RestrictSetup(opposite = true)
+    @RestrictConsole
     public String cancelSetup(final BridgePlayer bridgePlayer) {
         final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 

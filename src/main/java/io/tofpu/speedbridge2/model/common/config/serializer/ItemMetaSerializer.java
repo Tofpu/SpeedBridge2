@@ -1,6 +1,8 @@
 package io.tofpu.speedbridge2.model.common.config.serializer;
 
+import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -29,8 +31,7 @@ public final class ItemMetaSerializer implements TypeSerializer<ItemMeta> {
         final String displayName = node.node("display_name").getString("");
         final @Nullable List<String> lore = node.node("lore").getList(String.class);
 
-        final TextComponent deserialize = BukkitComponentSerializer.legacy()
-                .deserialize(displayName);
+        final Component deserialize = BridgeUtil.translateMiniMessage(displayName);
 
         itemMeta.setDisplayName(BukkitComponentSerializer.legacy().serialize(deserialize));
         itemMeta.setLore(serializeListAdventure(lore));
@@ -75,9 +76,7 @@ public final class ItemMetaSerializer implements TypeSerializer<ItemMeta> {
 
         final List<String> newList = new ArrayList<>();
         for (final String lore : list) {
-            final TextComponent component = BukkitComponentSerializer.legacy()
-                    .deserialize(lore);
-
+            final Component component = BridgeUtil.translateMiniMessage(lore);
             newList.add(BukkitComponentSerializer.legacy().serialize(component));
         }
         return newList;

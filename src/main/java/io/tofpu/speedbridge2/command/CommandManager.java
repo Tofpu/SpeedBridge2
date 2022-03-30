@@ -16,15 +16,15 @@ import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.extra.CommonBridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.extra.DummyBridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.extra.SenderBridgePlayer;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import revxrsal.commands.bukkit.BukkitCommandActor;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
 import revxrsal.commands.command.CommandActor;
 import revxrsal.commands.command.ExecutableCommand;
 import revxrsal.commands.process.SenderResolver;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public final class CommandManager {
@@ -51,17 +51,15 @@ public final class CommandManager {
                     @NotNull final Class<?> customSenderType,
                     @NotNull final CommandActor actor,
                     @NotNull final ExecutableCommand command) {
-                if (actor instanceof ConsoleCommandSender) {
-                    return new SenderBridgePlayer((CommandSender) actor);
+                final BukkitCommandActor commandActor = (BukkitCommandActor) actor;
+
+                if (commandActor.isConsole()) {
+                    return new SenderBridgePlayer(commandActor.requireConsole());
                 }
 
-                final UUID uniqueId = actor.getUniqueId();
+                final UUID uniqueId = commandActor.requirePlayer().getUniqueId();
                 final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uniqueId);
-                if (bridgePlayer == null) {
-                    return DummyBridgePlayer.of(uniqueId);
-                }
-
-                return bridgePlayer;
+                return Objects.requireNonNullElseGet(bridgePlayer, () -> DummyBridgePlayer.of(uniqueId));
             }
         });
 
