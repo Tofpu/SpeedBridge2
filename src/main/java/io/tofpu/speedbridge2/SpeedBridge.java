@@ -4,21 +4,22 @@ import io.tofpu.dynamicclass.DynamicClass;
 import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import io.tofpu.speedbridge2.command.CommandManager;
 import io.tofpu.speedbridge2.command.subcommand.HelpCommandGenerator;
-import io.tofpu.speedbridge2.domain.common.Message;
-import io.tofpu.speedbridge2.domain.common.PluginExecutor;
-import io.tofpu.speedbridge2.domain.common.config.manager.ConfigurationManager;
-import io.tofpu.speedbridge2.domain.common.database.DatabaseManager;
-import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.common.util.UpdateChecker;
-import io.tofpu.speedbridge2.domain.extra.blockmenu.BlockMenuManager;
-import io.tofpu.speedbridge2.domain.extra.leaderboard.Leaderboard;
-import io.tofpu.speedbridge2.domain.island.IslandService;
-import io.tofpu.speedbridge2.domain.island.object.IslandBoard;
-import io.tofpu.speedbridge2.domain.island.schematic.SchematicManager;
-import io.tofpu.speedbridge2.domain.island.setup.IslandSetupManager;
-import io.tofpu.speedbridge2.domain.player.PlayerService;
-import io.tofpu.speedbridge2.support.placeholderapi.PluginExpansion;
-import io.tofpu.speedbridge2.support.placeholderapi.expansion.ExpansionHandler;
+import io.tofpu.speedbridge2.model.common.Message;
+import io.tofpu.speedbridge2.model.common.PluginExecutor;
+import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
+import io.tofpu.speedbridge2.model.common.database.DatabaseManager;
+import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.model.common.util.UpdateChecker;
+import io.tofpu.speedbridge2.model.blockmenu.BlockMenuManager;
+import io.tofpu.speedbridge2.model.leaderboard.Leaderboard;
+import io.tofpu.speedbridge2.model.island.IslandService;
+import io.tofpu.speedbridge2.model.island.object.IslandBoard;
+import io.tofpu.speedbridge2.model.island.schematic.SchematicManager;
+import io.tofpu.speedbridge2.model.island.setup.IslandSetupManager;
+import io.tofpu.speedbridge2.model.player.PlayerService;
+import io.tofpu.speedbridge2.model.support.placeholderapi.PluginExpansion;
+import io.tofpu.speedbridge2.model.support.placeholderapi.expansion.ExpansionHandler;
+import io.tofpu.umbrella.UmbrellaAPI;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -37,17 +38,20 @@ public final class SpeedBridge {
 
     public void load() {
         // reset the world, in-case it does exist
-        SchematicManager.INSTANCE.resetWorld();
+        SchematicManager.resetWorld();
     }
 
     public void enable() {
         adventure = BukkitAudiences.create(javaPlugin);
 
+        new UmbrellaAPI(javaPlugin)
+                .enable();
+
         new Metrics(javaPlugin, 14597);
 
         MultiWorldEditAPI.load(javaPlugin);
 
-        log("Loading the `config.yml`...");
+        log("Loading the `config.conf` & 'items.yml'...");
         ConfigurationManager.INSTANCE.load(javaPlugin);
 
         try {
@@ -66,7 +70,7 @@ public final class SpeedBridge {
         }
 
         log("Loading the `speedbridge2` world...");
-        SchematicManager.INSTANCE.load();
+        SchematicManager.load();
 
         IslandSetupManager.INSTANCE.load();
 
@@ -137,8 +141,13 @@ public final class SpeedBridge {
         PlayerService.INSTANCE.shutdown();
 
         log("Unloading the `speedbridge2` world...");
-        SchematicManager.INSTANCE.unloadWorld();
-        SchematicManager.INSTANCE.resetWorld();
+        SchematicManager.unloadWorld();
+        SchematicManager.resetWorld();
+
+        final UmbrellaAPI umbrellaAPI = UmbrellaAPI.getInstance();
+        if (umbrellaAPI != null) {
+            umbrellaAPI.disable();
+        }
 
         log("Complete.");
     }

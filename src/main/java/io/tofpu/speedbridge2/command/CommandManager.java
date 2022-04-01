@@ -1,82 +1,133 @@
 package io.tofpu.speedbridge2.command;
 
-import cloud.commandframework.CommandTree;
-import cloud.commandframework.annotations.AnnotationParser;
-import cloud.commandframework.arguments.parser.ParserParameters;
-import cloud.commandframework.arguments.parser.StandardParameters;
-import cloud.commandframework.bukkit.BukkitCommandManager;
-import cloud.commandframework.execution.CommandExecutionCoordinator;
-import cloud.commandframework.meta.CommandMeta;
-import io.tofpu.speedbridge2.command.parser.GameIslandParser;
-import io.tofpu.speedbridge2.command.parser.IslandParser;
+import io.tofpu.dynamicclass.DynamicClass;
+import io.tofpu.speedbridge2.command.condition.AbstractCommandConditionWrapper;
+import io.tofpu.speedbridge2.command.condition.LampConditionRegistry;
+import io.tofpu.speedbridge2.command.context.AbstractLampContext;
+import io.tofpu.speedbridge2.command.context.LampContextRegistry;
+import io.tofpu.speedbridge2.command.parser.AbstractLampParser;
+import io.tofpu.speedbridge2.command.parser.LampParseRegistry;
+import io.tofpu.speedbridge2.command.subcommand.CommandCompletion;
 import io.tofpu.speedbridge2.command.subcommand.SpeedBridgeCommand;
-import io.tofpu.speedbridge2.domain.island.object.Island;
-import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
-import io.tofpu.speedbridge2.domain.player.PlayerService;
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
-import io.tofpu.speedbridge2.domain.player.object.extra.DummyBridgePlayer;
-import io.tofpu.speedbridge2.domain.player.object.extra.SenderBridgePlayer;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
+import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.model.island.object.Island;
+import io.tofpu.speedbridge2.model.player.PlayerService;
+import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.extra.CommonBridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.extra.DummyBridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.extra.SenderBridgePlayer;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import revxrsal.commands.bukkit.BukkitCommandActor;
+import revxrsal.commands.bukkit.BukkitCommandHandler;
+import revxrsal.commands.command.CommandActor;
+import revxrsal.commands.command.ExecutableCommand;
+import revxrsal.commands.process.SenderResolver;
 
+import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Function;
 
 public final class CommandManager {
-    private static BukkitCommandManager<CommonBridgePlayer> manager;
+    private static BukkitCommandHandler commandHandler;
 
     public static void load(final @NotNull Plugin plugin) {
-        final Function<CommandTree<CommonBridgePlayer>, CommandExecutionCoordinator<CommonBridgePlayer>> executionCoordinatorFunction = CommandExecutionCoordinator.SimpleCoordinator
-                .simpleCoordinator();
+        commandHandler = BukkitCommandHandler.create(plugin);
 
-        final Function<CommandSender, CommonBridgePlayer> bridgePlayerFunction = sender -> {
-            if (sender instanceof ConsoleCommandSender) {
-                return new SenderBridgePlayer(sender);
+        commandHandler.registerResponseHandler(String.class, (response, actor, command) -> {
+            if (response.isEmpty()) {
+                return;
             }
-            final Player player = (Player) sender;
-            final UUID uniqueId = player.getUniqueId();
-            final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uniqueId);
+            actor.reply(BridgeUtil.miniMessageToLegacy(response));
+        });
 
-            // if the bridge player is null, return a dummy instance
-            if (bridgePlayer == null) {
-                return DummyBridgePlayer.of(uniqueId);
+        commandHandler.registerSenderResolver(new SenderResolver() {
+            @Override
+            public boolean isCustomType(final Class<?> type) {
+                return CommonBridgePlayer.class.isAssignableFrom(type);
             }
 
-            return bridgePlayer;
-        };
+            @Override
+            public @NotNull Object getSender(
+                    @NotNull final Class<?> customSenderType,
+                    @NotNull final CommandActor actor,
+                    @NotNull final ExecutableCommand command) {
+                final BukkitCommandActor commandActor = (BukkitCommandActor) actor;
 
-        final Function<CommonBridgePlayer, CommandSender> senderToBridgePlayerFunction = CommonBridgePlayer::getPlayer;
+                if (commandActor.isConsole()) {
+                    return new SenderBridgePlayer(commandActor.requireConsole());
+                }
 
-        try {
-            manager = new BukkitCommandManager<>(plugin, executionCoordinatorFunction, bridgePlayerFunction, senderToBridgePlayerFunction);
-        } catch (Exception exception) {
-            exception.printStackTrace();
+                final UUID uniqueId = commandActor.requirePlayer().getUniqueId();
+                final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uniqueId);
+                return Objects.requireNonNullElseGet(bridgePlayer, () -> DummyBridgePlayer.of(uniqueId));
+            }
+        });
+
+
+        commandHandler.setHelpWriter((command, actor) -> String.format(
+                "<white>- <yellow>/%s " + "%s - %s", command.getPath()
+                        .toRealString(), command.getUsage(), command.getDescription()));
+
+        constructTabCompleter();
+        constructContext();
+        constructParsers();
+        constructCommandConditions();
+
+        commandHandler.register(new SpeedBridgeCommand());
+    }
+
+    private static void constructTabCompleter() {
+        BridgeUtil.debug("Constructing tab completer...");
+
+        commandHandler.getAutoCompleter()
+                .registerParameterSuggestions(Island.class, CommandCompletion::islands);
+    }
+
+    private static void constructContext() {
+        final AbstractLampRegistry<?, AbstractLampContext<?>> registry =
+                DynamicClass.getInstance(LampContextRegistry.class);
+        if (registry == null) {
+            return;
         }
 
-        final Function<ParserParameters, CommandMeta> commandMetaFunction = p -> CommandMeta
-                .simple()
-                // This will allow you to decorate commands with descriptions
-                .with(CommandMeta.DESCRIPTION, p.get(StandardParameters.DESCRIPTION, "No description"))
-                .build();
+        BridgeUtil.debug("Constructing contexts...");
 
-        final AnnotationParser<CommonBridgePlayer> annotationParser = new AnnotationParser<>(
-                /* Manager */ manager,
-                /* Command sender type */ CommonBridgePlayer.class,
-                /* Mapper for command meta instances */ commandMetaFunction);
+        for (final AbstractLampContext<?> parser : registry.values()) {
+            parser.register(commandHandler);
 
-        annotationParser.getParameterInjectorRegistry()
-                .registerInjector(Island.class, (context, annotationAccessor) -> {
-                    return new IslandParser<>().parse(context, annotationAccessor);
-                });
+            BridgeUtil.debug("Registered context: " + parser.getClass()
+                    .getName());
+        }
+    }
 
-        annotationParser.getParameterInjectorRegistry()
-                .registerInjector(GameIsland.class, (context, annotationAccessor) -> new GameIslandParser<CommonBridgePlayer>()
-                        .parse(context, annotationAccessor));
+    private static void constructParsers() {
+        final AbstractLampRegistry<?, AbstractLampParser<?>> lampParseRegistry = DynamicClass.getInstance(LampParseRegistry.class);
+        if (lampParseRegistry == null) {
+            return;
+        }
 
-        annotationParser.parse(new SpeedBridgeCommand());
+        BridgeUtil.debug("Constructing parsers...");
+
+        for (final AbstractLampParser<?> parser : lampParseRegistry.values()) {
+            parser.register(commandHandler);
+
+            BridgeUtil.debug("Registered parser: " + parser.getClass()
+                    .getName());
+        }
+    }
+
+    private static void constructCommandConditions() {
+        final AbstractLampRegistry<?, AbstractCommandConditionWrapper> registry = DynamicClass.getInstance(LampConditionRegistry.class);
+        if (registry == null) {
+            return;
+        }
+
+        BridgeUtil.debug("Constructing command conditions...");
+
+        for (final AbstractCommandConditionWrapper condition : registry.values()) {
+            condition.register(commandHandler);
+            BridgeUtil.debug("Registered command condition: " + condition.getClass()
+                    .getName());
+        }
     }
 }

@@ -1,14 +1,14 @@
 package io.tofpu.speedbridge2.listener.game;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
-import io.tofpu.speedbridge2.domain.common.Message;
-import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.domain.island.object.Island;
-import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
-import io.tofpu.speedbridge2.domain.player.misc.score.Score;
-import io.tofpu.speedbridge2.domain.player.misc.stat.PlayerStatType;
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
+import io.tofpu.speedbridge2.model.common.Message;
+import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.model.island.object.Island;
+import io.tofpu.speedbridge2.model.island.object.extra.GameIsland;
+import io.tofpu.speedbridge2.model.player.misc.score.Score;
+import io.tofpu.speedbridge2.model.player.misc.stat.PlayerStatType;
+import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.GamePlayer;
 import io.tofpu.speedbridge2.listener.GameListener;
 import io.tofpu.speedbridge2.listener.wrapper.wrappers.BlockPlaceEventWrapper;
 import io.tofpu.speedbridge2.listener.wrapper.wrappers.PlayerInteractEventWrapper;
@@ -48,7 +48,7 @@ public final class GameInteractionListener extends GameListener {
         final long startedAt = player.getTimer();
 
         final double seconds = BridgeUtil.nanoToSeconds(startedAt);
-        final Score score = new Score(island.getSlot(), seconds);
+        final Score score = Score.of(island.getSlot(), seconds);
 
         player.setScoreIfLower(island.getSlot(), score.getScore());
         player.increment(PlayerStatType.TOTAL_WINS);

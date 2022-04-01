@@ -1,8 +1,8 @@
 package io.tofpu.speedbridge2.listener.game;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.domain.player.PlayerService;
+import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

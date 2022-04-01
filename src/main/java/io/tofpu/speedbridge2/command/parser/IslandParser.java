@@ -1,30 +1,54 @@
 package io.tofpu.speedbridge2.command.parser;
 
-import cloud.commandframework.annotations.AnnotationAccessor;
-import cloud.commandframework.context.CommandContext;
-import io.tofpu.speedbridge2.domain.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.domain.player.object.extra.CommonBridgePlayer;
-import io.tofpu.speedbridge2.domain.island.object.Island;
-import io.tofpu.speedbridge2.domain.island.object.extra.NullIsland;
-import io.tofpu.speedbridge2.domain.island.object.extra.GameIsland;
-import io.tofpu.speedbridge2.domain.player.object.GamePlayer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import io.tofpu.dynamicclass.meta.AutoRegister;
+import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.model.island.IslandService;
+import io.tofpu.speedbridge2.model.island.object.Island;
+import io.tofpu.speedbridge2.model.player.PlayerService;
+import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
+import revxrsal.commands.exception.CommandErrorException;
+import revxrsal.commands.process.ValueResolver;
 
-public final class IslandParser<C> {
-    public Island parse(@NonNull CommandContext<CommonBridgePlayer> context, @NonNull AnnotationAccessor annotationAccessor) {
-        if (annotationAccessor.annotation(IslandArgument.class) == null) {
-            return null;
+import static io.tofpu.speedbridge2.model.common.Message.INSTANCE;
+
+@AutoRegister
+public final class IslandParser extends AbstractLampParser<Island> {
+    public IslandParser(final LampParseRegistry registry) {
+        super(Island.class, registry);
+    }
+
+    @Override
+    Island parse(final ValueResolver.ValueResolverContext context) {
+        final BridgePlayer player = PlayerService.INSTANCE.get(context.actor().getUniqueId());
+
+        final String input = context.pop();
+        if (player == null) {
+            throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(INSTANCE.notLoaded));
         }
 
-        final BridgePlayer bridgePlayer = (BridgePlayer) context.getSender();
-        final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
+        final IslandService islandService = IslandService.INSTANCE;
 
-        if (gamePlayer == null) {
-            return new NullIsland();
+        int slot;
+        try {
+            slot = Integer.parseInt(input);
+        } catch (NumberFormatException exception) {
+            slot = -1;
         }
 
-        final GameIsland gameIsland = gamePlayer.getCurrentGame();
+        Island island = null;
+        if (slot != -1) {
+            island = islandService.findIslandBy(slot);
+        } else if (input != null && !input.isEmpty()) {
+            island = islandService.findIslandBy(input);
+        }
 
-        return gameIsland.getIsland();
+        if (island == null) {
+            if (slot == -1) {
+                throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(INSTANCE.invalidIslandArgument));
+            }
+            throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(String.format(INSTANCE.invalidIsland, slot + "")));
+        }
+
+        return island;
     }
 }

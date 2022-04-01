@@ -5,11 +5,13 @@ plugins {
 }
 
 group = "io.tofpu.speedbridge2"
-version = "1.0.7"
+version = "1.0.8"
 
 tasks {
     compileJava {
         options.encoding = "UTF-8"
+        options.compilerArgs.plusAssign("-parameters")
+        sourceCompatibility = "11"
     }
 
     named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
@@ -26,6 +28,8 @@ tasks {
             relocate("org.bstats", "io.tofpu.speedbridge2.lib.bstats")
             relocate("com.github.benmanes.caffeine", "io.tofpu.speedbridge2.lib.caffeine")
             relocate("org.apache.commons", "io.tofpu.speedbridge2.lib.commons")
+            relocate("org.yaml.snakeyaml", "io.tofpu.speedbridge2.lib.snakeyml")
+            relocate("revxrsal", "io.tofpu.speedbridge2.lib.lamp")
         }
 
         exclude("META-INF/**")
@@ -47,13 +51,15 @@ publishing {
 }
 
 repositories {
-    mavenCentral()
     mavenLocal()
+    mavenCentral()
 
     maven("https://jitpack.io")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://maven.enginehub.org/repo/")
     maven("https://oss.sonatype.org/content/groups/public/")
+    maven("https://repo.codemc.org/repository/maven-public/")
+    maven("https://libraries.minecraft.net")
 }
 
 dependencies {
@@ -63,17 +69,18 @@ dependencies {
 
     compileOnly("com.sk89q:worldedit:6.0.0-SNAPSHOT")
 
-    implementation("cloud.commandframework:cloud-bukkit:1.6.2")
-    implementation("cloud.commandframework:cloud-annotations:1.6.1")
+    implementation("com.github.Revxrsal.Lamp:common:b3af8b94a0")
+    implementation("com.github.Revxrsal.Lamp:bukkit:b3af8b94a0")
 
     implementation("net.kyori:adventure-api:4.10.1")
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
     implementation("net.kyori:adventure-text-minimessage:4.10.1")
 
-    implementation("com.github.tofpu:DynamicClass:fdc123593b") {
+    implementation("com.github.tofpu:DynamicClass:1.1") {
         exclude("com.google.guava", "guava")
     }
 
+    implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("org.spongepowered:configurate-hocon:4.1.2")
     implementation("commons-lang:commons-lang:2.6")
     implementation("commons-io:commons-io:2.11.0")
@@ -85,9 +92,11 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
 
     implementation("com.github.cryptomorin:XSeries:8.6.1")
-    implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:f9ad4ce832") {
+    implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:0eb85d6cbd") {
         exclude("de.schlichtherle", "truezip")
         exclude("rhino", "js")
         exclude("com.sk89q", "worldedit")
     }
+
+    implementation("com.github.tofpu:umbrella:1ce46ae04a")
 }

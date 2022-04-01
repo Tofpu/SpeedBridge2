@@ -1,6 +1,6 @@
 package io.tofpu.speedbridge2.listener.wrapper.wrappers;
 
-import io.tofpu.speedbridge2.domain.player.PlayerService;
+import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.listener.wrapper.EventWrapper;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.jetbrains.annotations.NotNull;

@@ -1,15 +1,19 @@
 package io.tofpu.speedbridge2.command.subcommand;
 
-import cloud.commandframework.annotations.CommandDescription;
-import cloud.commandframework.annotations.CommandMethod;
-import cloud.commandframework.annotations.Hidden;
-import io.tofpu.speedbridge2.domain.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.model.player.object.extra.CommonBridgePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import revxrsal.commands.annotation.Description;
+import revxrsal.commands.annotation.Flag;
+import revxrsal.commands.annotation.Optional;
+import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.annotation.Usage;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +25,7 @@ public final class HelpCommandGenerator {
 
     private static final String HEADER = FIRST_CHARACTER +
                                          "<<gold>-</gold>> <yellow><bold>SpeedBridge <white>V2</bold>";
-    private static final String COMMAND_FORMAT = String.format(SUBTITLE, "/%s " +
+    private static final String COMMAND_FORMAT = String.format(SUBTITLE, "/sb %s %s" +
                                                                          "<dark_gray>- <white>%s");
 
     private static Component helpMessageComponent = null;
@@ -41,14 +45,15 @@ public final class HelpCommandGenerator {
 
         messages.add(String.format(TITLE, "Commands"));
         for (final Method method : declaredMethods) {
-            final CommandMethod commandMethod = method.getAnnotation(CommandMethod.class);
-            final CommandDescription commandDescription = method.getAnnotation(CommandDescription.class);
-            if (commandMethod == null || method.isAnnotationPresent(Hidden.class)) {
+            final Subcommand commandMethod = method.getAnnotation(Subcommand.class);
+            final Description commandDescription = method.getAnnotation(Description.class);
+            if (commandMethod == null) {
                 continue;
             }
+            final String usage = generateUsageOfMethod(commandMethod, method);
 
-            messages.add(String.format(COMMAND_FORMAT, commandMethod.value()
-                    .replace("speedbridge|sb", "sb"), commandDescription.value()));
+            messages.add(String.format(COMMAND_FORMAT, commandMethod.value()[0],
+                    usage, commandDescription.value()));
         }
 
         messages.add("");
@@ -65,6 +70,51 @@ public final class HelpCommandGenerator {
         }
 
         helpMessageComponent = BridgeUtil.translateMiniMessage(builder.toString());
+    }
+
+    public static String generateUsageOfMethod(final Subcommand subcommand,
+            final Method method) {
+        final StringBuilder builder = new StringBuilder();
+
+        if (method.isAnnotationPresent(Usage.class)) {
+            return method.getAnnotation(Usage.class).value().replace(subcommand.value()[0] + " ", "") + " ";
+        }
+
+        for (final Parameter parameter : method.getParameters()) {
+            if (CommonBridgePlayer.class.isAssignableFrom(parameter.getType())) {
+                continue;
+            }
+
+            if (builder.length() != 0) {
+                builder.append(" ");
+            }
+
+            final String name;
+            switch (parameter.getType().getSimpleName()) {
+                case "Island":
+                    name = "slot";
+                    break;
+                default:
+                    name = parameter.getName();
+            }
+
+            String startingTag = "<";
+            String closingTag = ">";
+            if (parameter.isAnnotationPresent(Optional.class)) {
+                startingTag = "[";
+                closingTag = "]";
+            }
+
+            String flag = "";
+            if (parameter.isAnnotationPresent(Flag.class)) {
+                final Flag flagAnnotation = parameter.getAnnotation(Flag.class);
+                flag = "-" + flagAnnotation.value() + " ";
+            }
+
+            builder.append(startingTag).append(flag).append(name).append(closingTag).append(" ");
+        }
+
+        return builder.toString();
     }
 
     public static void showHelpMessage(final CommandSender sender) {

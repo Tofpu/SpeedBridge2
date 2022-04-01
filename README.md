@@ -29,3 +29,9 @@ __Features__
 __Dependencies__
 - WorldEdit (Required)
 - PlaceholderAPI (Optional)
+
+__Thanks to__
+- [GitBook](https://gitbook.com)
+- [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html)
+
+For providing us with an open-source licence! <3
