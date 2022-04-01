@@ -41,7 +41,7 @@ import static io.tofpu.speedbridge2.model.common.Message.INSTANCE;
 import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.ARROW_RIGHT;
 import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.CROSS;
 
-@Command("sb")
+@Command({"sb", "speedbridge"})
 public final class SpeedBridgeCommand {
     private static final String EMPTY_SCORE = "<red>You haven't scored anything yet";
     private static final String FORMATTED_SCORE =
@@ -73,7 +73,7 @@ public final class SpeedBridgeCommand {
 
     @Subcommand("create")
     @Usage("create <slot> <schematic> [-c category]")
-    @Description("Create an island with a defined slot")
+    @Description("Create an island")
     @CommandPermission("speedbridge.island.create")
     @RestrictSetup
     @RestrictDummyModel
@@ -161,10 +161,10 @@ public final class SpeedBridgeCommand {
         });
     }
 
-    @Subcommand("select")
-    @Usage("select <slot> [-c category|-s schematic]")
-    @Description("Select an island to modify their properties")
-    @CommandPermission("speedbridge.island.island.select")
+    @Subcommand("modify")
+    @Usage("modify <slot> [-c category|-s schematic]")
+    @Description("Modify an island properties")
+    @CommandPermission("speedbridge.island.modify")
     public String onIslandSelect(final Island island, final @revxrsal.commands.annotation.Optional
     @Flag(value = "c") @Default("")
             String category, final @revxrsal.commands.annotation.Optional
@@ -212,7 +212,7 @@ public final class SpeedBridgeCommand {
         return false;
     }
 
-    @Command({"sb join", "join"})
+    @Command({"sb join", "speedbridge join" ,"join"})
     @Usage("join <island>")
     @Description("Join an island")
     @RestrictDummyModel
@@ -234,13 +234,13 @@ public final class SpeedBridgeCommand {
         return String.format(INSTANCE.joinedAnIsland, island.getSlot() + "");
     }
 
-    @Command({"sb leave", "leave"})
+    @Command({"sb leave", "speedbridge leave" ,"leave"})
     @Description("Leave an island")
     public void onIslandLeave(final GameIsland gameIsland) {
         gameIsland.stopGame();
     }
 
-    @Command({"sb score", "score"})
+    @Command({"sb score", "speedbridge score" ,"score"})
     @Description("Shows a list of your scores")
     @RestrictConsole
     public String onScore(final BridgePlayer bridgePlayer) {
@@ -262,7 +262,7 @@ public final class SpeedBridgeCommand {
         return String.join("\n", scoreList);
     }
 
-    @Command({"sb choose", "choose"})
+    @Command({"sb choose", "speedbridge choose" ,"choose"})
     @Description("Lets you choose a block")
     @RestrictDummyModel
     @RestrictConsole
@@ -298,7 +298,7 @@ public final class SpeedBridgeCommand {
         HelpCommandGenerator.showHelpMessage(player);
     }
 
-    @Command({"sb randomjoin", "randomjoin"})
+    @Command({"sb randomjoin", "speedbridge randomjoin" ,"randomjoin"})
     @Description("Chooses a random island for you")
     @RestrictSetup
     @RestrictDummyModel
