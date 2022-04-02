@@ -71,7 +71,7 @@ public final class PlayerLoader implements BoardRetrieve<BridgePlayer>, CacheLoa
 
         @Override
         public long expireAfterCreate(final UUID key, final BridgePlayer value, final long currentTime) {
-            return EXPIRY_DURATION;
+            return INFINITE_DURATION;
         }
 
         @Override
@@ -81,10 +81,12 @@ public final class PlayerLoader implements BoardRetrieve<BridgePlayer>, CacheLoa
                     .getSeconds();
             BridgeUtil.debug("PlayerRemovalListener#expireAfterUpdate: Start: current " +
                              "duration is " + elapse + " seconds!");
+            
             if (value.getPlayer() == null) {
                 BridgeUtil.debug("PlayerRemovalListener#expireAfterUpdate: Expiring " + key + " player data after " + elapse + " seconds!");
                 return EXPIRY_DURATION;
             }
+
             BridgeUtil.debug("PlayerRemovalListener#expireAfterUpdate: Not expiring " + key + " player data yet!");
             return INFINITE_DURATION;
         }
@@ -94,11 +96,6 @@ public final class PlayerLoader implements BoardRetrieve<BridgePlayer>, CacheLoa
                 @NonNegative final long currentDuration) {
             final long elapse = Duration.ofNanos(currentDuration)
                     .getSeconds();
-            BridgeUtil.debug("PlayerRemovalListener#expireAfterRead: Start: " + elapse);
-            if (value.getPlayer() != null) {
-                BridgeUtil.debug("PlayerRemovalListener#expireAfterRead: Not expiring " + key + " player data yet!");
-                return INFINITE_DURATION;
-            }
             BridgeUtil.debug("PlayerRemovalListener#expireAfterRead: Expiring " + key + " player data after " + elapse + " seconds!");
             return currentDuration;
         }
