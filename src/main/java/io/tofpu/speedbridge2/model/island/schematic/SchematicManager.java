@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public final class SchematicManager {
     private static final @NotNull Map<Integer, Collection<IslandPlot>> ISLAND_PLOTS =
             new HashMap<>();
-    private static final AtomicInteger COUNTER = new AtomicInteger();
+    private static final AtomicInteger COUNTER = new AtomicInteger(100);
 
     private static File worldDirectory;
     private static @Nullable World world;
@@ -103,9 +103,10 @@ public final class SchematicManager {
             , final Island target, final GameIsland gameIsland) {
         BridgeUtil.debug("SchematicManager#createIslandPlot: Creating a new island plot for " + target.getSlot() + " slot!");
 
-        final double[] positions = {100 * (COUNTER.getAndIncrement() + 100), 100, 100};
+        final double[] positions = {COUNTER.get(), 100, 100};
 
         final IslandPlot islandPlot = new IslandPlot(target, world, positions);
+        COUNTER.getAndAdd(islandPlot.getWidth() + 10);
 
         // reserving the plot to player
         islandPlot.reservePlot(gameIsland);

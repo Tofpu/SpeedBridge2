@@ -156,6 +156,10 @@ public final class IslandPlot {
         return plotState.isPlotFree();
     }
 
+    public int getWidth() {
+        return getIsland().getSchematicClipboard().getRegion().getWidth();
+    }
+
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("IslandPlot{");
