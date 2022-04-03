@@ -14,6 +14,12 @@ import org.bukkit.inventory.ItemStack;
 
 @AutoRegister
 public final class BlockMenuListener extends GameListener {
+    private final PlayerService playerService;
+
+    public BlockMenuListener(final PlayerService playerService) {
+        this.playerService = playerService;
+    }
+
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent event) {
         final Inventory clickedInventory = event.getClickedInventory();
@@ -29,7 +35,7 @@ public final class BlockMenuListener extends GameListener {
             return;
         }
 
-        final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(event.getWhoClicked()
+        final BridgePlayer bridgePlayer = playerService.getIfPresent(event.getWhoClicked()
                 .getUniqueId());
         if (bridgePlayer == null || bridgePlayer.getChoseMaterial() == type) {
             return;

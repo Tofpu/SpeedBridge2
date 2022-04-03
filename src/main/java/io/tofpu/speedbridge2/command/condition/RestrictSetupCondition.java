@@ -16,8 +16,11 @@ import java.util.List;
 
 @AutoRegister
 public final class RestrictSetupCondition extends AbstractCommandConditionWrapper {
-    public RestrictSetupCondition(final LampConditionRegistry registry) {
+    private final PlayerService playerService;
+
+    public RestrictSetupCondition(final LampConditionRegistry registry, final PlayerService playerService) {
         super(RestrictSetup.class, registry);
+        this.playerService = playerService;
     }
 
     @Override
@@ -25,7 +28,7 @@ public final class RestrictSetupCondition extends AbstractCommandConditionWrappe
             @NotNull final CommandActor actor,
             @NotNull final ExecutableCommand command,
             @NotNull @Unmodifiable final List<String> arguments) {
-        final BridgePlayer player = PlayerService.INSTANCE.get(actor.getUniqueId());
+        final BridgePlayer player = playerService.getIfPresent(actor.getUniqueId());
         if (player == null) {
             return;
         }

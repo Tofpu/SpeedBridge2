@@ -3,7 +3,7 @@ package io.tofpu.speedbridge2.model.common.util;
 import com.cryptomorin.xseries.XMaterial;
 import io.tofpu.speedbridge2.model.common.umbrella.RunCommandItemAction;
 import io.tofpu.speedbridge2.model.common.umbrella.SerializableUmbrellaItem;
-import io.tofpu.speedbridge2.model.island.object.extra.GameIsland;
+import io.tofpu.speedbridge2.model.island.object.GameIsland;
 import io.tofpu.umbrella.UmbrellaAPI;
 import io.tofpu.umbrella.domain.Umbrella;
 import io.tofpu.umbrella.domain.item.UmbrellaItem;

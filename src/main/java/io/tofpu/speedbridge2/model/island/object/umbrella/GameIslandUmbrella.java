@@ -3,7 +3,7 @@ package io.tofpu.speedbridge2.model.island.object.umbrella;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.umbrella.SerializableUmbrellaItem;
 import io.tofpu.speedbridge2.model.common.util.UmbrellaUtil;
-import io.tofpu.speedbridge2.model.island.object.extra.GameIsland;
+import io.tofpu.speedbridge2.model.island.object.GameIsland;
 import io.tofpu.umbrella.UmbrellaAPI;
 import io.tofpu.umbrella.domain.Umbrella;
 

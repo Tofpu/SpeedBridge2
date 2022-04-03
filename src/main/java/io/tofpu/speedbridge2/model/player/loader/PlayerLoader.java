@@ -5,7 +5,8 @@ import com.github.benmanes.caffeine.cache.Expiry;
 import io.tofpu.speedbridge2.model.common.PluginExecutor;
 import io.tofpu.speedbridge2.model.common.database.Databases;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.leaderboard.meta.BoardRetrieve;
+import io.tofpu.speedbridge2.model.leaderboard.loader.BoardLoader;
+import io.tofpu.speedbridge2.model.player.PlayerFactory;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +18,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
-public final class PlayerLoader implements BoardRetrieve<BridgePlayer>, CacheLoader<UUID, BridgePlayer> {
+public final class PlayerLoader implements BoardLoader<BridgePlayer>, CacheLoader<UUID, BridgePlayer> {
     public static final PlayerLoader INSTANCE = new PlayerLoader();
 
     private PlayerLoader() {
@@ -47,7 +48,7 @@ public final class PlayerLoader implements BoardRetrieve<BridgePlayer>, CacheLoa
             e.printStackTrace();
 
             // recovering from the exception
-            bridgePlayer = BridgePlayer.of(uniqueId);
+            bridgePlayer = PlayerFactory.create(uniqueId);
         }
         return bridgePlayer;
     }
@@ -81,7 +82,7 @@ public final class PlayerLoader implements BoardRetrieve<BridgePlayer>, CacheLoa
                     .getSeconds();
             BridgeUtil.debug("PlayerRemovalListener#expireAfterUpdate: Start: current " +
                              "duration is " + elapse + " seconds!");
-            
+
             if (value.getPlayer() == null) {
                 BridgeUtil.debug("PlayerRemovalListener#expireAfterUpdate: Expiring " + key + " player data after " + elapse + " seconds!");
                 return EXPIRY_DURATION;

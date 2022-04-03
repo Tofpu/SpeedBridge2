@@ -13,20 +13,23 @@ import static io.tofpu.speedbridge2.model.common.Message.INSTANCE;
 
 @AutoRegister
 public final class IslandParser extends AbstractLampParser<Island> {
-    public IslandParser(final LampParseRegistry registry) {
+    private final PlayerService playerService;
+    private final IslandService islandService;
+
+    public IslandParser(final LampParseRegistry registry, final PlayerService playerService, final IslandService islandService) {
         super(Island.class, registry);
+        this.playerService = playerService;
+        this.islandService = islandService;
     }
 
     @Override
     Island parse(final ValueResolver.ValueResolverContext context) {
-        final BridgePlayer player = PlayerService.INSTANCE.get(context.actor().getUniqueId());
+        final BridgePlayer player = playerService.getIfPresent(context.actor().getUniqueId());
 
         final String input = context.pop();
         if (player == null) {
             throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(INSTANCE.notLoaded));
         }
-
-        final IslandService islandService = IslandService.INSTANCE;
 
         int slot;
         try {

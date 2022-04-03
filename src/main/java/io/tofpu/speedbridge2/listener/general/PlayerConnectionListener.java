@@ -1,13 +1,13 @@
 package io.tofpu.speedbridge2.listener.general;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
+import io.tofpu.speedbridge2.listener.GameListener;
 import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.config.category.LobbyCategory;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.common.util.UpdateChecker;
 import io.tofpu.speedbridge2.model.player.PlayerService;
-import io.tofpu.speedbridge2.listener.GameListener;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,17 +18,22 @@ import org.jetbrains.annotations.NotNull;
 
 @AutoRegister
 public final class PlayerConnectionListener extends GameListener {
-    final PlayerService playerService = PlayerService.INSTANCE;
+    private final PlayerService playerService;
+
+    public PlayerConnectionListener(final PlayerService playerService) {
+        this.playerService = playerService;
+    }
 
     @EventHandler(priority = EventPriority.LOWEST) // skipcq: JAVA-W0324
     private void onPlayerJoin(final @NotNull PlayerJoinEvent event) {
-        // internally refreshing the BridgePlayer object, to avoid the Player object
-        // from breaking
         final Player player = event.getPlayer();
 
-        playerService.internalRefresh(player);
+        // if the bridge player instance is loaded, then refresh the player instance
+        playerService.loadIfAbsent(player, (bridgePlayer) -> playerService.internalRefresh(player, bridgePlayer));
+
         if (player.isOp()) {
-            UpdateChecker.get().updateNotification(player);
+            UpdateChecker.get()
+                    .updateNotification(player);
         }
 
         teleportToLobby(player);

@@ -7,11 +7,11 @@ import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.leaderboard.loader.IslandLoader;
-import io.tofpu.speedbridge2.model.leaderboard.loader.PersonalBoardLoader;
-import io.tofpu.speedbridge2.model.leaderboard.wrapper.BoardPlayer;
-import io.tofpu.speedbridge2.model.leaderboard.wrapper.IslandBoardPlayer;
+import io.tofpu.speedbridge2.model.leaderboard.loader.PlayerPositionLoader;
+import io.tofpu.speedbridge2.model.leaderboard.object.BoardPlayer;
+import io.tofpu.speedbridge2.model.leaderboard.object.IslandBoardPlayer;
 import io.tofpu.speedbridge2.model.player.PlayerService;
-import io.tofpu.speedbridge2.model.player.misc.score.Score;
+import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 
 import java.util.*;
@@ -21,27 +21,28 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public final class Leaderboard {
-    public static final Leaderboard INSTANCE = new Leaderboard();
+    private final PlayerService playerService;
 
     private final LeaderboardMap globalMap;
-    private final Map<Integer, BoardPlayer> sessionalMap;
+    private final Map<Integer, BoardPlayer> sessionMap;
 
-    private final AsyncLoadingCache<UUID, BoardPlayer> playerCache;
+    private final AsyncLoadingCache<UUID, BoardPlayer> positionMap;
     private final AsyncLoadingCache<UUID, IslandBoardPlayer> islandPositionMap;
 
-    private Leaderboard() {
+    public Leaderboard(final PlayerService playerService) {
+        this.playerService = playerService;
         this.globalMap = new LeaderboardMap();
-        this.sessionalMap = new ConcurrentHashMap<>();
+        this.sessionMap = new ConcurrentHashMap<>();
 
         // player's personal global position
-        this.playerCache = Caffeine.newBuilder()
+        this.positionMap = Caffeine.newBuilder()
                 .expireAfterAccess(5, TimeUnit.SECONDS)
-                .buildAsync(PersonalBoardLoader.INSTANCE);
+                .buildAsync(new PlayerPositionLoader(playerService));
 
         // player's global position that based on an island
         this.islandPositionMap = Caffeine.newBuilder()
                 .expireAfterAccess(5, TimeUnit.SECONDS)
-                .buildAsync(IslandLoader.INSTANCE);
+                .buildAsync(new IslandLoader(playerService));
     }
 
     /**
@@ -81,7 +82,9 @@ public final class Leaderboard {
                             continue;
                         }
 
-                        final BoardPlayer value = BridgeUtil.toBoardPlayer(true, resultSet);
+                        final BoardPlayer value =
+                                BridgeUtil.toBoardPlayer(true,
+                                resultSet);
                         BridgeUtil.debug("Leaderboard#load(): value == " + value);
                         if (value == null) {
                             BridgeUtil.debug("Leaderboard#load(): value == null; " +
@@ -105,9 +108,9 @@ public final class Leaderboard {
                     BridgeUtil.debug("Leaderboard#load(): refreshing the leaderboard!");
 
                     // per-player based position operation
-                    for (final UUID uuid : playerCache.asMap()
+                    for (final UUID uuid : positionMap.asMap()
                             .keySet()) {
-                        this.playerCache.synchronous().refresh(uuid);
+                        this.positionMap.synchronous().refresh(uuid);
                     }
 
                     // update the global leaderboard
@@ -119,7 +122,7 @@ public final class Leaderboard {
         BridgeUtil.runBukkitAsync(() -> {
                     // sessional leaderboard operation
                     final Map<UUID, BoardPlayer> scoreMap = new HashMap<>();
-                    for (final BridgePlayer bridgePlayer : PlayerService.INSTANCE.getBridgePlayers()) {
+                    for (final BridgePlayer bridgePlayer : playerService.getBridgePlayers()) {
                         if (scoreMap.size() == 10) {
                             break;
                         }
@@ -141,10 +144,10 @@ public final class Leaderboard {
                         }
                     }
 
-                    this.sessionalMap.clear();
+                    this.sessionMap.clear();
                     for (final Map.Entry<UUID, BoardPlayer> entry : scoreMap.entrySet()) {
                         final BoardPlayer value = entry.getValue();
-                        this.sessionalMap.put(value.getPosition(), value);
+                        this.sessionMap.put(value.getPosition(), value);
                     }
                 }, ConfigurationManager.INSTANCE.getLeaderboardCategory()
                         .getSessionUpdateInterval(), 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
@@ -161,12 +164,12 @@ public final class Leaderboard {
      * @return A CompletableFuture<BoardPlayer>
      */
     public CompletableFuture<BoardPlayer> retrieve(final UUID uniqueId) {
-        final CompletableFuture<BoardPlayer> completableFuture = playerCache.asMap()
+        final CompletableFuture<BoardPlayer> completableFuture = positionMap.asMap()
                 .get(uniqueId);
 
         if (completableFuture == null) {
             // loading the board player
-            return playerCache.get(uniqueId);
+            return positionMap.get(uniqueId);
         }
 
         return completableFuture;
@@ -185,7 +188,7 @@ public final class Leaderboard {
             case GLOBAL:
                 return globalMap.get(position);
             case SESSION:
-                return sessionalMap.get(position);
+                return sessionMap.get(position);
             default:
                 throw new IllegalStateException("Invalid LeaderboardRetrieveType: " + leaderboardRetrieveType.name());
         }

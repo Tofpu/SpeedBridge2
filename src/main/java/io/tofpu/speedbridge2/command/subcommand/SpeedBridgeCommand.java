@@ -10,13 +10,13 @@ import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.island.IslandHandler;
 import io.tofpu.speedbridge2.model.island.IslandService;
 import io.tofpu.speedbridge2.model.island.object.Island;
-import io.tofpu.speedbridge2.model.island.object.extra.GameIsland;
-import io.tofpu.speedbridge2.model.island.setup.IslandSetup;
-import io.tofpu.speedbridge2.model.island.setup.IslandSetupManager;
+import io.tofpu.speedbridge2.model.island.object.GameIsland;
+import io.tofpu.speedbridge2.model.island.object.setup.IslandSetup;
+import io.tofpu.speedbridge2.model.island.object.setup.IslandSetupHandler;
 import io.tofpu.speedbridge2.model.player.PlayerService;
-import io.tofpu.speedbridge2.model.player.misc.score.Score;
+import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.model.player.object.extra.CommonBridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.CommonBridgePlayer;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -49,7 +49,13 @@ public final class SpeedBridgeCommand {
             "<gold>%s</gold>" + " " + ARROW_RIGHT.getSymbol() +
             " <gold>%s</gold> seconds";
 
-    private final IslandService islandService = IslandService.INSTANCE;
+    private final PlayerService playerService;
+    private final IslandService islandService;
+
+    public SpeedBridgeCommand(final PlayerService playerService, final IslandService islandService) {
+        this.playerService = playerService;
+        this.islandService = islandService;
+    }
 
     @Default
     @Description("The Main Command")
@@ -99,7 +105,7 @@ public final class SpeedBridgeCommand {
         }
 
         // initiate the creation setup process
-        IslandSetupManager.INSTANCE.initiate(player, result.getIsland());
+        IslandSetupHandler.INSTANCE.initiate(player, result.getIsland());
 
         // notify the player about the setup
         BridgeUtil.sendMessage(player, Message.INSTANCE.startingSetupProcess);
@@ -133,10 +139,10 @@ public final class SpeedBridgeCommand {
                 return;
             }
 
-            BridgePlayer target = PlayerService.INSTANCE.get(uuidResult);
+            BridgePlayer target = playerService.getIfPresent(uuidResult);
             if (target == null) {
                 try {
-                    PlayerService.INSTANCE.loadAsync(uuidResult)
+                    playerService.loadAsync(uuidResult)
                             .get();
                 } catch (InterruptedException | ExecutionException e) {
                     BridgeUtil.sendMessage(bridgePlayer, INSTANCE.somethingWentWrong);
@@ -347,7 +353,7 @@ public final class SpeedBridgeCommand {
             return String.format(INSTANCE.invalidIsland, slot);
         }
 
-        IslandSetupManager.INSTANCE.initiate(bridgePlayer, island);
+        IslandSetupHandler.INSTANCE.initiate(bridgePlayer, island);
         return String.format(INSTANCE.startingSetupProcess, slot);
     }
 
@@ -357,7 +363,7 @@ public final class SpeedBridgeCommand {
     @RestrictSetup(opposite = true)
     @RestrictConsole
     public String setupSetSpawn(final BridgePlayer bridgePlayer) {
-        final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
+        final IslandSetup islandSetup = IslandSetupHandler.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
         final Location playerLocation = bridgePlayer.getPlayer()
                 .getLocation();
@@ -379,7 +385,7 @@ public final class SpeedBridgeCommand {
     @RestrictSetup(opposite = true)
     @RestrictConsole
     public String setupFinish(final BridgePlayer bridgePlayer) {
-        final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
+        final IslandSetup islandSetup = IslandSetupHandler.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
         if (!islandSetup.isReady()) {
             return INSTANCE.setupIncomplete;
@@ -395,7 +401,7 @@ public final class SpeedBridgeCommand {
     @RestrictSetup(opposite = true)
     @RestrictConsole
     public String cancelSetup(final BridgePlayer bridgePlayer) {
-        final IslandSetup islandSetup = IslandSetupManager.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
+        final IslandSetup islandSetup = IslandSetupHandler.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
         islandSetup.cancel();
         return INSTANCE.setupCancelled;

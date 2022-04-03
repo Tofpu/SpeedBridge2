@@ -6,6 +6,7 @@ import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.common.util.DatabaseUtil;
 import io.tofpu.speedbridge2.model.island.exception.IslandLoadFailureException;
 import io.tofpu.speedbridge2.model.island.object.Island;
+import io.tofpu.speedbridge2.model.island.object.IslandBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +29,7 @@ public final class IslandDatabase extends Database {
             databaseQuery.setInt(island.getSlot());
             databaseQuery.setString(island.getCategory());
             databaseQuery.setString(island.getSchematicName());
-            databaseQuery.setString(locationToString(island.getAbsoluteLocation()));
+            databaseQuery.setString(serialize(island.getAbsoluteLocation()));
         });
     }
 
@@ -44,7 +45,7 @@ public final class IslandDatabase extends Database {
 
                     final Location spawnPoint = island.getAbsoluteLocation();
                     if (spawnPoint != null) {
-                        databaseQuery.setString(locationToString(spawnPoint));
+                        databaseQuery.setString(serialize(spawnPoint));
                     } else {
                         databaseQuery.setString(null);
                     }
@@ -59,32 +60,25 @@ public final class IslandDatabase extends Database {
         });
     }
 
-    public @NotNull CompletableFuture<List<Island>> getStoredIslands() {
+    public @NotNull CompletableFuture<List<Island>> getStoredIslandsAsync() {
         return runAsync(() -> {
             final List<Island> islands = new ArrayList<>();
 
             try {
                 DatabaseUtil.databaseQueryExecute("SELECT * FROM islands", resultSet -> {
                     while (resultSet.next()) {
-                        final Island island = new Island(resultSet.getInt("slot"), resultSet.getString("category"));
-                        island.selectSchematic(resultSet.getString("schematic_name"));
+                        final IslandBuilder builder = IslandBuilder.of();
+                        builder.setSlot(resultSet.getInt("slot"));
+                        builder.setCategory(resultSet.getString("category"));
+                        builder.setSchematic(resultSet.getString("schematic_name"));
 
-                        final String spawnPoint = resultSet.getString("spawn_point");
-                        if (spawnPoint != null) {
-                            final String[] split = spawnPoint.split(":");
-                            final int x = Integer.parseInt(split[0]);
-                            final int y = Integer.parseInt(split[1]);
-                            final int z = Integer.parseInt(split[2]);
-                            final float yaw = Float.parseFloat(split[3]);
-                            final float pitch = Float.parseFloat(split[4]);
-
-                            island.setAbsoluteLocation(new Location(Bukkit.getWorld("Speedbridge2"), x, y, z, yaw, pitch));
+                        final String serializedSpawnPoint = resultSet.getString("spawn_point");
+                        if (serializedSpawnPoint != null && !serializedSpawnPoint.isEmpty()) {
+                            builder.setAbsoluteLocation(deserialize(serializedSpawnPoint));
                         }
 
-                        islands.add(island);
-                    }
-                        })
-                        .get();
+                        islands.add(builder.build());
+                    }}).get();
             } catch (InterruptedException | ExecutionException e) {
                 throw new IslandLoadFailureException(e);
             }
@@ -93,12 +87,27 @@ public final class IslandDatabase extends Database {
         });
     }
 
-    private String locationToString(final Location location) {
+    private String serialize(final Location location) {
         if (location == null) {
             return null;
         }
 
         return location.getBlockX() + ":" + location.getBlockY() + ":" +
                location.getBlockZ() + ":" + location.getYaw() + ":" + location.getPitch();
+    }
+
+    private Location deserialize(final String input) {
+        if (input == null) {
+            return null;
+        }
+
+        final String[] split = input.split(":");
+        final int x = Integer.parseInt(split[0]);
+        final int y = Integer.parseInt(split[1]);
+        final int z = Integer.parseInt(split[2]);
+        final float yaw = Float.parseFloat(split[3]);
+        final float pitch = Float.parseFloat(split[4]);
+
+        return new Location(Bukkit.getWorld("Speedbridge2"), x, y, z, yaw, pitch);
     }
 }

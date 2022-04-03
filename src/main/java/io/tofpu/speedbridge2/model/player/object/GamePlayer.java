@@ -1,8 +1,8 @@
 package io.tofpu.speedbridge2.model.player.object;
 
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.island.object.extra.GameIsland;
-import io.tofpu.speedbridge2.model.island.plot.IslandPlot;
+import io.tofpu.speedbridge2.model.island.object.GameIsland;
+import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -117,7 +117,7 @@ public final class GamePlayer {
      *
      * @param selectedPlot The plot that the player has selected.
      */
-    public void teleport(final IslandPlot selectedPlot) {
+    public void teleport(final IslandLand selectedPlot) {
         if (player == null) {
             return;
         }

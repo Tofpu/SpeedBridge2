@@ -1,6 +1,6 @@
 package io.tofpu.speedbridge2.model.support.placeholderapi.expansion.expansions;
 
-import io.tofpu.speedbridge2.model.player.misc.stat.PlayerStatType;
+import io.tofpu.speedbridge2.model.player.object.stat.PlayerStatType;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.GamePlayer;
 import io.tofpu.speedbridge2.model.support.placeholderapi.expansion.AbstractExpansion;

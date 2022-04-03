@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2.command.subcommand;
 
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.player.object.extra.CommonBridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.CommonBridgePlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;

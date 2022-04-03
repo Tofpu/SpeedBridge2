@@ -13,10 +13,11 @@ public final class PluginExpansion extends PlaceholderExpansion {
     private final Plugin plugin;
     private final PluginDescriptionFile descriptionFile;
 
-    private final PlayerService playerService = PlayerService.INSTANCE;
+    private final PlayerService playerService;
 
-    public PluginExpansion(final Plugin plugin) {
+    public PluginExpansion(final Plugin plugin, final PlayerService playerService) {
         this.plugin = plugin;
+        this.playerService = playerService;
         this.descriptionFile = this.plugin.getDescription();
 
         register();
@@ -54,7 +55,7 @@ public final class PluginExpansion extends PlaceholderExpansion {
             return "";
         }
 
-        final BridgePlayer bridgePlayer = playerService.get(player.getUniqueId());
+        final BridgePlayer bridgePlayer = playerService.getIfPresent(player.getUniqueId());
         if (bridgePlayer == null) {
             return "";
         }

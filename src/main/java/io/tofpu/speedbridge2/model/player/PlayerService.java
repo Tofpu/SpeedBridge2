@@ -1,6 +1,5 @@
 package io.tofpu.speedbridge2.model.player;
 
-import io.tofpu.speedbridge2.model.island.IslandService;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -9,10 +8,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public final class PlayerService {
-    public static final @NotNull PlayerService INSTANCE = new PlayerService();
-
     private final @NotNull PlayerHandler playerHandler;
 
     public PlayerService() {
@@ -36,8 +34,8 @@ public final class PlayerService {
      * @param uuid The unique ID of the player.
      * @return A BridgePlayer object.
      */
-    public @Nullable BridgePlayer get(final @NotNull UUID uuid) {
-        return this.playerHandler.get(uuid);
+    public @Nullable BridgePlayer getIfPresent(final @NotNull UUID uuid) {
+        return this.playerHandler.getIfPresent(uuid);
     }
 
     /**
@@ -70,6 +68,19 @@ public final class PlayerService {
     }
 
     /**
+     * If the player is online, update the name if it has changed and refresh the
+     * player instance
+     *
+     * @param player The live instance of the player.
+     * @param bridgePlayer The bridge player instance that is being refreshed.
+     */
+    public void internalRefresh(final @NotNull Player player,
+            final @NotNull BridgePlayer bridgePlayer) {
+        playerHandler.internalRefresh(player, bridgePlayer);
+    }
+
+
+    /**
      * This function invalidates a player by removing them from the bridge and the island
      * setup manager
      *
@@ -100,5 +111,10 @@ public final class PlayerService {
 
     public void shutdown() {
         playerHandler.shutdown();
+    }
+
+    public void loadIfAbsent(final Player player,
+            final Consumer<BridgePlayer> notAbsentConsumer) {
+        playerHandler.loadIfAbsent(player.getUniqueId(), notAbsentConsumer);
     }
 }
