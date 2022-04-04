@@ -3,7 +3,6 @@ package io.tofpu.speedbridge2.model.player;
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.tofpu.speedbridge2.model.common.database.Databases;
-import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.island.object.setup.IslandSetupHandler;
 import io.tofpu.speedbridge2.model.player.loader.PlayerLoader;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
@@ -105,16 +104,16 @@ public final class PlayerHandler {
      */
     public void internalRefresh(final @NotNull Player player,
             final @NotNull BridgePlayer bridgePlayer) {
-        if (!player.isOnline()) {
-            return;
-        }
-
         final String name = player.getName();
-        if (!bridgePlayer.getName().equals(name)) {
+        if (!bridgePlayer.getName()
+                .equals(name)) {
             Databases.PLAYER_DATABASE.updateName(name, bridgePlayer);
         }
 
-        bridgePlayer.internalRefresh(player.getUniqueId());
+        final UUID uniqueId = player.getUniqueId();
+        bridgePlayer.internalRefresh(uniqueId);
+        playerMap.asMap()
+                .compute(uniqueId, (uuid, bridgePlayerCompletableFuture) -> CompletableFuture.completedFuture(bridgePlayer));
     }
 
     /**
@@ -176,9 +175,10 @@ public final class PlayerHandler {
     public void loadIfAbsent(final UUID uniqueId, final Consumer<BridgePlayer> notAbsentConsumer) {
         final BridgePlayer bridgePlayer = getIfPresent(uniqueId);
         if (bridgePlayer != null) {
+            notAbsentConsumer.accept(bridgePlayer);
             return;
         }
 
-        BridgeUtil.whenComplete(loadAsync(uniqueId), notAbsentConsumer);
+        loadAsync(uniqueId);
     }
 }

@@ -68,7 +68,7 @@ public final class SpeedBridge {
 
         try {
             DynamicClass.addParameters(javaPlugin, playerService, islandService,
-                    leaderboard);
+                    arenaManager, leaderboard);
             DynamicClass.alternativeScan(getClass().getClassLoader(), "io.tofpu" +
                     ".speedbridge2");
         } catch (final IOException | NoClassDefFoundError e) {

@@ -173,6 +173,10 @@ public final class ArenaManager {
         }
     }
 
+    public World getWorld() {
+        return this.world;
+    }
+
     private static final class EmptyChunkGenerator extends ChunkGenerator {
         @Override
         public @NotNull ChunkData generateChunkData(final World world, final Random random, final int x, final int z, final BiomeGrid biome) {
