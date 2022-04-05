@@ -11,8 +11,8 @@ import io.tofpu.speedbridge2.model.common.util.DatabaseUtil;
 import io.tofpu.speedbridge2.model.player.exception.PlayerDeletionFailureException;
 import io.tofpu.speedbridge2.model.player.exception.PlayerLoadFailureException;
 import io.tofpu.speedbridge2.model.player.exception.PlayerUpdateNameFailureException;
-import io.tofpu.speedbridge2.model.player.misc.score.Score;
-import io.tofpu.speedbridge2.model.player.misc.stat.PlayerStat;
+import io.tofpu.speedbridge2.model.player.object.score.Score;
+import io.tofpu.speedbridge2.model.player.object.stat.PlayerStat;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
@@ -102,7 +102,7 @@ public final class PlayerDatabase extends Database {
 
     public @NotNull CompletableFuture<BridgePlayer> getStoredPlayer(final @NotNull UUID uniqueId) {
         return runAsync(() -> {
-            final BridgePlayer bridgePlayer = BridgePlayer.of(uniqueId);
+            final BridgePlayer bridgePlayer = PlayerFactory.create(uniqueId);
 
             try (final DatabaseQuery query = DatabaseQuery.query(
                     "SELECT * FROM players " + "where uid = ?")) {

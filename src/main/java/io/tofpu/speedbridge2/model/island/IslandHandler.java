@@ -2,10 +2,10 @@ package io.tofpu.speedbridge2.model.island;
 
 import io.tofpu.speedbridge2.model.common.database.Databases;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.model.island.arena.ArenaManager;
 import io.tofpu.speedbridge2.model.island.object.Island;
-import io.tofpu.speedbridge2.model.island.object.IslandBoard;
-import io.tofpu.speedbridge2.model.island.object.extra.IslandCreation;
-import io.tofpu.speedbridge2.model.island.schematic.SchematicManager;
+import io.tofpu.speedbridge2.model.leaderboard.IslandBoard;
+import io.tofpu.speedbridge2.model.island.object.IslandBuild;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +16,11 @@ import java.util.Map;
 
 public final class IslandHandler {
     private final @NotNull Map<Integer, Island> islandMap = new HashMap<>();
+    private ArenaManager arenaManager;
+
+    public void init(final @NotNull ArenaManager arenaManager) {
+        this.arenaManager = arenaManager;
+    }
 
     /**
      * Loads the islands from the map of islands
@@ -44,7 +49,9 @@ public final class IslandHandler {
             return IslandCreationResultType.ISLAND_ALREADY_EXISTS.empty();
         }
 
-        final Island island = new IslandCreation(slot, category);
+        final Island island =
+                IslandFactory.create(IslandFactory.IslandFactoryType.BUILD, slot,
+                        category);
 
         BridgeUtil.debug("IslandHandler#createIsland(): before: " + island);
 
@@ -99,7 +106,7 @@ public final class IslandHandler {
             Databases.ISLAND_DATABASE.delete(slot);
             IslandBoard.remove(island);
 
-            SchematicManager.clearPlot(slot);
+            arenaManager.clearPlot(slot);
 
             return island;
         }
@@ -141,9 +148,9 @@ public final class IslandHandler {
         // print the island with BridgeUtil.debug
         BridgeUtil.debug("IslandHandler#registerIsland(): island: " + island);
 
-        if (island instanceof IslandCreation) {
-            final IslandCreation islandCreation = (IslandCreation) island;
-            island = islandCreation.toRegularIsland();
+        if (island instanceof IslandBuild) {
+            final IslandBuild islandBuild = (IslandBuild) island;
+            island = islandBuild.toRegularIsland();
         }
 
         islandMap.put(island.getSlot(), island);

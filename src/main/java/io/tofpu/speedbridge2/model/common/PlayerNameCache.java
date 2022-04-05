@@ -71,7 +71,7 @@ public final class PlayerNameCache {
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IllegalStateException(e);
         }
         return result.get();
     }

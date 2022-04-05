@@ -1,5 +1,7 @@
 package io.tofpu.speedbridge2.model.island;
 
+import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.model.island.arena.ArenaManager;
 import io.tofpu.speedbridge2.model.island.object.Island;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -9,8 +11,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public final class IslandService {
-    public static final @NotNull IslandService INSTANCE = new IslandService();
-
+//    public static final @NotNull IslandService INSTANCE = new IslandService();
     private final @NotNull IslandHandler islandHandler;
     private final @NotNull IslandRepository islandRepository;
 
@@ -19,13 +20,15 @@ public final class IslandService {
         this.islandRepository = new IslandRepository();
     }
 
+    public void init(final ArenaManager arenaManager) {
+        this.islandHandler.init(arenaManager);
+    }
+
     /**
      * Loads the islands from the map of islands
      */
-    public CompletableFuture<Map<Integer, Island>> load() {
-        return this.islandRepository.loadIslands().whenComplete((islandMap, throwable) -> {
-            this.islandHandler.load(islandMap);
-        });
+    public CompletableFuture<Map<Integer, Island>> loadAsync() {
+        return BridgeUtil.whenComplete(this.islandRepository.getIslandsAsync(), this.islandHandler::load);
     }
 
     /**

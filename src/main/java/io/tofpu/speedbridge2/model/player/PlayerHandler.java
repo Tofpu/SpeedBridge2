@@ -3,11 +3,11 @@ package io.tofpu.speedbridge2.model.player;
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import io.tofpu.speedbridge2.model.common.database.Databases;
-import io.tofpu.speedbridge2.model.island.setup.IslandSetupManager;
+import io.tofpu.speedbridge2.model.island.object.setup.IslandSetupHandler;
 import io.tofpu.speedbridge2.model.player.loader.PlayerLoader;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.GamePlayer;
-import io.tofpu.speedbridge2.model.player.object.extra.DummyBridgePlayer;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public final class PlayerHandler {
     private final @NotNull AsyncLoadingCache<UUID, BridgePlayer> playerMap;
@@ -42,7 +43,7 @@ public final class PlayerHandler {
      * @param uniqueId The unique ID of the player.
      * @return A BridgePlayer object.
      */
-    public @Nullable BridgePlayer get(final UUID uniqueId) {
+    public @Nullable BridgePlayer getIfPresent(final UUID uniqueId) {
         return this.playerMap.synchronous().getIfPresent(uniqueId);
     }
 
@@ -53,9 +54,9 @@ public final class PlayerHandler {
      * @return A BridgePlayer object.
      */
     public @NotNull BridgePlayer getOrDefault(final UUID uniqueId) {
-        final BridgePlayer bridgePlayer = get(uniqueId);
+        final BridgePlayer bridgePlayer = getIfPresent(uniqueId);
         if (bridgePlayer == null) {
-            return DummyBridgePlayer.of(uniqueId);
+            return PlayerFactory.createDummy(uniqueId);
         }
         return bridgePlayer;
     }
@@ -81,7 +82,7 @@ public final class PlayerHandler {
      */
     public void internalRefresh(final String name,
             final UUID uniqueId) {
-        final BridgePlayer bridgePlayer = get(uniqueId);
+        final BridgePlayer bridgePlayer = getIfPresent(uniqueId);
         if (bridgePlayer == null) {
             loadAsync(uniqueId);
             return;
@@ -95,6 +96,27 @@ public final class PlayerHandler {
     }
 
     /**
+     * If the player is online, update the name if it has changed and refresh the
+     * player instance
+     *
+     * @param player The live instance of the player.
+     * @param bridgePlayer The bridge player instance that is being refreshed.
+     */
+    public void internalRefresh(final @NotNull Player player,
+            final @NotNull BridgePlayer bridgePlayer) {
+        final String name = player.getName();
+        if (!bridgePlayer.getName()
+                .equals(name)) {
+            Databases.PLAYER_DATABASE.updateName(name, bridgePlayer);
+        }
+
+        final UUID uniqueId = player.getUniqueId();
+        bridgePlayer.internalRefresh(uniqueId);
+        playerMap.asMap()
+                .compute(uniqueId, (uuid, bridgePlayerCompletableFuture) -> CompletableFuture.completedFuture(bridgePlayer));
+    }
+
+    /**
      * This function invalidates a player by removing them from the bridge and the island
      * setup manager
      *
@@ -102,14 +124,14 @@ public final class PlayerHandler {
      * @return The bridge player that was invalidated.
      */
     public @Nullable BridgePlayer invalidate(final UUID uniqueId) {
-        final BridgePlayer bridgePlayer = get(uniqueId);
+        final BridgePlayer bridgePlayer = getIfPresent(uniqueId);
         if (bridgePlayer == null) {
             return null;
         }
         bridgePlayer.invalidatePlayer();
         playerMap.asMap().compute(uniqueId, (uuid, bridgePlayerCompletableFuture) -> CompletableFuture.completedFuture(bridgePlayer));
 
-        IslandSetupManager.INSTANCE.invalidate(uniqueId);
+        IslandSetupHandler.INSTANCE.invalidate(uniqueId);
 
         return bridgePlayer;
     }
@@ -130,7 +152,7 @@ public final class PlayerHandler {
      * @param uuid The UUID of the player to reset.
      */
     public void reset(final UUID uuid) {
-        final BridgePlayer bridgePlayer = get(uuid);
+        final BridgePlayer bridgePlayer = getIfPresent(uuid);
         if (bridgePlayer == null) {
             return;
         }
@@ -148,5 +170,15 @@ public final class PlayerHandler {
             }
             gamePlayer.resetBlocks();
         }
+    }
+
+    public void loadIfAbsent(final UUID uniqueId, final Consumer<BridgePlayer> notAbsentConsumer) {
+        final BridgePlayer bridgePlayer = getIfPresent(uniqueId);
+        if (bridgePlayer != null) {
+            notAbsentConsumer.accept(bridgePlayer);
+            return;
+        }
+
+        loadAsync(uniqueId);
     }
 }

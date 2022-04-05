@@ -2,28 +2,35 @@ package io.tofpu.speedbridge2.model.player.object;
 
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.database.Databases;
-import io.tofpu.speedbridge2.model.leaderboard.Leaderboard;
 import io.tofpu.speedbridge2.model.island.IslandService;
+import io.tofpu.speedbridge2.model.island.object.GameIsland;
 import io.tofpu.speedbridge2.model.island.object.Island;
-import io.tofpu.speedbridge2.model.island.object.IslandBoard;
-import io.tofpu.speedbridge2.model.island.object.extra.GameIsland;
-import io.tofpu.speedbridge2.model.player.misc.block.BlockChoice;
-import io.tofpu.speedbridge2.model.player.misc.score.Score;
-import io.tofpu.speedbridge2.model.player.misc.session.SessionScore;
-import io.tofpu.speedbridge2.model.player.misc.setup.SetupMeta;
-import io.tofpu.speedbridge2.model.player.misc.stat.PlayerStat;
-import io.tofpu.speedbridge2.model.player.misc.stat.PlayerStatType;
-import io.tofpu.speedbridge2.model.player.object.extra.CommonBridgePlayer;
+import io.tofpu.speedbridge2.model.leaderboard.IslandBoard;
+import io.tofpu.speedbridge2.model.leaderboard.Leaderboard;
+import io.tofpu.speedbridge2.model.player.object.block.BlockChoice;
+import io.tofpu.speedbridge2.model.player.object.score.Score;
+import io.tofpu.speedbridge2.model.player.object.session.SessionScore;
+import io.tofpu.speedbridge2.model.player.object.setup.SetupMeta;
+import io.tofpu.speedbridge2.model.player.object.stat.PlayerStat;
+import io.tofpu.speedbridge2.model.player.object.stat.PlayerStatType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionScore, BlockChoice, SetupMeta {
+    private final IslandService islandService;
+    private final Leaderboard leaderboard;
+
     private final UUID playerUid;
     private final Map<Integer, Score> scoreMap;
     private final Map<String, PlayerStat> statsMap;
@@ -53,8 +60,9 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
      * @param playerUid The UUID of the player.
      * @return A new BridgePlayer object.
      */
-    public static BridgePlayer of(final UUID playerUid) {
-        return new BridgePlayer(playerUid);
+    public static BridgePlayer of(final IslandService islandService,
+            final Leaderboard leaderboard, final UUID playerUid) {
+        return new BridgePlayer(islandService, leaderboard, playerUid);
     }
 
     /**
@@ -64,12 +72,13 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
      * @param playerUid The UUID of the player.
      * @return A new BridgePlayer object.
      */
-    public static BridgePlayer of(final String name, final UUID playerUid) {
-        return new BridgePlayer(name, playerUid);
+    public static BridgePlayer of(final IslandService islandService,
+            final Leaderboard leaderboard, final String name, final UUID playerUid) {
+        return new BridgePlayer(islandService, leaderboard, name, playerUid);
     }
 
-    private BridgePlayer(final BridgePlayer copy) {
-        this(copy.getName(), copy.playerUid);
+    protected BridgePlayer(final BridgePlayer copy) {
+        this(copy.islandService, copy.leaderboard, copy.getName(), copy.playerUid);
         this.scoreMap.putAll(copy.scoreMap);
         this.statsMap.putAll(copy.statsMap);
 
@@ -77,15 +86,18 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
         this.chosenBlock = copy.chosenBlock;
     }
 
-    protected BridgePlayer(final UUID playerUid) {
-        this("null", playerUid);
+    protected BridgePlayer(final IslandService islandService,
+            final Leaderboard leaderboard, final UUID playerUid) {
+        this(islandService, leaderboard, "null", playerUid);
 
         if (player != null) {
             this.name = player.getName();
         }
     }
 
-    private BridgePlayer(final String name, final UUID playerUid) {
+    protected BridgePlayer(final IslandService islandService, final Leaderboard leaderboard, final String name, final UUID playerUid) {
+        this.islandService = islandService;
+        this.leaderboard = leaderboard;
         this.playerUid = playerUid;
         this.scoreMap = new HashMap<>();
         this.statsMap = new HashMap<>();
@@ -163,10 +175,10 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
         }
 
         // adding the score to the global leaderboard
-        Leaderboard.INSTANCE.addScore(this, score);
+        leaderboard.addScore(this, score);
 
         // adding the score to island leaderboard
-        final Island island = IslandService.INSTANCE.findIslandBy(score.getScoredOn());
+        final Island island = islandService.findIslandBy(score.getScoredOn());
         if (island != null) {
             island.addLeaderboardScore(this, score);
         }
@@ -242,7 +254,7 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
         this.chosenBlock = ConfigurationManager.INSTANCE.getBlockMenuCategory()
                 .getDefaultBlock();
 
-        Leaderboard.INSTANCE.reset(getPlayerUid());
+        leaderboard.reset(getPlayerUid());
         IslandBoard.reset(getPlayerUid());
 
         return Databases.PLAYER_DATABASE.delete(getPlayerUid());

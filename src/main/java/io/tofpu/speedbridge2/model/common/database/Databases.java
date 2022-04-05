@@ -2,9 +2,9 @@ package io.tofpu.speedbridge2.model.common.database;
 
 import io.tofpu.speedbridge2.model.island.IslandDatabase;
 import io.tofpu.speedbridge2.model.player.PlayerDatabase;
-import io.tofpu.speedbridge2.model.player.misc.block.BlockDatabase;
-import io.tofpu.speedbridge2.model.player.misc.score.ScoreDatabase;
-import io.tofpu.speedbridge2.model.player.misc.stat.StatsDatabase;
+import io.tofpu.speedbridge2.model.player.object.block.BlockDatabase;
+import io.tofpu.speedbridge2.model.player.object.score.ScoreDatabase;
+import io.tofpu.speedbridge2.model.player.object.stat.StatsDatabase;
 import org.jetbrains.annotations.NotNull;
 
 public final class Databases {

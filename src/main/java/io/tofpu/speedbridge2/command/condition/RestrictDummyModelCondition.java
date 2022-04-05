@@ -6,7 +6,7 @@ import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.model.player.object.extra.DummyBridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.DummyBridgePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Unmodifiable;
 import revxrsal.commands.command.CommandActor;
@@ -17,8 +17,11 @@ import java.util.List;
 
 @AutoRegister
 public final class RestrictDummyModelCondition extends AbstractCommandConditionWrapper {
-    public RestrictDummyModelCondition(final LampConditionRegistry registry) {
+    private final PlayerService playerService;
+
+    public RestrictDummyModelCondition(final LampConditionRegistry registry, final PlayerService playerService) {
         super(RestrictSetup.class, registry);
+        this.playerService = playerService;
     }
 
     @Override
@@ -26,7 +29,7 @@ public final class RestrictDummyModelCondition extends AbstractCommandConditionW
             @NotNull final CommandActor actor,
             @NotNull final ExecutableCommand command,
             @NotNull @Unmodifiable final List<String> arguments) {
-        final BridgePlayer player = PlayerService.INSTANCE.get(actor.getUniqueId());
+        final BridgePlayer player = playerService.getIfPresent(actor.getUniqueId());
         if (player == null) {
             return;
         }
