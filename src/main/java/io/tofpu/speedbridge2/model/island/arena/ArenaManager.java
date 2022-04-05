@@ -102,7 +102,7 @@ public final class ArenaManager {
         final double[] positions = {COUNTER.get(), 100, 100};
 
         final IslandLand islandLand = new IslandLand(target, world, positions);
-        COUNTER.getAndAdd(islandLand.getWidth() + 10);
+        COUNTER.getAndAdd(islandLand.getWidth() + ConfigurationManager.INSTANCE.getGeneralCategory().getIslandSpaceGap());
 
         // reserving the plot to player
         islandLand.reserveWith(gameIsland);

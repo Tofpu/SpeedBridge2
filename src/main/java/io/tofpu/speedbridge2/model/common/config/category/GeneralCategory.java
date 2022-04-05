@@ -22,4 +22,12 @@ public final class GeneralCategory {
     public String getDefaultIslandCategory() {
         return defaultIslandCategory;
     }
+
+    @Setting("island-space-gap")
+    @Comment("The space gap between islands")
+    private int islandSpaceGap = 10;
+
+    public int getIslandSpaceGap() {
+        return islandSpaceGap;
+    }
 }
