@@ -5,11 +5,9 @@ import io.tofpu.speedbridge2.model.common.PlayerNameCache;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseSet;
-import io.tofpu.speedbridge2.model.leaderboard.wrapper.BoardPlayer;
-import io.tofpu.speedbridge2.model.player.PlayerService;
-import io.tofpu.speedbridge2.model.player.misc.score.Score;
-import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.model.player.object.extra.CommonBridgePlayer;
+import io.tofpu.speedbridge2.model.leaderboard.object.BoardPlayer;
+import io.tofpu.speedbridge2.model.player.object.CommonBridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
@@ -23,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 /**
  * This class is a utility class that provides utility methods for the SpeedBridge plugin
@@ -143,6 +142,7 @@ public final class BridgeUtil {
      *
      * @param row boolean
      * @param databaseSet The database set that is being converted to a BoardPlayer.
+     *
      * @return A BoardPlayer object.
      */
     public static BoardPlayer toBoardPlayer(final boolean row, final DatabaseSet databaseSet) {
@@ -158,17 +158,8 @@ public final class BridgeUtil {
 
         final Score score = Score.of(islandSlot, playerScore);
 
-        BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uid);
-        if (bridgePlayer == null) {
-            BridgeUtil.debug("BridgeUtil#toBoardPlayer(): bridgePlayer == null : " + uid);
-            bridgePlayer = BridgePlayer.of(PlayerNameCache.INSTANCE.getOrDefault(uid), uid);
-        } else {
-            BridgeUtil.debug("BridgeUtil#toBoardPlayer(): bridgePlayer != null : " + uid);
-        }
-
-        final String name = bridgePlayer.getName();
-        final int position = !row ? databaseSet.getInt("position") :
-                databaseSet.getRow();
+        final String name = PlayerNameCache.INSTANCE.getOrDefault(uid);
+        final int position = !row ? databaseSet.getInt("position") : databaseSet.getRow();
 
         BridgeUtil.debug("BridgeUtil#toBoardPlayer(): position == " + position);
 
@@ -228,7 +219,23 @@ public final class BridgeUtil {
      * It runs the given Runnable when the CompletableFuture is completed.
      *
      * @param completableFuture The completable future to be completed.
-     * @param whenComplete A Runnable that will be run when the CompletableFuture is
+     * @param whenCompleteConsumer The consumer to be run when the completable future is completed.
+     */
+    public static <T> CompletableFuture<T> whenComplete(final CompletableFuture<T> completableFuture,
+            final Consumer<T> whenCompleteConsumer) {
+        return completableFuture.whenComplete((o, throwable) -> {
+            if (throwable != null) {
+                throw new IllegalStateException(throwable);
+            }
+            whenCompleteConsumer.accept(o);
+        });
+    }
+
+    /**
+     * It runs the given Runnable when the CompletableFuture is completed.
+     *
+     * @param completableFuture The completable future to be completed.
+     * @param whenComplete The runnable to be run when the completable future is
      * completed.
      */
     public static void whenComplete(final CompletableFuture<?> completableFuture,

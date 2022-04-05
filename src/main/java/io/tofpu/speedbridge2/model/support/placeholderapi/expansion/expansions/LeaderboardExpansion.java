@@ -5,16 +5,24 @@ import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.leaderboard.Leaderboard;
-import io.tofpu.speedbridge2.model.leaderboard.wrapper.BoardPlayer;
+import io.tofpu.speedbridge2.model.leaderboard.object.BoardPlayer;
 import io.tofpu.speedbridge2.model.island.IslandService;
 import io.tofpu.speedbridge2.model.island.object.Island;
-import io.tofpu.speedbridge2.model.player.misc.score.Score;
+import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.GamePlayer;
 import io.tofpu.speedbridge2.model.support.placeholderapi.expansion.AbstractExpansion;
 
 @AutoRegister
 public final class LeaderboardExpansion extends AbstractExpansion {
+    private final IslandService islandService;
+    private final Leaderboard leaderboard;
+
+    public LeaderboardExpansion(final IslandService islandService, final Leaderboard leaderboard) {
+        this.islandService = islandService;
+        this.leaderboard = leaderboard;
+    }
+
     @Override
     public String getIdentifier() {
         return "leaderboard";
@@ -42,9 +50,10 @@ public final class LeaderboardExpansion extends AbstractExpansion {
 
         final BoardPlayer boardPlayer;
         if (args[1].equalsIgnoreCase("global")) {
-            boardPlayer = Leaderboard.INSTANCE.retrieve(Leaderboard.LeaderboardRetrieveType.GLOBAL, position);
+            boardPlayer = leaderboard.retrieve(Leaderboard.LeaderboardRetrieveType.GLOBAL,
+                    position);
         } else if (args[1].equalsIgnoreCase("session")) {
-            boardPlayer = Leaderboard.INSTANCE.retrieve(Leaderboard.LeaderboardRetrieveType.SESSION, position);
+            boardPlayer = leaderboard.retrieve(Leaderboard.LeaderboardRetrieveType.SESSION, position);
 
             // if board player is null, return the empty session leaderboard message
             if (boardPlayer == null) {
@@ -55,7 +64,7 @@ public final class LeaderboardExpansion extends AbstractExpansion {
             if (slot == -1) {
                 return "Invalid Placeholder";
             }
-            final Island island = IslandService.INSTANCE.findIslandBy(slot);
+            final Island island = islandService.findIslandBy(slot);
 
             if (island == null) {
                 return "";

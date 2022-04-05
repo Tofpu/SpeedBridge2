@@ -23,7 +23,7 @@ public final class DatabaseManager {
     private static File storageFile;
     private static Connection connection;
 
-    public static CompletableFuture<Void> load(final @NotNull Plugin plugin) {
+    public static CompletableFuture<Void> loadAsync(final @NotNull Plugin plugin) {
         return PluginExecutor.runAsync(() -> {
             try {
                 Class.forName("org.sqlite.JDBC");

@@ -3,7 +3,7 @@ package io.tofpu.speedbridge2.model.support.placeholderapi.expansion.expansions;
 import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.player.misc.score.Score;
+import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.GamePlayer;
 import io.tofpu.speedbridge2.model.support.placeholderapi.expansion.AbstractExpansion;

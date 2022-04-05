@@ -3,8 +3,8 @@ package io.tofpu.speedbridge2.model.support.placeholderapi.expansion.expansions;
 import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.leaderboard.Leaderboard;
-import io.tofpu.speedbridge2.model.leaderboard.wrapper.BoardPlayer;
-import io.tofpu.speedbridge2.model.leaderboard.wrapper.IslandBoardPlayer;
+import io.tofpu.speedbridge2.model.leaderboard.object.BoardPlayer;
+import io.tofpu.speedbridge2.model.leaderboard.object.IslandBoardPlayer;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.GamePlayer;
 import io.tofpu.speedbridge2.model.support.placeholderapi.expansion.AbstractExpansion;
@@ -14,6 +14,12 @@ import java.util.concurrent.ExecutionException;
 
 @AutoRegister
 public final class PositionExpansion extends AbstractExpansion {
+    private final Leaderboard leaderboard;
+
+    public PositionExpansion(final Leaderboard leaderboard) {
+        this.leaderboard = leaderboard;
+    }
+
     @Override
     public String getIdentifier() {
         return "position";
@@ -41,7 +47,8 @@ public final class PositionExpansion extends AbstractExpansion {
     }
 
     public String getIslandPosition(final BridgePlayer bridgePlayer, final String[] args) {
-        final CompletableFuture<IslandBoardPlayer.IslandBoard> retrieve = Leaderboard.INSTANCE.retrieve(bridgePlayer.getPlayerUid(), Integer.parseInt(args[1]));
+        final CompletableFuture<IslandBoardPlayer.IslandBoard> retrieve =
+                leaderboard.retrieve(bridgePlayer.getPlayerUid(), Integer.parseInt(args[1]));
         if (!retrieve.isDone()) {
             return "";
         }
@@ -59,7 +66,8 @@ public final class PositionExpansion extends AbstractExpansion {
     }
 
     public String getGlobalPosition(final BridgePlayer bridgePlayer) {
-        final CompletableFuture<BoardPlayer> boardRetrieve = Leaderboard.INSTANCE.retrieve(bridgePlayer.getPlayerUid());
+        final CompletableFuture<BoardPlayer> boardRetrieve =
+                leaderboard.retrieve(bridgePlayer.getPlayerUid());
         // if the retrieve process is not immediate, return empty
         if (!boardRetrieve.isDone()) {
             return "";

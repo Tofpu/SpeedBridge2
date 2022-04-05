@@ -1,6 +1,6 @@
 package io.tofpu.speedbridge2.model.common.umbrella;
 
-import io.tofpu.speedbridge2.model.island.object.extra.GameIsland;
+import io.tofpu.speedbridge2.model.island.object.GameIsland;
 import io.tofpu.umbrella.domain.Umbrella;
 import io.tofpu.umbrella.domain.item.action.AbstractItemAction;
 import org.bukkit.event.player.PlayerInteractEvent;

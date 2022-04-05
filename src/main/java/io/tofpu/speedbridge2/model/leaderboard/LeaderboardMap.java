@@ -1,8 +1,8 @@
 package io.tofpu.speedbridge2.model.leaderboard;
 
 import io.tofpu.speedbridge2.model.common.PlayerNameCache;
-import io.tofpu.speedbridge2.model.leaderboard.wrapper.BoardPlayer;
-import io.tofpu.speedbridge2.model.player.misc.score.Score;
+import io.tofpu.speedbridge2.model.leaderboard.object.BoardPlayer;
+import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 
 import java.util.*;

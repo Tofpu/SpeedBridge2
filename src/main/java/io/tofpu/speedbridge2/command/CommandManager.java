@@ -10,12 +10,13 @@ import io.tofpu.speedbridge2.command.parser.LampParseRegistry;
 import io.tofpu.speedbridge2.command.subcommand.CommandCompletion;
 import io.tofpu.speedbridge2.command.subcommand.SpeedBridgeCommand;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.model.island.IslandService;
 import io.tofpu.speedbridge2.model.island.object.Island;
+import io.tofpu.speedbridge2.model.player.PlayerFactory;
 import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.model.player.object.extra.CommonBridgePlayer;
-import io.tofpu.speedbridge2.model.player.object.extra.DummyBridgePlayer;
-import io.tofpu.speedbridge2.model.player.object.extra.SenderBridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.CommonBridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.SenderBridgePlayer;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.bukkit.BukkitCommandActor;
@@ -30,7 +31,9 @@ import java.util.UUID;
 public final class CommandManager {
     private static BukkitCommandHandler commandHandler;
 
-    public static void load(final @NotNull Plugin plugin) {
+    public static void load(final @NotNull Plugin plugin,
+            final @NotNull PlayerService playerService,
+            final @NotNull IslandService islandService) {
         commandHandler = BukkitCommandHandler.create(plugin);
 
         commandHandler.registerResponseHandler(String.class, (response, actor, command) -> {
@@ -58,8 +61,9 @@ public final class CommandManager {
                 }
 
                 final UUID uniqueId = commandActor.requirePlayer().getUniqueId();
-                final BridgePlayer bridgePlayer = PlayerService.INSTANCE.get(uniqueId);
-                return Objects.requireNonNullElseGet(bridgePlayer, () -> DummyBridgePlayer.of(uniqueId));
+                final BridgePlayer bridgePlayer = playerService.getIfPresent(uniqueId);
+                return Objects.requireNonNullElseGet(bridgePlayer,
+                        () -> PlayerFactory.createDummy(uniqueId));
             }
         });
 
@@ -68,19 +72,20 @@ public final class CommandManager {
                 "<white>- <yellow>/%s " + "%s - %s", command.getPath()
                         .toRealString(), command.getUsage(), command.getDescription()));
 
-        constructTabCompleter();
+        constructTabCompleter(islandService);
         constructContext();
         constructParsers();
         constructCommandConditions();
 
-        commandHandler.register(new SpeedBridgeCommand());
+        commandHandler.register(new SpeedBridgeCommand(playerService, islandService));
     }
 
-    private static void constructTabCompleter() {
+    private static void constructTabCompleter(final @NotNull IslandService islandService) {
         BridgeUtil.debug("Constructing tab completer...");
 
         commandHandler.getAutoCompleter()
-                .registerParameterSuggestions(Island.class, CommandCompletion::islands);
+                .registerParameterSuggestions(Island.class,
+                        new CommandCompletion(islandService)::islands);
     }
 
     private static void constructContext() {

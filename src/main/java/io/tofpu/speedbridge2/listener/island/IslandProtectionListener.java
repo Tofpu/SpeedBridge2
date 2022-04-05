@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2.listener.island;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
-import io.tofpu.speedbridge2.model.island.object.extra.GameIsland;
+import io.tofpu.speedbridge2.model.island.object.GameIsland;
 import io.tofpu.speedbridge2.model.player.object.GamePlayer;
 import io.tofpu.speedbridge2.listener.GameListener;
 import io.tofpu.speedbridge2.listener.wrapper.wrappers.BlockBreakEventWrapper;
@@ -25,7 +25,6 @@ public final class IslandProtectionListener extends GameListener {
         final GamePlayer gamePlayer = eventWrapper.getGamePlayer();
         final Block block = event.getBlock();
 
-        // if the player haven't placed this block, return
         event.setCancelled(true);
         if (gamePlayer.hasPlaced(block)) {
             gamePlayer.removeBlock(block);
@@ -42,10 +41,11 @@ public final class IslandProtectionListener extends GameListener {
 
         final BlockPlaceEvent event = eventWrapper.getEvent();
         final Location location = event.getBlockPlaced().getLocation();
-        final boolean isInRegion = region.contains(new Vector(location.getX(), location.getY(), location.getZ()));
+        final boolean inBounds = region.contains(new Vector(location.getX(), location.getY(), location.getZ()));
 
-        // if the block placement was outside of the island's region, prevent the block placement
-        if (!isInRegion) {
+        // if the block placement was outside the island's region bounds, prevent the
+        // block placement
+        if (!inBounds) {
             event.setCancelled(true);
             return;
         }
