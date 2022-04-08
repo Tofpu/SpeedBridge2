@@ -9,14 +9,14 @@ import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.island.IslandHandler;
 import io.tofpu.speedbridge2.model.island.IslandService;
-import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.GameIsland;
+import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.setup.IslandSetup;
 import io.tofpu.speedbridge2.model.island.object.setup.IslandSetupHandler;
 import io.tofpu.speedbridge2.model.player.PlayerService;
-import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.CommonBridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -86,6 +86,10 @@ public final class SpeedBridgeCommand {
     @RestrictConsole
     public String onIslandCreate(final BridgePlayer player, final int slot, final String schematic,
             @revxrsal.commands.annotation.Optional @Flag("c") String category) {
+        if (!isGeneralSetupComplete(player)) {
+            return "";
+        }
+
         if (category == null || category.isEmpty()) {
             category = ConfigurationManager.INSTANCE.getGeneralCategory()
                     .getDefaultIslandCategory();
@@ -268,7 +272,7 @@ public final class SpeedBridgeCommand {
         return String.join("\n", scoreList);
     }
 
-    @Command({"sb choose", "speedbridge choose" ,"choose"})
+    @Command({"sb choose", "speedbridge choose", "choose"})
     @Description("Lets you choose a block")
     @RestrictDummyModel
     @RestrictConsole
