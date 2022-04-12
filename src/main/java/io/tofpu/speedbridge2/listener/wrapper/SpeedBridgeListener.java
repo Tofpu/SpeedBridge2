@@ -7,6 +7,7 @@ import io.tofpu.speedbridge2.listener.wrapper.wrappers.BlockPlaceEventWrapper;
 import io.tofpu.speedbridge2.listener.wrapper.wrappers.PlayerInteractEventWrapper;
 import io.tofpu.speedbridge2.model.player.PlayerService;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -52,10 +53,17 @@ public final class SpeedBridgeListener extends GameListener {
 
     @EventHandler // skipcq: JAVA-W0324
     private void onPlayerInteract(final @NotNull PlayerInteractEvent event) {
-        final EventWrapper<PlayerInteractEvent> eventWrapper =
-                PlayerInteractEventWrapper.wrap(playerService, event);
+        final EventWrapper<PlayerInteractEvent> eventWrapper = PlayerInteractEventWrapper.wrap(playerService, event);
+
         if (event.getAction() != Action.PHYSICAL || !eventWrapper.isPlaying() ||
             !eventWrapper.hasTimerStarted()) {
+            return;
+        }
+
+        // if the clicked block happen to be a soil block, or any
+        // other block in general, then return
+        if (event.getClickedBlock()
+                    .getType() != Material.AIR) {
             return;
         }
 
