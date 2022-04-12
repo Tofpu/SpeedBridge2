@@ -1,5 +1,7 @@
 package io.tofpu.speedbridge2.model.blockmenu;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import io.tofpu.speedbridge2.model.blockmenu.holder.BlockMenuHolder;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
@@ -18,14 +20,24 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 public final class BlockMenuManager {
+    private static final int BLOCK_CHANGE_COOLDOWN = 30;
+
     public static final BlockMenuManager INSTANCE = new BlockMenuManager();
 
     private final Set<Material> materialSet = new HashSet<>();
+    private final Cache<UUID, Long> cooldownMap;
 
-    private BlockMenuManager() {}
+    private BlockMenuManager() {
+        this.cooldownMap = Caffeine.newBuilder()
+                .expireAfterWrite(BLOCK_CHANGE_COOLDOWN, TimeUnit.SECONDS)
+                .build();
+    }
 
     public void load() {
         reload();
@@ -62,39 +74,38 @@ public final class BlockMenuManager {
 
         final Material chosenMaterial = bridgePlayer.getChoseMaterial();
         for (final ItemStack itemStack : inventoryClone.getContents()) {
-            if (itemStack == null) {
-                continue;
-            }
-
             final Material itemType =
-                    itemStack.getType() == null ? Material.AIR : itemStack.getType();
+                    itemStack == null ? Material.AIR : itemStack.getType();
 
-            if (itemType != chosenMaterial) {
-                final boolean canSelectItem = canSelectItem(bridgePlayer, itemStack);
-
-                // if the player cannot select the item
-                if (!canSelectItem) {
-                    modifyItem(ModifyItemType.LACK_PERMISSION, itemStack);
-                }
-
+            if (itemType == Material.AIR) {
                 continue;
             }
 
-            modifyItem(ModifyItemType.SELECTED, itemStack);
-            break;
+            if (itemType == chosenMaterial) {
+                modifyItem(ModifyItemType.SELECTED, itemStack);
+                continue;
+            }
+
+            final boolean canSelectItem = canSelectItem(bridgePlayer, itemStack);
+
+            // if the player cannot select the item
+            if (!canSelectItem) {
+                modifyItem(ModifyItemType.LACK_PERMISSION, itemStack);
+            }
         }
 
         player.openInventory(inventoryClone);
         return inventoryClone;
     }
 
-    private boolean canSelectItem(final BridgePlayer bridgePlayer, final ItemStack itemStack) {
-        if (itemStack == null || itemStack.getType() == Material.AIR) {
+    public boolean canSelectItem(final BridgePlayer bridgePlayer, final ItemStack itemStack) {
+        final Material type = itemStack == null ? Material.AIR : itemStack.getType();
+        if (type == Material.AIR) {
             return false;
         }
-        return bridgePlayer.getPlayer()
-                .hasPermission("speedbridge.block." + itemStack.getType()
-                        .name());
+        return ConfigurationManager.INSTANCE.getBlockMenuCategory()
+                       .getDefaultBlock() == type || bridgePlayer.getPlayer()
+                       .hasPermission("speedbridge.block." + type.name());
     }
 
     private void modifyItem(final ModifyItemType modifyItemType, final ItemStack itemStack) {
@@ -138,8 +149,21 @@ public final class BlockMenuManager {
         itemStack.setItemMeta(itemMeta);
     }
 
-    public Set<Material> getMaterialSet() {
-        return Collections.unmodifiableSet(materialSet);
+    public boolean isInCooldown(final UUID uniqueId, final Consumer<Long> inCooldownConsumer) {
+        final Long cooldown = cooldownMap.getIfPresent(uniqueId);
+        if (cooldown == null) {
+            return false;
+        }
+
+        final long now = System.currentTimeMillis();
+        final long remainder = (now - cooldown) / 1000;
+
+        inCooldownConsumer.accept(remainder);
+        return true;
+    }
+
+    public void putInCooldown(final UUID uniqueId) {
+        cooldownMap.put(uniqueId, System.currentTimeMillis());
     }
 
     enum ModifyItemType {

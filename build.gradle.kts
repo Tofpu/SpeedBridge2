@@ -1,6 +1,7 @@
 plugins {
     java
     id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("xyz.jpenilla.run-paper") version "1.0.6"
     `maven-publish`
 }
 
@@ -39,6 +40,11 @@ tasks {
         filesMatching("plugin.yml") {
             expand(project.properties)
         }
+    }
+
+    runServer {
+        minecraftVersion("1.8.8")
+        pluginJars(project.file("libs/worldedit-bukkit-6.1.jar"))
     }
 }
 
