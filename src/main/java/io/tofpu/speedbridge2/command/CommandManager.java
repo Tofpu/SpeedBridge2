@@ -40,7 +40,9 @@ public final class CommandManager {
             if (response.isEmpty()) {
                 return;
             }
-            actor.reply(BridgeUtil.miniMessageToLegacy(response));
+
+            final BukkitCommandActor bukkitActor = (BukkitCommandActor) actor;
+            BridgeUtil.sendMessage(bukkitActor.getSender(), response);
         });
 
         commandHandler.registerSenderResolver(new SenderResolver() {

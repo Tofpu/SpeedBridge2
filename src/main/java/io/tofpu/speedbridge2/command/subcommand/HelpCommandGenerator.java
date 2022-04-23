@@ -1,5 +1,9 @@
 package io.tofpu.speedbridge2.command.subcommand;
 
+import io.tofpu.speedbridge2.model.common.presenter.MessagePresenterHolder;
+import io.tofpu.speedbridge2.model.common.presenter.MessagePresenterHolderImpl;
+import io.tofpu.speedbridge2.model.common.presenter.type.MessagePairPresenter;
+import io.tofpu.speedbridge2.model.common.presenter.type.MessageTreePresenter;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.player.object.CommonBridgePlayer;
 import net.kyori.adventure.text.Component;
@@ -14,62 +18,60 @@ import revxrsal.commands.annotation.Usage;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.util.ArrayList;
-import java.util.List;
 
 public final class HelpCommandGenerator {
-    private static final String FIRST_CHARACTER = "<dark_gray>| ";
-    private static final String TITLE = FIRST_CHARACTER + "- <white><bold>%s</bold>";
-    private static final String SUBTITLE = FIRST_CHARACTER + "-- <yellow>%s";
-    private static final String PAIR_FORMAT = String.format(SUBTITLE, "%s: <white>%s");
-
-    private static final String HEADER = FIRST_CHARACTER +
-                                         "<<gold>-</gold>> <yellow><bold>SpeedBridge <white>V2</bold>";
-    private static final String COMMAND_FORMAT = String.format(SUBTITLE, "/sb %s %s" +
-                                                                         "<dark_gray>- <white>%s");
+    private static final String TITLE = "<white><bold>%s</bold>";
+    private static final String KEY_STYLE = "<yellow>%s";
+    private static final String VALUE_STYLE = "<white>%s";
+    private static final String COMMAND_STYLE = "<yellow>/sb %s %s<dark_gray>- <white>%s";
 
     private static Component helpMessageComponent = null;
 
     public static void generateHelpCommand(final @NotNull Plugin plugin) {
         final Method[] declaredMethods = SpeedBridgeCommand.class.getDeclaredMethods();
 
-        final List<String> messages = new ArrayList<>();
-        messages.add(HEADER);
-        messages.add("");
+        final MessagePresenterHolder holder = new MessagePresenterHolderImpl("<yellow><bold>SpeedBridge <white>v2");
 
-        messages.add(String.format(TITLE, "Information"));
-        messages.add(String.format(PAIR_FORMAT, "Author", "Tofpu"));
-        messages.add(String.format(PAIR_FORMAT, "Version", plugin.getDescription()
-                .getVersion()));
-        messages.add("");
+        holder.append(() -> {
+            final MessagePairPresenter.Builder builder = new MessagePairPresenter.Builder();
 
-        messages.add(String.format(TITLE, "Commands"));
-        for (final Method method : declaredMethods) {
-            final Subcommand commandMethod = method.getAnnotation(Subcommand.class);
-            final Description commandDescription = method.getAnnotation(Description.class);
-            if (commandMethod == null) {
-                continue;
+            builder.title(String.format(TITLE, "Information"));
+            builder.pair(String.format(KEY_STYLE, "Author"), String.format(VALUE_STYLE, "Tofpu"))
+                    .pair(String.format(KEY_STYLE, "Version"), String.format(VALUE_STYLE, plugin.getDescription()
+                            .getVersion()));
+
+            return builder.build();
+        });
+
+        holder.append(() -> {
+            final MessageTreePresenter.Builder builder = new MessageTreePresenter.Builder();
+
+            builder.title(String.format(TITLE, "Commands"));
+            for (final Method method : declaredMethods) {
+                final Subcommand commandMethod = method.getAnnotation(Subcommand.class);
+                final Description commandDescription = method.getAnnotation(Description.class);
+                if (commandMethod == null) {
+                    continue;
+                }
+                final String usage = generateUsageOfMethod(commandMethod, method);
+
+                builder.message(String.format(COMMAND_STYLE, commandMethod.value()[0], usage, commandDescription.value()));
             }
-            final String usage = generateUsageOfMethod(commandMethod, method);
+            return builder.build();
+        });
 
-            messages.add(String.format(COMMAND_FORMAT, commandMethod.value()[0],
-                    usage, commandDescription.value()));
-        }
+        holder.append(() -> {
+            final MessagePairPresenter.Builder builder = new MessagePairPresenter.Builder();
 
-        messages.add("");
-        messages.add(String.format(TITLE, "Support"));
-        messages.add(String.format(PAIR_FORMAT, "Discord",
-                "<click:OPEN_URL:https://tofpu.me/discord>tofpu.me/discord"));
+            builder.title(String.format(TITLE, "Support"))
+                    .pair(String.format(KEY_STYLE, "Discord"), String.format(VALUE_STYLE,
+                            "<click:OPEN_URL:https://tofpu" + ".me/discord>tofpu" +
+                            ".me/discord"));
 
-        final StringBuilder builder = new StringBuilder();
-        for (final String message : messages) {
-            if (builder.length() != 0) {
-                builder.append("\n");
-            }
-            builder.append(message);
-        }
+            return builder.build();
+        });
 
-        helpMessageComponent = BridgeUtil.translateMiniMessage(builder.toString());
+        helpMessageComponent = BridgeUtil.translateMiniMessage(holder.getResult());
     }
 
     public static String generateUsageOfMethod(final Subcommand subcommand,
