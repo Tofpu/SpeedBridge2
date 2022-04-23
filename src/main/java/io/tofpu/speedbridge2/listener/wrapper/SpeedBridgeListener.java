@@ -7,7 +7,6 @@ import io.tofpu.speedbridge2.listener.wrapper.wrappers.BlockPlaceEventWrapper;
 import io.tofpu.speedbridge2.listener.wrapper.wrappers.PlayerInteractEventWrapper;
 import io.tofpu.speedbridge2.model.player.PlayerService;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -60,10 +59,8 @@ public final class SpeedBridgeListener extends GameListener {
             return;
         }
 
-        // if the clicked block happen to be a soil block, or any
-        // other block in general, then return
-        if (event.getClickedBlock()
-                    .getType() != Material.AIR) {
+        // if the clicked block type doesn't happen to be a pressure plate, return
+        if (!event.getClickedBlock().getType().name().contains("PLATE")) {
             return;
         }
 
