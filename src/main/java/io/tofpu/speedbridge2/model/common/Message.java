@@ -111,6 +111,10 @@ public final class Message {
     public final String islandReset =
             error.replace("red", "yellow") + "The island has " + "been " + "reset!";
 
+    public final String blockChangeCooldown =
+            error + "You can't do that yet! Please wait " +
+            "for %s seconds.";
+
     private static String runCommand(final String command) {
         return "<hover:show_text:'<yellow>Click to run " +
                "%command%'><click:run_command:'%command%'>%command%".replace(

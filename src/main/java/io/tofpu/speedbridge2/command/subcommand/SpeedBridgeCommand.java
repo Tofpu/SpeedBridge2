@@ -6,17 +6,19 @@ import io.tofpu.speedbridge2.command.condition.annotation.RestrictSetup;
 import io.tofpu.speedbridge2.model.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
+import io.tofpu.speedbridge2.model.common.presenter.MessagePresenterHolderImpl;
+import io.tofpu.speedbridge2.model.common.presenter.type.MessagePairPresenter;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.island.IslandHandler;
 import io.tofpu.speedbridge2.model.island.IslandService;
-import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.GameIsland;
+import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.setup.IslandSetup;
 import io.tofpu.speedbridge2.model.island.object.setup.IslandSetupHandler;
 import io.tofpu.speedbridge2.model.player.PlayerService;
-import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.CommonBridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -39,6 +41,7 @@ import java.util.concurrent.ExecutionException;
 
 import static io.tofpu.speedbridge2.model.common.Message.INSTANCE;
 import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.ARROW_RIGHT;
+import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.CHECK_MARK;
 import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.CROSS;
 
 @Command({"sb", "speedbridge"})
@@ -86,6 +89,10 @@ public final class SpeedBridgeCommand {
     @RestrictConsole
     public String onIslandCreate(final BridgePlayer player, final int slot, final String schematic,
             @revxrsal.commands.annotation.Optional @Flag("c") String category) {
+        if (!isGeneralSetupComplete(player)) {
+            return "";
+        }
+
         if (category == null || category.isEmpty()) {
             category = ConfigurationManager.INSTANCE.getGeneralCategory()
                     .getDefaultIslandCategory();
@@ -268,12 +275,43 @@ public final class SpeedBridgeCommand {
         return String.join("\n", scoreList);
     }
 
-    @Command({"sb choose", "speedbridge choose" ,"choose"})
+    @Command({"sb choose", "speedbridge choose", "choose"})
     @Description("Lets you choose a block")
     @RestrictDummyModel
     @RestrictConsole
     public void chooseBlock(final BridgePlayer bridgePlayer) {
         BlockMenuManager.INSTANCE.showInventory(bridgePlayer);
+    }
+
+    @Command({"sb islands", "speedbridge islands", "islands"})
+    public String showIslands() {
+        final MessagePresenterHolderImpl holder = new MessagePresenterHolderImpl(
+                "<yellow>List of Islands");
+
+        holder.append(() -> {
+            final MessagePairPresenter.Builder builder = new MessagePairPresenter.Builder();
+
+            for (final Island island : islandService.getAllIslands()) {
+                final String title = "<yellow><bold>Island Analysis<reset>\n";
+
+                final String schematicHover = title + "<yellow>Schematic: " +
+                                              (island.getSchematicClipboard() == null ?
+                                                      "<red>" + CROSS.getSymbol() :
+                                                      "<green>" + CHECK_MARK.getSymbol());
+
+                final String spawnPointHover = "<yellow>Spawnpoint: " +
+                                               (island.getAbsoluteLocation() == null ?
+                                                       "<red>" + CROSS.getSymbol() :
+                                                       "<green>" +
+                                                       CHECK_MARK.getSymbol());
+
+                builder.pair("<yellow>Island-" + island.getSlot(), hover(
+                        schematicHover + "\n" + spawnPointHover, island.isReady() ?
+                                "<green" + ">Ready" : "<red>Not Ready"));
+            }
+            return builder.build();
+        });
+        return holder.getResult();
     }
 
     @Subcommand("reload")
@@ -405,5 +443,9 @@ public final class SpeedBridgeCommand {
 
         islandSetup.cancel();
         return INSTANCE.setupCancelled;
+    }
+
+    private String hover(final String hoverContent, final String content) {
+        return "<hover:show_text:'" + hoverContent + "'>" + content;
     }
 }

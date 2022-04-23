@@ -1,11 +1,12 @@
 plugins {
     java
     id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("xyz.jpenilla.run-paper") version "1.0.6"
     `maven-publish`
 }
 
 group = "io.tofpu.speedbridge2"
-version = "1.0.9"
+version = "1.0.10"
 
 tasks {
     compileJava {
@@ -40,6 +41,11 @@ tasks {
             expand(project.properties)
         }
     }
+
+    runServer {
+        minecraftVersion("1.8.8")
+        pluginJars(project.file("libs/worldedit-bukkit-6.1.jar"))
+    }
 }
 
 publishing {
@@ -69,8 +75,8 @@ dependencies {
 
     compileOnly("com.sk89q:worldedit:6.0.0-SNAPSHOT")
 
-    implementation("com.github.Revxrsal.Lamp:common:b3af8b94a0")
-    implementation("com.github.Revxrsal.Lamp:bukkit:b3af8b94a0")
+    implementation("com.github.Revxrsal.Lamp:common:3.0.3")
+    implementation("com.github.Revxrsal.Lamp:bukkit:3.0.3")
 
     implementation("net.kyori:adventure-api:4.10.1")
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
@@ -91,7 +97,7 @@ dependencies {
 
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
 
-    implementation("com.github.cryptomorin:XSeries:8.6.1")
+    implementation("com.github.cryptomorin:XSeries:8.7.1")
     implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:0eb85d6cbd") {
         exclude("de.schlichtherle", "truezip")
         exclude("rhino", "js")

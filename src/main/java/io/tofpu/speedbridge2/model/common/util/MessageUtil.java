@@ -57,7 +57,12 @@ public final class MessageUtil {
          */
         WARNING(StringEscapeUtils.unescapeJava("\u26A0")),
 
-        BIG_WHITE_BOX(StringEscapeUtils.unescapeJava("\u2B1C"));
+        BIG_WHITE_BOX(StringEscapeUtils.unescapeJava("\u2B1C")),
+
+        /**
+         * Returns "✔" symbol
+         */
+        CHECK_MARK(StringEscapeUtils.unescapeJava("\u2713"));
 
         private final String symbol;
 
