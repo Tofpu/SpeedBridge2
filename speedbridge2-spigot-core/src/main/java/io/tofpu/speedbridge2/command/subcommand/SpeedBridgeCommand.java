@@ -115,7 +115,7 @@ public final class SpeedBridgeCommand {
         IslandSetupHandler.INSTANCE.initiate(player, result.getIsland());
 
         // notify the player about the setup
-        BridgeUtil.sendMessage(player, Message.INSTANCE.startingSetupProcess);
+        BridgeUtil.sendMessage(player, INSTANCE.startingSetupProcess);
 
         return String.format(INSTANCE.islandSetupNotification.replace("%slot%",
                 slot + ""));
