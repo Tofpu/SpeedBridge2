@@ -132,50 +132,6 @@ public final class SpeedBridgeCommand {
         return String.format(INSTANCE.deletedAnIsland, target.getSlot());
     }
 
-//    @Subcommand("reset")
-//    @Description("Wipes the player's data")
-//    @CommandPermission("speedbridge.player.reset")
-//    public void onPlayerReset(final CommonBridgePlayer<?> bridgePlayer, final String name) {
-//        BridgeUtil.runBukkitAsync(() -> {
-//            final CommandSender sender = bridgePlayer.getPlayer();
-//            if (sender == null) {
-//                return;
-//            }
-//
-//            final UUID uuidResult = BridgeUtil.findUUIDBy(name);
-//            if (uuidResult == null) {
-//                BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerDoesntExist, name));
-//                return;
-//            }
-//
-//            BridgePlayer target = playerService.getIfPresent(uuidResult);
-//            if (target == null) {
-//                try {
-//                    playerService.loadAsync(uuidResult)
-//                            .get();
-//                } catch (InterruptedException | ExecutionException e) {
-//                    BridgeUtil.sendMessage(bridgePlayer, INSTANCE.somethingWentWrong);
-//                    throw new IllegalStateException(e);
-//                }
-//            }
-//
-//            if (target == null) {
-//                BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerDoesntExist, name));
-//                return;
-//            }
-//
-//            try {
-//                target.reset()
-//                        .get();
-//            } catch (InterruptedException | ExecutionException e) {
-//                BridgeUtil.sendMessage(bridgePlayer, INSTANCE.somethingWentWrong);
-//                throw new IllegalStateException(e);
-//            }
-//
-//            BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerWiped, name));
-//        });
-//    }
-
     @Subcommand("reset")
     @Usage("reset <target> <all|scores|stats>")
     @Description("Resets player properties")
@@ -305,7 +261,7 @@ public final class SpeedBridgeCommand {
             return EMPTY_SCORE;
         }
 
-        scoreList.add("\n");
+        scoreList.add("");
         return String.join("\n", scoreList);
     }
 
