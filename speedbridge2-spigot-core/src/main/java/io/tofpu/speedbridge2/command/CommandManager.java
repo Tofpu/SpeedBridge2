@@ -74,9 +74,9 @@ public final class CommandManager {
                 "<white>- <yellow>/%s " + "%s - %s", command.getPath()
                         .toRealString(), command.getUsage(), command.getDescription()));
 
-        constructTabCompleter(islandService);
-        constructContext();
         constructParsers();
+        constructContext();
+        constructTabCompleter(islandService);
         constructCommandConditions();
 
         commandHandler.register(new SpeedBridgeCommand(playerService, islandService));
