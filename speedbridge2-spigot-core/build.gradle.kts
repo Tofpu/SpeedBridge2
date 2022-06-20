@@ -8,7 +8,7 @@ dependencies {
     compileOnly("org.xerial:sqlite-jdbc:3.36.0.3")
     compileOnly("com.sk89q:worldedit:6.0.0-SNAPSHOT")
 
-    implementation("com.github.Revxrsal.Lamp:bukkit:3.0.3")
+    implementation("com.github.Revxrsal.Lamp:bukkit:3.0.7")
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
 
     implementation("com.github.tofpu:DynamicClass:1.1") {
