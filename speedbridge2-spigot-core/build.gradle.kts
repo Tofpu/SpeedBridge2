@@ -24,7 +24,7 @@ dependencies {
 
     compileOnly("me.clip:placeholderapi:2.10.10")
 
-    implementation("com.github.ben-manes.caffeine:caffeine:3.0.6")
+    implementation("com.github.ben-manes.caffeine:caffeine:2.9.3")
 
     implementation("com.github.cryptomorin:XSeries:8.7.1")
     implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:0eb85d6cbd") {

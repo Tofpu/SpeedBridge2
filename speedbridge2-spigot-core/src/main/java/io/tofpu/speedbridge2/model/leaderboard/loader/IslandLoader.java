@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.CacheLoader;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.leaderboard.object.IslandBoardPlayer;
 import io.tofpu.speedbridge2.model.player.PlayerService;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -24,7 +25,7 @@ public final class IslandLoader implements CacheLoader<UUID, IslandBoardPlayer>,
     }
 
     @Override
-    public CompletableFuture<? extends IslandBoardPlayer> asyncReload(final UUID key, final IslandBoardPlayer oldValue, final Executor executor) throws Exception {
+    public @NonNull CompletableFuture<IslandBoardPlayer> asyncReload(final UUID key, final IslandBoardPlayer oldValue, final Executor executor) {
         return retrieveAsync(key, executor);
     }
 

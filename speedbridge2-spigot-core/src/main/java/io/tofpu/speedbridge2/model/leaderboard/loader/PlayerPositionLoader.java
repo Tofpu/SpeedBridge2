@@ -10,6 +10,7 @@ import io.tofpu.speedbridge2.model.leaderboard.object.BoardPlayer;
 import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,12 +36,12 @@ public final class PlayerPositionLoader implements CacheLoader<UUID, BoardPlayer
     }
 
     @Override
-    public CompletableFuture<? extends BoardPlayer> asyncLoad(final UUID key, final Executor executor) {
+    public @NonNull CompletableFuture<BoardPlayer> asyncLoad(final @NotNull UUID key, final Executor executor) {
         return retrieveAsync(key, executor);
     }
 
     @Override
-    public CompletableFuture<? extends BoardPlayer> asyncReload(final UUID key, final BoardPlayer oldValue, final Executor executor) throws Exception {
+    public @NonNull CompletableFuture<BoardPlayer> asyncReload(final UUID key, final BoardPlayer oldValue, final Executor executor) {
         return retrieveAsync(key, executor);
     }
 

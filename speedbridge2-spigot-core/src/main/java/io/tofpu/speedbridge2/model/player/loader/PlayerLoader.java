@@ -9,6 +9,7 @@ import io.tofpu.speedbridge2.model.leaderboard.loader.BoardLoader;
 import io.tofpu.speedbridge2.model.player.PlayerFactory;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import org.checkerframework.checker.index.qual.NonNegative;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -31,7 +32,7 @@ public final class PlayerLoader implements BoardLoader<BridgePlayer>, CacheLoade
     }
 
     @Override
-    public CompletableFuture<? extends BridgePlayer> asyncLoad(final UUID key, final Executor executor) {
+    public @NonNull CompletableFuture<BridgePlayer> asyncLoad(final UUID key, final Executor executor) {
         return retrieveAsync(key, executor);
     }
 
