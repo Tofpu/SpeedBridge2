@@ -12,7 +12,7 @@ public abstract class AbstractLampParser<T> {
     }
 
     public void register(final CommandHandler commandHandler) {
-        commandHandler.registerValueResolver(type, this::parse);
+        commandHandler.registerValueResolver(1, type, this::parse);
     }
 
     abstract T parse(ValueResolver.ValueResolverContext context);

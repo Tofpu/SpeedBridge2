@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2.command.subcommand;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictConsole;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictDummyModel;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictSetup;
+import io.tofpu.speedbridge2.command.parser.annotation.PlayerUUID;
 import io.tofpu.speedbridge2.model.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
@@ -24,6 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Default;
 import revxrsal.commands.annotation.Description;
@@ -37,7 +39,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 import static io.tofpu.speedbridge2.model.common.Message.INSTANCE;
 import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.ARROW_RIGHT;
@@ -130,48 +132,80 @@ public final class SpeedBridgeCommand {
         return String.format(INSTANCE.deletedAnIsland, target.getSlot());
     }
 
+//    @Subcommand("reset")
+//    @Description("Wipes the player's data")
+//    @CommandPermission("speedbridge.player.reset")
+//    public void onPlayerReset(final CommonBridgePlayer<?> bridgePlayer, final String name) {
+//        BridgeUtil.runBukkitAsync(() -> {
+//            final CommandSender sender = bridgePlayer.getPlayer();
+//            if (sender == null) {
+//                return;
+//            }
+//
+//            final UUID uuidResult = BridgeUtil.findUUIDBy(name);
+//            if (uuidResult == null) {
+//                BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerDoesntExist, name));
+//                return;
+//            }
+//
+//            BridgePlayer target = playerService.getIfPresent(uuidResult);
+//            if (target == null) {
+//                try {
+//                    playerService.loadAsync(uuidResult)
+//                            .get();
+//                } catch (InterruptedException | ExecutionException e) {
+//                    BridgeUtil.sendMessage(bridgePlayer, INSTANCE.somethingWentWrong);
+//                    throw new IllegalStateException(e);
+//                }
+//            }
+//
+//            if (target == null) {
+//                BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerDoesntExist, name));
+//                return;
+//            }
+//
+//            try {
+//                target.reset()
+//                        .get();
+//            } catch (InterruptedException | ExecutionException e) {
+//                BridgeUtil.sendMessage(bridgePlayer, INSTANCE.somethingWentWrong);
+//                throw new IllegalStateException(e);
+//            }
+//
+//            BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerWiped, name));
+//        });
+//    }
+
     @Subcommand("reset")
-    @Description("Wipes the player's data")
+    @Usage("reset <target> <all|scores|stats>")
+    @Description("Resets player properties")
     @CommandPermission("speedbridge.player.reset")
-    public void onPlayerReset(final CommonBridgePlayer<?> bridgePlayer, final String name) {
-        BridgeUtil.runBukkitAsync(() -> {
-            final CommandSender sender = bridgePlayer.getPlayer();
-            if (sender == null) {
-                return;
-            }
+    @AutoComplete("@players *")
+    public void onPlayerReset(final CommonBridgePlayer<?> sender, final @PlayerUUID UUID targetUuid,
+            final ResetType type) {
+        final BridgePlayer target = playerService.getIfPresent(targetUuid);
 
-            final UUID uuidResult = BridgeUtil.findUUIDBy(name);
-            if (uuidResult == null) {
-                BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerDoesntExist, name));
-                return;
-            }
+        if (target == null) {
+            throw new IllegalStateException(BridgeUtil.miniMessageToLegacy(INSTANCE.playerDoesntExist));
+        }
 
-            BridgePlayer target = playerService.getIfPresent(uuidResult);
-            if (target == null) {
-                try {
-                    playerService.loadAsync(uuidResult)
-                            .get();
-                } catch (InterruptedException | ExecutionException e) {
-                    BridgeUtil.sendMessage(bridgePlayer, INSTANCE.somethingWentWrong);
-                    throw new IllegalStateException(e);
-                }
-            }
-
-            if (target == null) {
-                BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerDoesntExist, name));
-                return;
-            }
-
-            try {
-                target.reset()
-                        .get();
-            } catch (InterruptedException | ExecutionException e) {
-                BridgeUtil.sendMessage(bridgePlayer, INSTANCE.somethingWentWrong);
-                throw new IllegalStateException(e);
-            }
-
-            BridgeUtil.sendMessage(bridgePlayer, String.format(INSTANCE.playerWiped, name));
-        });
+        switch (type) {
+            case ALL:
+                onCompletion(target.reset(), (Void) -> {
+                    BridgeUtil.sendMessage(sender, String.format(INSTANCE.playerWiped, target.getName()));
+                });
+                break;
+            case SCORES:
+                onCompletion(target.resetScores(), (Void) -> {
+                    BridgeUtil.sendMessage(sender, String.format(INSTANCE.playerScoreReset, target.getName()));
+                });
+                break;
+            case STATS:
+                onCompletion(target.resetStats(), (Void) -> {
+                    BridgeUtil.sendMessage(sender, String.format(INSTANCE.playerStatsReset, target.getName()));
+                });
+                break;
+        }
     }
 
     @Subcommand("modify")
@@ -447,5 +481,19 @@ public final class SpeedBridgeCommand {
 
     private String hover(final String hoverContent, final String content) {
         return "<hover:show_text:'" + hoverContent + "'>" + content;
+    }
+
+    private <T> void onCompletion(final CompletableFuture<T> future, final Consumer<T> consumer) {
+        future.whenComplete((t, throwable) -> {
+            if (throwable != null) {
+                throwable.printStackTrace();
+                return;
+            }
+            consumer.accept(t);
+        });
+    }
+
+    public enum ResetType {
+        ALL, SCORES, STATS
     }
 }
