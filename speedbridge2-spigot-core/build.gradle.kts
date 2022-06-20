@@ -33,7 +33,7 @@ dependencies {
         exclude("com.sk89q", "worldedit")
     }
 
-    implementation("com.github.tofpu:umbrella:1.0.1")
+    implementation("com.github.tofpu:umbrella:1.0.2")
 }
 
 tasks {
