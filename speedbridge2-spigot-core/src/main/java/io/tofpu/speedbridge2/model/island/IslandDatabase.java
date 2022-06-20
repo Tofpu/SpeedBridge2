@@ -92,8 +92,8 @@ public final class IslandDatabase extends Database {
             return null;
         }
 
-        return location.getBlockX() + ":" + location.getBlockY() + ":" +
-               location.getBlockZ() + ":" + location.getYaw() + ":" + location.getPitch();
+        return location.getX() + ":" + location.getY() + ":" +
+               location.getZ() + ":" + location.getYaw() + ":" + location.getPitch();
     }
 
     private Location deserialize(final String input) {
@@ -102,9 +102,9 @@ public final class IslandDatabase extends Database {
         }
 
         final String[] split = input.split(":");
-        final int x = Integer.parseInt(split[0]);
-        final int y = Integer.parseInt(split[1]);
-        final int z = Integer.parseInt(split[2]);
+        final double x = Double.parseDouble(split[0]);
+        final double y = Double.parseDouble(split[1]);
+        final double z = Double.parseDouble(split[2]);
         final float yaw = Float.parseFloat(split[3]);
         final float pitch = Float.parseFloat(split[4]);
 
