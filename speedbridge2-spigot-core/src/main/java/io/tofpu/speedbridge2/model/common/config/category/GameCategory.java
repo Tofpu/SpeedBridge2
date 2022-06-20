@@ -14,7 +14,7 @@ import java.util.List;
 @ConfigSerializable
 public final class GameCategory {
     @Setting("items")
-    private List<SerializableUmbrellaItem> umbrellaItems = new ArrayList<>() {{
+    private List<SerializableUmbrellaItem> umbrellaItems = new ArrayList() {{
         final ItemStack resetItem = UmbrellaUtil.create(XMaterial.RED_DYE, "Reset", "reset the game!");
         final ItemStack leaveItem = UmbrellaUtil.create(XMaterial.RED_BED, "Leave", "leave the game!");
 

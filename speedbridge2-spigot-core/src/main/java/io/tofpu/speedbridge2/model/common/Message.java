@@ -100,7 +100,10 @@ public final class Message {
     public final String setupCancelled = SUCCESS + "The setup has been cancelled.";
 
     public final String playerDoesntExist = error + "%s does not exist.";
-    public final String playerWiped = SUCCESS + "%s data has been wiped.";
+
+    public final String playerWiped = SUCCESS + "%s's data has been reset.";
+    public final String playerScoreReset = SUCCESS + "%s's scores has been reset.";
+    public final String playerStatsReset = SUCCESS + "%s's stats has been reset.";
 
     public final String somethingWentWrong =
             error + "Something went wrong... check " + "your console";
@@ -114,6 +117,8 @@ public final class Message {
     public final String blockChangeCooldown =
             error + "You can't do that yet! Please wait " +
             "for %s seconds.";
+
+    public final String invalidUuid = error + "%s is not a valid uuid format. Please try again";
 
     private static String runCommand(final String command) {
         return "<hover:show_text:'<yellow>Click to run " +

@@ -25,7 +25,6 @@ import revxrsal.commands.command.CommandActor;
 import revxrsal.commands.command.ExecutableCommand;
 import revxrsal.commands.process.SenderResolver;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public final class CommandManager {
@@ -64,8 +63,12 @@ public final class CommandManager {
 
                 final UUID uniqueId = commandActor.requirePlayer().getUniqueId();
                 final BridgePlayer bridgePlayer = playerService.getIfPresent(uniqueId);
-                return Objects.requireNonNullElseGet(bridgePlayer,
-                        () -> PlayerFactory.createDummy(uniqueId));
+
+                if (bridgePlayer != null) {
+                    return bridgePlayer;
+                }
+
+                return PlayerFactory.createDummy(uniqueId);
             }
         });
 
@@ -74,9 +77,9 @@ public final class CommandManager {
                 "<white>- <yellow>/%s " + "%s - %s", command.getPath()
                         .toRealString(), command.getUsage(), command.getDescription()));
 
-        constructTabCompleter(islandService);
-        constructContext();
         constructParsers();
+        constructContext();
+        constructTabCompleter(islandService);
         constructCommandConditions();
 
         commandHandler.register(new SpeedBridgeCommand(playerService, islandService));

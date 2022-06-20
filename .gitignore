@@ -120,3 +120,5 @@ src/main/java/io/tofpu/speedbridge2/domain/common/Message.java
 
 /.gradle
 /build
+*/build
+*/run

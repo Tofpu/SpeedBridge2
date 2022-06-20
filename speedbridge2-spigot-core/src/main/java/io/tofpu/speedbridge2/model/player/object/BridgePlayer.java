@@ -260,6 +260,22 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
         return Databases.PLAYER_DATABASE.delete(getPlayerUid());
     }
 
+    public CompletableFuture<Void> resetScores() {
+        this.scoreMap.clear();
+        this.sessionMap.clear();
+
+        leaderboard.reset(getPlayerUid());
+        IslandBoard.reset(getPlayerUid());
+
+        return (CompletableFuture<Void>) Databases.SCORE_DATABASE.delete(getPlayerUid());
+    }
+
+    public CompletableFuture<Void> resetStats() {
+        this.statsMap.clear();
+
+        return (CompletableFuture<Void>) Databases.STATS_DATABASE.delete(getPlayerUid());
+    }
+
     public void setGamePlayer(final GamePlayer gamePlayer) {
         this.gamePlayer = gamePlayer;
     }
