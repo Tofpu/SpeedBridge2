@@ -137,28 +137,28 @@ public final class SpeedBridgeCommand {
     @Description("Resets player properties")
     @CommandPermission("speedbridge.player.reset")
     @AutoComplete("@players *")
-    public void onPlayerReset(final CommonBridgePlayer<?> sender, final @PlayerUUID UUID targetUuid,
+    public void onPlayerReset(final CommonBridgePlayer<?> sender, final @PlayerUUID UUID target,
             final ResetType type) {
-        final BridgePlayer target = playerService.getIfPresent(targetUuid);
+        final BridgePlayer targetPlayer = playerService.getIfPresent(target);
 
-        if (target == null) {
+        if (targetPlayer == null) {
             throw new IllegalStateException(BridgeUtil.miniMessageToLegacy(INSTANCE.playerDoesntExist));
         }
 
         switch (type) {
             case ALL:
-                onCompletion(target.reset(), (Void) -> {
-                    BridgeUtil.sendMessage(sender, String.format(INSTANCE.playerWiped, target.getName()));
+                onCompletion(targetPlayer.reset(), (Void) -> {
+                    BridgeUtil.sendMessage(sender, String.format(INSTANCE.playerWiped, targetPlayer.getName()));
                 });
                 break;
             case SCORES:
-                onCompletion(target.resetScores(), (Void) -> {
-                    BridgeUtil.sendMessage(sender, String.format(INSTANCE.playerScoreReset, target.getName()));
+                onCompletion(targetPlayer.resetScores(), (Void) -> {
+                    BridgeUtil.sendMessage(sender, String.format(INSTANCE.playerScoreReset, targetPlayer.getName()));
                 });
                 break;
             case STATS:
-                onCompletion(target.resetStats(), (Void) -> {
-                    BridgeUtil.sendMessage(sender, String.format(INSTANCE.playerStatsReset, target.getName()));
+                onCompletion(targetPlayer.resetStats(), (Void) -> {
+                    BridgeUtil.sendMessage(sender, String.format(INSTANCE.playerStatsReset, targetPlayer.getName()));
                 });
                 break;
         }

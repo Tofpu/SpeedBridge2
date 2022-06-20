@@ -101,7 +101,7 @@ public final class Message {
 
     public final String playerDoesntExist = error + "%s does not exist.";
 
-    public final String playerWiped = SUCCESS + "%s data has been reset.";
+    public final String playerWiped = SUCCESS + "%s's data has been reset.";
     public final String playerScoreReset = SUCCESS + "%s's scores has been reset.";
     public final String playerStatsReset = SUCCESS + "%s's stats has been reset.";
 

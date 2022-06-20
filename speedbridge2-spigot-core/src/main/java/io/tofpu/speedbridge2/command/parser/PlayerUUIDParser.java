@@ -31,7 +31,7 @@ public class PlayerUUIDParser extends AbstractLampParser<UUID> {
             }
 
             // if the player has not played before, throw an error
-            if (!player.hasPlayedBefore()) {
+            if (player.getFirstPlayed() == 0) {
                 throw new CommandErrorException(String.format(BridgeUtil.miniMessageToLegacy(Message.INSTANCE.playerDoesntExist), name));
             }
             result = player.getUniqueId();
