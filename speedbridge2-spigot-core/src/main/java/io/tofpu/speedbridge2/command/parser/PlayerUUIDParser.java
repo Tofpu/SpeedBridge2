@@ -23,8 +23,14 @@ public class PlayerUUIDParser extends AbstractLampParser<UUID> {
 
         UUID result;
         if (context.parameter().hasAnnotation(PlayerUUID.class)) {
-            final OfflinePlayer player = Bukkit.getOfflinePlayer(name);
+            OfflinePlayer player = Bukkit.getPlayer(name);
 
+            // if the player is not online, retrieve the offline instance
+            if (player == null || !player.isOnline()) {
+                player = Bukkit.getOfflinePlayer(name);
+            }
+
+            // if the player has not played before, throw an error
             if (!player.hasPlayedBefore()) {
                 throw new CommandErrorException(String.format(BridgeUtil.miniMessageToLegacy(Message.INSTANCE.playerDoesntExist), name));
             }
