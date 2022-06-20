@@ -54,7 +54,7 @@ allprojects {
         compileJava {
             options.encoding = "UTF-8"
             options.compilerArgs.plusAssign("-parameters")
-            sourceCompatibility = "11"
+            sourceCompatibility = "8"
         }
 
         build {
