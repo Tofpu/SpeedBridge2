@@ -63,12 +63,28 @@ allprojects {
 
         processResources {
             filesMatching("plugin.yml") {
-                expand(project.properties)
+                expand(mapOf(Pair("version", "${version}-${getGitVersion()}")))
             }
+            outputs.upToDateWhen { false }
         }
 
         getByName<Test>("test") {
             useJUnitPlatform()
         }
     }
+}
+
+fun getGitVersion(): String {
+    val command = "git rev-parse --verify --short HEAD"
+    val process = ProcessBuilder()
+        .command(command.split(" "))
+        .directory(rootProject.projectDir)
+        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+        .redirectError(ProcessBuilder.Redirect.INHERIT)
+        .start()
+    process.waitFor(60, TimeUnit.SECONDS)
+
+    val readText = process.inputStream.bufferedReader().readText()
+    println(readText)
+    return readText.trim()
 }
