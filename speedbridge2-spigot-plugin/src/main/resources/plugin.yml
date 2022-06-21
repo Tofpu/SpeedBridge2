@@ -8,3 +8,4 @@ depend:
   - WorldEdit
 softdepend:
   - PlaceholderAPI
+  - Multiverse-Core
