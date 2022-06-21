@@ -38,7 +38,7 @@ dependencies {
 
 tasks {
     named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
-        classifier = ""
+        archiveName = "Speedbridge2-${version}-all.jar"
 
         dependencies {
             relocate("org.xerial", "io.tofpu.speedbridge2.lib.sqlite")
