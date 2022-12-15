@@ -16,8 +16,6 @@
   <img width="70%" height="70%" src="https://cdn.discordapp.com/attachments/761714903978475540/952674419979980851/2022-03-13_23.07.46.png"/>
 </details>
 
-__WARNING__: SpeedBridge v2 does __NOT__ support Java 8. You're required to use Java 11, and upwards. 
-
 __Features__
 - Dynamic Island Generation
 - Complete Global/Island/Sessional Leaderboard Support
