@@ -27,7 +27,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
+        implementation("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
 
         implementation("com.github.Revxrsal.Lamp:common:3.0.3")
 
@@ -39,6 +39,7 @@ allprojects {
         }
 
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
+        testImplementation("com.github.MockBukkit:MockBukkit:v1.14")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     }
 

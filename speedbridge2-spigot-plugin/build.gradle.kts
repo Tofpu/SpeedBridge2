@@ -5,8 +5,8 @@ plugins {
 dependencies {
     implementation(project(":speedbridge2-common"))
 
-    compileOnly("org.xerial:sqlite-jdbc:3.36.0.3")
-    compileOnly("com.sk89q:worldedit:6.0.0-SNAPSHOT")
+    implementation("org.xerial:sqlite-jdbc:3.36.0.3")
+    implementation("com.sk89q:worldedit:6.0.0-SNAPSHOT")
 
     implementation("com.github.Revxrsal.Lamp:bukkit:3.0.7")
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
@@ -22,7 +22,7 @@ dependencies {
 
     implementation("org.bstats:bstats-bukkit:3.0.0")
 
-    compileOnly("me.clip:placeholderapi:2.10.10")
+    implementation("me.clip:placeholderapi:2.10.10")
 
     implementation("com.github.ben-manes.caffeine:caffeine:2.9.3")
 
