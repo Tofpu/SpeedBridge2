@@ -38,8 +38,11 @@ allprojects {
             exclude("com.google.guava", "guava")
         }
 
+        implementation("org.xerial:sqlite-jdbc:3.36.0.3")
+
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
-        testImplementation("com.github.MockBukkit:MockBukkit:v1.14")
+        testImplementation("com.github.MockBukkit:MockBukkit:v1.14-SNAPSHOT")
+        testImplementation("org.mockito:mockito-core:3.+")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     }
 

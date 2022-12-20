@@ -1,0 +1,52 @@
+package io.tofpu.speedbridge2.repository.storage;
+
+import io.tofpu.speedbridge2.async.AsyncThreadExecutor;
+import io.tofpu.speedbridge2.async.DefaultAsyncThreadExecutor;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.concurrent.CompletableFuture;
+
+/**
+ * A ready-to-use abstract {@link ParentStorage} class
+ * with {@link AsyncThreadExecutor} included.
+ *
+ * @see ParentStorage
+ */
+public abstract class BaseStorage implements ParentStorage {
+    private final AsyncThreadExecutor asyncThreadExecutor;
+
+    public BaseStorage(final int corePoolSize) {
+        this.asyncThreadExecutor = new DefaultAsyncThreadExecutor(corePoolSize);
+    }
+
+    public void execute(final String sql) {
+        asyncThreadExecutor().execute(() -> {
+            final Connection connection = getConnection();
+            System.out.println("connection: " + connection);
+
+            System.out.println("Creating a prepared statement now...");
+            try (final PreparedStatement statement = connection.prepareStatement(sql)) {
+                System.out.println("pre-execution stage");
+                statement.executeUpdate();
+                System.out.println("executed query");
+            } catch (SQLException e) {
+                throw new IllegalStateException(e);
+            }
+        });
+    }
+
+    @Override
+    public abstract CompletableFuture<Void> init();
+
+    @Override
+    public abstract void establishConnection();
+
+    @Override
+    public abstract Connection getConnection();
+
+    public AsyncThreadExecutor asyncThreadExecutor() {
+        return asyncThreadExecutor;
+    }
+}

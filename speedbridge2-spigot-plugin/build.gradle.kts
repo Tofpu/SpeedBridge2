@@ -5,7 +5,6 @@ plugins {
 dependencies {
     implementation(project(":speedbridge2-common"))
 
-    implementation("org.xerial:sqlite-jdbc:3.36.0.3")
     implementation("com.sk89q:worldedit:6.0.0-SNAPSHOT")
 
     implementation("com.github.Revxrsal.Lamp:bukkit:3.0.7")
