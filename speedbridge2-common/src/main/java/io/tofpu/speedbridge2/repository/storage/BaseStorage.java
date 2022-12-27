@@ -21,6 +21,10 @@ public abstract class BaseStorage implements ParentStorage {
         this.asyncThreadExecutor = new DefaultAsyncThreadExecutor(corePoolSize);
     }
 
+    public CompletableFuture<Void> executeAsync(final String sql) {
+        return asyncThreadExecutor().runAsync(() -> execute(sql));
+    }
+
     public void execute(final String sql) {
         final Connection connection = getConnection();
         try (final PreparedStatement statement = connection.prepareStatement(sql)) {

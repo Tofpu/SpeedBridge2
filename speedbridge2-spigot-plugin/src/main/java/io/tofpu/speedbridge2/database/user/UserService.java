@@ -1,13 +1,13 @@
 package io.tofpu.speedbridge2.database.user;
 
-import io.tofpu.speedbridge2.database.user.repository.AbstractUserRepository;
+import io.tofpu.speedbridge2.database.user.repository.name.AbstractUserNameRepository;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * This is where the business logic of {@link AbstractUserRepository}
+ * This is where the business logic of {@link AbstractUserNameRepository}
  * resides.
  */
 public interface UserService {

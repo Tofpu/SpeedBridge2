@@ -3,7 +3,7 @@ package io.tofpu.speedbridge2;
 import io.tofpu.speedbridge2.database.storage.SQLiteStorage;
 import io.tofpu.speedbridge2.database.user.DefaultUserService;
 import io.tofpu.speedbridge2.database.user.UserService;
-import io.tofpu.speedbridge2.database.user.repository.DefaultUserRepository;
+import io.tofpu.speedbridge2.database.user.repository.name.DefaultUserNameRepository;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.repository.storage.BaseStorage;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,7 @@ public class UserServiceTest {
     @Test
     public void test_insert_is_present_fetch_delete_user() throws ExecutionException, InterruptedException {
         final BaseStorage storage = new SQLiteStorage();
-        final UserService service = new DefaultUserService(new DefaultUserRepository(storage));
+        final UserService service = new DefaultUserService(new DefaultUserNameRepository(storage));
 
         // initializes the process
         storage.init()

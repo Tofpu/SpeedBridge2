@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.database.user.repository;
+package io.tofpu.speedbridge2.database.user.repository.name;
 
 import io.tofpu.speedbridge2.database.storage.StorageUtil;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
@@ -11,13 +11,13 @@ import java.util.concurrent.CompletableFuture;
 
 import static io.tofpu.speedbridge2.sql.StatementQuery.query;
 
-public class DefaultUserRepository extends AbstractUserRepository {
+public class DefaultUserNameRepository extends AbstractUserNameRepository {
     private static final String INSERT_SQL = "INSERT INTO users (id, name) VALUES (?, ?)";
     private static final String FETCH_SQL = "SELECT * FROM users WHERE id = ?";
     private static final String DELETE_SQL = "DELETE FROM users WHERE id = ?";
     private final DefaultRepositoryTable repositoryTable;
 
-    public DefaultUserRepository(final BaseStorage storage) {
+    public DefaultUserNameRepository(final BaseStorage storage) {
         super(storage);
         this.repositoryTable = new DefaultRepositoryTable("users", "id BLOB UNIQUE PRIMARY KEY", "name TEXT NOT NULL");
     }

@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.database.user.repository;
+package io.tofpu.speedbridge2.database.user.repository.name;
 
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.repository.Repository;
@@ -10,8 +10,8 @@ import java.util.UUID;
 /**
  * A {@link Repository} abstract class for {@link BridgePlayer}.
  */
-public abstract class AbstractUserRepository extends TableBaseRepository<UUID, BridgePlayer> {
-    protected AbstractUserRepository(final BaseStorage storage) {
+public abstract class AbstractUserNameRepository extends TableBaseRepository<UUID, BridgePlayer> {
+    protected AbstractUserNameRepository(final BaseStorage storage) {
         super(storage);
     }
 }

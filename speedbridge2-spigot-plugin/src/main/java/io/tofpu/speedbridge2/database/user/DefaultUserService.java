@@ -1,6 +1,6 @@
 package io.tofpu.speedbridge2.database.user;
 
-import io.tofpu.speedbridge2.database.user.repository.AbstractUserRepository;
+import io.tofpu.speedbridge2.database.user.repository.name.AbstractUserNameRepository;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.repository.storage.BaseStorage;
 import io.tofpu.speedbridge2.sql.table.RepositoryTable;
@@ -10,9 +10,9 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class DefaultUserService implements UserService {
-    private final AbstractUserRepository userRepository;
+    private final AbstractUserNameRepository userRepository;
 
-    public DefaultUserService(final AbstractUserRepository userRepository) {
+    public DefaultUserService(final AbstractUserNameRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -20,8 +20,7 @@ public class DefaultUserService implements UserService {
     public CompletableFuture<Void> init() {
         final RepositoryTable table = userRepository.getTable();
         final BaseStorage storage = userRepository.getStorage();
-        return storage.asyncThreadExecutor()
-                .runAsync(() -> storage.execute(SQLTableUtil.tableAsSQLFormat(table)));
+        return storage.executeAsync(SQLTableUtil.tableAsSQLFormat(table));
     }
 
     @Override
