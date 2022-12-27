@@ -33,6 +33,8 @@ public interface StatementQuery {
         return new DefaultStatementQuery(connection, preparedStatement);
     }
 
+    StatementQuery setInteger(int index, int value);
+    StatementQuery setDouble(int index, double value);
     StatementQuery setLong(int index, long value);
     StatementQuery setString(int index, String value);
     StatementQuery setBlob(int index, byte[] value);

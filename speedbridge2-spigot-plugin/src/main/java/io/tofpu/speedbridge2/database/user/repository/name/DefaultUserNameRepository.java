@@ -1,7 +1,6 @@
 package io.tofpu.speedbridge2.database.user.repository.name;
 
 import io.tofpu.speedbridge2.database.storage.StorageUtil;
-import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.repository.storage.BaseStorage;
 import io.tofpu.speedbridge2.sql.table.DefaultRepositoryTable;
 import io.tofpu.speedbridge2.sql.table.RepositoryTable;
@@ -23,7 +22,7 @@ public class DefaultUserNameRepository extends AbstractUserNameRepository {
     }
 
     @Override
-    public CompletableFuture<BridgePlayer> fetch(final UUID key) {
+    public CompletableFuture<String> fetch(final UUID key) {
         return storage.asyncThreadExecutor().supplyAsync(() -> {
             return query(storage.getConnection(), FETCH_SQL)
                     .setBlob(1, StorageUtil.uidAsByte(key))
@@ -32,8 +31,7 @@ public class DefaultUserNameRepository extends AbstractUserNameRepository {
                         if (resultRetrieval == null) {
                             return null;
                         }
-                        final String playerName = resultRetrieval.getString("name");
-                        return BridgePlayer.simpleOf(null, null, key, playerName);
+                        return resultRetrieval.getString("name");
                     });
         });
     }
@@ -44,11 +42,11 @@ public class DefaultUserNameRepository extends AbstractUserNameRepository {
     }
 
     @Override
-    public CompletableFuture<Void> insert(final UUID key, final BridgePlayer obj) {
+    public CompletableFuture<Void> insert(final UUID key, final String obj) {
         return storage.asyncThreadExecutor().runAsync(() -> {
             query(storage.getConnection(), INSERT_SQL)
                     .setBlob(1, StorageUtil.uidAsByte(key))
-                    .setString(2, obj.getName())
+                    .setString(2, obj)
                     .execute();
         });
     }

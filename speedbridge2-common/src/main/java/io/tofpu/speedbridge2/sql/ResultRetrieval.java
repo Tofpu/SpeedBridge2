@@ -16,4 +16,6 @@ public interface ResultRetrieval {
     }
 
     String getString(String label);
+    int getInteger(String label);
+    double getDouble(String label);
 }

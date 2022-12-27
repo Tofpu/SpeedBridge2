@@ -19,6 +19,34 @@ public class DefaultStatementQuery implements StatementQuery {
     }
 
     @Override
+    public StatementQuery setInteger(final int index, final int value) {
+        assertConnectionNotNull();
+        assertPreparedStatementNotNull(preparedStatement);
+
+        try {
+            preparedStatement.setInt(index, value);
+        } catch (SQLException e) {
+            throw new IllegalStateException(e);
+        }
+
+        return new DefaultStatementQuery(connection, preparedStatement);
+    }
+
+    @Override
+    public StatementQuery setDouble(final int index, final double value) {
+        assertConnectionNotNull();
+        assertPreparedStatementNotNull(preparedStatement);
+
+        try {
+            preparedStatement.setDouble(index, value);
+        } catch (SQLException e) {
+            throw new IllegalStateException(e);
+        }
+
+        return new DefaultStatementQuery(connection, preparedStatement);
+    }
+
+    @Override
     public StatementQuery setLong(final int index, final long value) {
         assertConnectionNotNull();
         assertPreparedStatementNotNull(preparedStatement);

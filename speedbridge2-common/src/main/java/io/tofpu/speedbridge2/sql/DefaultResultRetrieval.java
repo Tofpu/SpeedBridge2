@@ -21,4 +21,22 @@ public class DefaultResultRetrieval implements ResultRetrieval {
             throw new IllegalStateException(e);
         }
     }
+
+    @Override
+    public int getInteger(final String label) {
+        try {
+            return resultSet.getInt(label);
+        } catch (SQLException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    @Override
+    public double getDouble(final String label) {
+        try {
+            return resultSet.getDouble(label);
+        } catch (SQLException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 }
