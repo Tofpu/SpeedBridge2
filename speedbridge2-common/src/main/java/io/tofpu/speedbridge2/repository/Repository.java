@@ -15,5 +15,5 @@ public interface Repository<K, O> {
     CompletableFuture<Boolean> isPresent(final K key);
 
     CompletableFuture<Void> insert(final K key, final O obj);
-    void delete(final K key);
+    CompletableFuture<Void> delete(final K key);
 }

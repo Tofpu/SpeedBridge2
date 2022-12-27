@@ -131,7 +131,7 @@ public class RepositoryTest {
         }
 
         @Override
-        public void delete(final Long key) {
+        public CompletableFuture<Void> delete(final Long key) {
             throw new UnsupportedOperationException("Delete is not implemented yet.");
         }
     }

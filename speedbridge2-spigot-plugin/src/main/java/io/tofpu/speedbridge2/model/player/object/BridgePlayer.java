@@ -77,6 +77,14 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
         return new BridgePlayer(islandService, leaderboard, name, playerUid);
     }
 
+    /**
+     * @return a simple instance of {@link BridgePlayer}
+     */
+    public static BridgePlayer simpleOf(final IslandService islandService,
+            final Leaderboard leaderboard, final UUID playerUid, final String playerName) {
+        return new BridgePlayer(islandService, leaderboard, playerUid, playerName);
+    }
+
     protected BridgePlayer(final BridgePlayer copy) {
         this(copy.islandService, copy.leaderboard, copy.getName(), copy.playerUid);
         this.scoreMap.putAll(copy.scoreMap);
@@ -86,12 +94,28 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
         this.chosenBlock = copy.chosenBlock;
     }
 
-    protected BridgePlayer(final IslandService islandService,
-            final Leaderboard leaderboard, final UUID playerUid) {
+    protected BridgePlayer(
+            final IslandService islandService, final Leaderboard leaderboard, final UUID playerUid) {
         this(islandService, leaderboard, "null", playerUid);
 
         if (player != null) {
             this.name = player.getName();
+        }
+    }
+
+    // to be able to test this class without too much hassle
+    protected BridgePlayer(final IslandService islandService, final Leaderboard leaderboard, final UUID playerUid,
+            final String playerName) {
+        {
+            this.islandService = islandService;
+            this.leaderboard = leaderboard;
+            this.playerUid = playerUid;
+            this.scoreMap = new HashMap<>();
+            this.statsMap = new HashMap<>();
+            this.sessionMap = new HashMap<>();
+
+            this.name = playerName;
+            this.inSetup = false;
         }
     }
 
@@ -104,6 +128,7 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
         this.sessionMap = new HashMap<>();
 
         this.name = name;
+
         if (playerUid != null) {
             this.player = Bukkit.getPlayer(playerUid);
         } else {

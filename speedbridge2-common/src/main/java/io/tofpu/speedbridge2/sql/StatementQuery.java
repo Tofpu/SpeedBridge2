@@ -35,6 +35,7 @@ public interface StatementQuery {
 
     StatementQuery setLong(int index, long value);
     StatementQuery setString(int index, String value);
+    StatementQuery setBlob(int index, byte[] value);
 
     ExecutionResult execute();
 }

@@ -47,6 +47,20 @@ public class DefaultStatementQuery implements StatementQuery {
     }
 
     @Override
+    public StatementQuery setBlob(final int index, final byte[] value) {
+        assertConnectionNotNull();
+        assertPreparedStatementNotNull(preparedStatement);
+
+        try {
+            preparedStatement.setBytes(index, value);
+        } catch (SQLException e) {
+            throw new IllegalStateException(e);
+        }
+
+        return new DefaultStatementQuery(connection, preparedStatement);
+    }
+
+    @Override
     public ExecutionResult execute() {
         assertConnectionNotNull();
         assertPreparedStatementNotNull(preparedStatement);

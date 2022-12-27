@@ -29,5 +29,9 @@ public abstract class BaseRepository<K, O> implements Repository<K, O> {
     public abstract CompletableFuture<Void> insert(final K key, final O obj);
 
     @Override
-    public abstract void delete(final K key);
+    public abstract CompletableFuture<Void> delete(final K key);
+
+    public BaseStorage getStorage() {
+        return storage;
+    }
 }

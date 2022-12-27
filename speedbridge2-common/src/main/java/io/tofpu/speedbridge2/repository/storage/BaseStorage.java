@@ -22,19 +22,12 @@ public abstract class BaseStorage implements ParentStorage {
     }
 
     public void execute(final String sql) {
-        asyncThreadExecutor().execute(() -> {
-            final Connection connection = getConnection();
-            System.out.println("connection: " + connection);
-
-            System.out.println("Creating a prepared statement now...");
-            try (final PreparedStatement statement = connection.prepareStatement(sql)) {
-                System.out.println("pre-execution stage");
-                statement.executeUpdate();
-                System.out.println("executed query");
-            } catch (SQLException e) {
-                throw new IllegalStateException(e);
-            }
-        });
+        final Connection connection = getConnection();
+        try (final PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     @Override
