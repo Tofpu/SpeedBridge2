@@ -110,7 +110,12 @@ public class RepositoryTest {
                     .supplyAsync(() -> {
                         return query(storage.getConnection(), FETCH_SQL).setLong(1, key)
                                 .execute()
-                                .returnSingleSet(resultSet -> resultSet.getString("name"));
+                                .returnSingleSet(resultSet -> {
+                                    if (resultSet == null) {
+                                        return null;
+                                    }
+                                    return resultSet.getString("name");
+                                });
                     });
         }
 
