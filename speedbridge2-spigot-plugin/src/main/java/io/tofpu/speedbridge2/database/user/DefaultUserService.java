@@ -1,5 +1,7 @@
 package io.tofpu.speedbridge2.database.user;
 
+import io.tofpu.speedbridge2.database.user.repository.block.AbstractUserBlockChoiceRepository;
+import io.tofpu.speedbridge2.database.user.repository.block.UserBlockChoiceService;
 import io.tofpu.speedbridge2.database.user.repository.name.AbstractUserNameRepository;
 import io.tofpu.speedbridge2.database.user.repository.name.UserNameService;
 import io.tofpu.speedbridge2.database.user.repository.score.AbstractUserScoreRepository;
@@ -8,6 +10,7 @@ import io.tofpu.speedbridge2.database.user.repository.score.key.ScoreUUID;
 import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.repository.TableBaseRepository;
 import io.tofpu.speedbridge2.sql.table.SQLTableUtil;
+import org.bukkit.Material;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,15 +18,17 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class DefaultUserService implements UserService, UserNameService, UserScoreService {
+public class DefaultUserService implements UserService, UserNameService, UserScoreService, UserBlockChoiceService {
     private final AbstractUserNameRepository userNameRepository;
     private final AbstractUserScoreRepository userScoreRepository;
+    private final AbstractUserBlockChoiceRepository userBlockChoiceRepository;
 
     public DefaultUserService(
-            final AbstractUserNameRepository userNameRepository,
-            final AbstractUserScoreRepository userScoreRepository) {
+            final AbstractUserNameRepository userNameRepository, final AbstractUserScoreRepository userScoreRepository,
+            final AbstractUserBlockChoiceRepository userBlockChoiceRepository) {
         this.userNameRepository = userNameRepository;
         this.userScoreRepository = userScoreRepository;
+        this.userBlockChoiceRepository = userBlockChoiceRepository;
     }
 
     @Override
@@ -31,7 +36,7 @@ public class DefaultUserService implements UserService, UserNameService, UserSco
         boolean haveInitializedAtLeastOnce = false;
 
         final List<TableBaseRepository<?, ?>> repositories =
-                Arrays.asList(userNameRepository, userScoreRepository);
+                Arrays.asList(userNameRepository, userScoreRepository, userBlockChoiceRepository);
 
         final List<CompletableFuture<Void>> listOfRepositoryFutures = new ArrayList<>(repositories.size());
         for (final TableBaseRepository<?, ?> repository : repositories) {
@@ -88,5 +93,30 @@ public class DefaultUserService implements UserService, UserNameService, UserSco
     @Override
     public CompletableFuture<Void> deleteScore(final UUID key, final int islandSlot) {
         return userScoreRepository.delete(ScoreUUID.of(key, islandSlot));
+    }
+
+    @Override
+    public CompletableFuture<Void> insertBlockChoice(final UUID key, final Material value) {
+        return userBlockChoiceRepository.insert(key, value.name());
+    }
+
+    @Override
+    public CompletableFuture<Material> fetchBlockChoice(final UUID key) {
+        return userBlockChoiceRepository.fetch(key).thenApply(s -> {
+            if (s == null) {
+                return null;
+            }
+            return Material.matchMaterial(s);
+        });
+    }
+
+    @Override
+    public CompletableFuture<Boolean> isBlockChoicePresent(final UUID key) {
+        return userBlockChoiceRepository.isPresent(key);
+    }
+
+    @Override
+    public CompletableFuture<Void> deleteBlockChoice(final UUID key) {
+        return userBlockChoiceRepository.delete(key);
     }
 }

@@ -3,12 +3,15 @@ package io.tofpu.speedbridge2.user;
 import io.tofpu.speedbridge2.database.storage.SQLiteStorage;
 import io.tofpu.speedbridge2.database.user.DefaultUserService;
 import io.tofpu.speedbridge2.database.user.UserService;
+import io.tofpu.speedbridge2.database.user.repository.block.DefaultUserBlockChoiceRepository;
+import io.tofpu.speedbridge2.database.user.repository.block.UserBlockChoiceService;
 import io.tofpu.speedbridge2.database.user.repository.name.DefaultUserNameRepository;
 import io.tofpu.speedbridge2.database.user.repository.name.UserNameService;
 import io.tofpu.speedbridge2.database.user.repository.score.DefaultUserScoreRepository;
 import io.tofpu.speedbridge2.database.user.repository.score.UserScoreService;
 import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.repository.storage.BaseStorage;
+import org.bukkit.Material;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -23,7 +26,7 @@ public class UserServiceTest {
     public void test_insert_is_present_fetch_delete_user_name() throws ExecutionException, InterruptedException {
         final BaseStorage storage = new SQLiteStorage();
         final UserService userService =
-                new DefaultUserService(new DefaultUserNameRepository(storage), null);
+                new DefaultUserService(new DefaultUserNameRepository(storage), null, null);
 
         // initializes the process
         storage.init()
@@ -65,7 +68,8 @@ public class UserServiceTest {
     @Test
     public void test_insert_is_present_fetch_delete_user_score() throws ExecutionException, InterruptedException {
         final BaseStorage storage = new SQLiteStorage();
-        final UserService mainService = new DefaultUserService(null, new DefaultUserScoreRepository(storage));
+        final UserService mainService = new DefaultUserService(null, new DefaultUserScoreRepository(storage),
+                                                               null);
 
         // initializes the process
         storage.init()
@@ -101,5 +105,45 @@ public class UserServiceTest {
 
         // check whether the data is still present in the database
         assertFalse(service.isScorePresent(playerUid, 1).get());
+    }
+
+    @Test
+    public void test_insert_is_present_fetch_delete_user_block_choice() throws ExecutionException,
+            InterruptedException {
+        final BaseStorage storage = new SQLiteStorage();
+        final UserService mainService = new DefaultUserService(null, null,
+                                                               new DefaultUserBlockChoiceRepository(storage));
+        // initializes the process
+        storage.init()
+                .get();
+        mainService.init()
+                .get();
+
+        final UserBlockChoiceService service = (UserBlockChoiceService) mainService;
+
+        // our data
+        final UUID playerUid = UUID.randomUUID();
+        // creates a new instance of Score
+        final Material blockChoice = Material.WOOL;
+
+        // inserts the player to the database
+        service.insertBlockChoice(playerUid, blockChoice)
+                .get();
+
+        // fetches the player from the database
+        final Material expected = service.fetchBlockChoice(playerUid)
+                .get();
+
+        // checks whether the player is present in the database
+        assertTrue(service.isBlockChoicePresent(playerUid).get());
+
+        // checks whether the data matches with what we have given
+        assertEquals(expected, Material.WOOL);
+
+        // deletes the player from the database
+        service.deleteBlockChoice(playerUid).get();
+
+        // check whether the data is still present in the database
+        assertFalse(service.isBlockChoicePresent(playerUid).get());
     }
 }
