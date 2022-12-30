@@ -1,6 +1,6 @@
 package io.tofpu.speedbridge2.database.user.repository.name;
 
-import io.tofpu.speedbridge2.database.storage.StorageUtil;
+import io.tofpu.speedbridge2.database.user.repository.RepositoryUtil;
 import io.tofpu.speedbridge2.repository.storage.BaseStorage;
 import io.tofpu.speedbridge2.sql.table.DefaultRepositoryTable;
 import io.tofpu.speedbridge2.sql.table.RepositoryTable;
@@ -8,7 +8,7 @@ import io.tofpu.speedbridge2.sql.table.RepositoryTable;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import static io.tofpu.speedbridge2.sql.StatementQuery.query;
+import static io.tofpu.speedbridge2.database.user.repository.RepositoryUtil.simpleFetch;
 
 public class DefaultUserNameRepository extends AbstractUserNameRepository {
     private static final String INSERT_SQL = "INSERT INTO users (id, name) VALUES (?, ?)";
@@ -23,16 +23,11 @@ public class DefaultUserNameRepository extends AbstractUserNameRepository {
 
     @Override
     public CompletableFuture<String> fetch(final UUID key) {
-        return storage.asyncThreadExecutor().supplyAsync(() -> {
-            return query(storage.getConnection(), FETCH_SQL)
-                    .setBlob(1, StorageUtil.uidAsByte(key))
-                    .execute()
-                    .returnSingleSet(resultRetrieval -> {
-                        if (resultRetrieval == null) {
-                            return null;
-                        }
-                        return resultRetrieval.getString("name");
-                    });
+        return simpleFetch(storage, FETCH_SQL, key, resultRetrieval -> {
+            if (resultRetrieval == null) {
+                return null;
+            }
+            return resultRetrieval.getString("name");
         });
     }
 
@@ -43,21 +38,12 @@ public class DefaultUserNameRepository extends AbstractUserNameRepository {
 
     @Override
     public CompletableFuture<Void> insert(final UUID key, final String obj) {
-        return storage.asyncThreadExecutor().runAsync(() -> {
-            query(storage.getConnection(), INSERT_SQL)
-                    .setBlob(1, StorageUtil.uidAsByte(key))
-                    .setString(2, obj)
-                    .execute();
-        });
+        return RepositoryUtil.complexExecute(storage, INSERT_SQL, key, statementQuery -> statementQuery.setString(2, obj));
     }
 
     @Override
     public CompletableFuture<Void> delete(final UUID key) {
-        return storage.asyncThreadExecutor().runAsync(() -> {
-            query(storage.getConnection(), DELETE_SQL)
-                    .setBlob(1, StorageUtil.uidAsByte(key))
-                    .execute();
-        });
+        return RepositoryUtil.simpleExecute(storage, DELETE_SQL, key);
     }
 
     @Override
