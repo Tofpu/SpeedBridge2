@@ -42,6 +42,23 @@ public class SQLiteStorage extends BaseStorage {
     }
 
     @Override
+    public CompletableFuture<Void> shutdown() {
+        if (connection == null) {
+            return CompletableFuture.completedFuture(null);
+        }
+
+        synchronized (this) {
+            return asyncThreadExecutor().runAsync(() -> {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    throw new IllegalStateException(e);
+                }
+            });
+        }
+    }
+
+    @Override
     public Connection getConnection() {
         return this.connection;
     }

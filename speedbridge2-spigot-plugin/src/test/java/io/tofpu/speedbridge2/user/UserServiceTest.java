@@ -67,6 +67,8 @@ public class UserServiceTest {
         // check whether the data is still present in the database
         assertFalse(service.isNamePresent(playerUid)
                             .get());
+
+        storage.shutdown().get();
     }
 
     @Test
@@ -114,6 +116,8 @@ public class UserServiceTest {
         // check whether the data is still present in the database
         assertFalse(service.isScorePresent(playerUid, 1)
                             .get());
+
+        storage.shutdown().get();
     }
 
     @Test
@@ -160,5 +164,7 @@ public class UserServiceTest {
         // check whether the data is still present in the database
         assertFalse(service.isBlockChoicePresent(playerUid)
                             .get());
+
+        storage.shutdown().get();
     }
 }

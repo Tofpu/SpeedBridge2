@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.repository.storage;
 
 import java.sql.Connection;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * An interface responsible for holding
@@ -9,4 +10,5 @@ import java.sql.Connection;
 public interface SQLStorage {
     Connection getConnection();
     void establishConnection();
+    CompletableFuture<Void> shutdown();
 }
