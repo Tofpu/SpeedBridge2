@@ -1,14 +1,12 @@
-package io.tofpu.speedbridge2.database.user.repository.block;
+package io.tofpu.speedbridge2.database.repository.user.block;
 
-import io.tofpu.speedbridge2.database.user.repository.RepositoryUtil;
+import io.tofpu.speedbridge2.database.repository.RepositoryUtil;
 import io.tofpu.speedbridge2.repository.storage.BaseStorage;
 import io.tofpu.speedbridge2.sql.table.DefaultRepositoryTable;
 import io.tofpu.speedbridge2.sql.table.RepositoryTable;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-
-import static io.tofpu.speedbridge2.database.user.repository.RepositoryUtil.simpleFetch;
 
 public class DefaultUserBlockChoiceRepository extends AbstractUserBlockChoiceRepository {
     private static final String INSERT_SQL = "INSERT INTO blocks (id, chosen_block) VALUES (?, ?)";
@@ -25,7 +23,7 @@ public class DefaultUserBlockChoiceRepository extends AbstractUserBlockChoiceRep
 
     @Override
     public CompletableFuture<String> fetch(final UUID key) {
-        return simpleFetch(storage, FETCH_SQL, key, resultRetrieval -> {
+        return RepositoryUtil.simpleFetch(storage, FETCH_SQL, key, resultRetrieval -> {
             if (resultRetrieval == null) {
                 return null;
             }

@@ -1,12 +1,13 @@
-package io.tofpu.speedbridge2.database.user;
+package io.tofpu.speedbridge2.service.user;
 
-import io.tofpu.speedbridge2.database.user.repository.block.AbstractUserBlockChoiceRepository;
-import io.tofpu.speedbridge2.database.user.repository.block.UserBlockChoiceService;
-import io.tofpu.speedbridge2.database.user.repository.name.AbstractUserNameRepository;
-import io.tofpu.speedbridge2.database.user.repository.name.UserNameService;
-import io.tofpu.speedbridge2.database.user.repository.score.AbstractUserScoreRepository;
-import io.tofpu.speedbridge2.database.user.repository.score.UserScoreService;
-import io.tofpu.speedbridge2.database.user.repository.score.key.ScoreUUID;
+import io.tofpu.speedbridge2.database.repository.user.factory.UserRepositoryFactory;
+import io.tofpu.speedbridge2.database.repository.user.block.AbstractUserBlockChoiceRepository;
+import io.tofpu.speedbridge2.database.repository.user.block.UserBlockChoiceService;
+import io.tofpu.speedbridge2.database.repository.user.name.AbstractUserNameRepository;
+import io.tofpu.speedbridge2.database.repository.user.name.UserNameService;
+import io.tofpu.speedbridge2.database.repository.user.score.AbstractUserScoreRepository;
+import io.tofpu.speedbridge2.database.repository.user.score.UserScoreService;
+import io.tofpu.speedbridge2.database.repository.user.score.key.ScoreUUID;
 import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.repository.TableBaseRepository;
 import io.tofpu.speedbridge2.sql.table.SQLTableUtil;
@@ -23,12 +24,10 @@ public class DefaultUserService implements UserService, UserNameService, UserSco
     private final AbstractUserScoreRepository userScoreRepository;
     private final AbstractUserBlockChoiceRepository userBlockChoiceRepository;
 
-    public DefaultUserService(
-            final AbstractUserNameRepository userNameRepository, final AbstractUserScoreRepository userScoreRepository,
-            final AbstractUserBlockChoiceRepository userBlockChoiceRepository) {
-        this.userNameRepository = userNameRepository;
-        this.userScoreRepository = userScoreRepository;
-        this.userBlockChoiceRepository = userBlockChoiceRepository;
+    public DefaultUserService(final UserRepositoryFactory userRepositoryFactory) {
+        this.userNameRepository = userRepositoryFactory.nameRepository();
+        this.userScoreRepository = userRepositoryFactory.scoreRepository();
+        this.userBlockChoiceRepository = userRepositoryFactory.blockChoiceRepository();
     }
 
     @Override

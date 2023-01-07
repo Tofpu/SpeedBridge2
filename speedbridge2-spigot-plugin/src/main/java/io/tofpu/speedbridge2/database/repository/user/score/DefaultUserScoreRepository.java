@@ -1,7 +1,7 @@
-package io.tofpu.speedbridge2.database.user.repository.score;
+package io.tofpu.speedbridge2.database.repository.user.score;
 
-import io.tofpu.speedbridge2.database.user.repository.RepositoryUtil;
-import io.tofpu.speedbridge2.database.user.repository.score.key.ScoreUUID;
+import io.tofpu.speedbridge2.database.repository.RepositoryUtil;
+import io.tofpu.speedbridge2.database.repository.user.score.key.ScoreUUID;
 import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.repository.storage.BaseStorage;
 import io.tofpu.speedbridge2.sql.table.DefaultRepositoryTable;
@@ -9,8 +9,6 @@ import io.tofpu.speedbridge2.sql.table.RepositoryTable;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-
-import static io.tofpu.speedbridge2.database.user.repository.RepositoryUtil.complexFetch;
 
 public class DefaultUserScoreRepository extends AbstractUserScoreRepository {
     private static final String INSERT_SQL = "INSERT INTO scores (id, island_slot, score) VALUES (?, ?, ?)";
@@ -28,8 +26,8 @@ public class DefaultUserScoreRepository extends AbstractUserScoreRepository {
         final UUID id = key.getUuid();
         final int keySlot = key.getIslandSlot();
 
-        return complexFetch(storage, FETCH_SQL, id, statementQuery -> statementQuery.setInteger(2, keySlot),
-                            resultRetrieval -> {
+        return RepositoryUtil.complexFetch(storage, FETCH_SQL, id, statementQuery -> statementQuery.setInteger(2, keySlot),
+                                           resultRetrieval -> {
                                 if (resultRetrieval == null) {
                                     return null;
                                 }

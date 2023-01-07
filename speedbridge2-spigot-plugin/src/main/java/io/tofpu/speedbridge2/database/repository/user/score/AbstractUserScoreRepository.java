@@ -1,6 +1,6 @@
-package io.tofpu.speedbridge2.database.user.repository.score;
+package io.tofpu.speedbridge2.database.repository.user.score;
 
-import io.tofpu.speedbridge2.database.user.repository.score.key.ScoreUUID;
+import io.tofpu.speedbridge2.database.repository.user.score.key.ScoreUUID;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.repository.Repository;

@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.database.user.repository.score;
+package io.tofpu.speedbridge2.database.repository.user.score;
 
 import io.tofpu.speedbridge2.model.player.object.score.Score;
 

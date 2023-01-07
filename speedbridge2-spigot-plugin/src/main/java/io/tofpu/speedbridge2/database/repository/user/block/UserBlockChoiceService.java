@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.database.user.repository.block;
+package io.tofpu.speedbridge2.database.repository.user.block;
 
 import org.bukkit.Material;
 

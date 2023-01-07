@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.database.user.repository.name;
+package io.tofpu.speedbridge2.database.repository.user.name;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;

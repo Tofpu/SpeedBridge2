@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.database.user.repository;
+package io.tofpu.speedbridge2.database.repository;
 
 import io.tofpu.speedbridge2.database.storage.StorageUtil;
 import io.tofpu.speedbridge2.repository.storage.BaseStorage;

@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.database.user.repository.score.key;
+package io.tofpu.speedbridge2.database.repository.user.score.key;
 
 import java.util.UUID;
 

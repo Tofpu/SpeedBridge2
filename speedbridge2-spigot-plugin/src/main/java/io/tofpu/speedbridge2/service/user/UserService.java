@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.database.user;
+package io.tofpu.speedbridge2.service.user;
 
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 
