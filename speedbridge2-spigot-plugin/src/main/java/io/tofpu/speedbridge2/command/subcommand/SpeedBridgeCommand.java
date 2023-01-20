@@ -25,6 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Default;
@@ -39,7 +40,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static io.tofpu.speedbridge2.model.common.Message.INSTANCE;
 import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.ARROW_RIGHT;
@@ -346,11 +349,7 @@ public final class SpeedBridgeCommand {
             return INSTANCE.alreadyInAIsland;
         }
 
-        final Optional<Island> optionalIsland = islandService.getAllIslands()
-                .stream()
-                .parallel()
-                .filter(Island::isReady)
-                .findAny();
+        final Optional<Island> optionalIsland = getRandomIsland();
 
         if (!optionalIsland.isPresent()) {
             return INSTANCE.noAvailableIsland;
@@ -360,6 +359,17 @@ public final class SpeedBridgeCommand {
         island.join(bridgePlayer);
 
         return String.format(INSTANCE.joinedAnIsland, island.getSlot() + "");
+    }
+
+    @NotNull
+    private Optional<Island> getRandomIsland() {
+        final List<Island> filteredIslands = islandService.getAllIslands()
+                .stream()
+                .parallel()
+                .filter(Island::isReady)
+                .collect(Collectors.toList());
+
+        return Optional.ofNullable(filteredIslands.get(ThreadLocalRandom.current().nextInt(filteredIslands.size())));
     }
 
     @Subcommand("setup")
