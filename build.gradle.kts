@@ -12,7 +12,7 @@ allprojects {
     }
 
     group = "io.tofpu.speedbridge2"
-    version = "1.0.12"
+    version = "1.0.12-bugfixes"
 
     repositories {
         mavenLocal()
