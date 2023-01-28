@@ -80,9 +80,7 @@ public final class SpeedBridgeCommand {
         ConfigurationManager.INSTANCE.getLobbyCategory()
                 .setLobbyLocation(bridgePlayer.getPlayer()
                         .getLocation())
-                .whenComplete((unused, throwable) -> {
-                    BridgeUtil.sendMessage(bridgePlayer, INSTANCE.lobbySetLocation);
-                });
+                .thenRun(() -> BridgeUtil.sendMessage(bridgePlayer, INSTANCE.lobbySetLocation));
     }
 
     @Subcommand("create")

@@ -1,8 +1,10 @@
 package io.tofpu.speedbridge2.model.common.config.serializer;
 
+import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -19,10 +21,21 @@ public final class LocationSerializer implements TypeSerializer<Location> {
     @Override
     public Location deserialize(final Type type, final ConfigurationNode node) throws SerializationException {
         final String worldName = nonVirtualNode(node, "world").getString();
-        final World world = Bukkit.getWorld(worldName);
+
+        // if the world name is nonexistent, return the default
+        // location
         if (worldName == null) {
             return defaultLocation();
         }
+
+        final World world = getWorld(worldName);
+
+
+        // if the world was not loaded before, or it was deleted
+        // then we will create/load it manually
+//        if (world == null) {
+//            world = Bukkit.createWorld(WorldCreator.name(worldName));
+//        }
 
         final double x = nonVirtualNode(node, "x").getDouble();
         final double y = nonVirtualNode(node, "y").getDouble();
@@ -31,6 +44,19 @@ public final class LocationSerializer implements TypeSerializer<Location> {
         final float pitch = nonVirtualNode(node, "pitch").getFloat();
 
         return new Location(world, x, y, z, yaw, pitch);
+    }
+
+    private World getWorld(final String worldName) {
+        // attempts to get a world that are already loaded
+        World world = Bukkit.getWorld(worldName);
+        if (world != null) {
+            return world;
+        }
+
+        // loads/creates a world with the given worldName
+        // and notifies the administrators of the given action
+        BridgeUtil.log("Loading " + worldName + " world for the speedbridge2 lobby!");
+        return Bukkit.createWorld(WorldCreator.name(worldName));
     }
 
     private ConfigurationNode nonVirtualNode(final ConfigurationNode source, final Object... path) throws SerializationException {

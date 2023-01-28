@@ -28,6 +28,17 @@ import java.util.function.Consumer;
  */
 public final class BridgeUtil {
     /**
+     * A function used to log info-related messages to Bukkit's logger.
+     * This function also does add this plugin's name as a prefix
+     * to differentiate the message from one plugin to another
+     *
+     * @param content the content that will be printed
+     */
+    public static void log(final String content) {
+        Bukkit.getLogger().info("[Speedbridge2] " + content);
+    }
+
+    /**
      * Convert nanoseconds to seconds
      *
      * @param end The time at which the timer should stop.
