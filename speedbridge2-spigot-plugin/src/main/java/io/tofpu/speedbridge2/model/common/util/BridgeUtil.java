@@ -103,6 +103,9 @@ public final class BridgeUtil {
      */
     public static Component sendMessage(final CommonBridgePlayer<?> sender,
             final String content) {
+        if (content.isEmpty()) {
+            return null;
+        }
         final Component component = translateMiniMessage(content);
         sendMessage(sender.getPlayer(), component);
         return component;
@@ -118,6 +121,9 @@ public final class BridgeUtil {
      */
     public static Component sendMessage(final CommandSender sender,
             final String content) {
+        if (content.isEmpty()) {
+            return null;
+        }
         final Component component = translateMiniMessage(content);
         sendMessage(sender, component);
         return component;
