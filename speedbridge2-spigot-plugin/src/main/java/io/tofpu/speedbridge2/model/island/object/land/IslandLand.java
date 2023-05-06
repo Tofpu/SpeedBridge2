@@ -22,10 +22,11 @@ import org.bukkit.World;
 
 import java.io.IOException;
 
-public final class IslandLand {
+public class IslandLand {
     private final Island island;
 
     private final World world;
+    private final double[] positions;
     private final double x;
     private final double y;
     private final double z;
@@ -42,6 +43,7 @@ public final class IslandLand {
     public IslandLand(final Island island, final World world, double[] positions) {
         this.island = island;
         this.world = world;
+        this.positions = positions;
         this.x = positions[0];
         this.y = positions[1];
         this.z = positions[2];
@@ -202,6 +204,10 @@ public final class IslandLand {
     public int hashCode() {
         return new HashCodeBuilder(17, 37).append(getIsland())
                 .toHashCode();
+    }
+
+    public double[] getPositions() {
+        return this.positions;
     }
 
     private static class LandState {

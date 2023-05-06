@@ -7,6 +7,8 @@ import io.tofpu.speedbridge2.model.island.object.GameIsland;
 import io.tofpu.umbrella.UmbrellaAPI;
 import io.tofpu.umbrella.domain.Umbrella;
 
+import java.util.UUID;
+
 public final class GameIslandUmbrella {
     private final Umbrella umbrella;
 
@@ -14,7 +16,7 @@ public final class GameIslandUmbrella {
         this.umbrella = UmbrellaAPI.getInstance()
                 .getUmbrellaService()
                 .getUmbrellaFactory()
-                .create("island");
+                .create(UUID.randomUUID().toString());
 
         for (final SerializableUmbrellaItem serializableUmbrellaItem : ConfigurationManager
                 .INSTANCE.getGameCategory().getUmbrellaItems()) {
