@@ -1,10 +1,11 @@
 package io.tofpu.speedbridge2.model.island.arena;
 
 import com.sk89q.worldedit.WorldEditException;
+import io.tofpu.speedbridge2.command.subcommand.debug.GameIsland2;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.GameIsland;
+import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
@@ -32,7 +33,7 @@ public final class ArenaManager {
     public void load() {
         this.world = Bukkit.createWorld(WorldCreator.name("speedbridge2")
                 .generator(new EmptyChunkGenerator()));
-        this.worldDirectory = new File( "speedbridge2");
+        this.worldDirectory = new File("speedbridge2");
 
         protectWorld(world);
     }
@@ -82,7 +83,7 @@ public final class ArenaManager {
     }
 
     private IslandLand getAvailablePlot(final Collection<IslandLand> islandLands,
-            final int slot) {
+                                        final int slot) {
         for (final IslandLand islandLand : islandLands) {
             // if it's not the same island plot, or the plot is not free; continue
             if (islandLand.getIsland().getSlot() != slot || !islandLand.isFree()) {
@@ -95,11 +96,45 @@ public final class ArenaManager {
         return null;
     }
 
+    // todo: nuke this shit once you get therapy, please
+    public IslandLand justReservePlot(GameIsland2 gameIsland) {
+        Island island = gameIsland.getIsland();
+        final int islandSlot = island.getSlot();
+
+        // retrieving a collection of plots that is associated with the given island slot
+        final Collection<IslandLand> islandLands = retrieve(islandSlot);
+
+        // attempt to get an available plot with the given island slot
+        IslandLand islandLand = getAvailablePlot(islandLands, islandSlot);
+
+        // if we found an available plot, start reserving the plot
+        if (islandLand != null) {
+            islandLand.reserveWith(gameIsland);
+            return islandLand;
+        }
+
+        // otherwise, create our own island plot
+        BridgeUtil.debug("SchematicManager#createIslandPlot: Creating a new island plot for " + island.getSlot() + " slot!");
+
+        final int[] positions = getPositions();
+
+        islandLand = new IslandLand(island, world, positions);
+        COUNTER.getAndAdd(islandLand.getWidth() + ConfigurationManager.INSTANCE.getGeneralCategory().getIslandSpaceGap());
+
+        // adding the plot for usability
+        islandLands.add(islandLand);
+
+        // adding the new island plot to the schematic plot map
+        ISLAND_PLOTS.put(islandSlot, islandLands);
+        return islandLand;
+
+    }
+
     private IslandLand createIslandPlot(final Collection<IslandLand> islandLandList
             , final Island target, final GameIsland gameIsland) {
         BridgeUtil.debug("SchematicManager#createIslandPlot: Creating a new island plot for " + target.getSlot() + " slot!");
 
-        final double[] positions = {COUNTER.get(), 100, 100};
+        final int[] positions = getPositions();
 
         final IslandLand islandLand = new IslandLand(target, world, positions);
         COUNTER.getAndAdd(islandLand.getWidth() + ConfigurationManager.INSTANCE.getGeneralCategory().getIslandSpaceGap());
@@ -175,6 +210,10 @@ public final class ArenaManager {
 
     public World getWorld() {
         return this.world;
+    }
+
+    public int[] getPositions() {
+        return new int[]{COUNTER.get(), 100, 100};
     }
 
     private static final class EmptyChunkGenerator extends ChunkGenerator {

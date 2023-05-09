@@ -49,7 +49,7 @@ public final class IslandSetupHandler {
      */
 
     private IslandSetup create(final BridgePlayer player, final Island target) {
-        final double[] positions = {100 * (islandSetupMap.size() + 100), 100, 0};
+        final int[] positions = {100 * (islandSetupMap.size() + 100), 100, 0};
         final IslandSetup islandSetup;
 
         final IslandLand islandLand = new IslandLand(target, world, positions);

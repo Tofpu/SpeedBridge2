@@ -10,6 +10,7 @@ dependencies {
 
     implementation("com.github.Revxrsal.Lamp:bukkit:3.0.7")
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
+    implementation("com.github.tofpu:gameengine:1.0-SNAPSHOT")
 
     implementation("com.github.tofpu:DynamicClass:1.1") {
         exclude("com.google.guava", "guava")

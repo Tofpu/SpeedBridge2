@@ -22,26 +22,28 @@ import org.bukkit.World;
 
 import java.io.IOException;
 
-public final class IslandLand {
+public class IslandLand {
     private final Island island;
 
     private final World world;
+    private final Location location;
     private final double x;
     private final double y;
     private final double z;
     private final double yaw;
     private final double pitch;
 
-    private final Location location;
+    private final int[] positions;
 
     private final VectorWrapper minPoint;
     private final VectorWrapper maxPoint;
 
     private final LandState landState;
 
-    public IslandLand(final Island island, final World world, double[] positions) {
+    public IslandLand(final Island island, final World world, int[] positions) {
         this.island = island;
         this.world = world;
+        this.positions = positions;
         this.x = positions[0];
         this.y = positions[1];
         this.z = positions[2];
@@ -95,6 +97,10 @@ public final class IslandLand {
 
     public World getWorld() {
         return world;
+    }
+
+    public int[] getPositions() {
+        return positions;
     }
 
     public double getX() {

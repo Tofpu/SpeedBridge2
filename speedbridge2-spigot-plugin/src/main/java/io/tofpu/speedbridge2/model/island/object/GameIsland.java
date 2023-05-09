@@ -16,7 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public final class GameIsland {
+public class GameIsland {
     private final ArenaManager arenaManager;
     private final Umbrella umbrella;
     private final Island island;

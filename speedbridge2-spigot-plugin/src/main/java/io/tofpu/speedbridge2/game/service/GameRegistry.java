@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.game;
+package io.tofpu.speedbridge2.game.service;
 
 import java.util.HashMap;
 import java.util.Map;
