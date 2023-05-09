@@ -8,6 +8,11 @@ public class BukkitPlugin extends JavaPlugin {
     private final SpeedBridge speedBridge = new SpeedBridge(new PluginBootstrap());
 
     @Override
+    public void onLoad() {
+        speedBridge.load();
+    }
+
+    @Override
     public void onEnable() {
         speedBridge.enable();
     }
