@@ -1,0 +1,10 @@
+name: speedbridge2
+version: ${version}
+main: com.github.tofpu.speedbridge2.plugin.BukkitPlugin
+authors: [ Tofpu ]
+website: https://github.com/Tofpu
+api-version: 1.13
+depend:
+  - WorldEdit
+softdepend:
+  - PlaceholderAPI
