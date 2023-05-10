@@ -5,8 +5,9 @@ import com.github.tofpu.speedbridge2.database.DatabaseType;
 import com.github.tofpu.speedbridge2.database.OperationType;
 import com.github.tofpu.speedbridge2.database.driver.ConnectionDetails;
 import com.github.tofpu.speedbridge2.database.driver.DriverOptions;
-import com.github.tofpu.speedbridge2.database.impl.AsyncDatabase;
-import com.github.tofpu.speedbridge2.database.impl.BasicDatabase;
+import com.github.tofpu.speedbridge2.database.impl.async.DefaultAsyncDatabase;
+import com.github.tofpu.speedbridge2.database.impl.BasicSyncDatabase;
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -20,10 +21,10 @@ public class DatabaseFactory {
         SessionFactory factory = getSessionFactory(packageName, type.getDriverOptions(), data);
         switch (operationType) {
             case SYNC -> {
-                return new BasicDatabase(factory);
+                return new BasicSyncDatabase(factory);
             }
             case ASYNC -> {
-                return new AsyncDatabase(new BasicDatabase(factory));
+                return new DefaultAsyncDatabase(new BasicSyncDatabase(factory));
             }
         }
         throw new IllegalArgumentException("Unknown operation type: " + operationType);
