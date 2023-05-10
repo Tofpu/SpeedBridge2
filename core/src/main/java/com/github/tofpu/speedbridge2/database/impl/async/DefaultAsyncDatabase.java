@@ -18,8 +18,13 @@ public class DefaultAsyncDatabase implements Database, AsyncDatabase {
     }
 
     @Override
-    public void compute(Consumer<Session> sessionConsumer) {
-        delegate.compute(sessionConsumer);
+    public void execute(Consumer<Session> sessionConsumer) {
+        delegate.execute(sessionConsumer);
+    }
+
+    @Override
+    public <T> T compute(Function<Session, T> sessionFunction) {
+        return delegate.compute(sessionFunction);
     }
 
     @Override
@@ -28,9 +33,7 @@ public class DefaultAsyncDatabase implements Database, AsyncDatabase {
         return CompletableFuture.supplyAsync(() -> {
             final Object[] result = new Object[1];
             try {
-                delegate.compute(session -> {
-                    result[0] = sessionFunction.apply(session);
-                });
+                delegate.execute(session -> result[0] = sessionFunction.apply(session));
                 return (T) result[0];
             } catch (Exception exception) {
                 throw new IllegalStateException(exception);

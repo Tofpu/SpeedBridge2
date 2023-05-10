@@ -41,8 +41,8 @@ public class DatabaseService implements LoadableService {
         this.database.shutdown();
     }
 
-    public void compute(final Consumer<Session> sessionConsumer) {
-        this.database.compute(sessionConsumer);
+    public void execute(final Consumer<Session> sessionConsumer) {
+        this.database.execute(sessionConsumer);
     }
 
     public <T> CompletableFuture<T> computeAsync(final Function<Session, T> sessionFunction) {
