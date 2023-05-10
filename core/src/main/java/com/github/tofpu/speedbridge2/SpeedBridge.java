@@ -1,9 +1,10 @@
 package com.github.tofpu.speedbridge2;
 
+import com.github.tofpu.speedbridge2.service.Service;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
-import com.github.tofpu.speedbridge2.user.UserService;
 
 public class SpeedBridge {
+    private static SpeedBridge instance;
     private final ApplicationBootstrap bootstrap;
     private final ServiceManager serviceManager;
 
@@ -12,8 +13,12 @@ public class SpeedBridge {
         this.serviceManager = new ServiceManager();
     }
 
+    public static <S extends Service> S getService(final Class<S> clazz) {
+        return instance.serviceManager.get(clazz);
+    }
+
     public void load() {
-        this.serviceManager.register(new UserService());
+        instance = this;
         this.serviceManager.loadServices();
     }
 
