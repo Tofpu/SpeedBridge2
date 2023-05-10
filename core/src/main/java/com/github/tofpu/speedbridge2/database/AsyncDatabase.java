@@ -3,10 +3,11 @@ package com.github.tofpu.speedbridge2.database;
 import org.hibernate.Session;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
+import java.util.concurrent.ExecutorService;
+import java.util.function.Consumer;
 
 public interface AsyncDatabase extends Database {
-    <T> CompletableFuture<T> computeAsync(final Function<Session, T> sessionFunction);
+    CompletableFuture<Void> executeAsync(Consumer<Session> sessionConsumer);
 
     @Override
     default boolean supportsAsync() {

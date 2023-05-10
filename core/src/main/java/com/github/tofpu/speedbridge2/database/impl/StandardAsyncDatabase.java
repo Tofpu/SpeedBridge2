@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.database.impl.async;
+package com.github.tofpu.speedbridge2.database.impl;
 
 import com.github.tofpu.speedbridge2.database.AsyncDatabase;
 import com.github.tofpu.speedbridge2.database.Database;
@@ -6,9 +6,8 @@ import org.hibernate.Session;
 
 import java.util.concurrent.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
-public class DefaultAsyncDatabase implements Database, AsyncDatabase {
+public class StandardAsyncDatabase implements Database, AsyncDatabase {
     private final Database delegate;
     private final ExecutorService executor;
 
@@ -23,22 +22,13 @@ public class DefaultAsyncDatabase implements Database, AsyncDatabase {
     }
 
     @Override
-    public <T> T compute(Function<Session, T> sessionFunction) {
-        return delegate.compute(sessionFunction);
+    public CompletableFuture<Void> executeAsync(Consumer<Session> sessionConsumer) {
+        return CompletableFuture.runAsync(() -> execute(sessionConsumer), executor);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <T> CompletableFuture<T> computeAsync(Function<Session, T> sessionFunction) {
-        return CompletableFuture.supplyAsync(() -> {
-            final Object[] result = new Object[1];
-            try {
-                delegate.execute(session -> result[0] = sessionFunction.apply(session));
-                return (T) result[0];
-            } catch (Exception exception) {
-                throw new IllegalStateException(exception);
-            }
-        }, executor);
+    public ExecutorService executor() {
+        return executor;
     }
 
     @Override

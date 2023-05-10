@@ -45,17 +45,25 @@ public class DatabaseService implements LoadableService {
         this.database.execute(sessionConsumer);
     }
 
-    public <T> CompletableFuture<T> computeAsync(final Function<Session, T> sessionFunction) {
-        requireState(supportsAsync(), "Async operations is not supported.");
-        AsyncDatabase asyncDatabase = (AsyncDatabase) this.database;
-        return asyncDatabase.computeAsync(sessionFunction);
+    @SuppressWarnings("unchecked")
+    public <T> T compute(Function<Session, T> sessionFunction) {
+        final Object[] result = new Object[1];
+        execute(session -> result[0] = sessionFunction.apply(session));
+        return (T) result[0];
     }
 
-    public <T> CompletableFuture<T> executeAsync(final Consumer<Session> sessionConsumer) {
-        return computeAsync(session -> {
-            sessionConsumer.accept(session);
-            return null;
-        });
+    @SuppressWarnings("unchecked")
+    public <T> CompletableFuture<T> computeAsync(Function<Session, T> sessionFunction) {
+        requireState(supportsAsync(), "Async operations is not supported.");
+        CompletableFuture<T> future = new CompletableFuture<>();
+        executeAsync(session -> future.complete(sessionFunction.apply(session)));
+        return future;
+    }
+
+    public CompletableFuture<Void> executeAsync(final Consumer<Session> sessionConsumer) {
+        requireState(supportsAsync(), "Async operations is not supported.");
+        AsyncDatabase asyncDatabase = (AsyncDatabase) this.database;
+        return asyncDatabase.executeAsync(sessionConsumer);
     }
 
     public boolean supportsAsync() {
