@@ -11,9 +11,9 @@ public class StandardAsyncDatabase implements Database, AsyncDatabase {
     private final Database delegate;
     private final ExecutorService executor;
 
-    public DefaultAsyncDatabase(Database delegate) {
+    public StandardAsyncDatabase(Database delegate, ExecutorService executor) {
         this.delegate = delegate;
-        this.executor = Executors.newSingleThreadExecutor();
+        this.executor = executor;
     }
 
     @Override
@@ -24,11 +24,6 @@ public class StandardAsyncDatabase implements Database, AsyncDatabase {
     @Override
     public CompletableFuture<Void> executeAsync(Consumer<Session> sessionConsumer) {
         return CompletableFuture.runAsync(() -> execute(sessionConsumer), executor);
-    }
-
-    @Override
-    public ExecutorService executor() {
-        return executor;
     }
 
     @Override

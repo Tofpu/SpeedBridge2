@@ -2,10 +2,12 @@ package com.github.tofpu.speedbridge2.database.service;
 
 import com.github.tofpu.speedbridge2.database.*;
 import com.github.tofpu.speedbridge2.database.driver.ConnectionDetails;
+import com.github.tofpu.speedbridge2.database.factory.DatabaseFactory;
 import com.github.tofpu.speedbridge2.service.LoadableService;
 import org.hibernate.Session;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -13,16 +15,16 @@ import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState
 
 public class DatabaseService implements LoadableService {
     private final ConnectionDetails details;
-    private final OperationType operationType;
+    private final DatabaseFactory<?> databaseFactory;
     private final DatabaseType databaseType;
 
     public DatabaseService() {
-        this(ConnectionDetails.MEMORY, OperationType.ASYNC, DatabaseType.H2);
+        this(ConnectionDetails.MEMORY, DatabaseFactoryMaker.async(Executors.newSingleThreadExecutor()), DatabaseType.H2);
     }
 
-    public DatabaseService(ConnectionDetails details, OperationType operationType, DatabaseType databaseType) {
+    public DatabaseService(ConnectionDetails details, DatabaseFactory<?> databaseFactory, DatabaseType databaseType) {
         this.details = details;
-        this.operationType = operationType;
+        this.databaseFactory = databaseFactory;
         this.databaseType = databaseType;
     }
 
@@ -32,8 +34,7 @@ public class DatabaseService implements LoadableService {
     public void load() {
         this.database = DatabaseBuilder.create("com.github.tofpu.speedbridge2")
                 .data(details)
-                .operationType(operationType)
-                .build(databaseType);
+                .build(databaseType, databaseFactory);
     }
 
     @Override
@@ -52,7 +53,6 @@ public class DatabaseService implements LoadableService {
         return (T) result[0];
     }
 
-    @SuppressWarnings("unchecked")
     public <T> CompletableFuture<T> computeAsync(Function<Session, T> sessionFunction) {
         requireState(supportsAsync(), "Async operations is not supported.");
         CompletableFuture<T> future = new CompletableFuture<>();
