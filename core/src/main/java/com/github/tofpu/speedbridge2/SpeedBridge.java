@@ -1,5 +1,7 @@
 package com.github.tofpu.speedbridge2;
 
+import com.github.tofpu.speedbridge2.database.service.DatabaseService;
+import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.service.Service;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 
@@ -19,11 +21,14 @@ public class SpeedBridge {
 
     public void load() {
         instance = this;
+        this.serviceManager.register(new DatabaseService());
+        this.serviceManager.register(new LobbyService(getService(DatabaseService.class)));
         this.serviceManager.loadServices();
     }
 
     public void enable() {
     }
+
     public void disable() {
         this.serviceManager.unloadServices();
     }
