@@ -1,13 +1,14 @@
-package com.github.tofpu.speedbridge2;
+package com.github.tofpu.speedbridge2.bootstrap.world;
 
+import com.github.tofpu.speedbridge2.WorldAdapter;
+import com.github.tofpu.speedbridge2.adapter.BukkitAdapter;
 import com.github.tofpu.speedbridge2.object.generic.World;
 import org.bukkit.Bukkit;
-import org.bukkit.WorldCreator;
 
 public class BukkitWorldAdapter implements WorldAdapter {
     @Override
     public World provideWorld(String worldName) {
-        return new BukkitWorld(Bukkit.createWorld(WorldCreator.name(worldName)));
+        return BukkitAdapter.toWorld(Bukkit.getWorld(worldName));
     }
 
     @Override

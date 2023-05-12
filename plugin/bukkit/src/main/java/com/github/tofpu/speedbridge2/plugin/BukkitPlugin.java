@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.plugin;
 
-import com.github.tofpu.speedbridge2.PluginBootstrap;
+import com.github.tofpu.speedbridge2.bootstrap.PluginBootstrap;
 import com.github.tofpu.speedbridge2.SpeedBridge;
 import org.bukkit.plugin.java.JavaPlugin;
 

@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2;
+package com.github.tofpu.speedbridge2.bootstrap.world;
 
 import com.github.tofpu.speedbridge2.object.generic.World;
 
