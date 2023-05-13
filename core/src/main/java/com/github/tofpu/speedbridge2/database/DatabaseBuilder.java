@@ -5,6 +5,7 @@ import com.github.tofpu.speedbridge2.database.factory.DatabaseFactory;
 import com.github.tofpu.speedbridge2.database.factory.session.SessionFactoryMaker;
 
 public class DatabaseBuilder {
+
     private final String packageName;
     private ConnectionDetails connectionDetails;
 
@@ -22,6 +23,8 @@ public class DatabaseBuilder {
     }
 
     public <T extends Database> T build(DatabaseType databaseType, DatabaseFactory<T> factory) {
-        return factory.create(SessionFactoryMaker.create(packageName, databaseType.getDriverOptions(), connectionDetails));
+        return factory.create(
+            SessionFactoryMaker.create(packageName, databaseType.getDriverOptions(),
+                connectionDetails));
     }
 }

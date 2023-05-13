@@ -1,13 +1,12 @@
 package com.github.tofpu.speedbridge2.listener.dispatcher.invoker;
 
 import com.github.tofpu.speedbridge2.listener.Event;
-import org.reflections.ReflectionUtils;
-
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import org.reflections.ReflectionUtils;
 
 public class MethodInvoker implements ListenerInvoker {
+
     private final Object object;
     private final Method method;
 
@@ -18,7 +17,9 @@ public class MethodInvoker implements ListenerInvoker {
 
     @Override
     public void invoke(Event event) {
-        final boolean accessible = !Modifier.isProtected(method.getModifiers()) && !Modifier.isPrivate(method.getModifiers());
+        final boolean accessible =
+            !Modifier.isProtected(method.getModifiers()) && !Modifier.isPrivate(
+                method.getModifiers());
 
         if (!accessible) {
             method.setAccessible(true);

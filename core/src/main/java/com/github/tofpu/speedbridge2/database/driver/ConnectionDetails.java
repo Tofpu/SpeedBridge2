@@ -1,6 +1,7 @@
 package com.github.tofpu.speedbridge2.database.driver;
 
 public class ConnectionDetails {
+
     public static final ConnectionDetails MEMORY = new ConnectionDetails("", ConnectionType.MEMORY);
 
     private final String data;

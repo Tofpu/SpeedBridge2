@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(force = true)
 @Data
 public class World {
+
     private final String worldName;
 
     public World(String worldName) {

@@ -6,6 +6,7 @@ import com.github.tofpu.speedbridge2.object.generic.World;
 import org.bukkit.Bukkit;
 
 public class BukkitWorldAdapter implements WorldAdapter {
+
     @Override
     public World provideWorld(String worldName) {
         return BukkitAdapter.toWorld(Bukkit.getWorld(worldName));

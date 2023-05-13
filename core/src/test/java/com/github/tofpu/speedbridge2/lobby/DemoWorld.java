@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor(force = true)
 public class DemoWorld extends World {
+
     public DemoWorld(String worldName) {
         super(worldName);
     }

@@ -46,6 +46,7 @@ public class ServiceTest {
     @Test
     void sanity_check() {
         Assertions.assertDoesNotThrow(() -> serviceManager.register(new DemoService()));
-        Assertions.assertThrows(IllegalStateException.class, () -> serviceManager.register(new DemoService()));
+        Assertions.assertThrows(IllegalStateException.class,
+            () -> serviceManager.register(new DemoService()));
     }
 }

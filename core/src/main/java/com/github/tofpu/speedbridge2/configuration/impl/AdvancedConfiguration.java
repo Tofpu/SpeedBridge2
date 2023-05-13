@@ -4,6 +4,7 @@ import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState
 
 @SuppressWarnings("unused")
 public class AdvancedConfiguration extends BasicConfiguration {
+
     public void setAs(final String key, final Object value) {
         set(key, value);
     }
@@ -14,7 +15,8 @@ public class AdvancedConfiguration extends BasicConfiguration {
         if (value == null) {
             return null;
         }
-        requireState(type.isInstance(value), "Value %s is not assignable to %s!", value.getClass().getSimpleName(), type.getSimpleName());
+        requireState(type.isInstance(value), "Value %s is not assignable to %s!",
+            value.getClass().getSimpleName(), type.getSimpleName());
         return (T) value;
     }
 

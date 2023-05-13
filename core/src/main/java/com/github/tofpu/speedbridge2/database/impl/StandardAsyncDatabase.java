@@ -2,12 +2,14 @@ package com.github.tofpu.speedbridge2.database.impl;
 
 import com.github.tofpu.speedbridge2.database.AsyncDatabase;
 import com.github.tofpu.speedbridge2.database.Database;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import org.hibernate.Session;
 
-import java.util.concurrent.*;
-import java.util.function.Consumer;
-
 public class StandardAsyncDatabase implements Database, AsyncDatabase {
+
     private final Database delegate;
     private final ExecutorService executor;
 

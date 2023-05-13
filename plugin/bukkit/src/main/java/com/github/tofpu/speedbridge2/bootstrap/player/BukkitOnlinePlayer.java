@@ -5,11 +5,11 @@ import com.github.tofpu.speedbridge2.adapter.SpeedBridgeAdapter;
 import com.github.tofpu.speedbridge2.object.generic.Position;
 import com.github.tofpu.speedbridge2.object.generic.World;
 import com.github.tofpu.speedbridge2.player.OnlinePlayer;
+import java.util.UUID;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
-
 public class BukkitOnlinePlayer implements OnlinePlayer {
+
     private final Player player;
 
     public BukkitOnlinePlayer(Player player) {

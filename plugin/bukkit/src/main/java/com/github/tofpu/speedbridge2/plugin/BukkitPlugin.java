@@ -1,10 +1,11 @@
 package com.github.tofpu.speedbridge2.plugin;
 
-import com.github.tofpu.speedbridge2.bootstrap.PluginBootstrap;
 import com.github.tofpu.speedbridge2.SpeedBridge;
+import com.github.tofpu.speedbridge2.bootstrap.PluginBootstrap;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BukkitPlugin extends JavaPlugin {
+
     private final SpeedBridge speedBridge = new SpeedBridge(new PluginBootstrap());
 
     @Override

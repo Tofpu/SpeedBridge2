@@ -1,15 +1,15 @@
 package com.github.tofpu.speedbridge2.configuration;
 
 import com.github.tofpu.speedbridge2.configuration.impl.AdvancedConfiguration;
+import java.io.File;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-
 // todo: figure out a way to write & fetch nested keys and values
 public class ConfigurationTest {
+
     private final File runtimeDirectory = new File("test-resources/runtime");
     private final File defaultDirectory = new File("test-resources/default/configuration");
     private final ConfigurationService service = new ConfigurationService(runtimeDirectory);

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor(force = true)
 public class Position {
+
     @Embedded
     private final World world;
     private final int x, y, z;

@@ -6,10 +6,10 @@ import com.github.tofpu.speedbridge2.listener.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.service.Service;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
-
 import java.io.File;
 
 public class SpeedBridge {
+
     private static SpeedBridge instance;
     private final ApplicationBootstrap bootstrap;
     private final ServiceManager serviceManager;

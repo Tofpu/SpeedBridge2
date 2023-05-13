@@ -4,16 +4,17 @@ import com.github.tofpu.speedbridge2.database.driver.ConnectionDetails;
 import com.github.tofpu.speedbridge2.database.driver.DriverOptions;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
+import java.lang.annotation.Annotation;
+import java.util.Properties;
+import java.util.Set;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.reflections.Reflections;
 
-import java.lang.annotation.Annotation;
-import java.util.Properties;
-import java.util.Set;
-
 public class SessionFactoryMaker {
-    public static SessionFactory create(String packageName, DriverOptions options, ConnectionDetails data) {
+
+    public static SessionFactory create(String packageName, DriverOptions options,
+        ConnectionDetails data) {
         final Properties properties = new Properties();
         properties.setProperty("hibernate.connection.url", options.connectionUrl(data));
 
@@ -36,11 +37,12 @@ public class SessionFactoryMaker {
         });
 
         return configuration
-                .setProperties(properties)
-                .buildSessionFactory();
+            .setProperties(properties)
+            .buildSessionFactory();
     }
 
-    private static Set<Class<?>> getTypesAnnotatedWith(String packageName, Class<? extends Annotation> annotation) {
+    private static Set<Class<?>> getTypesAnnotatedWith(String packageName,
+        Class<? extends Annotation> annotation) {
         return new Reflections(packageName).getTypesAnnotatedWith(annotation);
     }
 }

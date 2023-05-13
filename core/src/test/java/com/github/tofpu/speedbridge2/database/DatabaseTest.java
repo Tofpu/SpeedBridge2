@@ -1,25 +1,26 @@
 package com.github.tofpu.speedbridge2.database;
 
 import com.github.tofpu.speedbridge2.database.driver.ConnectionDetails;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class DatabaseTest {
-    private final AsyncDatabase asyncDatabase = DatabaseBuilder.create("com.github.tofpu.speedbridge2")
-            .data(ConnectionDetails.MEMORY)
-            .build(DatabaseType.H2, DatabaseFactoryMaker.async(Executors.newSingleThreadExecutor()));
+
+    private final AsyncDatabase asyncDatabase = DatabaseBuilder.create(
+            "com.github.tofpu.speedbridge2")
+        .data(ConnectionDetails.MEMORY)
+        .build(DatabaseType.H2, DatabaseFactoryMaker.async(Executors.newSingleThreadExecutor()));
 
     private final Database syncDatabase = DatabaseBuilder.create("com.github.tofpu.speedbridge2")
-            .data(ConnectionDetails.MEMORY)
-            .build(DatabaseType.H2, DatabaseFactoryMaker.sync());
+        .data(ConnectionDetails.MEMORY)
+        .build(DatabaseType.H2, DatabaseFactoryMaker.sync());
 
 
     @AfterEach
@@ -38,7 +39,9 @@ public class DatabaseTest {
         AtomicReference<Throwable> exceptionThrown = new AtomicReference<>();
         mainThread.setUncaughtExceptionHandler((t, e) -> exceptionThrown.set(e));
 
-        asyncDatabase.executeAsync(session -> mainThread.getUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new RuntimeException())).get(5, TimeUnit.SECONDS);
+        asyncDatabase.executeAsync(session -> mainThread.getUncaughtExceptionHandler()
+                .uncaughtException(Thread.currentThread(), new RuntimeException()))
+            .get(5, TimeUnit.SECONDS);
 
         Assertions.assertNotNull(exceptionThrown.get());
     }
@@ -53,7 +56,8 @@ public class DatabaseTest {
         AtomicReference<Throwable> exceptionThrown = new AtomicReference<>();
         mainThread.setUncaughtExceptionHandler((t, e) -> exceptionThrown.set(e));
 
-        asyncDatabase.execute(session -> mainThread.getUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new RuntimeException()));
+        asyncDatabase.execute(session -> mainThread.getUncaughtExceptionHandler()
+            .uncaughtException(Thread.currentThread(), new RuntimeException()));
 
         Assertions.assertNotNull(exceptionThrown.get());
     }
@@ -61,7 +65,10 @@ public class DatabaseTest {
     @Test
     void async_operation_test() throws ExecutionException, InterruptedException, TimeoutException {
         final Thread mainThread = Thread.currentThread();
-        asyncDatabase.executeAsync(session -> Assertions.assertNotEquals(mainThread.getId(), Thread.currentThread().getId())).get(5, TimeUnit.SECONDS);
+        asyncDatabase.executeAsync(
+                session -> Assertions.assertNotEquals(mainThread.getId(),
+                    Thread.currentThread().getId()))
+            .get(5, TimeUnit.SECONDS);
     }
 
     @Test

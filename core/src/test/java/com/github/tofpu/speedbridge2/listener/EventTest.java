@@ -1,15 +1,19 @@
 package com.github.tofpu.speedbridge2.listener;
 
-import com.github.tofpu.speedbridge2.listener.dispatcher.invoker.MethodInvoker;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import com.github.tofpu.speedbridge2.listener.dispatcher.EventDispatcherService;
+import com.github.tofpu.speedbridge2.listener.dispatcher.invoker.MethodInvoker;
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.UUID;
-
-import static org.mockito.Mockito.*;
-
 public class EventTest {
+
     private final EventDispatcherService eventDispatcherService = new EventDispatcherService();
 
     @Test
@@ -32,7 +36,8 @@ public class EventTest {
     @Test
     void invoke_test() throws NoSuchMethodException {
         MessageListener object = spy(new MessageListener());
-        MethodInvoker invoker = new MethodInvoker(object, MessageListener.class.getDeclaredMethod("on", MessageEvent.class));
+        MethodInvoker invoker = new MethodInvoker(object,
+            MessageListener.class.getDeclaredMethod("on", MessageEvent.class));
         invoker.invoke(new MessageEvent(UUID.randomUUID(), "test"));
 
         verify(object, times((1))).on(any());

@@ -9,9 +9,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
-@Entity(name = "lobby") @Table(name = "lobbies")
-@Data @NoArgsConstructor(force = true)
+@Entity(name = "lobby")
+@Table(name = "lobbies")
+@Data
+@NoArgsConstructor(force = true)
 public class Lobby {
+
     @Id
     private final int id;
 

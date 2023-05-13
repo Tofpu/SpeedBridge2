@@ -3,6 +3,7 @@ package com.github.tofpu.speedbridge2.listener;
 import java.util.UUID;
 
 public class MessageEvent extends Event {
+
     private final UUID userId;
     private final String message;
 

@@ -1,40 +1,46 @@
 package com.github.tofpu.speedbridge2.database.service;
 
-import com.github.tofpu.speedbridge2.database.*;
+import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
+
+import com.github.tofpu.speedbridge2.database.AsyncDatabase;
+import com.github.tofpu.speedbridge2.database.Database;
+import com.github.tofpu.speedbridge2.database.DatabaseBuilder;
+import com.github.tofpu.speedbridge2.database.DatabaseFactoryMaker;
+import com.github.tofpu.speedbridge2.database.DatabaseType;
 import com.github.tofpu.speedbridge2.database.driver.ConnectionDetails;
 import com.github.tofpu.speedbridge2.database.factory.DatabaseFactory;
 import com.github.tofpu.speedbridge2.service.LoadableService;
-import org.hibernate.Session;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
-import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
+import org.hibernate.Session;
 
 public class DatabaseService implements LoadableService {
+
     private final ConnectionDetails details;
     private final DatabaseFactory<?> databaseFactory;
     private final DatabaseType databaseType;
+    private Database database;
 
     public DatabaseService() {
-        this(ConnectionDetails.MEMORY, DatabaseFactoryMaker.async(Executors.newSingleThreadExecutor()), DatabaseType.H2);
+        this(ConnectionDetails.MEMORY,
+            DatabaseFactoryMaker.async(Executors.newSingleThreadExecutor()),
+            DatabaseType.H2);
     }
 
-    public DatabaseService(ConnectionDetails details, DatabaseFactory<?> databaseFactory, DatabaseType databaseType) {
+    public DatabaseService(ConnectionDetails details, DatabaseFactory<?> databaseFactory,
+        DatabaseType databaseType) {
         this.details = details;
         this.databaseFactory = databaseFactory;
         this.databaseType = databaseType;
     }
 
-    private Database database;
-
     @Override
     public void load() {
         this.database = DatabaseBuilder.create("com.github.tofpu.speedbridge2")
-                .data(details)
-                .build(databaseType, databaseFactory);
+            .data(details)
+            .build(databaseType, databaseFactory);
     }
 
     @Override

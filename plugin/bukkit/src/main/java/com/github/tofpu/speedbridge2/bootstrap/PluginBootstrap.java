@@ -7,6 +7,7 @@ import com.github.tofpu.speedbridge2.bootstrap.player.BukkitPlayerAdapter;
 import com.github.tofpu.speedbridge2.bootstrap.world.BukkitWorldAdapter;
 
 public class PluginBootstrap implements ApplicationBootstrap {
+
     @Override
     public WorldAdapter worldAdapter() {
         return new BukkitWorldAdapter();
