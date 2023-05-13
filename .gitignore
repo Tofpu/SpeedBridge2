@@ -2,3 +2,4 @@
 build
 .idea
 .gitattributes
+/core/test-resources/runtime
