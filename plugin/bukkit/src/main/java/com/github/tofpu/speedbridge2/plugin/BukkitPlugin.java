@@ -9,7 +9,7 @@ public class BukkitPlugin extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        speedBridge.load();
+        speedBridge.load(this.getDataFolder());
     }
 
     @Override
