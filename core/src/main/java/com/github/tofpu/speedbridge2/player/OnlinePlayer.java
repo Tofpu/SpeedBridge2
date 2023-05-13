@@ -12,6 +12,9 @@ public interface OnlinePlayer {
     void sendMessage(String content);
     void teleport(Position position);
 
+    boolean hasPermission(String node);
+    boolean isOperator();
+
     World getWorld();
     Position getPosition();
 }

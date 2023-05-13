@@ -37,6 +37,16 @@ public class BukkitOnlinePlayer implements OnlinePlayer {
     }
 
     @Override
+    public boolean hasPermission(String node) {
+        return player.hasPermission(node);
+    }
+
+    @Override
+    public boolean isOperator() {
+        return player.isOp();
+    }
+
+    @Override
     public World getWorld() {
         return BukkitAdapter.toWorld(player.getWorld());
     }
