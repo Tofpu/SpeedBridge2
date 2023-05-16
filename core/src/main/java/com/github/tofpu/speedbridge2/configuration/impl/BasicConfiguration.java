@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import lombok.SneakyThrows;
 import org.yaml.snakeyaml.DumperOptions;
@@ -14,13 +14,19 @@ import org.yaml.snakeyaml.Yaml;
 
 public class BasicConfiguration {
 
-    private final Map<String, Object> objectMap = new HashMap<>();
+    protected final Map<String, Object> objectMap;
     private final Yaml yaml;
 
-    public BasicConfiguration() {
+    public BasicConfiguration(Map<String, Object> objectMap) {
+        this.objectMap = objectMap;
+
         DumperOptions dumperOptions = new DumperOptions();
         dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         this.yaml = new Yaml(dumperOptions);
+    }
+
+    public BasicConfiguration() {
+        this(new LinkedHashMap<>());
     }
 
     @SneakyThrows
@@ -36,7 +42,9 @@ public class BasicConfiguration {
         }
 
         Map<String, Object> loadedMap = this.yaml.load(new FileInputStream(fromFile));
-        this.objectMap.putAll(loadedMap);
+        if (loadedMap != null && loadedMap.size() != 0) {
+            this.objectMap.putAll(loadedMap);
+        }
     }
 
     public void set(final String key, final Object obj) {

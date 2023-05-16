@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2;
 
-import com.github.tofpu.speedbridge2.configuration.ConfigurationService;
+import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.listener.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
