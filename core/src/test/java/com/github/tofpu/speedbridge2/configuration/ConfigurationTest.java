@@ -29,7 +29,10 @@ public class ConfigurationTest {
 
     @SuppressWarnings("all")
     private void cleanRuntime() {
-        Arrays.stream(runtimeDirectory.listFiles()).forEach(File::delete);
+        File[] files = runtimeDirectory.listFiles();
+        if (files != null && files.length != 0) {
+            Arrays.stream(files).forEach(File::delete);
+        }
         runtimeDirectory.delete();
     }
 
