@@ -4,23 +4,34 @@ import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireArgum
 import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
 
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
+import com.github.tofpu.speedbridge2.listener.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.object.generic.Position;
 import com.github.tofpu.speedbridge2.service.LoadableService;
+import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 import java.util.concurrent.CompletableFuture;
+import org.jetbrains.annotations.NotNull;
 
 public class LobbyService implements LoadableService {
 
     private static final int PRIMARY_LOBBY_ID = 0;
 
     private final DatabaseService databaseService;
+    private final EventDispatcherService eventDispatcherService;
     private Lobby lobby;
 
-    public LobbyService(DatabaseService databaseService) {
+    public LobbyService(DatabaseService databaseService,
+        EventDispatcherService eventDispatcherService) {
         this.databaseService = databaseService;
+        this.eventDispatcherService = eventDispatcherService;
+    }
+
+    public LobbyService(ServiceManager serviceManager) {
+        this(serviceManager.get(DatabaseService.class), serviceManager.get(EventDispatcherService.class));
     }
 
     @Override
     public void load() {
+        this.eventDispatcherService.register(new LobbyListener(this));
         this.lobby = findLobby();
     }
 

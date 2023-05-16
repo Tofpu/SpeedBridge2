@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.lobby;
+package java.com.github.tofpu.speedbridge2.lobby;
 
 import com.github.tofpu.speedbridge2.object.generic.World;
 import jakarta.persistence.Embeddable;
