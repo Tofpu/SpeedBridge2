@@ -1,6 +1,5 @@
 package com.github.tofpu.speedbridge2.player;
 
-import com.github.tofpu.speedbridge2.object.generic.ConfigurableMessage;
 import com.github.tofpu.speedbridge2.object.generic.Position;
 import com.github.tofpu.speedbridge2.object.generic.World;
 import java.util.UUID;
