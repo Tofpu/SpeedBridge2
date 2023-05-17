@@ -1,6 +1,5 @@
 package com.github.tofpu.speedbridge2.lobby;
 
-import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.listener.Listener;
 import com.github.tofpu.speedbridge2.listener.dispatcher.EventListener;
 import com.github.tofpu.speedbridge2.listener.event.PlayerJoinEvent;
@@ -27,7 +26,7 @@ public class LobbyListener implements Listener {
         if (!lobbyAvailable && player.isOperator()) {
             player.sendMessage(EnumMessage.MISSING_LOBBY);
         } else {
-            player.teleport(lobbyService.lobby().getPosition());
+            player.teleport(lobbyService.position());
         }
     }
 }

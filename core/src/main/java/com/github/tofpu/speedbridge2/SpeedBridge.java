@@ -3,7 +3,6 @@ package com.github.tofpu.speedbridge2;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.listener.dispatcher.EventDispatcherService;
-import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.service.Service;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 import java.io.File;
@@ -26,14 +25,13 @@ public class SpeedBridge {
     public void load(final File pluginDirectory) {
         instance = this;
         this.serviceManager.register(new DatabaseService());
-        this.serviceManager.register(new LobbyService(getService(DatabaseService.class)));
         this.serviceManager.register(new EventDispatcherService());
         this.serviceManager.register(new ConfigurationService(pluginDirectory));
-        this.serviceManager.loadServices();
     }
 
     public void enable(@NotNull ApplicationBootstrap bootstrap) {
         this.bootstrap = bootstrap;
+        this.serviceManager.loadServices();
     }
 
     public void disable() {

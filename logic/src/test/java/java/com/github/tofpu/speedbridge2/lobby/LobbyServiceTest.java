@@ -2,7 +2,6 @@ package java.com.github.tofpu.speedbridge2.lobby;
 
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.listener.dispatcher.EventDispatcherService;
-import com.github.tofpu.speedbridge2.lobby.Lobby;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.generic.Position;
 import java.util.concurrent.ExecutionException;
@@ -40,19 +39,19 @@ public class LobbyServiceTest {
     @Test
     void basic_test() throws ExecutionException, InterruptedException, TimeoutException {
         Assertions.assertFalse(lobbyService.isLobbyAvailable());
-        Assertions.assertThrows(IllegalStateException.class, lobbyService::lobby);
+        Assertions.assertThrows(IllegalStateException.class, lobbyService::position);
 
         Position lobbyPosition = new Position(new DemoWorld("demo_world"), 100, 100, 100);
 
         lobbyService.updateLocation(lobbyPosition).get(5, TimeUnit.SECONDS);
-        Assertions.assertNotNull(lobbyService.lobby());
+        Assertions.assertNotNull(lobbyService.position());
 
-        Lobby fetchedValue = lobbyService.fetchLobby().get(5, TimeUnit.SECONDS);
-        Assertions.assertEquals(fetchedValue.getPosition(), lobbyPosition);
+        Position fetchedValue = lobbyService.fetchPosition().get(5, TimeUnit.SECONDS);
+        Assertions.assertEquals(fetchedValue, lobbyPosition);
 
         // makes sure that the lobby service's load functionality is not a bluff
         final LobbyService newLobbyService = new LobbyService(databaseService,eventDispatcherService);
         newLobbyService.load();
-        Assertions.assertEquals(newLobbyService.lobby().getPosition(), lobbyPosition);
+        Assertions.assertEquals(newLobbyService.position(), lobbyPosition);
     }
 }

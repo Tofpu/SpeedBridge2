@@ -13,6 +13,8 @@ public class BukkitPlugin extends JavaPlugin {
     public void onLoad() {
         speedBridge = new SpeedBridge();
         speedBridge.load(this.getDataFolder());
+
+        speedBridge.serviceManager().register(new LobbyService(speedBridge.serviceManager()));
     }
 
     @Override

@@ -9,7 +9,6 @@ import com.github.tofpu.speedbridge2.object.generic.Position;
 import com.github.tofpu.speedbridge2.service.LoadableService;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 import java.util.concurrent.CompletableFuture;
-import org.jetbrains.annotations.NotNull;
 
 public class LobbyService implements LoadableService {
 
@@ -32,19 +31,25 @@ public class LobbyService implements LoadableService {
     @Override
     public void load() {
         this.eventDispatcherService.register(new LobbyListener(this));
-        this.lobby = findLobby();
+        loadLobby();
     }
 
     @Override
     public void unload() {
     }
 
-    private Lobby findLobby() {
-        return databaseService.compute(session -> session.find(Lobby.class, PRIMARY_LOBBY_ID));
+    private void loadLobby() {
+        databaseService.execute(session -> this.lobby = session.find(Lobby.class, PRIMARY_LOBBY_ID));
     }
 
-    public CompletableFuture<Lobby> fetchLobby() {
-        return databaseService.computeAsync(session -> session.find(Lobby.class, PRIMARY_LOBBY_ID));
+    public CompletableFuture<Position> fetchPosition() {
+        return databaseService.computeAsync(session -> {
+            Lobby latestLobby = session.find(Lobby.class, PRIMARY_LOBBY_ID);
+            if (latestLobby != null) {
+                return latestLobby.getPosition();
+            }
+            return null;
+        });
     }
 
     public CompletableFuture<Void> updateLocation(Position lobbyPosition) {
@@ -62,8 +67,8 @@ public class LobbyService implements LoadableService {
         return this.lobby != null;
     }
 
-    public Lobby lobby() {
+    public Position position() {
         requireState(isLobbyAvailable(), "No lobby was made.");
-        return this.lobby;
+        return this.lobby.getPosition();
     }
 }
