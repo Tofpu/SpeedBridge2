@@ -7,15 +7,15 @@ import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.service.Service;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 import java.io.File;
+import org.jetbrains.annotations.NotNull;
 
 public class SpeedBridge {
 
     private static SpeedBridge instance;
-    private final ApplicationBootstrap bootstrap;
     private final ServiceManager serviceManager;
+    private ApplicationBootstrap bootstrap;
 
-    public SpeedBridge(ApplicationBootstrap bootstrap) {
-        this.bootstrap = bootstrap;
+    public SpeedBridge() {
         this.serviceManager = new ServiceManager();
     }
 
@@ -32,10 +32,19 @@ public class SpeedBridge {
         this.serviceManager.loadServices();
     }
 
-    public void enable() {
+    public void enable(@NotNull ApplicationBootstrap bootstrap) {
+        this.bootstrap = bootstrap;
     }
 
     public void disable() {
         this.serviceManager.unloadServices();
+    }
+
+    public ServiceManager serviceManager() {
+        return serviceManager;
+    }
+
+    public ApplicationBootstrap bootstrap() {
+        return bootstrap;
     }
 }

@@ -2,20 +2,22 @@ package com.github.tofpu.speedbridge2.plugin;
 
 import com.github.tofpu.speedbridge2.SpeedBridge;
 import com.github.tofpu.speedbridge2.bootstrap.PluginBootstrap;
+import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
+import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BukkitPlugin extends JavaPlugin {
-
-    private final SpeedBridge speedBridge = new SpeedBridge(new PluginBootstrap());
+    private SpeedBridge speedBridge;
 
     @Override
     public void onLoad() {
+        speedBridge = new SpeedBridge();
         speedBridge.load(this.getDataFolder());
     }
 
     @Override
     public void onEnable() {
-        speedBridge.enable();
+        speedBridge.enable(new PluginBootstrap(speedBridge.serviceManager().get(ConfigurationService.class)));
     }
 
     @Override

@@ -2,17 +2,22 @@ package com.github.tofpu.speedbridge2.bootstrap.player;
 
 import com.github.tofpu.speedbridge2.adapter.BukkitAdapter;
 import com.github.tofpu.speedbridge2.adapter.SpeedBridgeAdapter;
+import com.github.tofpu.speedbridge2.configuration.service.ConfigType;
+import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import com.github.tofpu.speedbridge2.object.generic.Position;
 import com.github.tofpu.speedbridge2.object.generic.World;
+import com.github.tofpu.speedbridge2.player.ConfigurableMessage;
 import com.github.tofpu.speedbridge2.player.OnlinePlayer;
 import java.util.UUID;
 import org.bukkit.entity.Player;
 
 public class BukkitOnlinePlayer implements OnlinePlayer {
+    private final ConfigurationService configurationService;
 
     private final Player player;
 
-    public BukkitOnlinePlayer(Player player) {
+    public BukkitOnlinePlayer(ConfigurationService configurationService, Player player) {
+        this.configurationService = configurationService;
         this.player = player;
     }
 
@@ -29,6 +34,11 @@ public class BukkitOnlinePlayer implements OnlinePlayer {
     @Override
     public void sendMessage(String content) {
         player.sendMessage(content);
+    }
+
+    @Override
+    public void sendMessage(ConfigurableMessage message) {
+        sendMessage(configurationService.on(ConfigType.MESSAGE).getString(message.key(), message.defaultMessage()));
     }
 
     @Override

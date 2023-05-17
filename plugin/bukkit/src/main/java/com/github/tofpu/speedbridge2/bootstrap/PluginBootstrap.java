@@ -5,8 +5,14 @@ import com.github.tofpu.speedbridge2.PlayerAdapter;
 import com.github.tofpu.speedbridge2.WorldAdapter;
 import com.github.tofpu.speedbridge2.bootstrap.player.BukkitPlayerAdapter;
 import com.github.tofpu.speedbridge2.bootstrap.world.BukkitWorldAdapter;
+import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 
 public class PluginBootstrap implements ApplicationBootstrap {
+    private final ConfigurationService configurationService;
+
+    public PluginBootstrap(ConfigurationService configurationService) {
+        this.configurationService = configurationService;
+    }
 
     @Override
     public WorldAdapter worldAdapter() {
@@ -15,6 +21,6 @@ public class PluginBootstrap implements ApplicationBootstrap {
 
     @Override
     public PlayerAdapter playerAdapter() {
-        return new BukkitPlayerAdapter();
+        return new BukkitPlayerAdapter(configurationService);
     }
 }

@@ -1,5 +1,6 @@
 package com.github.tofpu.speedbridge2.player;
 
+import com.github.tofpu.speedbridge2.object.generic.ConfigurableMessage;
 import com.github.tofpu.speedbridge2.object.generic.Position;
 import com.github.tofpu.speedbridge2.object.generic.World;
 import java.util.UUID;
@@ -11,6 +12,7 @@ public interface OnlinePlayer {
     String name();
 
     void sendMessage(String content);
+    void sendMessage(ConfigurableMessage message);
 
     void teleport(Position position);
 
