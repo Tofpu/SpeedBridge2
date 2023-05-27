@@ -72,12 +72,32 @@ public class EventDispatcherService implements Service {
     public void unregister(final Class<? extends Listener> listenerClass) {
         requireState(isRegisteredListener(listenerClass), "There is no registered listener of %s.",
             listenerClass.getSimpleName());
+
         getMethodMap(listenerClass).keySet().forEach(eventClass -> this.listenerMap.get(eventClass)
             .removeIf(listenerInvoker -> listenerInvoker.name().equals(listenerInvoker.name())));
         this.registeredListeners.remove(listenerClass);
+
+        requireState(!containListenerInternally(listenerClass), "Failed to unregister %s listener properly!", listenerClass.getSimpleName());
+        requireState(!isRegisteredListener(listenerClass), "Failed to unregister %s listener properly!", listenerClass.getSimpleName());
     }
 
     public boolean isRegisteredListener(final Class<?> clazz) {
         return this.registeredListeners.contains(clazz);
+    }
+
+    private boolean containListenerInternally(final Class<? extends Listener> listenerClass) {
+        AtomicBoolean contains = new AtomicBoolean(false);
+
+        getMethodMap(listenerClass).keySet().forEach(eventClass -> {
+            for (ListenerInvoker invoker : this.listenerMap.get(eventClass)) {
+                System.out.println(invoker.name() + " vs " + listenerClass);
+                if (listenerClass.getSimpleName().equals(invoker.name())) {
+                    contains.set(true);
+                    break;
+                }
+            }
+        });
+
+        return contains.get();
     }
 }
