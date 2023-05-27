@@ -74,6 +74,7 @@ public class EventDispatcherService implements Service {
             listenerClass.getSimpleName());
         getMethodMap(listenerClass).keySet().forEach(eventClass -> this.listenerMap.get(eventClass)
             .removeIf(listenerInvoker -> listenerInvoker.name().equals(listenerInvoker.name())));
+        this.registeredListeners.remove(listenerClass);
     }
 
     public boolean isRegisteredListener(final Class<?> clazz) {
