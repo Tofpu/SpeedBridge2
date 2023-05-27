@@ -1,4 +1,4 @@
-package java.com.github.tofpu.speedbridge2.lobby;
+package com.github.tofpu.speedbridge2.lobby;
 
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.listener.dispatcher.EventDispatcherService;
