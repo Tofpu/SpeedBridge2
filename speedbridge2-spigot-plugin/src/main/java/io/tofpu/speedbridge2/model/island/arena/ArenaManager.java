@@ -6,6 +6,7 @@ import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.GameIsland;
 import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
+import io.tofpu.speedbridge2.model.support.worldedit.Vector;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -101,8 +102,19 @@ public final class ArenaManager {
 
         final double[] positions = {COUNTER.get(), 100, 100};
 
+        positions[0] += Math.abs(positions[0] - new IslandLand(target, world, positions).region().getMinimumPoint().getX());
+
+        BridgeUtil.debug("=== island " + target.getSlot() + " ===");
+        BridgeUtil.debug("Placing schematic at: " + Arrays.toString(positions));
+
         final IslandLand islandLand = new IslandLand(target, world, positions);
+        BridgeUtil.debug("Island width is: " + islandLand.getWidth());
+
         COUNTER.getAndAdd(islandLand.getWidth() + ConfigurationManager.INSTANCE.getGeneralCategory().getIslandSpaceGap());
+
+        BridgeUtil.debug("minimumPoint=" + serializeVector(islandLand.region().getMinimumPoint()));
+        BridgeUtil.debug("maximumPoint=" + serializeVector(islandLand.region().getMaximumPoint()));
+        BridgeUtil.debug("==========");
 
         // reserving the plot to player
         islandLand.reserveWith(gameIsland);
@@ -119,6 +131,11 @@ public final class ArenaManager {
         // adding the new island plot to the schematic plot map
         ISLAND_PLOTS.put(target.getSlot(), islandLandList);
         return islandLand;
+    }
+
+    @NotNull
+    private static String serializeVector(Vector vector) {
+        return String.format("%s, %s, %s", vector.getX(), vector.getY(), vector.getZ());
     }
 
     public void resetWorld() {
