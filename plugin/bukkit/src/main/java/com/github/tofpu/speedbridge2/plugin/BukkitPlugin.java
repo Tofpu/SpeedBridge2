@@ -1,5 +1,6 @@
 package com.github.tofpu.speedbridge2.plugin;
 
+import com.github.tofpu.speedbridge2.LogicLoader;
 import com.github.tofpu.speedbridge2.SpeedBridge;
 import com.github.tofpu.speedbridge2.bootstrap.PluginBootstrap;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
@@ -12,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class BukkitPlugin extends JavaPlugin {
     private SpeedBridge speedBridge;
+    private LogicLoader loader;
     private static boolean unitTesting = false;
 
     public BukkitPlugin() {
@@ -29,16 +31,18 @@ public class BukkitPlugin extends JavaPlugin {
         speedBridge = new SpeedBridge();
         speedBridge.load(this.getDataFolder());
 
-        speedBridge.serviceManager().register(new LobbyService(speedBridge.serviceManager()));
+        loader = LogicLoader.load(speedBridge);
     }
 
     @Override
     public void onEnable() {
+        loader.enable();
         speedBridge.enable(new PluginBootstrap(speedBridge.serviceManager().get(ConfigurationService.class)));
     }
 
     @Override
     public void onDisable() {
+        loader.disable();
         speedBridge.disable();
     }
 
