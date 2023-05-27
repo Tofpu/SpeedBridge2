@@ -1,8 +1,8 @@
 package com.github.tofpu.speedbridge2.listener.dispatcher.invoker;
 
 import com.github.tofpu.speedbridge2.listener.Event;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import org.reflections.ReflectionUtils;
 
 public class MethodInvoker implements ListenerInvoker {
@@ -17,26 +17,32 @@ public class MethodInvoker implements ListenerInvoker {
 
     @Override
     public void invoke(Event event) {
-        final boolean accessible =
-            !Modifier.isProtected(method.getModifiers()) && !Modifier.isPrivate(
-                method.getModifiers());
-
-        if (!accessible) {
-            method.setAccessible(true);
-        }
+        boolean accessible = true;
 
         try {
-            ReflectionUtils.invoke(method, object, event);
+            invoke(method, object, event);
         } catch (Exception e) {
-            if (!accessible) {
-                method.setAccessible(false);
+            if (!(e instanceof IllegalAccessException)) {
+                throw new IllegalStateException("Failed to call method " + method.getName() + "()", e);
             }
-            throw new IllegalStateException(e);
+
+            accessible = false;
+            try {
+                method.setAccessible(true);
+                ReflectionUtils.invoke(method, object, event);
+            } catch (Exception e2) {
+                throw new IllegalStateException("Unable to access listener method " + method.getName() + " of " + object.getClass().getSimpleName(), e2);
+            }
         }
 
         if (!accessible) {
-            method.setAccessible(true);
+            method.setAccessible(false);
         }
+    }
+
+    private void invoke(Method method, Object obj, Object... args)
+        throws InvocationTargetException, IllegalAccessException {
+        method.invoke(obj, args);
     }
 
     @Override
