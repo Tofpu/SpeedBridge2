@@ -1,12 +1,11 @@
-package com.github.tofpu.speedbridge2.listener.dispatcher.invoker;
+package com.github.tofpu.speedbridge2.event.dispatcher.invoker;
 
-import com.github.tofpu.speedbridge2.listener.Event;
+import com.github.tofpu.speedbridge2.event.Event;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import org.reflections.ReflectionUtils;
 
 public class MethodInvoker implements ListenerInvoker {
-
     private final Object object;
     private final Method method;
 

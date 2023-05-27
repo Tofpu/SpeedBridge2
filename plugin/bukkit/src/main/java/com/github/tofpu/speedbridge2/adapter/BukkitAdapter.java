@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.adapter;
 
-import com.github.tofpu.speedbridge2.object.generic.Position;
-import com.github.tofpu.speedbridge2.object.generic.World;
+import com.github.tofpu.speedbridge2.object.Position;
+import com.github.tofpu.speedbridge2.object.World;
 import org.bukkit.Location;
 
 public class BukkitAdapter {

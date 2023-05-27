@@ -1,11 +1,11 @@
-package com.github.tofpu.speedbridge2.listener.dispatcher;
+package com.github.tofpu.speedbridge2.event.dispatcher;
 
 import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
 
-import com.github.tofpu.speedbridge2.listener.Event;
-import com.github.tofpu.speedbridge2.listener.Listener;
-import com.github.tofpu.speedbridge2.listener.dispatcher.invoker.ListenerInvoker;
-import com.github.tofpu.speedbridge2.listener.dispatcher.invoker.MethodInvoker;
+import com.github.tofpu.speedbridge2.event.Event;
+import com.github.tofpu.speedbridge2.event.Listener;
+import com.github.tofpu.speedbridge2.event.dispatcher.invoker.ListenerInvoker;
+import com.github.tofpu.speedbridge2.event.dispatcher.invoker.MethodInvoker;
 import com.github.tofpu.speedbridge2.service.Service;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

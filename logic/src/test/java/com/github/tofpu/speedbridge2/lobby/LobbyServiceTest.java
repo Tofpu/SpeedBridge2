@@ -1,8 +1,8 @@
 package com.github.tofpu.speedbridge2.lobby;
 
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
-import com.github.tofpu.speedbridge2.listener.dispatcher.EventDispatcherService;
-import com.github.tofpu.speedbridge2.object.generic.Position;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
+import com.github.tofpu.speedbridge2.object.Position;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;

@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.object.generic;
+package com.github.tofpu.speedbridge2.object;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;

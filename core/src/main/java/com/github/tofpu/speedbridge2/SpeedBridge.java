@@ -2,7 +2,7 @@ package com.github.tofpu.speedbridge2;
 
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
-import com.github.tofpu.speedbridge2.listener.dispatcher.EventDispatcherService;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.service.Service;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 import java.io.File;

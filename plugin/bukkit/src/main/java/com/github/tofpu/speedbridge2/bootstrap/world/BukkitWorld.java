@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.bootstrap.world;
 
-import com.github.tofpu.speedbridge2.object.generic.World;
+import com.github.tofpu.speedbridge2.object.World;
 
 public class BukkitWorld extends World {
 

@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.message;
 
-import com.github.tofpu.speedbridge2.player.ConfigurableMessage;
+import com.github.tofpu.speedbridge2.object.player.ConfigurableMessage;
 
 public enum EnumMessage implements ConfigurableMessage {
     MISSING_LOBBY {

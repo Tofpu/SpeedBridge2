@@ -1,6 +1,5 @@
 package com.github.tofpu.speedbridge2.event;
 
-import com.github.tofpu.speedbridge2.listener.Event;
 import java.util.UUID;
 
 public class MessageEvent extends Event {

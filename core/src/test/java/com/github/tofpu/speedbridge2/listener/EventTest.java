@@ -6,8 +6,10 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.github.tofpu.speedbridge2.listener.dispatcher.EventDispatcherService;
-import com.github.tofpu.speedbridge2.listener.dispatcher.invoker.MethodInvoker;
+import com.github.tofpu.speedbridge2.event.MessageEvent;
+import com.github.tofpu.speedbridge2.event.MessageListener;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
+import com.github.tofpu.speedbridge2.event.dispatcher.invoker.MethodInvoker;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,7 +32,7 @@ public class EventTest {
         eventDispatcherService.dispatch(messageEvent);
 
         verify(messageListener, times(1)).on(messageEvent);
-        verify(messageListener, never()).brokenOn(messageEvent);
+        verify(messageListener, never()).on(messageEvent);
     }
 
     @Test

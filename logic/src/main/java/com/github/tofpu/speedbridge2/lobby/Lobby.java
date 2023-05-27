@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.lobby;
 
-import com.github.tofpu.speedbridge2.object.generic.Position;
+import com.github.tofpu.speedbridge2.object.Position;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;

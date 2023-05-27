@@ -1,7 +1,7 @@
-package com.github.tofpu.speedbridge2.listener.event;
+package com.github.tofpu.speedbridge2.event.event;
 
-import com.github.tofpu.speedbridge2.listener.Event;
-import com.github.tofpu.speedbridge2.player.OnlinePlayer;
+import com.github.tofpu.speedbridge2.event.Event;
+import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 
 public class PlayerLeaveEvent extends Event {
 

@@ -2,7 +2,7 @@ package com.github.tofpu.speedbridge2.bootstrap.world;
 
 import com.github.tofpu.speedbridge2.WorldAdapter;
 import com.github.tofpu.speedbridge2.adapter.BukkitAdapter;
-import com.github.tofpu.speedbridge2.object.generic.World;
+import com.github.tofpu.speedbridge2.object.World;
 import org.bukkit.Bukkit;
 
 public class BukkitWorldAdapter implements WorldAdapter {

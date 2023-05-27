@@ -4,10 +4,10 @@ import com.github.tofpu.speedbridge2.adapter.BukkitAdapter;
 import com.github.tofpu.speedbridge2.adapter.SpeedBridgeAdapter;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigType;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
-import com.github.tofpu.speedbridge2.object.generic.Position;
-import com.github.tofpu.speedbridge2.object.generic.World;
-import com.github.tofpu.speedbridge2.player.ConfigurableMessage;
-import com.github.tofpu.speedbridge2.player.OnlinePlayer;
+import com.github.tofpu.speedbridge2.object.Position;
+import com.github.tofpu.speedbridge2.object.World;
+import com.github.tofpu.speedbridge2.object.player.ConfigurableMessage;
+import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import java.util.UUID;
 import org.bukkit.entity.Player;
 

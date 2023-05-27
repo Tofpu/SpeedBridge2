@@ -8,9 +8,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import com.github.tofpu.speedbridge2.listener.dispatcher.EventDispatcherService;
-import com.github.tofpu.speedbridge2.listener.event.PlayerJoinEvent;
-import com.github.tofpu.speedbridge2.listener.event.PlayerLeaveEvent;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
+import com.github.tofpu.speedbridge2.event.event.PlayerJoinEvent;
+import com.github.tofpu.speedbridge2.event.event.PlayerLeaveEvent;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

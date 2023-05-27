@@ -4,7 +4,7 @@ import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState
 
 import com.github.tofpu.speedbridge2.PlayerAdapter;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
-import com.github.tofpu.speedbridge2.player.OnlinePlayer;
+import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 

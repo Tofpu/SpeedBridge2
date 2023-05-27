@@ -1,8 +1,8 @@
-package com.github.tofpu.speedbridge2.listener;
+package com.github.tofpu.speedbridge2.event;
 
 import com.github.tofpu.speedbridge2.PlayerAdapter;
-import com.github.tofpu.speedbridge2.listener.dispatcher.EventDispatcherService;
-import com.github.tofpu.speedbridge2.player.OnlinePlayer;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
+import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -24,7 +24,7 @@ public class PlayerConnectionListener implements Listener {
         OnlinePlayer player = this.playerAdapter.provideOnlinePlayer(
             event.getPlayer().getUniqueId());
         dispatcherService.dispatch(
-            new com.github.tofpu.speedbridge2.listener.event.PlayerJoinEvent(player));
+            new com.github.tofpu.speedbridge2.event.event.PlayerJoinEvent(player));
     }
 
     @EventHandler
@@ -32,6 +32,6 @@ public class PlayerConnectionListener implements Listener {
         OnlinePlayer player = this.playerAdapter.provideOnlinePlayer(
             event.getPlayer().getUniqueId());
         dispatcherService.dispatch(
-            new com.github.tofpu.speedbridge2.listener.event.PlayerLeaveEvent(player));
+            new com.github.tofpu.speedbridge2.event.event.PlayerLeaveEvent(player));
     }
 }

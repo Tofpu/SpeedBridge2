@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.listener.dispatcher;
+package com.github.tofpu.speedbridge2.event.dispatcher;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

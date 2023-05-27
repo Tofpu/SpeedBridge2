@@ -1,10 +1,10 @@
 package com.github.tofpu.speedbridge2.lobby;
 
-import com.github.tofpu.speedbridge2.listener.Listener;
-import com.github.tofpu.speedbridge2.listener.dispatcher.EventListener;
-import com.github.tofpu.speedbridge2.listener.event.PlayerJoinEvent;
+import com.github.tofpu.speedbridge2.event.Listener;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventListener;
+import com.github.tofpu.speedbridge2.event.event.PlayerJoinEvent;
 import com.github.tofpu.speedbridge2.message.EnumMessage;
-import com.github.tofpu.speedbridge2.player.OnlinePlayer;
+import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 
 public class LobbyListener implements Listener {
