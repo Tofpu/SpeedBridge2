@@ -2,7 +2,6 @@ package com.github.tofpu.speedbridge2.lobby;
 
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.listener.dispatcher.EventDispatcherService;
-import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.generic.Position;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +47,8 @@ public class LobbyServiceTest {
 
         Position fetchedValue = lobbyService.fetchPosition().get(5, TimeUnit.SECONDS);
         Assertions.assertEquals(fetchedValue, lobbyPosition);
+
+        this.lobbyService.unload();
 
         // makes sure that the lobby service's load functionality is not a bluff
         final LobbyService newLobbyService = new LobbyService(databaseService,eventDispatcherService);

@@ -36,6 +36,7 @@ public class LobbyService implements LoadableService {
 
     @Override
     public void unload() {
+        this.eventDispatcherService.unregister(LobbyListener.class);
     }
 
     private void loadLobby() {
