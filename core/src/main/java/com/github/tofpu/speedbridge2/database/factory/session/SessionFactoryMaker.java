@@ -2,11 +2,11 @@ package com.github.tofpu.speedbridge2.database.factory.session;
 
 import com.github.tofpu.speedbridge2.database.driver.ConnectionDetails;
 import com.github.tofpu.speedbridge2.database.driver.DriverOptions;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Entity;
 import java.lang.annotation.Annotation;
 import java.util.Properties;
 import java.util.Set;
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.reflections.Reflections;

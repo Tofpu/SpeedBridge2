@@ -27,4 +27,8 @@ subprojects {
         // Use JUnit Platform for unit tests.
         useJUnitPlatform()
     }
+
+    java {
+        this.sourceCompatibility = JavaVersion.VERSION_1_8
+    }
 }

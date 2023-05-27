@@ -76,5 +76,22 @@ public class Node {
         return new Result(rootMap, nestMap);
     }
 
-    private record Result(Map<String, Object> rootMap, Map<String, Object> nestMap) {}
+    private static class Result {
+
+        private final Map<String, Object> rootMap;
+        private final Map<String, Object> nestMap;
+
+        public Result(Map<String, Object> rootMap, Map<String, Object> nestMap) {
+            this.rootMap = rootMap;
+            this.nestMap = nestMap;
+        }
+
+        public Map<String, Object> rootMap() {
+            return rootMap;
+        }
+
+        public Map<String, Object> nestMap() {
+            return nestMap;
+        }
+    }
 }

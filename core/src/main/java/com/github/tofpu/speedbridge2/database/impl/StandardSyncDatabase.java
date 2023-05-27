@@ -4,6 +4,7 @@ import com.github.tofpu.speedbridge2.database.Database;
 import java.util.function.Consumer;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 public class StandardSyncDatabase implements Database {
 
@@ -15,7 +16,25 @@ public class StandardSyncDatabase implements Database {
 
     @Override
     public void execute(Consumer<Session> sessionConsumer) {
-        factory.inTransaction(sessionConsumer);
+        try (final Session session = factory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                sessionConsumer.accept(session);
+                if (!transaction.isActive()) {
+                    throw new IllegalStateException();
+                }
+            } catch (RuntimeException exception) {
+                if (transaction.isActive()) {
+                    try {
+                        transaction.rollback();
+                    } catch (Exception ignored) {
+                    }
+                }
+                throw exception;
+            }
+
+            transaction.commit();
+        }
     }
 
     @Override

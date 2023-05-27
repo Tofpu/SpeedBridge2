@@ -77,11 +77,14 @@ public class DatabaseTest {
     }
 
     @Test
-    void basic_modify_and_retrieval_operation_test() {
+    void basic_persist_and_modify_operation_test() {
         UUID id = UUID.randomUUID();
-        asyncDatabase.execute(session -> session.persist(new DemoEntity(id, 2)));
-        asyncDatabase.execute(session -> session.get(DemoEntity.class, id).number(20));
-        asyncDatabase.execute(session -> {
+        syncDatabase.execute(session -> {
+            System.out.println("insert entity with id: " + id);
+            session.persist(new DemoEntity(id, 2));
+        });
+        syncDatabase.execute(session -> session.get(DemoEntity.class, id).number(20));
+        syncDatabase.execute(session -> {
             DemoEntity demoEntity = session.get(DemoEntity.class, id);
             Assertions.assertEquals(20, demoEntity.getNumber());
         });

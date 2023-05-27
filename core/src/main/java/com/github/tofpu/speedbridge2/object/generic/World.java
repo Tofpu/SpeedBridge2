@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.object.generic;
 
-import jakarta.persistence.Embeddable;
+import javax.persistence.Embeddable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
