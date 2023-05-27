@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +27,7 @@ public class EventDispatcherService implements Service {
 
     @NotNull
     @SuppressWarnings("unchecked")
-    private static Map<Class<Event>, Method> getMethodMap(Class<Listener> listenerClass) {
+    private static Map<Class<Event>, Method> getMethodMap(final Class<? extends Listener> listenerClass) {
         return Arrays.stream(listenerClass.getDeclaredMethods())
             .filter(method -> method.isAnnotationPresent(EventListener.class)
                 && method.getParameterCount() == 1 && Event.class.isAssignableFrom(
@@ -68,7 +69,7 @@ public class EventDispatcherService implements Service {
         this.registeredListeners.add(listenerClass);
     }
 
-    public void unregister(final Class<Listener> listenerClass) {
+    public void unregister(final Class<? extends Listener> listenerClass) {
         requireState(isRegisteredListener(listenerClass), "There is no registered listener of %s.",
             listenerClass.getSimpleName());
         getMethodMap(listenerClass).keySet().forEach(eventClass -> this.listenerMap.get(eventClass)
