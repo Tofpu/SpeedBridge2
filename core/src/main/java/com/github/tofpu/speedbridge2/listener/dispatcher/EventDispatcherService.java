@@ -27,7 +27,8 @@ public class EventDispatcherService implements Service {
 
     @NotNull
     @SuppressWarnings("unchecked")
-    private static Map<Class<Event>, Method> getMethodMap(final Class<? extends Listener> listenerClass) {
+    private static Map<Class<Event>, Method> getMethodMap(
+        final Class<? extends Listener> listenerClass) {
         return Arrays.stream(listenerClass.getDeclaredMethods())
             .filter(method -> method.isAnnotationPresent(EventListener.class)
                 && method.getParameterCount() == 1 && Event.class.isAssignableFrom(
@@ -58,7 +59,7 @@ public class EventDispatcherService implements Service {
 
         eventMap.forEach((aClass, method) -> {
             MethodInvoker invoker = new MethodInvoker(listener, method);
-            this.listenerMap.compute(aClass, (aClass1, invokers) -> {
+            this.listenerMap.compute(aClass, (ignored, invokers) -> {
                 if (invokers == null) {
                     invokers = new ArrayList<>();
                 }
@@ -77,8 +78,10 @@ public class EventDispatcherService implements Service {
             .removeIf(listenerInvoker -> listenerInvoker.name().equals(listenerInvoker.name())));
         this.registeredListeners.remove(listenerClass);
 
-        requireState(!containListenerInternally(listenerClass), "Failed to unregister %s listener properly!", listenerClass.getSimpleName());
-        requireState(!isRegisteredListener(listenerClass), "Failed to unregister %s listener properly!", listenerClass.getSimpleName());
+        requireState(!containListenerInternally(listenerClass),
+            "Failed to unregister %s listener properly!", listenerClass.getSimpleName());
+        requireState(!isRegisteredListener(listenerClass),
+            "Failed to unregister %s listener properly!", listenerClass.getSimpleName());
     }
 
     public boolean isRegisteredListener(final Class<?> clazz) {

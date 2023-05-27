@@ -11,6 +11,7 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 
 public class UUIDType implements UserType {
+
     @Override
     public int[] sqlTypes() {
         return new int[]{Types.VARCHAR};

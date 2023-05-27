@@ -94,18 +94,23 @@ public class ConfigurationTest {
             .path("list")
             .set("New York", newYorkMap)
             .set("New Mexico", newMexicoMap)
-                .previous()
-                    .set("count", 20);
+            .previous()
+            .set("count", 20);
 
         Assertions.assertEquals(4, config.getAs(Map.class, "department", null).size());
         Assertions.assertEquals(2, config.path("department").getAs(Map.class, "list", null).size());
 
-        Assertions.assertEquals(creationDate.toString(), config.path("department").getString("creationDate", null));
-        Assertions.assertEquals(latestUpdate.toString(), config.path("department").getString("latestUpdate", null));
-        Assertions.assertEquals(Map.of("New York", newYorkMap, "New Mexico", newMexicoMap), config.path("department").getAs(Map.class, "list", null));
+        Assertions.assertEquals(creationDate.toString(),
+            config.path("department").getString("creationDate", null));
+        Assertions.assertEquals(latestUpdate.toString(),
+            config.path("department").getString("latestUpdate", null));
+        Assertions.assertEquals(Map.of("New York", newYorkMap, "New Mexico", newMexicoMap),
+            config.path("department").getAs(Map.class, "list", null));
 
-        Assertions.assertEquals(newYorkMap, config.path("department").path("list").getAs(Map.class, "New York", null));
-        Assertions.assertEquals(newMexicoMap, config.path("department").path("list").getAs(Map.class, "New Mexico", null));
+        Assertions.assertEquals(newYorkMap,
+            config.path("department").path("list").getAs(Map.class, "New York", null));
+        Assertions.assertEquals(newMexicoMap,
+            config.path("department").path("list").getAs(Map.class, "New Mexico", null));
 
         Assertions.assertEquals(20, config.path("department").getInt("count", -1));
     }

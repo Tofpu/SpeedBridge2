@@ -48,7 +48,8 @@ public class EventServiceTest {
         verifyNoMoreInteractions(connectionListener);
 
         dispatcherService.unregister(connectionListener.getClass());
-        Assertions.assertFalse(dispatcherService.isRegisteredListener(connectionListener.getClass()));
+        Assertions.assertFalse(
+            dispatcherService.isRegisteredListener(connectionListener.getClass()));
 
         dispatcherService.dispatch(new PlayerLeaveEvent(mock()));
         verify(messageListener, times(1)).on(any(PlayerLeaveEvent.class));

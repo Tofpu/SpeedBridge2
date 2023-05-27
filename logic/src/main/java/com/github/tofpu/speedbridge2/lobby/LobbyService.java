@@ -25,7 +25,8 @@ public class LobbyService implements LoadableService {
     }
 
     public LobbyService(ServiceManager serviceManager) {
-        this(serviceManager.get(DatabaseService.class), serviceManager.get(EventDispatcherService.class));
+        this(serviceManager.get(DatabaseService.class),
+            serviceManager.get(EventDispatcherService.class));
     }
 
     @Override
@@ -40,7 +41,8 @@ public class LobbyService implements LoadableService {
     }
 
     private void loadLobby() {
-        databaseService.execute(session -> this.lobby = session.find(Lobby.class, PRIMARY_LOBBY_ID));
+        databaseService.execute(
+            session -> this.lobby = session.find(Lobby.class, PRIMARY_LOBBY_ID));
     }
 
     public CompletableFuture<Position> fetchPosition() {

@@ -15,7 +15,8 @@ public class LobbyServiceTest {
 
     private final DatabaseService databaseService = new DatabaseService();
     private final EventDispatcherService eventDispatcherService = new EventDispatcherService();
-    private final LobbyService lobbyService = new LobbyService(databaseService, eventDispatcherService);
+    private final LobbyService lobbyService = new LobbyService(databaseService,
+        eventDispatcherService);
 
     @BeforeEach
     void setUp() {
@@ -51,7 +52,8 @@ public class LobbyServiceTest {
         this.lobbyService.unload();
 
         // makes sure that the lobby service's load functionality is not a bluff
-        final LobbyService newLobbyService = new LobbyService(databaseService,eventDispatcherService);
+        final LobbyService newLobbyService = new LobbyService(databaseService,
+            eventDispatcherService);
         newLobbyService.load();
         Assertions.assertEquals(newLobbyService.position(), lobbyPosition);
     }

@@ -30,6 +30,14 @@ public class BasicConfiguration {
         this(new LinkedHashMap<>());
     }
 
+    private static void createFile(File fromFile) throws IOException {
+        File parentFile = fromFile.getParentFile();
+        if (!parentFile.exists()) {
+            Files.createDirectories(parentFile.toPath());
+        }
+        Files.createFile(fromFile.toPath());
+    }
+
     @SneakyThrows
     public void load(final File fromFile) {
         requireState(!fromFile.isDirectory(), "This %s must be a file, not a directory!",
@@ -46,14 +54,6 @@ public class BasicConfiguration {
         if (loadedMap != null && loadedMap.size() != 0) {
             this.objectMap.putAll(loadedMap);
         }
-    }
-
-    private static void createFile(File fromFile) throws IOException {
-        File parentFile = fromFile.getParentFile();
-        if (!parentFile.exists()) {
-            Files.createDirectories(parentFile.toPath());
-        }
-        Files.createFile(fromFile.toPath());
     }
 
     public void set(final String key, final Object obj) {

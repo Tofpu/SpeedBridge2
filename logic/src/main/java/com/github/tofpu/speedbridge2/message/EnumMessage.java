@@ -15,5 +15,6 @@ public enum EnumMessage implements ConfigurableMessage {
         }
     };
 
-    EnumMessage() {}
+    EnumMessage() {
+    }
 }

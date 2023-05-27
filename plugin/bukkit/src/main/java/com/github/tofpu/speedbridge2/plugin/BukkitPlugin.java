@@ -4,7 +4,6 @@ import com.github.tofpu.speedbridge2.LogicLoader;
 import com.github.tofpu.speedbridge2.SpeedBridge;
 import com.github.tofpu.speedbridge2.bootstrap.PluginBootstrap;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
-import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import java.io.File;
 import org.bukkit.Server;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -12,9 +11,10 @@ import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BukkitPlugin extends JavaPlugin {
+
+    private static boolean unitTesting = false;
     private SpeedBridge speedBridge;
     private LogicLoader loader;
-    private static boolean unitTesting = false;
 
     public BukkitPlugin() {
     }
@@ -24,6 +24,10 @@ public class BukkitPlugin extends JavaPlugin {
         PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, server, description, dataFolder, file);
         unitTesting = true;
+    }
+
+    public static boolean unitTesting() {
+        return unitTesting;
     }
 
     @Override
@@ -37,16 +41,13 @@ public class BukkitPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         loader.enable();
-        speedBridge.enable(new PluginBootstrap(speedBridge.serviceManager().get(ConfigurationService.class)));
+        speedBridge.enable(
+            new PluginBootstrap(speedBridge.serviceManager().get(ConfigurationService.class)));
     }
 
     @Override
     public void onDisable() {
         loader.disable();
         speedBridge.disable();
-    }
-
-    public static boolean unitTesting() {
-        return unitTesting;
     }
 }

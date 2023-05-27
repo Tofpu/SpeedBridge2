@@ -8,6 +8,7 @@ import com.github.tofpu.speedbridge2.bootstrap.world.BukkitWorldAdapter;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 
 public class PluginBootstrap implements ApplicationBootstrap {
+
     private final ConfigurationService configurationService;
 
     public PluginBootstrap(ConfigurationService configurationService) {

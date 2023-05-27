@@ -23,7 +23,8 @@ public class MethodInvoker implements ListenerInvoker {
             invoke(method, object, event);
         } catch (Exception e) {
             if (!(e instanceof IllegalAccessException)) {
-                throw new IllegalStateException("Failed to call method " + method.getName() + "()", e);
+                throw new IllegalStateException("Failed to call method " + method.getName() + "()",
+                    e);
             }
 
             accessible = false;
@@ -31,7 +32,9 @@ public class MethodInvoker implements ListenerInvoker {
                 method.setAccessible(true);
                 ReflectionUtils.invoke(method, object, event);
             } catch (Exception e2) {
-                throw new IllegalStateException("Unable to access listener method " + method.getName() + " of " + object.getClass().getSimpleName(), e2);
+                throw new IllegalStateException(
+                    "Unable to access listener method " + method.getName() + " of "
+                        + object.getClass().getSimpleName(), e2);
             }
         }
 

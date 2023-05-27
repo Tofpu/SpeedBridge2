@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 public class BukkitOnlinePlayer implements OnlinePlayer {
+
     private final ConfigurationService configurationService;
 
     private final Player player;
@@ -38,7 +39,8 @@ public class BukkitOnlinePlayer implements OnlinePlayer {
 
     @Override
     public void sendMessage(ConfigurableMessage message) {
-        sendMessage(configurationService.on(ConfigType.MESSAGE).getString(message.key(), message.defaultMessage()));
+        sendMessage(configurationService.on(ConfigType.MESSAGE)
+            .getString(message.key(), message.defaultMessage()));
     }
 
     @Override

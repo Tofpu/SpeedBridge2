@@ -4,6 +4,7 @@ import com.github.tofpu.speedbridge2.configuration.Configuration;
 import java.util.Map;
 
 public class NodeConfiguration implements Configuration {
+
     private final Configuration delegate;
     private final Node node;
 

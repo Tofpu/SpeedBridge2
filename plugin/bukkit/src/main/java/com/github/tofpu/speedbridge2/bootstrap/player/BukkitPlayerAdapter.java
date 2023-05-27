@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 
 public class BukkitPlayerAdapter implements PlayerAdapter {
+
     private final ConfigurationService configurationService;
 
     public BukkitPlayerAdapter(ConfigurationService configurationService) {

@@ -8,6 +8,7 @@ import com.github.tofpu.speedbridge2.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 
 public class LobbyListener implements Listener {
+
     private final LobbyService lobbyService;
 
     public LobbyListener(ServiceManager serviceManager) {

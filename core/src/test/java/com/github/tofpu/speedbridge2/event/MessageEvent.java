@@ -4,6 +4,7 @@ import com.github.tofpu.speedbridge2.listener.Event;
 import java.util.UUID;
 
 public class MessageEvent extends Event {
+
     private final UUID sender;
     private final String message;
 

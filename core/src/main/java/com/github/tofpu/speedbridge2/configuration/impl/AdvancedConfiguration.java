@@ -12,6 +12,7 @@ import java.util.Map;
 
 @SuppressWarnings("unused")
 public class AdvancedConfiguration implements LoadableConfiguration {
+
     private final BasicConfiguration delegate;
 
     public AdvancedConfiguration() {

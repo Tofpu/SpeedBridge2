@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class PluginTest {
+
     private final Server server = mockServerWithLogger();
 
     @BeforeEach
@@ -33,12 +34,14 @@ public class PluginTest {
     @Test
     void launch_test() {
         JavaPluginLoader javaPluginLoader = new JavaPluginLoader(server);
-        PluginDescriptionFile descriptionFile = new PluginDescriptionFile("speedbridge2", "1.0.0", BukkitPlugin.class.getPackageName() + ".BukkitPlugin");
+        PluginDescriptionFile descriptionFile = new PluginDescriptionFile("speedbridge2", "1.0.0",
+            BukkitPlugin.class.getPackageName() + ".BukkitPlugin");
 
         File dataFolder = new File("test-resources/runtime/server/plugins/speedbridge2");
         File pluginFile = new File("test-resources/runtime/server/dummy.jar");
 
-        BukkitPlugin bukkitPlugin = new BukkitPlugin(javaPluginLoader, server, descriptionFile, dataFolder, pluginFile);
+        BukkitPlugin bukkitPlugin = new BukkitPlugin(javaPluginLoader, server, descriptionFile,
+            dataFolder, pluginFile);
         bukkitPlugin.onLoad();
         bukkitPlugin.onEnable();
         bukkitPlugin.onDisable();

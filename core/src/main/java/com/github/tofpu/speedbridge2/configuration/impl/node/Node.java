@@ -7,6 +7,7 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 
 public class Node {
+
     private final Configuration delegate;
     private final String[] paths;
 
@@ -57,7 +58,8 @@ public class Node {
     @NotNull
     @SuppressWarnings("unchecked")
     private Result getResult() {
-        final Map<String, Object> rootMap = (Map<String, Object>) delegate.data().getOrDefault(paths[0], new LinkedHashMap<>());
+        final Map<String, Object> rootMap = (Map<String, Object>) delegate.data()
+            .getOrDefault(paths[0], new LinkedHashMap<>());
 
         // department
         // --list

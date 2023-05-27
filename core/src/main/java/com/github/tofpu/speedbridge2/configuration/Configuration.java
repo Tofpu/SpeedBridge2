@@ -4,7 +4,9 @@ import com.github.tofpu.speedbridge2.configuration.impl.node.NodeConfiguration;
 import java.util.Map;
 
 public interface Configuration {
+
     NodeConfiguration path(String key);
+
     NodeConfiguration previous();
 
     Configuration set(String key, Object value);

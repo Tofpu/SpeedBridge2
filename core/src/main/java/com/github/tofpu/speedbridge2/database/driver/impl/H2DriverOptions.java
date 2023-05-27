@@ -15,7 +15,7 @@ public class H2DriverOptions implements DriverOptions {
                 return url + ":file:" + data.getData();
             case REMOTE:
                 throw new UnsupportedOperationException(
-                "Remote support has not been implemented yet.");
+                    "Remote support has not been implemented yet.");
         }
         throw new IllegalArgumentException("Unknown connection type: " + data.getType());
     }
