@@ -6,6 +6,7 @@ import com.github.tofpu.speedbridge2.command.Command;
 import com.github.tofpu.speedbridge2.command.Default;
 import com.github.tofpu.speedbridge2.command.Subcommand;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -53,54 +54,80 @@ public class CommandHandler {
     }
 
     public void invoke(String command) {
-        final String rootCommand = command.split(" ")[0];
-        ParentCommandInfo parentCommandInfo = this.commandMap.get(rootCommand);
-        if (parentCommandInfo == null) {
+        final String[] commandArgs = command.split(" ");
+        final String rootName = commandArgs[0];
+
+        final ParentCommandInfo rootCommand = this.commandMap.get(rootName);
+        if (rootCommand == null) {
             throw new IllegalArgumentException("Unknown command: " + command);
         }
 
-        String[] arguments;
+        final String[] argsWithoutRoot = Arrays.copyOfRange(commandArgs, 1, commandArgs.length);
+        final ParentCommandInfo latestCommand = recursiveCommand(rootCommand, argsWithoutRoot);
 
-        int index = 0;
-        while (true) {
-            int indexOffset = index + 1;
-            arguments = new String[command.split(" ").length - indexOffset];
-            System.arraycopy(command.split(" "), indexOffset, arguments, 0, arguments.length);
-            System.out.println("After arguments: " + Arrays.toString(arguments));
+        // aligns the leftover arguments since we had taken command into consideration
+        final String[] argsWithoutCommand = alignArguments(argsWithoutRoot, latestCommand.name());
 
-            if (index >= arguments.length) break;
-            ParentCommandInfo nestedCommand = parentCommandInfo.find(arguments[index++]);
+        System.out.println("Found command: " + latestCommand.name());
+        System.out.println("Leftover arguments: " + Arrays.toString(argsWithoutCommand));
 
-            if (nestedCommand == null) break;
-            parentCommandInfo = nestedCommand;
-        }
-
-        System.out.println("Found command: " + parentCommandInfo.name());
-        System.out.println("Leftover arguments: " + Arrays.toString(arguments));
-
-        if (arguments.length == 0) {
-            parentCommandInfo.defaultInvoke();
+        if (argsWithoutCommand.length == 0 || latestCommand.subcommands().isEmpty()) {
+            latestCommand.defaultInvoke();
             return;
         }
 
-        String[] subcommandsArguments = new String[arguments.length - 1];
-        String subcommandTarget = arguments[0];
-        SubCommandInfo subCommandInfo = null;
-        for (SubCommandInfo subcommand : parentCommandInfo.subcommands()) {
-            if (subcommandTarget.equalsIgnoreCase(subcommand.name())) {
-                subCommandInfo = subcommand;
-                System.arraycopy(arguments, 1, subcommandsArguments, 0, subcommandsArguments.length);
+        final SubCommandInfo subCommandInfo = recursiveSubCommand(
+            new ArrayList<>(latestCommand.subcommands()), 0, argsWithoutCommand);
+        final String[] cleanArguments = subCommandInfo == null ? new String[0]
+            : alignArguments(argsWithoutCommand, subCommandInfo.name());
+
+        if (subCommandInfo == null) {
+            latestCommand.defaultInvoke(argsWithoutCommand);
+            return;
+        }
+
+        System.out.println("subcommand: " + subCommandInfo.name());
+        System.out.println("arguments: " + Arrays.toString(cleanArguments));
+        subCommandInfo.invoke(cleanArguments);
+    }
+
+    private static String[] alignArguments(String[] arguments, String subCommandInfo) {
+        String[] result = new String[0];
+        for (int i = 0; i < arguments.length; i++) {
+            if (subCommandInfo.equals(arguments[i])) {
+                result = Arrays.copyOfRange(arguments, i + 1, arguments.length);
                 break;
             }
         }
+        return result;
+    }
 
-        if (subCommandInfo != null) {
-            System.out.println("subcommand: " + subCommandInfo.name());
-            System.out.println("arguments: " + Arrays.toString(subcommandsArguments));
-            subCommandInfo.invoke(subcommandsArguments);
-            return;
+    private ParentCommandInfo recursiveCommand(ParentCommandInfo command, String[] arguments) {
+        System.out.println(Arrays.toString(arguments));
+        if (arguments.length == 0) {
+            return command;
         }
-        parentCommandInfo.defaultInvoke(arguments);
+
+        ParentCommandInfo attempt = command.find(arguments[0]);
+        if (attempt == null) {
+            return command;
+        }
+        return recursiveCommand(attempt, Arrays.copyOfRange(arguments, 1, arguments.length));
+    }
+
+    private SubCommandInfo recursiveSubCommand(List<SubCommandInfo> commands, int index, String[] arguments) {
+        if (index >= commands.size()) {
+            return null;
+        }
+        SubCommandInfo subCommandInfo = commands.get(index);
+        String[] args = arguments;
+        while (args.length != 0) {
+            if (String.join(" ", args).equals(subCommandInfo.name())) {
+                return subCommandInfo;
+            }
+            args = Arrays.copyOfRange(arguments, 0, args.length - 1);
+        }
+        return recursiveSubCommand(commands, index + 1, arguments);
     }
 
     @NotNull
