@@ -22,4 +22,9 @@ public class PrintCommandExample {
     public void setDefaultPrintMessage(String message) {
         this.defaultPrintMessage = message;
     }
+
+    @Subcommand(name = "test message")
+    public void testHi() {
+        System.out.println("hi");
+    }
 }

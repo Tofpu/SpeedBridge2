@@ -41,8 +41,12 @@ public class CommandTest {
         commandHandler.register(rootCommand);
 
         commandHandler.invoke("root print hi");
-
         verify(printCommand, times(1)).print(anyString());
+        verifyNoMoreInteractions(printCommand);
+        verifyNoMoreInteractions(rootCommand);
+
+        commandHandler.invoke("root print test message");
+        verify(printCommand, times(1)).testHi();
         verifyNoMoreInteractions(printCommand);
         verifyNoMoreInteractions(rootCommand);
     }
