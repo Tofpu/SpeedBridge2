@@ -17,11 +17,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CommandHandler {
+
     private final Map<String, ParentCommandInfo> commandMap = new HashMap<>();
 
     public static DefaultParentCommandInfo createCommand(Object object) {
         Class<?> commandClass = object.getClass();
-        requireState(commandClass.isAnnotationPresent(Command.class), "Class %s must have @Command annotation", commandClass.getSimpleName());
+        requireState(commandClass.isAnnotationPresent(Command.class),
+            "Class %s must have @Command annotation", commandClass.getSimpleName());
 
         String commandName = commandClass.getAnnotation(Command.class).name();
         Set<Method> subcommands = subcommands(commandClass);
@@ -35,22 +37,42 @@ public class CommandHandler {
             defaultCommand, subcommandsWithInfo);
     }
 
-    public void register(Object object) {
-        DefaultParentCommandInfo command = createCommand(object);
-        this.commandMap.put(command.name(), command);
-    }
-
     @Nullable
     private static Method defaultCommand(Class<?> commandClass) {
-        List<Method> defaultCommands = Arrays.stream(commandClass.getDeclaredMethods()).filter(method -> method.isAnnotationPresent(Default.class))
+        List<Method> defaultCommands = Arrays.stream(commandClass.getDeclaredMethods())
+            .filter(method -> method.isAnnotationPresent(Default.class))
             .collect(Collectors.toList());
-        requireState(defaultCommands.size() == 0 || defaultCommands.size() == 1, "Class %s must only contain single default subcommand!", commandClass.getSimpleName());
+        requireState(defaultCommands.size() == 0 || defaultCommands.size() == 1,
+            "Class %s must only contain single default subcommand!", commandClass.getSimpleName());
 
         Method defaultCommand = null;
         if (!defaultCommands.isEmpty()) {
             defaultCommand = defaultCommands.get(0);
         }
         return defaultCommand;
+    }
+
+    private static String[] alignArguments(String[] arguments, String subCommandInfo) {
+        String[] result = new String[0];
+        for (int i = 0; i < arguments.length; i++) {
+            if (subCommandInfo.equals(arguments[i])) {
+                result = Arrays.copyOfRange(arguments, i + 1, arguments.length);
+                break;
+            }
+        }
+        return result;
+    }
+
+    @NotNull
+    private static Set<Method> subcommands(Class<?> commandClass) {
+        return Arrays.stream(commandClass.getDeclaredMethods())
+            .filter(method -> method.isAnnotationPresent(Subcommand.class))
+            .collect(Collectors.toSet());
+    }
+
+    public void register(Object object) {
+        DefaultParentCommandInfo command = createCommand(object);
+        this.commandMap.put(command.name(), command);
     }
 
     public void invoke(String command) {
@@ -91,17 +113,6 @@ public class CommandHandler {
         subCommandInfo.invoke(cleanArguments);
     }
 
-    private static String[] alignArguments(String[] arguments, String subCommandInfo) {
-        String[] result = new String[0];
-        for (int i = 0; i < arguments.length; i++) {
-            if (subCommandInfo.equals(arguments[i])) {
-                result = Arrays.copyOfRange(arguments, i + 1, arguments.length);
-                break;
-            }
-        }
-        return result;
-    }
-
     private ParentCommandInfo recursiveCommand(ParentCommandInfo command, String[] arguments) {
         System.out.println(Arrays.toString(arguments));
         if (arguments.length == 0) {
@@ -115,25 +126,43 @@ public class CommandHandler {
         return recursiveCommand(attempt, Arrays.copyOfRange(arguments, 1, arguments.length));
     }
 
-    private SubCommandInfo recursiveSubCommand(List<SubCommandInfo> commands, int index, String[] arguments) {
+    /**
+     * Attempts to find the closest sub-command match by recursively removing <code>argument</code>'s
+     * right-hand-side element until a match/none is found.
+     *
+     * <p></p>
+     * <pre>
+     *     String[] input = {"root", "print", "set, "hello"};
+     *     List<SubCommandInfo> commands = List.of("root", "print", "set");
+     *
+     *     // checks whether there is a subcommand with the name: "root print set hello"
+     *     // there is none, removes right-hand-side of argument (which is "hello")
+     *     // checks whether there is a subcommand with the name: "root print set"
+     *     // found!
+     * </pre>
+     *
+     * @param commands  the subcommands
+     * @param index     the index (should be 0 by default)
+     * @param arguments the user inputs (be sure to exclude used arguments)
+     * @return closest sub-command match.
+     */
+    private SubCommandInfo recursiveSubCommand(List<SubCommandInfo> commands, int index,
+        String[] arguments) {
+        // return once we reach the end of subcommands
         if (index >= commands.size()) {
             return null;
         }
-        SubCommandInfo subCommandInfo = commands.get(index);
+
+        final SubCommandInfo subCommandInfo = commands.get(index);
         String[] args = arguments;
         while (args.length != 0) {
+            // return our match if we find one
             if (String.join(" ", args).equals(subCommandInfo.name())) {
                 return subCommandInfo;
             }
+            // bummer, we have to remove argument's right side chunk.
             args = Arrays.copyOfRange(arguments, 0, args.length - 1);
         }
         return recursiveSubCommand(commands, index + 1, arguments);
-    }
-
-    @NotNull
-    private static Set<Method> subcommands(Class<?> commandClass) {
-        return Arrays.stream(commandClass.getDeclaredMethods())
-            .filter(method -> method.isAnnotationPresent(Subcommand.class))
-            .collect(Collectors.toSet());
     }
 }
