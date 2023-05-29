@@ -17,29 +17,13 @@ public class MethodCommand extends AbstractCommandDetail {
     private final Method defaultCommand;
     private final Map<String, MethodCommand> nestedCommands = new HashMap<>();
 
-    public MethodCommand(String name, Object object, Method defaultCommand,
-        List<? extends SubCommandDetail> subcommands) {
+    public MethodCommand(String name, List<? extends SubCommandDetail> subcommands, Object object,
+        Method defaultCommand, List<MethodCommand> nestedCommands) {
         super(name, subcommands);
         this.object = object;
         this.defaultCommand = defaultCommand;
 
-        registerNestedCommands(object);
-    }
-
-    private void registerNestedCommands(Object object) {
-        Class<?> commandClass = object.getClass();
-        Arrays.stream(commandClass.getDeclaredFields())
-            .filter(field -> field.getType().isAnnotationPresent(
-                Command.class))
-            .forEach(field -> {
-                System.out.println("Found field: " + field.getName());
-                Object fieldValue = ReflectionUtil.get(field, object);
-                System.out.println("fieldValue: " + fieldValue.getClass().getName());
-
-                MethodCommand nestedCommand = CommandHandler.createCommand(
-                    fieldValue);
-                this.nestedCommands.put(nestedCommand.name(), nestedCommand);
-            });
+        nestedCommands.forEach(methodCommand -> this.nestedCommands.put(methodCommand.name(), methodCommand));
     }
 
     @Override
