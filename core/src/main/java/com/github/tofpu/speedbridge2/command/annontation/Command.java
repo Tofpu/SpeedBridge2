@@ -1,9 +1,9 @@
-package com.github.tofpu.speedbridge2.command;
+package com.github.tofpu.speedbridge2.command.annontation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Subcommand {
+public @interface Command {
     String name();
 }

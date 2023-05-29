@@ -1,8 +1,8 @@
 package com.github.tofpu.speedbridge2.command.example;
 
-import com.github.tofpu.speedbridge2.command.Command;
-import com.github.tofpu.speedbridge2.command.Default;
-import com.github.tofpu.speedbridge2.command.Subcommand;
+import com.github.tofpu.speedbridge2.command.annontation.Command;
+import com.github.tofpu.speedbridge2.command.annontation.Default;
+import com.github.tofpu.speedbridge2.command.annontation.Subcommand;
 
 @Command(name = "print")
 public class PrintCommandExample {

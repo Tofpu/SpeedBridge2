@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import com.github.tofpu.speedbridge2.command.example.PrintCommandExample;
 import com.github.tofpu.speedbridge2.command.example.RootCommandExample;
-import com.github.tofpu.speedbridge2.command.handler.CommandHandler;
 import org.junit.jupiter.api.Test;
 
 public class CommandTest {
