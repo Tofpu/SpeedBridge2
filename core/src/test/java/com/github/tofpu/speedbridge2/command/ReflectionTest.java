@@ -23,6 +23,7 @@ public class ReflectionTest {
     }
 
     private static class DemoClass {
+
         void print(String message) {
             System.out.println(message);
         }

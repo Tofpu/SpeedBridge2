@@ -13,6 +13,7 @@ import com.github.tofpu.speedbridge2.command.example.RootCommandExample;
 import org.junit.jupiter.api.Test;
 
 public class CommandTest {
+
     @Test
     void default_invoke_test() {
         PrintCommandExample printCommand = spy(new PrintCommandExample());
@@ -21,7 +22,12 @@ public class CommandTest {
         commandHandler.register(rootCommand);
 
         commandHandler.invoke("root");
-        verify(rootCommand, times(1)).welcome();
+        verify(rootCommand, times(1)).welcome(eq(null));
+        verifyNoMoreInteractions(rootCommand);
+        verifyNoInteractions(printCommand);
+
+        commandHandler.invoke("root spawn daddy 123 4");
+        verify(rootCommand, times(1)).welcome(eq(new String[]{"spawn", "daddy", "123", "4"}));
         verifyNoMoreInteractions(rootCommand);
         verifyNoInteractions(printCommand);
 

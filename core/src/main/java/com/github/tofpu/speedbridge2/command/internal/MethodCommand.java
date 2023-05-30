@@ -1,46 +1,37 @@
 package com.github.tofpu.speedbridge2.command.internal;
 
 import com.github.tofpu.speedbridge2.command.CommandDetail;
-import com.github.tofpu.speedbridge2.command.CommandHandler;
 import com.github.tofpu.speedbridge2.command.SubCommandDetail;
-import com.github.tofpu.speedbridge2.command.annontation.Command;
-import com.github.tofpu.speedbridge2.util.ReflectionUtil;
+import com.github.tofpu.speedbridge2.command.executable.MethodExecutable;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MethodCommand extends AbstractCommandDetail {
+public class MethodCommand extends MethodExecutable implements CommandDetail {
 
-    private final Object object;
-    private final Method defaultCommand;
+    private final String name;
+    private final List<? extends SubCommandDetail> subcommands;
     private final Map<String, MethodCommand> nestedCommands = new HashMap<>();
 
     public MethodCommand(String name, List<? extends SubCommandDetail> subcommands, Object object,
         Method defaultCommand, List<MethodCommand> nestedCommands) {
-        super(name, subcommands);
-        this.object = object;
-        this.defaultCommand = defaultCommand;
+        super(object, defaultCommand);
+        this.name = name;
+        this.subcommands = subcommands;
 
-        nestedCommands.forEach(methodCommand -> this.nestedCommands.put(methodCommand.name(), methodCommand));
+        nestedCommands.forEach(
+            methodCommand -> this.nestedCommands.put(methodCommand.name(), methodCommand));
     }
 
     @Override
-    public void executeDefault(Object... args) {
-        if (defaultCommand == null) {
-            return;
-        }
-
-        if (defaultCommand.getParameterCount() > args.length) {
-            args = fillMissingParameters(args);
-        }
-
-        ReflectionUtil.invoke(object, defaultCommand, args);
+    public List<? extends SubCommandDetail> subcommands() {
+        return this.subcommands;
     }
 
-    private Object[] fillMissingParameters(Object[] args) {
-        return Arrays.copyOfRange(args, 0, this.defaultCommand.getParameterCount());
+    @Override
+    public String name() {
+        return name;
     }
 
     @Override

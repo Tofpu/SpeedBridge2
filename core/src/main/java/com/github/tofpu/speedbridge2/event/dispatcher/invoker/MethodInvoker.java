@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import org.reflections.ReflectionUtils;
 
 public class MethodInvoker implements ListenerInvoker {
+
     private final Object object;
     private final Method method;
 

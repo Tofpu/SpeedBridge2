@@ -6,6 +6,7 @@ import com.github.tofpu.speedbridge2.command.annontation.Subcommand;
 
 @Command(name = "print")
 public class PrintCommandExample {
+
     private String defaultPrintMessage = "Default print message!";
 
     @Default

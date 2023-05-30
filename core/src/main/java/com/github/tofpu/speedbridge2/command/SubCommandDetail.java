@@ -1,6 +1,8 @@
 package com.github.tofpu.speedbridge2.command;
 
-public interface SubCommandDetail {
+import com.github.tofpu.speedbridge2.command.executable.Executable;
+
+public interface SubCommandDetail extends Executable {
+
     String name();
-    void execute(Object... args);
 }

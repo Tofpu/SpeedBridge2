@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class MethodCommandMaker extends CommandMaker<MethodCommand> {
+
     @Override
     public MethodCommand create(Object object) {
         Class<?> commandClass = object.getClass();
@@ -33,7 +34,8 @@ public class MethodCommandMaker extends CommandMaker<MethodCommand> {
             return new MethodSubCommand(subcommandName, object, method);
         }).collect(Collectors.toList());
 
-        return new MethodCommand(commandName, subcommandsWithInfo, object, defaultCommand, nestedCommands(object));
+        return new MethodCommand(commandName, subcommandsWithInfo, object, defaultCommand,
+            nestedCommands(object));
     }
 
     private List<MethodCommand> nestedCommands(Object object) {

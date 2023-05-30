@@ -1,21 +1,20 @@
 package com.github.tofpu.speedbridge2.command.internal;
 
-import com.github.tofpu.speedbridge2.util.ReflectionUtil;
+import com.github.tofpu.speedbridge2.command.SubCommandDetail;
+import com.github.tofpu.speedbridge2.command.executable.MethodExecutable;
 import java.lang.reflect.Method;
 
-public class MethodSubCommand extends AbstractSubCommand {
-    private final Object object;
-    private final Method method;
+public class MethodSubCommand extends MethodExecutable implements SubCommandDetail {
+
+    private final String name;
 
     public MethodSubCommand(String name, Object object, Method method) {
-        super(name);
-        this.object = object;
-        this.method = method;
+        super(object, method);
+        this.name = name;
     }
 
     @Override
-    public void execute(Object... args) {
-        System.out.println("Invoking method: " + method.getName());
-        ReflectionUtil.invoke(object, method, args);
+    public String name() {
+        return name;
     }
 }

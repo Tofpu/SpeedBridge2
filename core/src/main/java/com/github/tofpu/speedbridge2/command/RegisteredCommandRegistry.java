@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RegisteredCommandRegistry<T extends CommandDetail> {
+
     private final Map<String, T> commandMap = new HashMap<>();
 
     public void register(String commandName, T object) {
