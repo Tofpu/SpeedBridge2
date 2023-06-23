@@ -7,9 +7,9 @@ import java.util.List;
 
 public class CommandResolver<T extends CommandDetail> {
 
-    private final RegisteredCommandRegistry<T> commandRegistry;
+    private final CommandHandler.RegisteredCommandRegistry<T> commandRegistry;
 
-    public CommandResolver(RegisteredCommandRegistry<T> commandRegistry) {
+    public CommandResolver(CommandHandler.RegisteredCommandRegistry<T> commandRegistry) {
         this.commandRegistry = commandRegistry;
     }
 

@@ -5,10 +5,12 @@ import com.github.tofpu.speedbridge2.command.CommandResolver.ResolvedCommand;
 import com.github.tofpu.speedbridge2.command.argument.ArgumentResolver;
 import com.github.tofpu.speedbridge2.command.executable.Executable;
 import com.github.tofpu.speedbridge2.command.internal.MethodCommand;
-import com.github.tofpu.speedbridge2.command.maker.CommandMaker;
-import com.github.tofpu.speedbridge2.command.maker.MethodCommandMaker;
+import com.github.tofpu.speedbridge2.command.internal.maker.CommandMaker;
+import com.github.tofpu.speedbridge2.command.internal.maker.MethodCommandMaker;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 public class CommandHandler {
@@ -82,5 +84,22 @@ public class CommandHandler {
 
         ExecutableCommand executableCommand = new ExecutableCommand(executable, arguments);
         this.executor.execute(executableCommand);
+    }
+
+    static class RegisteredCommandRegistry<T extends CommandDetail> {
+
+        private final Map<String, T> commandMap = new HashMap<>();
+
+        public void register(String commandName, T object) {
+            this.commandMap.put(commandName, object);
+        }
+
+        public T get(String commandName) {
+            return this.commandMap.get(commandName);
+        }
+
+        public boolean contains(String commandName) {
+            return this.commandMap.containsKey(commandName);
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.command.maker;
+package com.github.tofpu.speedbridge2.command.internal.maker;
 
 public abstract class CommandMaker<T> {
 

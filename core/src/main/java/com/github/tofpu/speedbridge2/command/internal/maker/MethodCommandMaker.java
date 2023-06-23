@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.command.maker;
+package com.github.tofpu.speedbridge2.command.internal.maker;
 
 import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
 
