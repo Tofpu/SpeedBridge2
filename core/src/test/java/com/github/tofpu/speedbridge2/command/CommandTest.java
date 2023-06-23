@@ -10,17 +10,21 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import com.github.tofpu.speedbridge2.command.example.PrintCommandExample;
 import com.github.tofpu.speedbridge2.command.example.RootCommandExample;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class CommandTest {
+    private final PrintCommandExample printCommand = spy(new PrintCommandExample());
+    private final RootCommandExample rootCommand = spy(new RootCommandExample(printCommand));
+    private final CommandHandler commandHandler = new CommandHandler();
+
+    @BeforeEach
+    void setUp() {
+        commandHandler.register(rootCommand);
+    }
 
     @Test
     void default_invoke_test() {
-        PrintCommandExample printCommand = spy(new PrintCommandExample());
-        RootCommandExample rootCommand = spy(new RootCommandExample(printCommand));
-        CommandHandler commandHandler = new CommandHandler();
-        commandHandler.register(rootCommand);
-
         commandHandler.invoke("root");
         verify(rootCommand, times(1)).welcome(eq(null));
         verifyNoMoreInteractions(rootCommand);
@@ -39,12 +43,6 @@ public class CommandTest {
 
     @Test
     void basic_test() {
-        PrintCommandExample printCommand = spy(new PrintCommandExample());
-        RootCommandExample rootCommand = spy(new RootCommandExample(printCommand));
-
-        CommandHandler commandHandler = new CommandHandler();
-        commandHandler.register(rootCommand);
-
         commandHandler.invoke("root print hi");
         verify(printCommand, times(1)).print(anyString());
         verifyNoMoreInteractions(printCommand);
@@ -58,16 +56,19 @@ public class CommandTest {
 
     @Test
     void arguments_test() {
-        PrintCommandExample printCommand = spy(new PrintCommandExample());
-        RootCommandExample rootCommand = spy(new RootCommandExample(printCommand));
-
-        CommandHandler commandHandler = new CommandHandler();
-        commandHandler.register(rootCommand);
-
         commandHandler.invoke("root print set hello");
 
         verify(printCommand, times(1)).setDefaultPrintMessage(eq("hello"));
         verifyNoMoreInteractions(printCommand);
         verifyNoMoreInteractions(rootCommand);
+    }
+
+    @Test
+    void argument_resolver_test() {
+        // test integer arrays
+        commandHandler.invoke("root say 1 2 3");
+        verify(rootCommand, times(1)).say(eq(new Integer[]{1, 2, 3}));
+        verifyNoMoreInteractions(rootCommand);
+        verifyNoInteractions(printCommand);
     }
 }

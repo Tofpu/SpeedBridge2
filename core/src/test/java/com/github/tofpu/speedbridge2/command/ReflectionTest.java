@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 public class ReflectionTest {
 
     @Test
-    void name() throws InvocationTargetException, IllegalAccessException {
+    void args_size_change() throws InvocationTargetException, IllegalAccessException {
         DemoClass demoClass = spy(new DemoClass());
 
         Method print = demoClass.getClass().getDeclaredMethods()[0];

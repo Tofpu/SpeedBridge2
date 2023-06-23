@@ -124,9 +124,9 @@ public class CommandResolver<T extends CommandDetail> {
     static class ResolvedCommand {
 
         private final Executable executable;
-        private final Object[] arguments;
+        private final String[] arguments;
 
-        public ResolvedCommand(Executable executable, Object[] arguments) {
+        public ResolvedCommand(Executable executable, String[] arguments) {
             this.executable = executable;
             this.arguments = arguments;
         }
@@ -135,7 +135,7 @@ public class CommandResolver<T extends CommandDetail> {
             return executable;
         }
 
-        public Object[] arguments() {
+        public String[] arguments() {
             return arguments;
         }
     }
