@@ -1,17 +1,20 @@
 package com.github.tofpu.speedbridge2.command;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import com.github.tofpu.speedbridge2.command.actor.CommandActor;
+import com.github.tofpu.speedbridge2.command.example.CommandExampleWithSender;
 import com.github.tofpu.speedbridge2.command.example.PrintCommandExample;
 import com.github.tofpu.speedbridge2.command.example.RootCommandExample;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
 
 public class CommandTest {
     private final PrintCommandExample printCommand = spy(new PrintCommandExample());
@@ -70,5 +73,33 @@ public class CommandTest {
         verify(rootCommand, times(1)).say(eq(new Integer[]{1, 2, 3}));
         verifyNoMoreInteractions(rootCommand);
         verifyNoInteractions(printCommand);
+    }
+
+    @Test
+    void command_actor_test() {
+        commandHandler.senderResolver().register(CommandActor.class, uuid -> {
+            if (uuid == null) return new ConsoleCommandActor();
+            return new PlayerCommandActor(uuid);
+        });
+        commandHandler.senderResolver().register(ConsoleCommandActor.class, uuid -> {
+            if (uuid != null) throw new RuntimeException();
+            return new ConsoleCommandActor();
+        });
+        commandHandler.senderResolver().register(PlayerCommandActor.class, uuid -> {
+            if (uuid == null) throw new RuntimeException("UUID of player must be provided!");
+            return new PlayerCommandActor(uuid);
+        });
+
+        CommandExampleWithSender command = spy(new CommandExampleWithSender());
+        commandHandler.register(command);
+
+        commandHandler.invoke("root common hi");
+        verify(command, times(1)).common(notNull(), eq(new String[]{"hi"}));
+
+        commandHandler.invoke("root console hi");
+        verify(command, times(1)).console(notNull(), eq(new String[]{"hi"}));
+
+        commandHandler.invoke(UUID.randomUUID(), "root player hi");
+        verify(command, times(1)).player(notNull(), eq(new String[]{"hi"}));
     }
 }

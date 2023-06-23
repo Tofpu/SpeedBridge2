@@ -16,14 +16,21 @@ public class ArgumentResolver {
         this.resolveMap.put(type, (Function<ResolverContext, Object>) inputConsumer);
     }
 
-    public Object[] resolve(ExecutableParameter executableParameter, String[] args) {
+    public Object[] resolve(ExecutableParameter executableParameter, String[] args, Object actor) {
         final Queue<String> queue = new LinkedList<>();
         Collections.addAll(queue, args);
-        return resolve(executableParameter, queue);
+        return resolve(actor, executableParameter, queue);
     }
 
-    private Object[] resolve(ExecutableParameter executableParameter, Queue<String> inputArgs) {
+    private Object[] resolve(Object actor, ExecutableParameter executableParameter, Queue<String> inputArgs) {
         final Queue<Object> objectValue = new LinkedList<>();
+
+        if (executableParameter.parameterCount() >= 1) {
+            Parameter firstParameter = executableParameter.parameters()[0];
+            if (firstParameter.type().isInstance(actor)) {
+                objectValue.add(actor);
+            }
+        }
 
         int i = -1;
         for (Parameter parameter : executableParameter.parameters()) {
@@ -32,6 +39,8 @@ public class ArgumentResolver {
 
             Class<?> type = parameter.type();
             System.out.println(type);
+
+            if (i == 0 && type.isInstance(actor)) continue;
 
             Object arg = inputArgs.peek();
             System.out.println("isInstance: " + type.isInstance(arg));
