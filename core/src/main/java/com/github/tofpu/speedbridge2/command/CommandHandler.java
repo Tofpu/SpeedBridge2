@@ -79,8 +79,9 @@ public class CommandHandler {
         ResolvedCommand resolvedCommand = this.commandResolver.resolve(command);
 
         Executable executable = resolvedCommand.executable();
+
         Object[] arguments = argumentResolver.resolve(executable.executableParameter(),
-            resolvedCommand.arguments());
+                resolvedCommand.arguments());
 
         ExecutableCommand executableCommand = new ExecutableCommand(executable, arguments);
         this.executor.execute(executableCommand);

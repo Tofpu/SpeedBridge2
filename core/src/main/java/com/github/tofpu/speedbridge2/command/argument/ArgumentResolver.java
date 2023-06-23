@@ -17,21 +17,23 @@ public class ArgumentResolver {
     }
 
     public Object[] resolve(ExecutableParameter executableParameter, String[] args) {
-        final List<String> list = new ArrayList<>();
-        Collections.addAll(list, args);
-        return resolve(executableParameter, list);
+        final Queue<String> queue = new LinkedList<>();
+        Collections.addAll(queue, args);
+        return resolve(executableParameter, queue);
     }
 
-    private Object[] resolve(ExecutableParameter executableParameter, List<String> inputArgs) {
+    private Object[] resolve(ExecutableParameter executableParameter, Queue<String> inputArgs) {
         final Queue<Object> objectValue = new LinkedList<>();
 
-        int i = 0;
+        int i = -1;
         for (Parameter parameter : executableParameter.parameters()) {
-            if (i == inputArgs.size()) break;
+            i++;
+            if (0 == inputArgs.size()) break;
+
             Class<?> type = parameter.type();
             System.out.println(type);
 
-            Object arg = inputArgs.get(i);
+            Object arg = inputArgs.peek();
             System.out.println("isInstance: " + type.isInstance(arg));
             if (type.isInstance(arg)) {
                 objectValue.add(arg);
@@ -39,14 +41,13 @@ public class ArgumentResolver {
             }
 
             System.out.println("Attempting to resolve to " + type.getSimpleName());
-            Object resolvedInput = resolve(type, inputArgs);
+            Object resolvedInput = resolve(type, (List<String>) inputArgs);
             if (resolvedInput == null) {
-                throw new RuntimeException(String.format("Unable to resolve class %s with input %s", arg.getClass().getSimpleName(), arg));
+                throw new RuntimeException(String.format("Unable to resolve input %s to %s", arg, type.getSimpleName()));
             }
 
             System.out.println("Resolved to " + type.getSimpleName() + " (" + resolvedInput + ")");
             objectValue.add(resolvedInput);
-//                args[i] = resolvedInput;
         }
 
         if (inputArgs.size() != 0 && executableParameter.parameterCount() != 0 && contain(
@@ -54,8 +55,8 @@ public class ArgumentResolver {
             System.out.println(
                 "Found @Join annotation, joining given args: " + objectValue);
 //            args = new Object[]{args};
-            System.out.println("Result: " + objectValue);
         }
+        System.out.println("Result: " + objectValue);
         return objectValue.toArray(new Object[0]);
     }
 
