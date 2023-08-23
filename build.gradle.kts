@@ -12,7 +12,7 @@ allprojects {
     }
 
     group = "io.tofpu.speedbridge2"
-    version = "1.0.12-bugfixes-" + "git rev-parse --short=8 HEAD".runCommand(rootDir)
+    version = "1.1.0-" + "git rev-parse --short=8 HEAD".runCommand(rootDir)
 
     repositories {
         mavenLocal()
