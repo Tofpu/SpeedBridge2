@@ -4,7 +4,7 @@ import com.github.tofpu.speedbridge2.command.CommandExecutor.ExecutableCommand;
 import com.github.tofpu.speedbridge2.command.CommandResolver.ResolvedCommand;
 import com.github.tofpu.speedbridge2.command.argument.ArgumentResolver;
 import com.github.tofpu.speedbridge2.command.executable.Executable;
-import com.github.tofpu.speedbridge2.command.internal.MethodCommand;
+import com.github.tofpu.speedbridge2.command.internal.CommandContainer;
 import com.github.tofpu.speedbridge2.command.internal.maker.CommandMaker;
 import com.github.tofpu.speedbridge2.command.internal.maker.MethodCommandMaker;
 import com.github.tofpu.speedbridge2.command.sender.SenderResolver;
@@ -13,9 +13,9 @@ import java.util.*;
 
 public class CommandHandler {
 
-    private final RegisteredCommandRegistry<MethodCommand> registry;
-    private final CommandResolver<MethodCommand> commandResolver;
-    private final CommandMaker<MethodCommand> factory;
+    private final RegisteredCommandRegistry<CommandContainerDetail> registry;
+    private final CommandResolver<CommandContainerDetail> commandResolver;
+    private final CommandMaker<CommandContainer> factory;
     protected final SenderResolver senderResolver;
     protected final ArgumentResolver argumentResolver;
     private final CommandExecutor executor;
@@ -74,11 +74,11 @@ public class CommandHandler {
     }
 
     public void register(Object object) {
-        MethodCommand command = this.factory.create(object);
+        CommandContainer command = this.factory.create(object);
         register(command);
     }
 
-    protected void register(MethodCommand command) {
+    protected void register(CommandContainer command) {
         this.registry.register(command.name(), command);
     }
 
@@ -103,7 +103,7 @@ public class CommandHandler {
         return senderResolver;
     }
 
-    static class RegisteredCommandRegistry<T extends CommandDetail> {
+    static class RegisteredCommandRegistry<T extends CommandContainerDetail> {
 
         private final Map<String, T> commandMap = new HashMap<>();
 

@@ -1,19 +1,26 @@
 package com.github.tofpu.speedbridge2.command.executable;
 
+import com.github.tofpu.speedbridge2.util.ReflectionUtil;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public class MethodExecutableParameter implements
+public class MethodWrapper implements
     ExecutableParameter {
 
     private final Method method;
     private final Parameter[] parameters;
 
-    public MethodExecutableParameter(Method method) {
+    public MethodWrapper(Method method) {
+        assert method != null;
         this.method = method;
         this.parameters = Arrays.stream(method.getParameters()).map(MethodParameter::new)
             .toArray(Parameter[]::new);
+    }
+
+    public void invoke(Object owner, Object[] arguments) {
+        ReflectionUtil.invoke(owner, method, arguments);
     }
 
     @Override

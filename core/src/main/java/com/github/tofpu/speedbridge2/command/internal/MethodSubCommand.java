@@ -2,6 +2,8 @@ package com.github.tofpu.speedbridge2.command.internal;
 
 import com.github.tofpu.speedbridge2.command.SubCommandDetail;
 import com.github.tofpu.speedbridge2.command.executable.MethodExecutable;
+import com.github.tofpu.speedbridge2.command.executable.MethodWrapper;
+
 import java.lang.reflect.Method;
 
 public class MethodSubCommand extends MethodExecutable implements SubCommandDetail {
@@ -9,7 +11,7 @@ public class MethodSubCommand extends MethodExecutable implements SubCommandDeta
     private final String name;
 
     public MethodSubCommand(String name, Object object, Method method) {
-        super(object, method);
+        super(object, new MethodWrapper(method));
         this.name = name;
     }
 

@@ -1,34 +1,30 @@
 package com.github.tofpu.speedbridge2.command.executable;
 
-import com.github.tofpu.speedbridge2.util.ReflectionUtil;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public class MethodExecutable implements Executable {
 
     private final Object owner;
-    private final Method method;
-    private final MethodExecutableParameter executableParameter;
+    private final MethodWrapper methodWrapper;
 
-    public MethodExecutable(Object owner, Method method) {
+    public MethodExecutable(Object owner, MethodWrapper methodWrapper) {
         this.owner = owner;
-        this.method = method;
-        this.executableParameter = new MethodExecutableParameter(method);
+        this.methodWrapper = methodWrapper;
     }
 
     @Override
     public void invoke(Object[] arguments) {
-        int parameterCount = method.getParameterCount();
+        int parameterCount = methodWrapper.parameterCount();
         if (parameterCount > arguments.length) {
             arguments = fillMissingParameters(arguments, parameterCount);
         }
 
-        ReflectionUtil.invoke(owner, method, arguments);
+        methodWrapper.invoke(owner, arguments);
     }
 
     @Override
     public ExecutableParameter executableParameter() {
-        return executableParameter;
+        return methodWrapper;
     }
 
     private Object[] fillMissingParameters(Object[] args, int parameterCount) {
