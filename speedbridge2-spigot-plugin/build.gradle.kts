@@ -33,7 +33,7 @@ dependencies {
         exclude("com.sk89q", "worldedit")
     }
 
-    implementation("com.github.tofpu:umbrella:1.0.2")
+    implementation("com.github.tofpu:umbrella:1.20-support-SNAPSHOT")
 }
 
 tasks {
@@ -58,7 +58,8 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.8.8")
-        pluginJars(project.file("libs/worldedit-bukkit-6.1.jar"))
+        minecraftVersion("1.20")
+        pluginJars(project.file("libs/worldedit-bukkit-7.2.15.jar"))
+//        pluginJars(project.file("libs/worldedit-bukkit-6.1.jar"))d
     }
 }
