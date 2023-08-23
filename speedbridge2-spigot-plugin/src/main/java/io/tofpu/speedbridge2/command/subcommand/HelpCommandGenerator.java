@@ -24,6 +24,7 @@ public final class HelpCommandGenerator {
     private static final String KEY_STYLE = "<yellow>%s";
     private static final String VALUE_STYLE = "<white>%s";
     private static final String COMMAND_STYLE = "<yellow>/sb %s %s<dark_gray>- <white>%s";
+    private static final String DISCORD_LINK = "https://discord.gg/cDQjsHugPw";
 
     private static Component helpMessageComponent = null;
 
@@ -65,8 +66,7 @@ public final class HelpCommandGenerator {
 
             builder.title(String.format(TITLE, "Support"))
                     .pair(String.format(KEY_STYLE, "Discord"), String.format(VALUE_STYLE,
-                            "<click:OPEN_URL:https://tofpu" + ".me/discord>tofpu" +
-                            ".me/discord"));
+                            "<click:OPEN_URL:" + DISCORD_LINK + ">" + DISCORD_LINK));
 
             return builder.build();
         });

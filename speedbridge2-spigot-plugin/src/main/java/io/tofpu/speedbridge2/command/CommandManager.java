@@ -9,8 +9,10 @@ import io.tofpu.speedbridge2.command.parser.AbstractLampParser;
 import io.tofpu.speedbridge2.command.parser.LampParseRegistry;
 import io.tofpu.speedbridge2.command.subcommand.CommandCompletion;
 import io.tofpu.speedbridge2.command.subcommand.SpeedBridgeCommand;
+import io.tofpu.speedbridge2.command.subcommand.debug.SpeedBridgeDebugCommand;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.island.IslandService;
+import io.tofpu.speedbridge2.model.island.arena.ArenaManager;
 import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.player.PlayerFactory;
 import io.tofpu.speedbridge2.model.player.PlayerService;
@@ -31,8 +33,8 @@ public final class CommandManager {
     private static BukkitCommandHandler commandHandler;
 
     public static void load(final @NotNull Plugin plugin,
-            final @NotNull PlayerService playerService,
-            final @NotNull IslandService islandService) {
+                            final @NotNull PlayerService playerService,
+                            final @NotNull IslandService islandService, ArenaManager arenaManager) {
         commandHandler = BukkitCommandHandler.create(plugin);
 
         commandHandler.registerResponseHandler(String.class, (response, actor, command) -> {
@@ -83,6 +85,7 @@ public final class CommandManager {
         constructCommandConditions();
 
         commandHandler.register(new SpeedBridgeCommand(playerService, islandService));
+        commandHandler.register(new SpeedBridgeDebugCommand(arenaManager));
     }
 
     private static void constructTabCompleter(final @NotNull IslandService islandService) {
@@ -96,8 +99,10 @@ public final class CommandManager {
     private static void constructContext() {
         final AbstractLampRegistry<?, AbstractLampContext<?>> registry =
                 DynamicClass.getInstance(LampContextRegistry.class);
+
         if (registry == null) {
-            return;
+            BridgeUtil.debug("Unable to find LampContextRegistry instance... shutting down!");
+            throw new RuntimeException("Unable to find LampContextRegistry instance... shutting down now!");
         }
 
         BridgeUtil.debug("Constructing contexts...");
@@ -113,7 +118,8 @@ public final class CommandManager {
     private static void constructParsers() {
         final AbstractLampRegistry<?, AbstractLampParser<?>> lampParseRegistry = DynamicClass.getInstance(LampParseRegistry.class);
         if (lampParseRegistry == null) {
-            return;
+            BridgeUtil.debug("Unable to find LampParseRegistry instance... shutting down!");
+            throw new RuntimeException("Unable to find LampParseRegistry instance... shutting down now!");
         }
 
         BridgeUtil.debug("Constructing parsers...");

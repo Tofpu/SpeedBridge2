@@ -6,6 +6,7 @@ import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.GameIsland;
 import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
+import io.tofpu.speedbridge2.model.support.worldedit.Vector;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -49,6 +50,10 @@ public final class ArenaManager {
         world.setGameRuleValue("doDaylightCycle", "false");
     }
 
+    public @NotNull IslandLand justReservePlot(final GameIsland gameIsland) {
+        return justGetPlot(gameIsland.getIsland(), gameIsland);
+    }
+
     public @Nullable IslandLand reservePlot(final GameIsland gameIsland) {
         if (world == null) {
             Bukkit.getLogger()
@@ -60,6 +65,25 @@ public final class ArenaManager {
 
         // return the available plot
         return getPlot(island, gameIsland);
+    }
+
+    private IslandLand justGetPlot(final Island island, final GameIsland gameIsland) {
+        final int islandSlot = island.getSlot();
+
+        // retrieving a collection of plots that is associated with the given island slot
+        final Collection<IslandLand> islandLands = retrieve(islandSlot);
+
+        // attempt to get an available plot with the given island slot
+        IslandLand islandLand = getAvailablePlot(islandLands, islandSlot);
+
+        // if we found an available plot, start reserving the plot
+        if (islandLand != null) {
+            islandLand.reserveWith(gameIsland);
+        } else {
+            // otherwise, create our own island plot
+            islandLand = createIslandPlotWithNoGeneration(islandLands, island, gameIsland);
+        }
+        return islandLand;
     }
 
     private IslandLand getPlot(final Island island, final GameIsland gameIsland) {
@@ -95,14 +119,64 @@ public final class ArenaManager {
         return null;
     }
 
+//    private IslandLand getNewPlot(final Island target) {
+//        return getNewPlot(target, getPositions());
+//    }
+
+    private IslandLand getNewPlot(final Island target, double[] positions) {
+        return new IslandLand(target, world, positions);
+    }
+
+    private IslandLand createIslandPlotWithNoGeneration(final Collection<IslandLand> islandLandList
+            , final Island target, final GameIsland gameIsland) {
+        BridgeUtil.debug("SchematicManager#createIslandPlot: Creating a new island plot for " + target.getSlot() + " slot!");
+
+        final double[] positions = getPositions();
+
+        positions[0] += Math.abs(positions[0] - new IslandLand(target, world, positions).region().getMinimumPoint().getX());
+
+        BridgeUtil.debug("=== island " + target.getSlot() + " ===");
+        BridgeUtil.debug("Placing schematic at: " + Arrays.toString(positions));
+
+        final IslandLand islandLand = getNewPlot(target, positions);
+        BridgeUtil.debug("Island width is: " + islandLand.getWidth());
+
+        COUNTER.getAndAdd(islandLand.getWidth() + ConfigurationManager.INSTANCE.getGeneralCategory().getIslandSpaceGap());
+
+        BridgeUtil.debug("minimumPoint=" + serializeVector(islandLand.region().getMinimumPoint()));
+        BridgeUtil.debug("maximumPoint=" + serializeVector(islandLand.region().getMaximumPoint()));
+        BridgeUtil.debug("==========");
+
+        // reserving the plot to player
+        islandLand.reserveWith(gameIsland);
+
+        // adding the plot for usability
+        islandLandList.add(islandLand);
+
+        // adding the new island plot to the schematic plot map
+        ISLAND_PLOTS.put(target.getSlot(), islandLandList);
+        return islandLand;
+    }
+
     private IslandLand createIslandPlot(final Collection<IslandLand> islandLandList
             , final Island target, final GameIsland gameIsland) {
         BridgeUtil.debug("SchematicManager#createIslandPlot: Creating a new island plot for " + target.getSlot() + " slot!");
 
-        final double[] positions = {COUNTER.get(), 100, 100};
+        final double[] positions = getPositions();
 
-        final IslandLand islandLand = new IslandLand(target, world, positions);
+        positions[0] += Math.abs(positions[0] - new IslandLand(target, world, positions).region().getMinimumPoint().getX());
+
+        BridgeUtil.debug("=== island " + target.getSlot() + " ===");
+        BridgeUtil.debug("Placing schematic at: " + Arrays.toString(positions));
+
+        final IslandLand islandLand = getNewPlot(target, positions);
+        BridgeUtil.debug("Island width is: " + islandLand.getWidth());
+
         COUNTER.getAndAdd(islandLand.getWidth() + ConfigurationManager.INSTANCE.getGeneralCategory().getIslandSpaceGap());
+
+        BridgeUtil.debug("minimumPoint=" + serializeVector(islandLand.region().getMinimumPoint()));
+        BridgeUtil.debug("maximumPoint=" + serializeVector(islandLand.region().getMaximumPoint()));
+        BridgeUtil.debug("==========");
 
         // reserving the plot to player
         islandLand.reserveWith(gameIsland);
@@ -119,6 +193,15 @@ public final class ArenaManager {
         // adding the new island plot to the schematic plot map
         ISLAND_PLOTS.put(target.getSlot(), islandLandList);
         return islandLand;
+    }
+
+    public double[] getPositions() {
+        return new double[]{COUNTER.get(), 100, 100};
+    }
+
+    @NotNull
+    private static String serializeVector(Vector vector) {
+        return String.format("%s, %s, %s", vector.getX(), vector.getY(), vector.getZ());
     }
 
     public void resetWorld() {
@@ -176,6 +259,8 @@ public final class ArenaManager {
     public World getWorld() {
         return this.world;
     }
+
+
 
     private static final class EmptyChunkGenerator extends ChunkGenerator {
         @Override

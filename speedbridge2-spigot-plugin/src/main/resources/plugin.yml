@@ -2,7 +2,6 @@ name: SpeedBridge2
 version: ${version}
 main: io.tofpu.speedbridge2.plugin.SpeedBridgePlugin
 authors: [ Tofpu ]
-website: https://tofpu.me
 api-version: 1.13
 depend:
   - WorldEdit

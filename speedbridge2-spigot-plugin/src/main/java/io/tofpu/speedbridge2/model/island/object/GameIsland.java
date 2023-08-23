@@ -16,7 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public final class GameIsland {
+public class GameIsland {
     private final ArenaManager arenaManager;
     private final Umbrella umbrella;
     private final Island island;
@@ -27,6 +27,7 @@ public final class GameIsland {
     public GameIsland(final ArenaManager arenaManager, final Island island,
             final GamePlayer gamePlayer) {
         this.arenaManager = arenaManager;
+        // todo: memory leak, as this does not get invalidated once done
         this.umbrella = new GameIslandUmbrella(this).getUmbrella();
         this.island = island;
         this.gamePlayer = gamePlayer;
