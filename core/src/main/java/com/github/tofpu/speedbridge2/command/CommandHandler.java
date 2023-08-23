@@ -4,7 +4,6 @@ import com.github.tofpu.speedbridge2.command.CommandExecutor.ExecutableCommand;
 import com.github.tofpu.speedbridge2.command.CommandResolver.ResolvedCommand;
 import com.github.tofpu.speedbridge2.command.argument.ArgumentResolver;
 import com.github.tofpu.speedbridge2.command.executable.Executable;
-import com.github.tofpu.speedbridge2.command.internal.CommandContainer;
 import com.github.tofpu.speedbridge2.command.internal.maker.CommandMaker;
 import com.github.tofpu.speedbridge2.command.internal.maker.MethodCommandMaker;
 import com.github.tofpu.speedbridge2.command.sender.SenderResolver;
@@ -13,8 +12,8 @@ import java.util.*;
 
 public class CommandHandler {
 
-    private final RegisteredCommandRegistry<CommandContainerDetail> registry;
-    private final CommandResolver<CommandContainerDetail> commandResolver;
+    private final RegisteredCommandRegistry<CommandContainer> registry;
+    private final CommandResolver<CommandContainer> commandResolver;
     private final CommandMaker<CommandContainer> factory;
     protected final SenderResolver senderResolver;
     protected final ArgumentResolver argumentResolver;
@@ -75,10 +74,10 @@ public class CommandHandler {
 
     public void register(Object object) {
         CommandContainer command = this.factory.create(object);
-        register(command);
+        registerToRegistry(command);
     }
 
-    protected void register(CommandContainer command) {
+    protected void registerToRegistry(CommandContainer command) {
         this.registry.register(command.name(), command);
     }
 
@@ -103,7 +102,7 @@ public class CommandHandler {
         return senderResolver;
     }
 
-    static class RegisteredCommandRegistry<T extends CommandContainerDetail> {
+    static class RegisteredCommandRegistry<T extends CommandContainer> {
 
         private final Map<String, T> commandMap = new HashMap<>();
 

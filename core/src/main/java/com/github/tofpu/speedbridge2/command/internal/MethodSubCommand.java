@@ -1,12 +1,12 @@
 package com.github.tofpu.speedbridge2.command.internal;
 
-import com.github.tofpu.speedbridge2.command.SubCommandDetail;
+import com.github.tofpu.speedbridge2.command.SubCommand;
 import com.github.tofpu.speedbridge2.command.executable.MethodExecutable;
 import com.github.tofpu.speedbridge2.command.executable.MethodWrapper;
 
 import java.lang.reflect.Method;
 
-public class MethodSubCommand extends MethodExecutable implements SubCommandDetail {
+public class MethodSubCommand extends MethodExecutable implements SubCommand {
 
     private final String name;
 

@@ -4,12 +4,12 @@ import com.github.tofpu.speedbridge2.command.internal.DefaultCommand;
 
 import java.util.List;
 
-public interface CommandContainerDetail {
+public interface CommandContainer {
 
     String name();
 
-    CommandContainerDetail findNested(String commandName);
+    CommandContainer findNested(String commandName);
 
     DefaultCommand defaultCommand();
-    List<? extends SubCommandDetail> subcommands();
+    List<? extends SubCommand> subcommands();
 }

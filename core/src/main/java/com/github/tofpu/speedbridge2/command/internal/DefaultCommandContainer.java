@@ -1,20 +1,20 @@
 package com.github.tofpu.speedbridge2.command.internal;
 
-import com.github.tofpu.speedbridge2.command.CommandContainerDetail;
-import com.github.tofpu.speedbridge2.command.SubCommandDetail;
+import com.github.tofpu.speedbridge2.command.CommandContainer;
+import com.github.tofpu.speedbridge2.command.SubCommand;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CommandContainer implements CommandContainerDetail {
+public class DefaultCommandContainer implements CommandContainer {
     private final String name;
-    private final List<? extends SubCommandDetail> subcommands;
+    private final List<? extends SubCommand> subcommands;
     private final DefaultCommand defaultCommand;
     private final Map<String, CommandContainer> nestedCommands = new HashMap<>();
 
-    public CommandContainer(String name, List<? extends SubCommandDetail> subcommands, Object object,
-                            DefaultCommand defaultCommand, List<CommandContainer> nestedCommands) {
+    public DefaultCommandContainer(String name, List<? extends SubCommand> subcommands,
+                                   DefaultCommand defaultCommand, List<CommandContainer> nestedCommands) {
         this.name = name;
         this.subcommands = subcommands;
         this.defaultCommand = defaultCommand;
@@ -24,7 +24,7 @@ public class CommandContainer implements CommandContainerDetail {
     }
 
     @Override
-    public List<? extends SubCommandDetail> subcommands() {
+    public List<? extends SubCommand> subcommands() {
         return this.subcommands;
     }
 

@@ -2,11 +2,12 @@ package com.github.tofpu.speedbridge2.command.internal.maker;
 
 import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
 
-import com.github.tofpu.speedbridge2.command.SubCommandDetail;
+import com.github.tofpu.speedbridge2.command.CommandContainer;
+import com.github.tofpu.speedbridge2.command.SubCommand;
 import com.github.tofpu.speedbridge2.command.annontation.Command;
 import com.github.tofpu.speedbridge2.command.annontation.Default;
 import com.github.tofpu.speedbridge2.command.annontation.Subcommand;
-import com.github.tofpu.speedbridge2.command.internal.CommandContainer;
+import com.github.tofpu.speedbridge2.command.internal.DefaultCommandContainer;
 import com.github.tofpu.speedbridge2.command.internal.DefaultCommand;
 import com.github.tofpu.speedbridge2.command.internal.MethodSubCommand;
 import com.github.tofpu.speedbridge2.util.ReflectionUtil;
@@ -15,29 +16,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
 
 public class MethodCommandMaker extends CommandMaker<CommandContainer> {
 
     @Override
-    public CommandContainer create(Object object) {
-        Class<?> commandClass = object.getClass();
+    public CommandContainer create(Object owner) {
+        Class<?> commandClass = owner.getClass();
         requireState(commandClass.isAnnotationPresent(Command.class),
             "Class %s must have @Command annotation", commandClass.getSimpleName());
 
+        DefaultCommand defaultCommand = defaultCommand(owner, commandClass);
+        List<SubCommand> subcommands = subcommands(owner, commandClass);
+
         String commandName = commandClass.getAnnotation(Command.class).name();
-        DefaultCommand defaultCommand = defaultCommand(object, commandClass);
-
-        Set<Method> subcommands = subcommands(commandClass);
-        List<SubCommandDetail> subcommandsWithInfo = subcommands.stream().map(method -> {
-            String subcommandName = method.getAnnotation(Subcommand.class).name();
-            return new MethodSubCommand(subcommandName, object, method);
-        }).collect(Collectors.toList());
-
-        assert !subcommands.contains(null);
-
-        return new CommandContainer(commandName, subcommandsWithInfo, object, defaultCommand,
-            nestedCommands(object));
+        return new DefaultCommandContainer(commandName, subcommands, defaultCommand, nestedCommands(owner));
     }
 
     private List<CommandContainer> nestedCommands(Object object) {
@@ -68,10 +60,17 @@ public class MethodCommandMaker extends CommandMaker<CommandContainer> {
         return new DefaultCommand(owner, defaultCommand);
     }
 
-    @NotNull
-    private Set<Method> subcommands(Class<?> commandClass) {
-        return Arrays.stream(commandClass.getDeclaredMethods())
-            .filter(method -> method.isAnnotationPresent(Subcommand.class))
-            .collect(Collectors.toSet());
+    private List<SubCommand> subcommands(Object owner, Class<?> commandClass) {
+        Set<Method> methodsOfSubcommands = Arrays.stream(commandClass.getDeclaredMethods())
+                .filter(method -> method.isAnnotationPresent(Subcommand.class))
+                .collect(Collectors.toSet());
+
+        assert !methodsOfSubcommands.contains(null);
+
+        return methodsOfSubcommands.stream().map(method -> {
+            String subcommandName = method.getAnnotation(Subcommand.class).name();
+            MethodSubCommand methodSubCommand = new MethodSubCommand(subcommandName, owner, method);
+            return (SubCommand) methodSubCommand;
+        }).collect(Collectors.toList());
     }
 }

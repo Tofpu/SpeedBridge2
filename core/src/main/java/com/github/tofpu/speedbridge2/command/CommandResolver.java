@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CommandResolver<T extends CommandContainerDetail> {
+public class CommandResolver<T extends CommandContainer> {
 
     private final CommandHandler.RegisteredCommandRegistry<T> commandRegistry;
 
@@ -29,13 +29,13 @@ public class CommandResolver<T extends CommandContainerDetail> {
 
         final String initialCommandName = arguments[0];
 //        final CommandDetail rootCommand = this.commandRegistry.get(initialCommandName);
-        final CommandContainerDetail rootCommand = this.commandRegistry.get(initialCommandName);
+        final CommandContainer rootCommand = this.commandRegistry.get(initialCommandName);
         if (rootCommand == null) {
             throw new IllegalArgumentException("Unknown command: " + input);
         }
 
         final String[] argsWithoutRoot = Arrays.copyOfRange(arguments, 1, arguments.length);
-        final CommandContainerDetail latestCommand = recursiveCommand(rootCommand, argsWithoutRoot);
+        final CommandContainer latestCommand = recursiveCommand(rootCommand, argsWithoutRoot);
 
         // aligns the leftover arguments since we had taken command into consideration
         final String[] argsWithoutCommand = alignArguments(argsWithoutRoot, latestCommand.name());
@@ -48,7 +48,7 @@ public class CommandResolver<T extends CommandContainerDetail> {
             return new ResolvedCommand(latestCommand.defaultCommand(), argsWithoutCommand);
         }
 
-        final SubCommandDetail subCommandInfo = recursiveSubCommand(
+        final SubCommand subCommandInfo = recursiveSubCommand(
             new ArrayList<>(latestCommand.subcommands()), 0, argsWithoutCommand);
         final String[] cleanArguments;
         if (subCommandInfo == null) {
@@ -69,13 +69,13 @@ public class CommandResolver<T extends CommandContainerDetail> {
         return new ResolvedCommand(subCommandInfo, cleanArguments);
     }
 
-    private CommandContainerDetail recursiveCommand(CommandContainerDetail command, String[] arguments) {
+    private CommandContainer recursiveCommand(CommandContainer command, String[] arguments) {
         System.out.println(Arrays.toString(arguments));
         if (arguments.length == 0) {
             return command;
         }
 
-        CommandContainerDetail attempt = command.findNested(arguments[0]);
+        CommandContainer attempt = command.findNested(arguments[0]);
         if (attempt == null) {
             return command;
         }
@@ -102,14 +102,14 @@ public class CommandResolver<T extends CommandContainerDetail> {
      * @param arguments the user inputs (be sure to exclude used arguments)
      * @return closest sub-command match.
      */
-    private SubCommandDetail recursiveSubCommand(List<SubCommandDetail> commands, int index,
-        String[] arguments) {
+    private SubCommand recursiveSubCommand(List<SubCommand> commands, int index,
+                                           String[] arguments) {
         // return once we reach the end of subcommands
         if (index >= commands.size()) {
             return null;
         }
 
-        final SubCommandDetail subCommandInfo = commands.get(index);
+        final SubCommand subCommandInfo = commands.get(index);
         String[] args = arguments;
         while (args.length != 0) {
             // return our match if we find one
