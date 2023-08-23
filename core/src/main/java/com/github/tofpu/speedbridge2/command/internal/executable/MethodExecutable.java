@@ -1,13 +1,13 @@
-package com.github.tofpu.speedbridge2.command.executable;
+package com.github.tofpu.speedbridge2.command.internal.executable;
 
 import java.util.Arrays;
 
 public class MethodExecutable implements Executable {
 
     private final Object owner;
-    private final MethodWrapper methodWrapper;
+    private final MethodWrapperImpl methodWrapper;
 
-    public MethodExecutable(Object owner, MethodWrapper methodWrapper) {
+    public MethodExecutable(Object owner, MethodWrapperImpl methodWrapper) {
         this.owner = owner;
         this.methodWrapper = methodWrapper;
     }
@@ -23,7 +23,7 @@ public class MethodExecutable implements Executable {
     }
 
     @Override
-    public ExecutableParameter executableParameter() {
+    public MethodWrapper methodWrapper() {
         return methodWrapper;
     }
 

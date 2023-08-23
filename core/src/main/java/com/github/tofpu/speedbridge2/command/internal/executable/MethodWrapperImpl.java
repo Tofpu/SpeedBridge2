@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.command.executable;
+package com.github.tofpu.speedbridge2.command.internal.executable;
 
 import com.github.tofpu.speedbridge2.util.ReflectionUtil;
 
@@ -6,13 +6,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public class MethodWrapper implements
-    ExecutableParameter {
+public class MethodWrapperImpl implements
+        MethodWrapper {
 
     private final Method method;
     private final Parameter[] parameters;
 
-    public MethodWrapper(Method method) {
+    public MethodWrapperImpl(Method method) {
         assert method != null;
         this.method = method;
         this.parameters = Arrays.stream(method.getParameters()).map(MethodParameter::new)

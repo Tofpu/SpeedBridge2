@@ -1,6 +1,6 @@
-package com.github.tofpu.speedbridge2.command.sender;
+package com.github.tofpu.speedbridge2.command.resolve;
 
-import com.github.tofpu.speedbridge2.command.executable.ExecutableParameter;
+import com.github.tofpu.speedbridge2.command.internal.executable.MethodWrapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,12 +21,12 @@ public class SenderResolver {
         return (T) applyFunction.apply(id);
     }
 
-    public Object resolve(ExecutableParameter executableParameter, UUID actorId) {
-        if (executableParameter.parameterCount() < 1) {
+    public Object resolve(MethodWrapper methodWrapper, UUID actorId) {
+        if (methodWrapper.parameterCount() < 1) {
             return null;
         }
 
-        ExecutableParameter.Parameter firstParameter = executableParameter.parameters()[0];
+        MethodWrapper.Parameter firstParameter = methodWrapper.parameters()[0];
         return resolve(firstParameter.type(), actorId);
     }
 }

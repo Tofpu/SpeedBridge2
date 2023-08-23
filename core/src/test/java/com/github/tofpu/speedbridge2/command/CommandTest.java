@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import com.github.tofpu.speedbridge2.command.actor.CommandActor;
 import com.github.tofpu.speedbridge2.command.example.CommandExampleWithSender;
 import com.github.tofpu.speedbridge2.command.example.PrintCommandExample;
 import com.github.tofpu.speedbridge2.command.example.RootCommandExample;

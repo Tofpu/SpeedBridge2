@@ -1,8 +1,8 @@
-package com.github.tofpu.speedbridge2.command.executable;
+package com.github.tofpu.speedbridge2.command.internal.executable;
 
 import java.lang.annotation.Annotation;
 
-public interface ExecutableParameter {
+public interface MethodWrapper {
 
     int parameterCount();
 

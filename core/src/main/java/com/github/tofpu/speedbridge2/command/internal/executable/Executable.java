@@ -1,8 +1,8 @@
-package com.github.tofpu.speedbridge2.command.executable;
+package com.github.tofpu.speedbridge2.command.internal.executable;
 
 interface ExecutableDetail {
 
-    ExecutableParameter executableParameter();
+    MethodWrapper methodWrapper();
 }
 
 public interface Executable extends ExecutableDetail {

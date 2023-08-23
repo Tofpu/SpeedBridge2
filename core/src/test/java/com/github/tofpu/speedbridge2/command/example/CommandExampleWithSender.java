@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.command.example;
 
 import com.github.tofpu.speedbridge2.command.PlayerCommandActor;
-import com.github.tofpu.speedbridge2.command.actor.CommandActor;
+import com.github.tofpu.speedbridge2.command.CommandActor;
 import com.github.tofpu.speedbridge2.command.ConsoleCommandActor;
 import com.github.tofpu.speedbridge2.command.annontation.Command;
 import com.github.tofpu.speedbridge2.command.annontation.Join;

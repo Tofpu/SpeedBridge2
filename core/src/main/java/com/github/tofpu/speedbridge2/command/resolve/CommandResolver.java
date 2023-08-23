@@ -1,15 +1,17 @@
-package com.github.tofpu.speedbridge2.command;
+package com.github.tofpu.speedbridge2.command.resolve;
 
-import com.github.tofpu.speedbridge2.command.executable.Executable;
+import com.github.tofpu.speedbridge2.command.CommandContainer;
+import com.github.tofpu.speedbridge2.command.RegisteredCommandRegistry;
+import com.github.tofpu.speedbridge2.command.SubCommand;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class CommandResolver<T extends CommandContainer> {
 
-    private final CommandHandler.RegisteredCommandRegistry<T> commandRegistry;
+    private final RegisteredCommandRegistry<T> commandRegistry;
 
-    public CommandResolver(CommandHandler.RegisteredCommandRegistry<T> commandRegistry) {
+    public CommandResolver(RegisteredCommandRegistry<T> commandRegistry) {
         this.commandRegistry = commandRegistry;
     }
 
@@ -120,24 +122,5 @@ public class CommandResolver<T extends CommandContainer> {
             args = Arrays.copyOfRange(arguments, 0, args.length - 1);
         }
         return recursiveSubCommand(commands, index + 1, arguments);
-    }
-
-    static class ResolvedCommand {
-
-        private final Executable executable;
-        private final String[] arguments;
-
-        public ResolvedCommand(Executable executable, String[] arguments) {
-            this.executable = executable;
-            this.arguments = arguments;
-        }
-
-        public Executable executable() {
-            return executable;
-        }
-
-        public String[] arguments() {
-            return arguments;
-        }
     }
 }

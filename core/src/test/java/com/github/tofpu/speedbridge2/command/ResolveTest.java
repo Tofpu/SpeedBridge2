@@ -1,11 +1,10 @@
 package com.github.tofpu.speedbridge2.command;
 
-import com.github.tofpu.speedbridge2.command.argument.ArgumentResolver;
+import com.github.tofpu.speedbridge2.command.resolve.argument.ArgumentResolver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

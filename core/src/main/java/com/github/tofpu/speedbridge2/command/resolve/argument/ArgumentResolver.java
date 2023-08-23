@@ -1,8 +1,8 @@
-package com.github.tofpu.speedbridge2.command.argument;
+package com.github.tofpu.speedbridge2.command.resolve.argument;
 
 import com.github.tofpu.speedbridge2.command.annontation.Join;
-import com.github.tofpu.speedbridge2.command.executable.ExecutableParameter;
-import com.github.tofpu.speedbridge2.command.executable.ExecutableParameter.Parameter;
+import com.github.tofpu.speedbridge2.command.internal.executable.MethodWrapper;
+import com.github.tofpu.speedbridge2.command.internal.executable.MethodWrapper.Parameter;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -16,24 +16,24 @@ public class ArgumentResolver {
         this.resolveMap.put(type, (Function<ResolverContext, Object>) inputConsumer);
     }
 
-    public Object[] resolve(ExecutableParameter executableParameter, String[] args, Object actor) {
+    public Object[] resolve(MethodWrapper methodWrapper, String[] args, Object actor) {
         final Queue<String> queue = new LinkedList<>();
         Collections.addAll(queue, args);
-        return resolve(actor, executableParameter, queue);
+        return resolve(actor, methodWrapper, queue);
     }
 
-    private Object[] resolve(Object actor, ExecutableParameter executableParameter, Queue<String> inputArgs) {
+    private Object[] resolve(Object actor, MethodWrapper methodWrapper, Queue<String> inputArgs) {
         final Queue<Object> objectValue = new LinkedList<>();
 
-        if (executableParameter.parameterCount() >= 1) {
-            Parameter firstParameter = executableParameter.parameters()[0];
+        if (methodWrapper.parameterCount() >= 1) {
+            Parameter firstParameter = methodWrapper.parameters()[0];
             if (firstParameter.type().isInstance(actor)) {
                 objectValue.add(actor);
             }
         }
 
         int i = -1;
-        for (Parameter parameter : executableParameter.parameters()) {
+        for (Parameter parameter : methodWrapper.parameters()) {
             i++;
             if (0 == inputArgs.size()) break;
 
@@ -59,8 +59,8 @@ public class ArgumentResolver {
             objectValue.add(resolvedInput);
         }
 
-        if (inputArgs.size() != 0 && executableParameter.parameterCount() != 0 && contain(
-            executableParameter, Join.class)) {
+        if (inputArgs.size() != 0 && methodWrapper.parameterCount() != 0 && contain(
+            methodWrapper, Join.class)) {
             System.out.println(
                 "Found @Join annotation, joining given args: " + objectValue);
 //            args = new Object[]{args};
@@ -97,9 +97,9 @@ public class ArgumentResolver {
 //        return resolvedArgs;
 //    }
 
-    private boolean contain(ExecutableParameter executableParameter,
-        Class<? extends Annotation> clazz) {
-        for (Parameter parameter : executableParameter.parameters()) {
+    private boolean contain(MethodWrapper methodWrapper,
+                            Class<? extends Annotation> clazz) {
+        for (Parameter parameter : methodWrapper.parameters()) {
             if (parameter.isAnnotationPresent(clazz)) {
                 return true;
             }

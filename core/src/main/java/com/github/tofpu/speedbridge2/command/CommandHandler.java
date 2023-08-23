@@ -1,31 +1,28 @@
 package com.github.tofpu.speedbridge2.command;
 
-import com.github.tofpu.speedbridge2.command.CommandExecutor.ExecutableCommand;
-import com.github.tofpu.speedbridge2.command.CommandResolver.ResolvedCommand;
-import com.github.tofpu.speedbridge2.command.argument.ArgumentResolver;
-import com.github.tofpu.speedbridge2.command.executable.Executable;
+import com.github.tofpu.speedbridge2.command.resolve.CommandResolver;
+import com.github.tofpu.speedbridge2.command.resolve.argument.ArgumentResolver;
 import com.github.tofpu.speedbridge2.command.mapper.CommandMapper;
 import com.github.tofpu.speedbridge2.command.mapper.ObjectCommandMapper;
-import com.github.tofpu.speedbridge2.command.sender.SenderResolver;
+import com.github.tofpu.speedbridge2.command.resolve.SenderResolver;
 
 import java.util.*;
 
 public class CommandHandler {
 
     private final RegisteredCommandRegistry<CommandContainer> registry;
-    private final CommandResolver<CommandContainer> commandResolver;
     private final CommandMapper<CommandContainer> commandMapper;
-    protected final SenderResolver senderResolver;
-    protected final ArgumentResolver argumentResolver;
-    private final CommandExecutor executor;
+    private final SenderResolver senderResolver;
+    private final ArgumentResolver argumentResolver;
+    private final CommandInvoker<CommandContainer> commandInvoker;
 
     public CommandHandler() {
         this.registry = new RegisteredCommandRegistry<>();
-        this.commandResolver = new CommandResolver<>(registry);
         this.commandMapper = new ObjectCommandMapper();
-        this.executor = new CommandExecutor();
         this.senderResolver = new SenderResolver();
         this.argumentResolver = new ArgumentResolver();
+        CommandResolver<CommandContainer> commandResolver = new CommandResolver<>(registry);
+        this.commandInvoker = new CommandInvoker<>(commandResolver, senderResolver, argumentResolver);
 
         registerSenders();
         registerResolvers();
@@ -82,16 +79,7 @@ public class CommandHandler {
     }
 
     public void invoke(UUID actorId, String command) {
-        ResolvedCommand resolvedCommand = this.commandResolver.resolve(command);
-
-        Executable executable = resolvedCommand.executable();
-
-        Object actor = this.senderResolver.resolve(executable.executableParameter(), actorId);
-        Object[] arguments = argumentResolver.resolve(executable.executableParameter(),
-                resolvedCommand.arguments(), actor);
-
-        ExecutableCommand executableCommand = new ExecutableCommand(executable, arguments);
-        this.executor.execute(executableCommand);
+        commandInvoker.invoke(actorId, command);
     }
 
     public void invoke(String command) {
@@ -100,22 +88,5 @@ public class CommandHandler {
 
     public SenderResolver senderResolver() {
         return senderResolver;
-    }
-
-    static class RegisteredCommandRegistry<T extends CommandContainer> {
-
-        private final Map<String, T> commandMap = new HashMap<>();
-
-        public void register(String commandName, T object) {
-            this.commandMap.put(commandName, object);
-        }
-
-        public T get(String commandName) {
-            return this.commandMap.get(commandName);
-        }
-
-        public boolean contains(String commandName) {
-            return this.commandMap.containsKey(commandName);
-        }
     }
 }

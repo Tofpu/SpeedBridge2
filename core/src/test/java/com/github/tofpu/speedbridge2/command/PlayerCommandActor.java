@@ -1,7 +1,5 @@
 package com.github.tofpu.speedbridge2.command;
 
-import com.github.tofpu.speedbridge2.command.actor.CommandActor;
-
 import java.util.UUID;
 
 public class PlayerCommandActor implements CommandActor {
