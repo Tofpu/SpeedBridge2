@@ -4,6 +4,7 @@ import com.github.tofpu.speedbridge2.adapter.BukkitAdapter;
 import com.github.tofpu.speedbridge2.adapter.SpeedBridgeAdapter;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigType;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
+import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.object.player.ConfigurableMessage;
@@ -46,6 +47,11 @@ public class BukkitOnlinePlayer implements OnlinePlayer {
     @Override
     public void teleport(Position position) {
         player.teleport(SpeedBridgeAdapter.toLocation(position));
+    }
+
+    @Override
+    public void teleport(Location location) {
+        player.teleport(SpeedBridgeAdapter.toLocation(location));
     }
 
     @Override

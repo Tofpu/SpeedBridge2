@@ -20,4 +20,8 @@ public class Position {
         this.y = y;
         this.z = z;
     }
+
+    public Location substract(Location location) {
+        return new Location(this.world, this.x - location.getX(), this.y - location.getY(), this.z - location.getZ(), location.getYaw(), location.getPitch());
+    }
 }
