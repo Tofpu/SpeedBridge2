@@ -1,5 +1,7 @@
 package com.github.tofpu.speedbridge2;
 
+import com.github.tofpu.speedbridge2.game.island.IslandGameHandler;
+import com.github.tofpu.speedbridge2.game.island.arena.IslandArenaManager;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 
 public class LogicLoader {
@@ -20,8 +22,13 @@ public class LogicLoader {
         speedBridge.serviceManager().register(new LobbyService(speedBridge.serviceManager()));
     }
 
-    public void enable() {
+    public void enable(LogicBootStrap bootStrap) {
+        initGame(bootStrap);
+    }
 
+    private void initGame(LogicBootStrap bootStrap) {
+        ArenaAdapter arenaAdapter = bootStrap.arenaAdapter();
+        new IslandGameHandler(speedBridge.serviceManager().get(LobbyService.class), new IslandArenaManager(arenaAdapter.gameWorld(), arenaAdapter.clipboardPaster()));
     }
 
     public void disable() {

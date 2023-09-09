@@ -15,6 +15,7 @@ public class BukkitPlugin extends JavaPlugin {
     private static boolean unitTesting = false;
     private SpeedBridge speedBridge;
     private LogicLoader loader;
+    private PluginBootstrap bootstrap;
 
     public BukkitPlugin() {
     }
@@ -40,9 +41,10 @@ public class BukkitPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        loader.enable();
+        bootstrap = new PluginBootstrap(speedBridge.serviceManager().get(ConfigurationService.class));
         speedBridge.enable(
-            new PluginBootstrap(speedBridge.serviceManager().get(ConfigurationService.class)));
+                bootstrap);
+        loader.enable(bootstrap);
     }
 
     @Override
