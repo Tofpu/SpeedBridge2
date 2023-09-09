@@ -4,13 +4,13 @@ import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState
 
 import com.github.tofpu.speedbridge2.service.LoadableService;
 import com.github.tofpu.speedbridge2.service.Service;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 
 public class ServiceManager {
 
-    private final Map<Class<? extends Service>, Service> serviceMap = new HashMap<>();
+    private final Map<Class<? extends Service>, Service> serviceMap = new LinkedHashMap<>();
 
     public void register(final @NotNull Service service) {
         register(service.getClass(), service);
