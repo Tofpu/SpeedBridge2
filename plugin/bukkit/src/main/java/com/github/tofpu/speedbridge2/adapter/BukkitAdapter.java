@@ -7,6 +7,7 @@ import org.bukkit.Location;
 public class BukkitAdapter {
 
     public static World toWorld(org.bukkit.World world) {
+        if (world == null) return null;
         return new World(world.getName());
     }
 
