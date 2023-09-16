@@ -13,7 +13,6 @@ repositories {
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://oss.sonatype.org/content/repositories/central")
     maven("https://maven.enginehub.org/repo/")
-    maven("https://jitpack.io/")
 }
 
 dependencies {

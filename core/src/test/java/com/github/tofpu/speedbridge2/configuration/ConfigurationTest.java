@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.configuration;
 
-import com.github.tofpu.speedbridge2.configuration.service.ConfigType;
+import com.github.tofpu.speedbridge2.configuration.service.PluginConfigTypes;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import java.io.File;
 import java.time.Instant;
@@ -44,7 +44,7 @@ public class ConfigurationTest {
 
     @Test
     void basic_test() {
-        Configuration config = service.on(ConfigType.CONFIG);
+        Configuration config = service.on(PluginConfigTypes.CONFIG);
 
         config.setString("daddy", "tofpu");
         config.setString("mommy", "also tofpu");
@@ -59,7 +59,7 @@ public class ConfigurationTest {
 
     @Test
     void nesting_test() {
-        Configuration config = service.on(ConfigType.CONFIG);
+        Configuration config = service.on(PluginConfigTypes.CONFIG);
 
         Assertions.assertEquals(123, config.path("hello")
             .setString("friend", "hi!")
@@ -73,7 +73,7 @@ public class ConfigurationTest {
 
     @Test
     void double_nesting_test() {
-        Configuration config = service.on(ConfigType.CONFIG);
+        Configuration config = service.on(PluginConfigTypes.CONFIG);
 
         final Map<String, Object> newYorkMap = new HashMap<>();
         newYorkMap.put("id", 1);
@@ -118,7 +118,7 @@ public class ConfigurationTest {
     @Test
     void test_config_types() {
         int i = 0;
-        for (ConfigType value : ConfigType.values()) {
+        for (PluginConfigTypes value : PluginConfigTypes.values()) {
             LoadableConfiguration config = (LoadableConfiguration) service.on(value);
             config.setInt("index", i);
 
@@ -131,7 +131,7 @@ public class ConfigurationTest {
 
     @Test
     void load_test() {
-        LoadableConfiguration config = (LoadableConfiguration) service.on(ConfigType.CONFIG);
+        LoadableConfiguration config = (LoadableConfiguration) service.on(PluginConfigTypes.CONFIG);
         config.load(new File(defaultDirectory, "config.yml"));
 
         Assertions.assertEquals("yes", config.getString("test", null));
@@ -142,7 +142,7 @@ public class ConfigurationTest {
 
     @Test
     void failure_test() {
-        Configuration config = service.on(ConfigType.CONFIG);
+        Configuration config = service.on(PluginConfigTypes.CONFIG);
         config.setString("test", "hello world!");
         Assertions.assertThrows(IllegalStateException.class, () -> config.getInt("test", -1));
     }
