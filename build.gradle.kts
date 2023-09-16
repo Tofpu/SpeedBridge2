@@ -25,6 +25,11 @@ subprojects {
         testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
     }
 
+    tasks.named<Test>("test") {
+        // Use JUnit Platform for unit tests.
+        useJUnitPlatform()
+    }
+
     java {
         this.sourceCompatibility = JavaVersion.VERSION_1_8
     }

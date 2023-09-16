@@ -43,7 +43,7 @@ public class IslandArenaManager implements ArenaManager {
         RegionInfo region = clipboardPaster.getRegion(schematic.getSchematicFile());
         Position landPosition = determine(region);
         clipboardPaster.paste(schematic.getSchematicFile(), landPosition);
-        return new Land(schematic.getOrigin(), landPosition, region);
+        return new Land(landPosition, region, island.getSchematic().getAbsolute());
     }
 
     @Override

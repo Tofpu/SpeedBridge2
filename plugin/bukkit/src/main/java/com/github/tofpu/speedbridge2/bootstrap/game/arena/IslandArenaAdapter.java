@@ -8,22 +8,35 @@ import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.plugin.Plugin;
 
 import java.util.Random;
 
 public class IslandArenaAdapter implements ArenaAdapter {
+    private final Plugin plugin;
 
     public static final String GAME_WORLD_NAME = "speedbridge2";
 
+    public IslandArenaAdapter(Plugin plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public World gameWorld() {
-        return BukkitAdapter.toWorld(Bukkit.createWorld(WorldCreator.name(GAME_WORLD_NAME)
-                .generator(new EmptyChunkGenerator())));
+        return BukkitAdapter.toWorld(bukkitGameWorld());
+    }
+
+    private org.bukkit.World bukkitGameWorld() {
+        return Bukkit.createWorld(WorldCreator.name(GAME_WORLD_NAME)
+                .generator(new EmptyChunkGenerator()));
     }
 
     @Override
     public ClipboardPaster clipboardPaster() {
-        return new WorldEditPaster(MultiWorldEditAPI.getMultiWorldEdit());
+        if (MultiWorldEditAPI.getMultiWorldEdit() == null) {
+            MultiWorldEditAPI.load(plugin);
+        }
+        return new WorldEditPaster(MultiWorldEditAPI.getMultiWorldEdit(), bukkitGameWorld());
     }
 
     private static final class EmptyChunkGenerator extends ChunkGenerator {

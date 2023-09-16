@@ -17,8 +17,8 @@ import java.util.UUID;
 import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
 
 public class IslandGameHandler extends GameHandler<OnlinePlayer> {
-    private final LobbyService lobbyService;
-    private final ArenaManager arenaManager;
+    protected final LobbyService lobbyService;
+    protected final ArenaManager arenaManager;
     private final Map<UUID, Land> playerLandMapping = new HashMap<>();
 
     public IslandGameHandler(LobbyService lobbyService, ArenaManager arenaManager) {

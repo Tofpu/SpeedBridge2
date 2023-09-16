@@ -75,4 +75,8 @@ public class DatabaseService implements LoadableService {
     public boolean supportsAsync() {
         return this.database.supportsAsync();
     }
+
+    public Database database() {
+        return database;
+    }
 }

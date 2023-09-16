@@ -12,9 +12,9 @@ public class SpeedBridgeAdapter {
             position.getZ());
     }
 
-    public static Location toLocation(com.github.tofpu.speedbridge2.object.Location position) {
-        return new Location(toWorld(position.getWorld()), position.getX(), position.getY(),
-                position.getZ());
+    public static Location toLocation(com.github.tofpu.speedbridge2.object.Location location) {
+        return new Location(toWorld(location.getWorld()), location.getX(), location.getY(),
+                location.getZ(), location.getYaw(), location.getPitch());
     }
 
     public static World toWorld(com.github.tofpu.speedbridge2.object.World world) {

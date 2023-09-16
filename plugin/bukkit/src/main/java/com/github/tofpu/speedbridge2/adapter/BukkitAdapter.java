@@ -1,8 +1,8 @@
 package com.github.tofpu.speedbridge2.adapter;
 
+import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.object.World;
-import org.bukkit.Location;
 
 public class BukkitAdapter {
 
@@ -11,9 +11,15 @@ public class BukkitAdapter {
         return new World(world.getName());
     }
 
-    public static Position toPosition(Location location) {
+    public static Location toLocation(org.bukkit.Location location) {
+        return new Location(toWorld(location.getWorld()), (int) location.getX(),
+                (int) location.getY(),
+                (int) location.getZ(), location.getYaw(), location.getPitch());
+    }
+
+    public static Position toPosition(org.bukkit.Location location) {
         return new Position(toWorld(location.getWorld()), (int) location.getX(),
-            (int) location.getY(),
-            (int) location.getZ());
+                (int) location.getY(),
+                (int) location.getZ());
     }
 }

@@ -62,6 +62,8 @@ public abstract class GameHandler<P extends OnlinePlayer> {
         StopGameState stopState = createStopState();
         requireState(stopState != null, "StopGameState implementation must be provided on GameHandler!");
         game.dispatch(stopState);
+
+        ongoingGameMap.remove(playerId);
     }
 
 //    public abstract Game createGame(GamePlayer gamePlayer);

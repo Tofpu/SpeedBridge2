@@ -25,11 +25,15 @@ public class Location {
         this.pitch = pitch;
     }
 
-    public Location setYaw(int yaw) {
+    public Location setYaw(float yaw) {
         return new Location(this.world, this.x, this.y, this.z, yaw, pitch);
     }
 
     public Location setPitch(float pitch) {
         return new Location(this.world, this.x, this.y, this.z, yaw, pitch);
+    }
+
+    public Location subtract(Location other) {
+        return new Location(this.world, this.x - other.x, this.y - other.y, this.z - other.z, this.yaw, this.pitch);
     }
 }

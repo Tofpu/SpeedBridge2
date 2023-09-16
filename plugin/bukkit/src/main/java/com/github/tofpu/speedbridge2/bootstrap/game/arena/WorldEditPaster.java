@@ -12,15 +12,18 @@ import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.Region;
 import io.tofpu.multiworldedit.*;
+import org.bukkit.World;
 
 import java.io.File;
 import java.io.IOException;
 
 public class WorldEditPaster extends ClipboardPaster {
     private final MultiWorldEdit multiWorldEdit;
+    private final World world;
 
-    public WorldEditPaster(MultiWorldEdit multiWorldEdit) {
+    public WorldEditPaster(MultiWorldEdit multiWorldEdit, World world) {
         this.multiWorldEdit = multiWorldEdit;
+        this.world = world;
     }
 
     @Override
@@ -37,7 +40,7 @@ public class WorldEditPaster extends ClipboardPaster {
     @Override
     public void paste(File schematicFile, Position position) {
         ClipboardWrapper schematic = multiWorldEdit.read(schematicFile);
-        BukkitWorld world = new BukkitWorld(null);
+        BukkitWorld world = new BukkitWorld(this.world);
         try (final EditSessionWrapper editSessionWrapper = multiWorldEdit
                 .create(world, -1)) {
             final Clipboard schematicClipboard = schematic.to();

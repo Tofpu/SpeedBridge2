@@ -1,10 +1,18 @@
 package com.github.tofpu.speedbridge2.plugin;
 
 import com.github.tofpu.speedbridge2.LogicLoader;
+import com.github.tofpu.speedbridge2.PlayerAdapter;
 import com.github.tofpu.speedbridge2.SpeedBridge;
 import com.github.tofpu.speedbridge2.bootstrap.PluginBootstrap;
+import com.github.tofpu.speedbridge2.command.PluginCommandHandler;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import java.io.File;
+
+import com.github.tofpu.speedbridge2.game.island.IslandGameHandler;
+import com.github.tofpu.speedbridge2.island.setup.IslandSetupController;
+import com.github.tofpu.speedbridge2.island.setup.IslandSetupListener;
+import com.github.tofpu.speedbridge2.service.Service;
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
@@ -41,15 +49,39 @@ public class BukkitPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        bootstrap = new PluginBootstrap(speedBridge.serviceManager().get(ConfigurationService.class));
+        bootstrap = new PluginBootstrap(this, speedBridge.serviceManager().get(ConfigurationService.class));
         speedBridge.enable(
                 bootstrap);
         loader.enable(bootstrap);
+
+        new PluginCommandHandler().init(this);
+        IslandSetupListener islandSetupListener = new IslandSetupListener(loader.setupController());
+        Bukkit.getPluginManager().registerEvents(islandSetupListener, this);
     }
 
     @Override
     public void onDisable() {
         loader.disable();
         speedBridge.disable();
+    }
+
+    public <T extends Service> T getService(final Class<T> clazz) {
+        return speedBridge.serviceManager().get(clazz);
+    }
+
+    public PlayerAdapter playerAdapter() {
+        return bootstrap.playerAdapter();
+    }
+
+    public IslandSetupController setupController() {
+        return loader.setupController();
+    }
+
+    public IslandGameHandler gameHandler() {
+        return loader.gameHandler();
+    }
+
+    public File schematicsFolder() {
+        return new File(getDataFolder(), "WorldEdit/schematics");
     }
 }

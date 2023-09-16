@@ -5,12 +5,15 @@ import com.github.tofpu.speedbridge2.bootstrap.game.arena.IslandArenaAdapter;
 import com.github.tofpu.speedbridge2.bootstrap.player.BukkitPlayerAdapter;
 import com.github.tofpu.speedbridge2.bootstrap.world.BukkitWorldAdapter;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
+import org.bukkit.plugin.Plugin;
 
 public class PluginBootstrap implements ApplicationBootstrap, LogicBootStrap {
+    private final Plugin plugin;
 
     private final ConfigurationService configurationService;
 
-    public PluginBootstrap(ConfigurationService configurationService) {
+    public PluginBootstrap(Plugin plugin, ConfigurationService configurationService) {
+        this.plugin = plugin;
         this.configurationService = configurationService;
     }
 
@@ -26,6 +29,6 @@ public class PluginBootstrap implements ApplicationBootstrap, LogicBootStrap {
 
     @Override
     public ArenaAdapter arenaAdapter() {
-        return new IslandArenaAdapter();
+        return new IslandArenaAdapter(plugin);
     }
 }

@@ -26,11 +26,11 @@ public class Island {
     @Data
     @NoArgsConstructor(force = true)
     public static class IslandSchematic {
-        private final Location origin;
+        private final Location absolute;
         private final File schematicFile;
 
-        public IslandSchematic(Location origin, File schematicFile) {
-            this.origin = origin;
+        public IslandSchematic(Location absolute, File schematicFile) {
+            this.absolute = absolute;
             this.schematicFile = schematicFile;
         }
     }
