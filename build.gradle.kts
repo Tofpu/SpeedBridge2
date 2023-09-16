@@ -1,9 +1,11 @@
 plugins {
     `java-library`
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 subprojects {
     apply(plugin = "java-library")
+    apply(plugin = "com.github.johnrengelman.shadow")
 
     repositories {
         mavenLocal()
@@ -21,11 +23,6 @@ subprojects {
 
         testImplementation("org.mockito:mockito-core:5.3.1")
         testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
-    }
-
-    tasks.named<Test>("test") {
-        // Use JUnit Platform for unit tests.
-        useJUnitPlatform()
     }
 
     java {
