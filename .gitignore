@@ -5,3 +5,6 @@ build
 
 /*/test-resources/runtime
 /plugin/*/test-resources/runtime
+
+/*/run
+/*/*/run
