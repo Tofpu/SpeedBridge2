@@ -56,6 +56,11 @@ public class IslandSetupHandler extends GameHandler<OnlinePlayer> {
     }
 
     @Override
+    protected Game.GameState createPrepareState() {
+        return null;
+    }
+
+    @Override
     protected StartGameState createStartState() {
         return new BeginSetupState();
     }

@@ -1,5 +1,6 @@
 package com.github.tofpu.speedbridge2.game;
 
+import com.github.tofpu.speedbridge2.GameAdapter;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.game.island.Island;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.*;
 public class GameHandlerTest {
     private final DatabaseService databaseService = new DatabaseService();
     private final LobbyService lobbyService = new LobbyService(databaseService, new EventDispatcherService());
-    private final IslandGameHandler gameHandler = new IslandGameHandler(lobbyService, new IslandArenaManager(new World(), ClipboardPaster.empty()));
+    private final IslandGameHandler gameHandler = new IslandGameHandler(GameAdapter.empty(), lobbyService, new IslandArenaManager(new World(), ClipboardPaster.empty()));
 
     @BeforeEach
     void setUp() throws ExecutionException, InterruptedException, TimeoutException {

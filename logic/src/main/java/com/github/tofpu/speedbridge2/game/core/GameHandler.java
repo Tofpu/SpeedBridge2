@@ -17,9 +17,12 @@ public abstract class GameHandler<P extends OnlinePlayer> {
     protected void internalStart(final UUID playerId, final Game game) {
         requireState(!isInGame(playerId), "%s is already in a game!");
 
-        Game.GameState startState = createStartState();
-        requireState(startState != null, "StartGameState implementation must be provided on GameHandler!");
-        game.dispatch(startState);
+        Game.GameState gameState = createPrepareState();
+        if (gameState == null) {
+            gameState = createStartState();
+        }
+        requireState(gameState != null, "Prepare or start game state must be provided for the game to be fully functional.");
+        game.dispatch(gameState);
 
         this.ongoingGameMap.put(playerId, game);
     }
@@ -68,6 +71,7 @@ public abstract class GameHandler<P extends OnlinePlayer> {
 
 //    public abstract Game createGame(GamePlayer gamePlayer);
 //    public abstract GamePlayer createGamePlayer(P player);
+    protected abstract Game.GameState createPrepareState();
     protected abstract StartGameState createStartState();
     protected abstract StopGameState createStopState();
 }

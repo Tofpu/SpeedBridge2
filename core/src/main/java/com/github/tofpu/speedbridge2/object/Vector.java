@@ -9,6 +9,18 @@ public class Vector {
         this.z = z;
     }
 
+    public double x() {
+        return x;
+    }
+
+    public double y() {
+        return y;
+    }
+
+    public double z() {
+        return z;
+    }
+
     public Vector subtract(Vector vector) {
         return new Vector(this.x - vector.x, this.y - vector.y, this.z - vector.z);
     }

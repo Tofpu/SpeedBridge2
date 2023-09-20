@@ -11,6 +11,7 @@ public class Land {
     private final Location islandLocation;
     private final Position landPosition;
     private final Vector minPoint, maxPoint;
+    private final CuboidRegion cuboidRegion;
 
     public Land(final Position landPosition, final RegionInfo region, final Location absolute) {
         System.out.println("Soon adapting both land position " + landPosition + " and absolute " + absolute);
@@ -25,5 +26,11 @@ public class Land {
                 .add(landPosition.getX(), landPosition.getY(), landPosition.getZ());
         this.maxPoint = region.getMaximumPoint().subtract(regionOrigin)
                 .add(landPosition.getX(), landPosition.getY(), landPosition.getZ());
+
+        this.cuboidRegion = new CuboidRegion(minPoint, maxPoint);
+    }
+
+    public boolean isInsideRegion(Vector vector) {
+        return this.cuboidRegion.contains(vector);
     }
 }
