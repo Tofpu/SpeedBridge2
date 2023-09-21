@@ -36,7 +36,14 @@ public class IslandService implements LoadableService {
         System.out.println("Creating island with origin: " + origin);
         Island island = new Island(slot, new Island.IslandSchematic(origin, schematicFile));
 
-        databaseService.execute(session -> session.persist(island));
+        databaseService.execute(session -> {
+            Island data = session.find(Island.class, slot);
+            if (data == null) {
+                session.persist(island);
+            } else {
+                session.merge(island);
+            }
+        });
         this.islandMap.put(slot, island);
     }
 
