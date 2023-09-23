@@ -1,26 +1,25 @@
 package com.github.tofpu.speedbridge2.database;
 
-import com.github.tofpu.speedbridge2.database.driver.ConnectionDetails;
+import com.github.tofpu.speedbridge2.database.driver.type.H2DriverOptions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 public class DatabaseTest {
 
     private final AsyncDatabase asyncDatabase = DatabaseBuilder.create(
             "com.github.tofpu.speedbridge2")
-        .data(ConnectionDetails.MEMORY)
-        .build(DatabaseType.H2, DatabaseFactoryMaker.async(Executors.newSingleThreadExecutor()));
+        .build(H2DriverOptions.create(), DatabaseFactoryMaker.async(Executors.newSingleThreadExecutor()));
 
     private final Database syncDatabase = DatabaseBuilder.create("com.github.tofpu.speedbridge2")
-        .data(ConnectionDetails.MEMORY)
-        .build(DatabaseType.H2, DatabaseFactoryMaker.sync());
+        .build(H2DriverOptions.create(), DatabaseFactoryMaker.sync());
 
 
     @AfterEach
@@ -93,5 +92,10 @@ public class DatabaseTest {
     @Test
     void async_operation_in_sync_db_test() {
         Assertions.assertFalse(syncDatabase.supportsAsync());
+    }
+
+    @Test
+    void mysql_driver_test() {
+
     }
 }

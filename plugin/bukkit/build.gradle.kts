@@ -37,6 +37,7 @@ dependencies {
 tasks.shadowJar {
     dependencies {
         relocate("javax.persistence", "com.github.tofpu.speedbridge2.libs.javax")
+        relocate("org.yaml", "com.github.tofpu.speedbridge2.libs.snakeyaml")
     }
 }
 

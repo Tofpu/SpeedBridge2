@@ -27,11 +27,11 @@ public class LogicLoader {
     }
 
     public void load() {
-        LobbyService lobbyService = new LobbyService(speedBridge.serviceManager());
-        speedBridge.serviceManager().register(lobbyService);
+//        LobbyService lobbyService = new LobbyService(speedBridge.serviceManager());
+        speedBridge.serviceManager().registerLazy(LobbyService.class, LobbyService::new);
 
-        IslandService islandService = new IslandService(speedBridge.serviceManager().get(DatabaseService.class));
-        speedBridge.serviceManager().register(islandService);
+//        IslandService islandService = new IslandService(speedBridge.serviceManager().get(DatabaseService.class));
+        speedBridge.serviceManager().registerLazy(IslandService.class, serviceManager -> new IslandService(serviceManager.get(DatabaseService.class)));
     }
 
     public void enable(LogicBootStrap bootStrap) {

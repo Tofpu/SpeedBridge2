@@ -6,8 +6,8 @@ import com.github.tofpu.speedbridge2.database.AsyncDatabase;
 import com.github.tofpu.speedbridge2.database.Database;
 import com.github.tofpu.speedbridge2.database.DatabaseBuilder;
 import com.github.tofpu.speedbridge2.database.DatabaseFactoryMaker;
-import com.github.tofpu.speedbridge2.database.DatabaseType;
-import com.github.tofpu.speedbridge2.database.driver.ConnectionDetails;
+import com.github.tofpu.speedbridge2.database.driver.DriverOptions;
+import com.github.tofpu.speedbridge2.database.driver.type.H2DriverOptions;
 import com.github.tofpu.speedbridge2.database.factory.DatabaseFactory;
 import com.github.tofpu.speedbridge2.service.LoadableService;
 import java.util.concurrent.CompletableFuture;
@@ -18,29 +18,27 @@ import org.hibernate.Session;
 
 public class DatabaseService implements LoadableService {
 
-    private final ConnectionDetails details;
     private final DatabaseFactory<?> databaseFactory;
-    private final DatabaseType databaseType;
+    private final DriverOptions driverOptions;
     private Database database;
 
     public DatabaseService() {
-        this(ConnectionDetails.MEMORY,
-            DatabaseFactoryMaker.async(Executors.newSingleThreadExecutor()),
-            DatabaseType.H2);
+        this(H2DriverOptions.create());
     }
 
-    public DatabaseService(ConnectionDetails details, DatabaseFactory<?> databaseFactory,
-        DatabaseType databaseType) {
-        this.details = details;
+    public DatabaseService(DriverOptions driverOptions) {
+        this(DatabaseFactoryMaker.async(Executors.newSingleThreadExecutor()), driverOptions);
+    }
+
+    public DatabaseService(DatabaseFactory<?> databaseFactory, DriverOptions driverOptions) {
         this.databaseFactory = databaseFactory;
-        this.databaseType = databaseType;
+        this.driverOptions = driverOptions;
     }
 
     @Override
     public void load() {
         this.database = DatabaseBuilder.create("com.github.tofpu.speedbridge2")
-            .data(details)
-            .build(databaseType, databaseFactory);
+            .build(driverOptions, databaseFactory);
     }
 
     @Override

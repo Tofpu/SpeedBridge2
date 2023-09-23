@@ -1,13 +1,12 @@
 package com.github.tofpu.speedbridge2.database;
 
-import com.github.tofpu.speedbridge2.database.driver.ConnectionDetails;
+import com.github.tofpu.speedbridge2.database.driver.DriverOptions;
 import com.github.tofpu.speedbridge2.database.factory.DatabaseFactory;
 import com.github.tofpu.speedbridge2.database.factory.session.SessionFactoryMaker;
 
 public class DatabaseBuilder {
 
     private final String packageName;
-    private ConnectionDetails connectionDetails;
 
     private DatabaseBuilder(String packageName) {
         this.packageName = packageName;
@@ -17,14 +16,8 @@ public class DatabaseBuilder {
         return new DatabaseBuilder(packageName);
     }
 
-    public DatabaseBuilder data(ConnectionDetails connectionDetails) {
-        this.connectionDetails = connectionDetails;
-        return this;
-    }
-
-    public <T extends Database> T build(DatabaseType databaseType, DatabaseFactory<T> factory) {
+    public <T extends Database> T build(DriverOptions driverOptions, DatabaseFactory<T> factory) {
         return factory.create(
-            SessionFactoryMaker.create(packageName, databaseType.getDriverOptions(),
-                connectionDetails));
+            SessionFactoryMaker.create(packageName, driverOptions));
     }
 }
