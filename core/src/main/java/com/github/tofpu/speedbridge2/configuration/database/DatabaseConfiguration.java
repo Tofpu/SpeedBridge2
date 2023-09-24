@@ -1,6 +1,5 @@
 package com.github.tofpu.speedbridge2.configuration.database;
 
-import com.github.tofpu.speedbridge2.configuration.database.driver.DriverConfiguration;
 import com.github.tofpu.speedbridge2.configuration.database.driver.H2DriverConfiguration;
 import com.github.tofpu.speedbridge2.configuration.database.driver.MySQLDriverConfiguration;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -16,15 +15,12 @@ public class DatabaseConfiguration {
         return driverType;
     }
 
-    public <T> T get(final DatabaseDriverType driverType) {
-        switch (driverType) {
-            case H2:
-                return (T) driverSettings.h2;
-            case MYSQL:
-                return (T) driverSettings.mysql;
-            default:
-                throw new IllegalStateException("Unsupported driver type: " + driverType);
-        }
+    public H2DriverConfiguration h2() {
+        return driverSettings.h2;
+    }
+
+    public MySQLDriverConfiguration mysql() {
+        return driverSettings.mysql;
     }
 
     @ConfigSerializable

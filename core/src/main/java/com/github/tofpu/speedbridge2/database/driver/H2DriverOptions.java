@@ -1,23 +1,16 @@
-package com.github.tofpu.speedbridge2.database.driver.type;
+package com.github.tofpu.speedbridge2.database.driver;
 
-import com.github.tofpu.speedbridge2.configuration.database.driver.H2DriverConfiguration;
-import com.github.tofpu.speedbridge2.database.driver.DriverOptions;
+class H2DriverOptions implements DriverOptions {
+    private final ConnectionType connectionType;
 
-public class H2DriverOptions implements DriverOptions {
-    private final H2DriverConfiguration configuration;
-
-    public static H2DriverOptions create() {
-        return new H2DriverOptions(new H2DriverConfiguration());
-    }
-
-    public H2DriverOptions(H2DriverConfiguration configuration) {
-        this.configuration = configuration;
+    public H2DriverOptions(ConnectionType connectionType) {
+        this.connectionType = connectionType;
     }
 
     @Override
     public String connectionUrl() {
         String url = "jdbc:h2";
-        switch (configuration.connectionType()) {
+        switch (connectionType) {
             case MEMORY:
                 return url + ":mem:";
             case FILE:
@@ -26,7 +19,7 @@ public class H2DriverOptions implements DriverOptions {
                 throw new UnsupportedOperationException(
                         "H2 driver does not support remote connection capabilities.");
         }
-        throw new IllegalArgumentException("Unknown connection type: " + configuration.connectionType());
+        throw new IllegalArgumentException("Unknown connection type: " + connectionType);
     }
 
     @Override

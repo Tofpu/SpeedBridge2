@@ -1,20 +1,16 @@
 package com.github.tofpu.speedbridge2.database.service;
 
-import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
-
-import com.github.tofpu.speedbridge2.database.AsyncDatabase;
 import com.github.tofpu.speedbridge2.database.Database;
-import com.github.tofpu.speedbridge2.database.DatabaseBuilder;
 import com.github.tofpu.speedbridge2.database.DatabaseFactoryMaker;
 import com.github.tofpu.speedbridge2.database.driver.DriverOptions;
-import com.github.tofpu.speedbridge2.database.driver.type.H2DriverOptions;
 import com.github.tofpu.speedbridge2.database.factory.DatabaseFactory;
 import com.github.tofpu.speedbridge2.service.LoadableService;
+import org.hibernate.Session;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import org.hibernate.Session;
 
 public class DatabaseService implements LoadableService {
 
@@ -23,11 +19,11 @@ public class DatabaseService implements LoadableService {
     private Database database;
 
     public DatabaseService() {
-        this(H2DriverOptions.create());
+        this(DriverOptions.createH2());
     }
 
     public DatabaseService(DriverOptions driverOptions) {
-        this(DatabaseFactoryMaker.async(Executors.newSingleThreadExecutor()), driverOptions);
+        this(DatabaseFactoryMaker.createStandardDatabaseFactory(Executors.newSingleThreadExecutor()), driverOptions);
     }
 
     public DatabaseService(DatabaseFactory<?> databaseFactory, DriverOptions driverOptions) {
@@ -37,8 +33,9 @@ public class DatabaseService implements LoadableService {
 
     @Override
     public void load() {
-        this.database = DatabaseBuilder.create("com.github.tofpu.speedbridge2")
-            .build(driverOptions, databaseFactory);
+        this.database = Database.builder()
+                .factory(databaseFactory)
+                .build(driverOptions);
     }
 
     @Override
@@ -46,32 +43,25 @@ public class DatabaseService implements LoadableService {
         this.database.shutdown();
     }
 
-    public void execute(final Consumer<Session> sessionConsumer) {
-        this.database.execute(sessionConsumer);
+    public void executeSync(final Consumer<Session> sessionConsumer) {
+        this.database.executeSync(sessionConsumer);
     }
 
     @SuppressWarnings("unchecked")
     public <T> T compute(Function<Session, T> sessionFunction) {
         final Object[] result = new Object[1];
-        execute(session -> result[0] = sessionFunction.apply(session));
+        executeSync(session -> result[0] = sessionFunction.apply(session));
         return (T) result[0];
     }
 
     public <T> CompletableFuture<T> computeAsync(Function<Session, T> sessionFunction) {
-        requireState(supportsAsync(), "Async operations is not supported.");
         CompletableFuture<T> future = new CompletableFuture<>();
         executeAsync(session -> future.complete(sessionFunction.apply(session)));
         return future;
     }
 
     public CompletableFuture<Void> executeAsync(final Consumer<Session> sessionConsumer) {
-        requireState(supportsAsync(), "Async operations is not supported.");
-        AsyncDatabase asyncDatabase = (AsyncDatabase) this.database;
-        return asyncDatabase.executeAsync(sessionConsumer);
-    }
-
-    public boolean supportsAsync() {
-        return this.database.supportsAsync();
+        return this.database.executeAsync(sessionConsumer);
     }
 
     public Database database() {

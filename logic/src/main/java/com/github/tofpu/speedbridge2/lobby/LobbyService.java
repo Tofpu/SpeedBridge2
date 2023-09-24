@@ -41,7 +41,7 @@ public class LobbyService implements LoadableService {
     }
 
     private void loadLobby() {
-        databaseService.execute(
+        databaseService.executeSync(
             session -> this.lobby = session.find(Lobby.class, PRIMARY_LOBBY_ID));
     }
 

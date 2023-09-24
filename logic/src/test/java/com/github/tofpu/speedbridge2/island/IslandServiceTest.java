@@ -1,10 +1,5 @@
 package com.github.tofpu.speedbridge2.island;
 
-import com.github.tofpu.speedbridge2.database.Database;
-import com.github.tofpu.speedbridge2.database.DatabaseBuilder;
-import com.github.tofpu.speedbridge2.database.DatabaseFactoryMaker;
-import com.github.tofpu.speedbridge2.database.DatabaseType;
-import com.github.tofpu.speedbridge2.database.driver.ConnectionDetails;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.game.island.Island;
 import com.github.tofpu.speedbridge2.object.Location;
@@ -38,7 +33,7 @@ public class IslandServiceTest {
         islandService.register(1, origin, schematicFile);
 
         AtomicReference<Island> islandFromDb = new AtomicReference<>();
-        databaseService.execute(session -> {
+        databaseService.executeSync(session -> {
             islandFromDb.set(session.find(Island.class, 1));
         });
 

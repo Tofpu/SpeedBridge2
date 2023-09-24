@@ -1,23 +1,24 @@
 package com.github.tofpu.speedbridge2.database;
 
+import com.github.tofpu.speedbridge2.MagicValue;
 import com.github.tofpu.speedbridge2.database.driver.DriverOptions;
 import com.github.tofpu.speedbridge2.database.factory.DatabaseFactory;
 import com.github.tofpu.speedbridge2.database.factory.session.SessionFactoryMaker;
 
 public class DatabaseBuilder {
+    private DatabaseFactory<?> factory;
 
-    private final String packageName;
-
-    private DatabaseBuilder(String packageName) {
-        this.packageName = packageName;
+    DatabaseBuilder() {
+        // prevents direct initialization
     }
 
-    public static DatabaseBuilder create(String packageName) {
-        return new DatabaseBuilder(packageName);
+    public DatabaseBuilder factory(DatabaseFactory<?> factory) {
+        this.factory = factory;
+        return this;
     }
 
-    public <T extends Database> T build(DriverOptions driverOptions, DatabaseFactory<T> factory) {
+    public Database build(DriverOptions driverOptions) {
         return factory.create(
-            SessionFactoryMaker.create(packageName, driverOptions));
+                SessionFactoryMaker.create(MagicValue.APPLICATION_PACKAGE_NAME, driverOptions));
     }
 }

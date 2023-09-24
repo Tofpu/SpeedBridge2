@@ -1,6 +1,5 @@
 package com.github.tofpu.speedbridge2.island;
 
-import com.github.tofpu.speedbridge2.database.Database;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.game.island.Island;
 import com.github.tofpu.speedbridge2.object.Location;
@@ -21,7 +20,7 @@ public class IslandService implements LoadableService {
 
     @Override
     public void load() {
-        databaseService.execute(session -> {
+        databaseService.executeSync(session -> {
             List<Island> islands = session.createQuery("FROM Island").list();
             islands.forEach(island -> islandMap.put(island.getSlot(), island));
         });
@@ -36,7 +35,7 @@ public class IslandService implements LoadableService {
         System.out.println("Creating island with origin: " + origin);
         Island island = new Island(slot, new Island.IslandSchematic(origin, schematicFile));
 
-        databaseService.execute(session -> {
+        databaseService.executeSync(session -> {
             Island data = session.find(Island.class, slot);
             if (data == null) {
                 session.persist(island);

@@ -1,15 +1,26 @@
 package com.github.tofpu.speedbridge2.database;
 
-import java.util.function.Consumer;
 import org.hibernate.Session;
 
-public interface Database {
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
-    void execute(Consumer<Session> sessionConsumer);
+public interface Database {
+    static SimpleDatabaseFactory factory() {
+        return DatabaseFactoryHolder.INSTANCE;
+    }
+
+    static DatabaseBuilder builder() {
+        return new DatabaseBuilder();
+    }
+
+    CompletableFuture<Void> executeAsync(Consumer<Session> sessionConsumer);
+
+    void executeSync(Consumer<Session> sessionConsumer);
 
     void shutdown();
 
-    default boolean supportsAsync() {
-        return false;
+    class DatabaseFactoryHolder {
+        private static final SimpleDatabaseFactory INSTANCE = new SimpleDatabaseFactory();
     }
 }
