@@ -1,16 +1,15 @@
 package com.github.tofpu.speedbridge2;
 
 import com.github.tofpu.speedbridge2.configuration.database.DatabaseConfiguration;
-import com.github.tofpu.speedbridge2.configuration.database.DatabaseDriverType;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import com.github.tofpu.speedbridge2.database.service.DatabaseMapper;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.service.Service;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
-import java.io.File;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 
 public class SpeedBridge {
 
@@ -28,8 +27,8 @@ public class SpeedBridge {
 
     public void load(final File pluginDirectory) {
         instance = this;
-        this.serviceManager.register(new ConfigurationService(pluginDirectory));
-        this.serviceManager.registerLazy(DatabaseService.class, (serviceManager) -> {
+        this.serviceManager.registerAndLoad(new ConfigurationService(pluginDirectory));
+        this.serviceManager.register(DatabaseService.class, (serviceManager) -> {
             ConfigurationService configurationService = serviceManager.get(ConfigurationService.class);
             DatabaseConfiguration database = configurationService.config().database();
             return new DatabaseService(DatabaseMapper.map(database));
