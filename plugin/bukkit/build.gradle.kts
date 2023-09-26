@@ -32,6 +32,8 @@ dependencies {
 
     implementation("com.github.Revxrsal.Lamp:common:3.1.5")
     implementation("com.github.Revxrsal.Lamp:bukkit:3.1.5")
+
+    implementation("commons-io:commons-io:2.11.0")
 }
 
 tasks.shadowJar {

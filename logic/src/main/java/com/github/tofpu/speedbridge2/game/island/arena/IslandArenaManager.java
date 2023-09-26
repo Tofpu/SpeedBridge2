@@ -1,5 +1,6 @@
 package com.github.tofpu.speedbridge2.game.island.arena;
 
+import com.github.tofpu.speedbridge2.ArenaAdapter;
 import com.github.tofpu.speedbridge2.game.core.arena.ArenaManager;
 import com.github.tofpu.speedbridge2.game.core.arena.ClipboardPaster;
 import com.github.tofpu.speedbridge2.game.island.Island;
@@ -14,15 +15,22 @@ public class IslandArenaManager implements ArenaManager {
     // todo: make this option configurable
     private static final int ISLAND_GAP = 10;
 
+    private final ArenaAdapter arenaAdapter;
     private final World world;
     private final ClipboardPaster clipboardPaster;
 
     private final AtomicInteger xIncrementer = new AtomicInteger();
     private final Queue<Land> landReserves = new LinkedList<>();
 
-    public IslandArenaManager(World world, ClipboardPaster clipboardPaster) {
-        this.world = world;
-        this.clipboardPaster = clipboardPaster;
+    public IslandArenaManager(ArenaAdapter arenaAdapter) {
+        this.arenaAdapter = arenaAdapter;
+        this.world = arenaAdapter.gameWorld();
+        this.clipboardPaster = arenaAdapter.clipboardPaster();
+    }
+
+    @Override
+    public void prepare() {
+        arenaAdapter.resetGameWorld();
     }
 
     public boolean hasAvailableLand(int slot) {

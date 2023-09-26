@@ -1,5 +1,6 @@
 package com.github.tofpu.speedbridge2.game;
 
+import com.github.tofpu.speedbridge2.ArenaAdapter;
 import com.github.tofpu.speedbridge2.game.core.arena.ClipboardPaster;
 import com.github.tofpu.speedbridge2.game.island.Island;
 import com.github.tofpu.speedbridge2.game.island.arena.IslandArenaManager;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ArenaManagerTest {
-    private final IslandArenaManager arenaManager = new IslandArenaManager(new World(), ClipboardPaster.empty());
+    private final IslandArenaManager arenaManager = new IslandArenaManager(ArenaAdapter.simple(new World(), ClipboardPaster.empty()));
 
     @Test
     void island_reserve_test() {

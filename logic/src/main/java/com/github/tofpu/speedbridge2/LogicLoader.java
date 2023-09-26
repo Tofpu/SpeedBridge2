@@ -39,8 +39,12 @@ public class LogicLoader {
         ArenaAdapter arenaAdapter = bootStrap.arenaAdapter();
 
         ServiceManager serviceManager = speedBridge.serviceManager();
-        gameHandler = new IslandGameHandler(bootStrap.gameAdapter(), serviceManager.get(LobbyService.class), new IslandArenaManager(arenaAdapter.gameWorld(), arenaAdapter.clipboardPaster()));
-        IslandSetupHandler setupHandler = new IslandSetupHandler(serviceManager.get(IslandService.class), serviceManager.get(LobbyService.class), new IslandArenaManager(arenaAdapter.gameWorld(), arenaAdapter.clipboardPaster()), arenaAdapter.gameWorld());
+        IslandArenaManager gameArenaManager = new IslandArenaManager(arenaAdapter);
+        gameArenaManager.prepare();
+
+        gameHandler = new IslandGameHandler(bootStrap.gameAdapter(), serviceManager.get(LobbyService.class), gameArenaManager);
+
+        IslandSetupHandler setupHandler = new IslandSetupHandler(serviceManager.get(IslandService.class), serviceManager.get(LobbyService.class), new IslandArenaManager(arenaAdapter), arenaAdapter.gameWorld());
         setupController = new IslandSetupController(setupHandler);
     }
 

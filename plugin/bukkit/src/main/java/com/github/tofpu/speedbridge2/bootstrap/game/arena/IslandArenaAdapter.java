@@ -5,11 +5,14 @@ import com.github.tofpu.speedbridge2.adapter.BukkitAdapter;
 import com.github.tofpu.speedbridge2.game.core.arena.ClipboardPaster;
 import com.github.tofpu.speedbridge2.object.World;
 import io.tofpu.multiworldedit.MultiWorldEditAPI;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 
 public class IslandArenaAdapter implements ArenaAdapter {
@@ -19,6 +22,18 @@ public class IslandArenaAdapter implements ArenaAdapter {
 
     public IslandArenaAdapter(Plugin plugin) {
         this.plugin = plugin;
+    }
+
+    @Override
+    public void resetGameWorld() {
+        org.bukkit.World world = Bukkit.getWorld(GAME_WORLD_NAME);
+        if (world == null) return;
+        File worldFolder = world.getWorldFolder();
+        try {
+            FileUtils.deleteDirectory(worldFolder);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to delete " + worldFolder.getName() + " world", e);
+        }
     }
 
     @Override
