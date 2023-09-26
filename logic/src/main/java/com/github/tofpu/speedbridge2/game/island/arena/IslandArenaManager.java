@@ -18,23 +18,45 @@ public class IslandArenaManager implements ArenaManager {
     private final ClipboardPaster clipboardPaster;
 
     private final AtomicInteger xIncrementer = new AtomicInteger();
-    private final Queue<Land> availableLands = new LinkedList<>();
+    private final Queue<Land> landReserves = new LinkedList<>();
 
     public IslandArenaManager(World world, ClipboardPaster clipboardPaster) {
         this.world = world;
         this.clipboardPaster = clipboardPaster;
     }
 
-    protected Land getAvailableLand() {
-        return availableLands.poll();
+    public boolean hasAvailableLand(int slot) {
+        for (Land availableLand : landReserves) {
+            if (availableLand.islandSlot() == slot) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Land viewAvailableLand(int slot) {
+        for (Land availableLand : landReserves) {
+            if (availableLand.islandSlot() == slot) {
+                return availableLand;
+            }
+        }
+        return null;
+    }
+
+    protected Land getAvailableLand(int slot) {
+        Land land = viewAvailableLand(slot);
+        if (land != null) {
+            landReserves.remove(land);
+        }
+        return land;
     }
 
     @Override
     public Land generate(final Island island) {
-        Land land = getAvailableLand();
+        Land land = getAvailableLand(island.getSlot());
         if (land == null) {
             land = generateAndLock(island);
-        };
+        }
         return land;
     }
 
@@ -43,15 +65,15 @@ public class IslandArenaManager implements ArenaManager {
         RegionInfo region = clipboardPaster.getRegion(schematic.getSchematicFile());
         Position landPosition = determine(region);
         clipboardPaster.paste(schematic.getSchematicFile(), landPosition);
-        return new Land(landPosition, region, island.getSchematic().getAbsolute());
+        return new Land(island.getSlot(), landPosition, region, island.getSchematic().getAbsolute());
     }
 
     @Override
     public void unlock(Land land) {
-        availableLands.add(land);
+        landReserves.add(land);
     }
 
-    public Position determine(RegionInfo region) {
+    protected Position determine(RegionInfo region) {
         return new Position(world, xIncrementer.getAndAdd(region.getWidth() + ISLAND_GAP), 100, 100);
     }
 }

@@ -8,12 +8,14 @@ import lombok.Data;
 @Data
 public class Land {
 
+    private final int islandSlot;
     private final Location islandLocation;
     private final Position landPosition;
     private final Vector minPoint, maxPoint;
     private final CuboidRegion cuboidRegion;
 
-    public Land(final Position landPosition, final RegionInfo region, final Location absolute) {
+    public Land(int islandSlot, final Position landPosition, final RegionInfo region, final Location absolute) {
+        this.islandSlot = islandSlot;
         System.out.println("Soon adapting both land position " + landPosition + " and absolute " + absolute);
         this.islandLocation = landPosition.substract(absolute)
                 .setYaw(absolute.getYaw())
@@ -32,5 +34,9 @@ public class Land {
 
     public boolean isInsideRegion(Vector vector) {
         return this.cuboidRegion.contains(vector);
+    }
+
+    public int islandSlot() {
+        return islandSlot;
     }
 }
