@@ -27,7 +27,8 @@ import static org.mockito.Mockito.*;
 public class GameHandlerTest {
     private final DatabaseService databaseService = new DatabaseService();
     private final LobbyService lobbyService = new LobbyService(databaseService, new EventDispatcherService());
-    private final IslandGameHandler gameHandler = new IslandGameHandler(GameAdapter.empty(), lobbyService, new IslandArenaManager(new World(), ClipboardPaster.empty()));
+    private final IslandArenaManager arenaManager = new IslandArenaManager(new World(), ClipboardPaster.empty());
+    private final IslandGameHandler gameHandler = new IslandGameHandler(GameAdapter.empty(), lobbyService, arenaManager);
 
     @BeforeEach
     void setUp() throws ExecutionException, InterruptedException, TimeoutException {
@@ -38,22 +39,22 @@ public class GameHandlerTest {
     }
 
     @Test
-    void test() {
+    void start_and_end_game_test() {
         UUID playerId = UUID.randomUUID();
         World world = mock(World.class);
-        Island island = spy(new Island(1, new Island.IslandSchematic(new Location(world, 1, 1, 1, 1, 1), new File("test-resources/island/schematics/test.schematic"))));
+        Island island = new Island(1, new Island.IslandSchematic(new Location(world, 1, 1, 1, 1, 1), new File("test-resources/island/schematics/test.schematic")));
         OnlinePlayer player = mockPlayer(playerId);
 
         gameHandler.start(player, island);
-        Assertions.assertThrows(Exception.class, () -> gameHandler.start(player, island));
+        Assertions.assertThrows(Exception.class, () -> gameHandler.start(player, island), "A player cannot be in two games simultaneously");
 
-        Assertions.assertTrue(gameHandler.isInGame(playerId));
-        Assertions.assertDoesNotThrow(() -> gameHandler.stop(playerId));
-        Assertions.assertFalse(gameHandler.isInGame(playerId));
+        Assertions.assertTrue(gameHandler.isInGame(playerId), "The player should have been in a game");
+        Assertions.assertDoesNotThrow(() -> gameHandler.stop(playerId), "An error was thrown while attempting to stop an ongoing game");
+        Assertions.assertFalse(gameHandler.isInGame(playerId), "The game was stopped, so the player should be no longer be in a game");
 
-//        Assertions.assertEquals(player.getPosition(), lobbyService.position());
+        Assertions.assertTrue(arenaManager.hasAvailableLand(island.getSlot()), "The land belonging to the island should have been stored in the reserves");
 
-        Assertions.assertThrows(Exception.class, () -> gameHandler.stop(playerId));
+        Assertions.assertThrows(Exception.class, () -> gameHandler.stop(playerId), "An error should have been thrown since a game cannot be stopped when it's non-existent");
     }
 
     OnlinePlayer mockPlayer(final UUID id) {
