@@ -12,12 +12,16 @@ import org.bukkit.World;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public final class IslandSetupHandler {
     public static final IslandSetupHandler INSTANCE = new IslandSetupHandler();
+    public static final int ISLAND_SETUP_GAP = 10;
 
     private final Umbrella umbrella;
     private final Map<UUID, IslandSetup> islandSetupMap = new HashMap<>();
+
+    private final AtomicInteger xAxisCounter = new AtomicInteger(100);
 
     private IslandSetupHandler() {
         this.umbrella = new IslandSetupUmbrella().getUmbrella();
@@ -49,10 +53,13 @@ public final class IslandSetupHandler {
      */
 
     private IslandSetup create(final BridgePlayer player, final Island target) {
-        final double[] positions = {100 * (islandSetupMap.size() + 100), 100, 0};
+        final double[] positions = {xAxisCounter.get(), 100, 0};
+        positions[0] += Math.abs(positions[0] - new IslandLand(target, world, positions).region().getMinimumPoint().getX());
+
         final IslandSetup islandSetup;
 
         final IslandLand islandLand = new IslandLand(target, world, positions);
+        xAxisCounter.addAndGet(islandLand.getWidth() + ISLAND_SETUP_GAP);
         if (target instanceof IslandBuild) {
             islandSetup = IslandSetupFactory.create(IslandSetupFactory.IslandSetupFactoryType.BUILD, umbrella, player, target, islandLand);
         } else {
