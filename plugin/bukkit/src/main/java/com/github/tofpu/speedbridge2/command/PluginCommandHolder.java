@@ -1,9 +1,9 @@
 package com.github.tofpu.speedbridge2.command;
 
-import com.github.tofpu.speedbridge2.game.island.Island;
-import com.github.tofpu.speedbridge2.game.island.IslandGameHandler;
+import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandler;
+import com.github.tofpu.speedbridge2.bridge.game.Island;
 import com.github.tofpu.speedbridge2.island.IslandService;
-import com.github.tofpu.speedbridge2.island.setup.IslandSetupController;
+import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupController;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.plugin.BukkitPlugin;
@@ -14,14 +14,12 @@ import java.io.File;
 
 @Command({"speedbridge", "sb"})
 public class PluginCommandHolder {
-    private final File schematicsFolder;
     private final LobbyService lobbyService;
     private final IslandSetupController islandSetupService;
     private final IslandService islandService;
-    private final IslandGameHandler gameHandler;
+    private final BridgeGameHandler gameHandler;
 
-    public PluginCommandHolder(File schematicsFolder, LobbyService lobbyService, IslandSetupController islandSetupService, IslandService islandService, IslandGameHandler gameHandler) {
-        this.schematicsFolder = schematicsFolder;
+    public PluginCommandHolder(LobbyService lobbyService, IslandSetupController islandSetupService, IslandService islandService, BridgeGameHandler gameHandler) {
         this.lobbyService = lobbyService;
         this.islandSetupService = islandSetupService;
         this.islandService = islandService;
@@ -29,7 +27,7 @@ public class PluginCommandHolder {
     }
 
     public PluginCommandHolder(BukkitPlugin bukkitPlugin) {
-        this(bukkitPlugin.schematicsFolder(), bukkitPlugin.getService(LobbyService.class), bukkitPlugin.setupController(), bukkitPlugin.getService(IslandService.class), bukkitPlugin.gameHandler());
+        this(bukkitPlugin.getService(LobbyService.class), bukkitPlugin.setupController(), bukkitPlugin.getService(IslandService.class), bukkitPlugin.gameHandler());
     }
 
     @Subcommand("lobby")
@@ -54,7 +52,7 @@ public class PluginCommandHolder {
             player.sendMessage("You are already in a setup!");
             return;
         }
-        islandSetupService.begin(player, slot, new File("C:\\Users\\T\\IdeaProjects\\speedbridge2\\plugin\\bukkit\\run\\plugins\\WorldEdit\\schematics", schematicName));
+        islandSetupService.begin(player, slot, schematicName);
     }
 
     @Subcommand("game setup cancel")

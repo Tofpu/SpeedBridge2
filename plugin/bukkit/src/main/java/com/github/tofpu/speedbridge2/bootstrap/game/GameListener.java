@@ -1,11 +1,9 @@
 package com.github.tofpu.speedbridge2.bootstrap.game;
 
 import com.github.tofpu.speedbridge2.adapter.BukkitAdapter;
-import com.github.tofpu.speedbridge2.game.island.IslandGame;
-import com.github.tofpu.speedbridge2.game.island.IslandGameHandler;
+import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandler;
+import com.github.tofpu.speedbridge2.bridge.game.IslandGame;
 import com.github.tofpu.speedbridge2.object.Position;
-import com.github.tofpu.speedbridge2.object.Vector;
-import io.tofpu.multiworldedit.VectorWrapper;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,10 +16,10 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import java.util.UUID;
 
 public class GameListener implements Listener {
-    private final IslandGameHandler gameHandler;
+    private final BridgeGameHandler gameHandler;
     private final OngoingGameRegistry gameRegistry;
 
-    public GameListener(IslandGameHandler gameHandler, OngoingGameRegistry gameRegistry) {
+    public GameListener(BridgeGameHandler gameHandler, OngoingGameRegistry gameRegistry) {
         this.gameHandler = gameHandler;
         this.gameRegistry = gameRegistry;
     }

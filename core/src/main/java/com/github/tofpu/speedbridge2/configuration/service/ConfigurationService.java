@@ -19,12 +19,12 @@ public class ConfigurationService implements LoadableService {
     @Override
     public void load() {
         configurateHandler.load();
-        dynamicConfigHandler.load(PluginConfigTypes.values());
+//        dynamicConfigHandler.load(PluginConfigTypes.values());
     }
 
     @Override
     public void unload() {
-        dynamicConfigHandler.unload();
+//        dynamicConfigHandler.unload();
     }
 
     public Configuration on(final PluginConfigTypes type) {

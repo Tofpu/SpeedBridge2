@@ -2,9 +2,9 @@ package com.github.tofpu.speedbridge2.bootstrap.game;
 
 import com.github.tofpu.speedbridge2.GameAdapter;
 import com.github.tofpu.speedbridge2.adapter.SpeedBridgeAdapter;
-import com.github.tofpu.speedbridge2.game.island.IslandGame;
-import com.github.tofpu.speedbridge2.game.island.IslandGameHandler;
-import com.github.tofpu.speedbridge2.game.island.IslandGamePlayer;
+import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandler;
+import com.github.tofpu.speedbridge2.bridge.game.IslandGame;
+import com.github.tofpu.speedbridge2.bridge.game.IslandGamePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class BukkitGameAdapter implements GameAdapter {
     private final OngoingGameRegistry gameRegistry = new OngoingGameRegistry();
-    private IslandGameHandler gameHandler;
+    private BridgeGameHandler gameHandler;
     private Plugin plugin;
 
     public void setPlugin(Plugin plugin) {
@@ -32,7 +32,7 @@ public class BukkitGameAdapter implements GameAdapter {
     }
 
     @Override
-    public void prepareGame(IslandGameHandler gameHandler, IslandGame game, IslandGamePlayer player) {
+    public void prepareGame(BridgeGameHandler gameHandler, IslandGame game, IslandGamePlayer player) {
         if (this.gameHandler == null) {
             this.gameHandler = gameHandler;
             register();
@@ -43,13 +43,13 @@ public class BukkitGameAdapter implements GameAdapter {
     }
 
     @Override
-    public void cleanGame(IslandGameHandler gameHandler, IslandGame game, IslandGamePlayer player) {
+    public void cleanGame(BridgeGameHandler gameHandler, IslandGame game, IslandGamePlayer player) {
         clearGame(game);
         gameRegistry.remove(player.id());
     }
 
     @Override
-    public void resetGame(IslandGameHandler gameHandler, IslandGame game, IslandGamePlayer player) {
+    public void resetGame(BridgeGameHandler gameHandler, IslandGame game, IslandGamePlayer player) {
         clearGame(game);
         preparePlayer(game, player);
     }

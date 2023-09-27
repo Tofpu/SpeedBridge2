@@ -5,6 +5,11 @@ plugins {
 configurations {
     all {
         exclude("javax.persistence", "persistence-api")
+//        exclude("org.yaml", "snakeyaml")
+
+//        resolutionStrategy {
+//            force("org.yaml:snakeyaml:1.15")
+//        }
     }
 }
 
@@ -22,6 +27,12 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
     testImplementation("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
 
+    testImplementation("org.yaml:snakeyaml") {
+        version {
+            strictly("1.15")
+        }
+    }
+
     compileOnly("com.sk89q:worldedit:6.0.0-SNAPSHOT")
     testImplementation("com.sk89q:worldedit:6.0.0-SNAPSHOT")
     implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:0eb85d6cbd") {
@@ -34,6 +45,8 @@ dependencies {
     implementation("com.github.Revxrsal.Lamp:bukkit:3.1.5")
 
     implementation("commons-io:commons-io:2.11.0")
+
+    testImplementation("com.github.Tofpu:v1.8-mockbukkit:v1.8-spigot-SNAPSHOT")
 }
 
 tasks.shadowJar {

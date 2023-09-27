@@ -12,5 +12,6 @@ public class PluginCommandHandler {
 
         commandHandler.setHelpWriter((command, actor) -> String.format("/%s %s - %s", command.getPath().toRealString(), command.getUsage(), command.getDescription()));
         commandHandler.register(new PluginCommandHolder(plugin));
+        commandHandler.register(new DeveloperCommandHolder(plugin));
     }
 }

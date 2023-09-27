@@ -1,23 +1,26 @@
 package com.github.tofpu.speedbridge2.plugin;
 
+import com.github.tofpu.speedbridge2.ArenaAdapter;
 import com.github.tofpu.speedbridge2.LogicLoader;
 import com.github.tofpu.speedbridge2.PlayerAdapter;
 import com.github.tofpu.speedbridge2.SpeedBridge;
 import com.github.tofpu.speedbridge2.bootstrap.PluginBootstrap;
 import com.github.tofpu.speedbridge2.bootstrap.game.BukkitGameAdapter;
+import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandler;
 import com.github.tofpu.speedbridge2.command.PluginCommandHandler;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import java.io.File;
 
-import com.github.tofpu.speedbridge2.game.island.IslandGameHandler;
-import com.github.tofpu.speedbridge2.island.setup.IslandSetupController;
+import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupController;
 import com.github.tofpu.speedbridge2.island.setup.IslandSetupListener;
+import com.github.tofpu.speedbridge2.schematic.SchematicHandler;
 import com.github.tofpu.speedbridge2.service.Service;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 
 public class BukkitPlugin extends JavaPlugin {
 
@@ -27,12 +30,18 @@ public class BukkitPlugin extends JavaPlugin {
     private PluginBootstrap bootstrap;
 
     public BukkitPlugin() {
+        super();
     }
 
     @SuppressWarnings("deprecation")
     public BukkitPlugin(PluginLoader loader, Server server,
         PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, server, description, dataFolder, file);
+        unitTesting = true;
+    }
+
+    public BukkitPlugin(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
         unitTesting = true;
     }
 
@@ -50,16 +59,22 @@ public class BukkitPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        bootstrap = new PluginBootstrap(this, speedBridge.serviceManager().get(ConfigurationService.class));
-        speedBridge.enable(
-                bootstrap);
-        loader.enable(bootstrap);
+        try {
+            bootstrap = new PluginBootstrap(this, speedBridge.serviceManager().get(ConfigurationService.class));
+            speedBridge.enable(
+                    bootstrap);
+            loader.enable(bootstrap);
 
-        new PluginCommandHandler().init(this);
-        IslandSetupListener islandSetupListener = new IslandSetupListener(loader.setupController());
-        Bukkit.getPluginManager().registerEvents(islandSetupListener, this);
+            if (!unitTesting) {
+                new PluginCommandHandler().init(this);
+            }
+            IslandSetupListener islandSetupListener = new IslandSetupListener(loader.setupController());
+            Bukkit.getPluginManager().registerEvents(islandSetupListener, this);
 
-        ((BukkitGameAdapter) bootstrap.gameAdapter()).setPlugin(this);
+            ((BukkitGameAdapter) bootstrap.gameAdapter()).setPlugin(this);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     @Override
@@ -80,11 +95,19 @@ public class BukkitPlugin extends JavaPlugin {
         return loader.setupController();
     }
 
-    public IslandGameHandler gameHandler() {
+    public BridgeGameHandler gameHandler() {
         return loader.gameHandler();
+    }
+
+    public ArenaAdapter arenaAdapter() {
+        return bootstrap.arenaAdapter();
     }
 
     public File schematicsFolder() {
         return new File(getDataFolder(), "WorldEdit/schematics");
+    }
+
+    public SchematicHandler schematicHandler() {
+        return loader.schematicHandler();
     }
 }

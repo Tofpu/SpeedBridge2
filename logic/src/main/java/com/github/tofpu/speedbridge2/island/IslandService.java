@@ -1,11 +1,10 @@
 package com.github.tofpu.speedbridge2.island;
 
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
-import com.github.tofpu.speedbridge2.game.island.Island;
+import com.github.tofpu.speedbridge2.bridge.game.Island;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.service.LoadableService;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class IslandService implements LoadableService {
     public void load() {
         databaseService.executeSync(session -> {
             List<Island> islands = session.createQuery("FROM Island").list();
-            islands.forEach(island -> islandMap.put(island.getSlot(), island));
+            islands.forEach(this::add);
         });
     }
 
@@ -31,9 +30,9 @@ public class IslandService implements LoadableService {
         this.islandMap.clear();
     }
 
-    public void register(int slot, Location origin, File schematicFile) {
+    public void register(int slot, Location origin, String schematicName) {
         System.out.println("Creating island with origin: " + origin);
-        Island island = new Island(slot, new Island.IslandSchematic(origin, schematicFile));
+        Island island = new Island(slot, origin, schematicName);
 
         databaseService.executeSync(session -> {
             Island data = session.find(Island.class, slot);
@@ -43,7 +42,12 @@ public class IslandService implements LoadableService {
                 session.merge(island);
             }
         });
-        this.islandMap.put(slot, island);
+        add(island);
+    }
+
+    private void add(final Island island) {
+        System.out.println("Adding island: " + island);
+        this.islandMap.put(island.getSlot(), island);
     }
 
     public Island get(int slot) {

@@ -1,9 +1,11 @@
 package com.github.tofpu.speedbridge2.bootstrap.game.arena;
 
-import com.github.tofpu.speedbridge2.game.core.arena.ClipboardPaster;
-import com.github.tofpu.speedbridge2.game.island.arena.RegionInfo;
+import com.github.tofpu.speedbridge2.adapter.SpeedBridgeAdapter;
+import com.github.tofpu.speedbridge2.bridge.core.arena.ClipboardPaster;
+import com.github.tofpu.speedbridge2.bridge.RegionInfo;
 import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.object.Vector;
+import com.github.tofpu.speedbridge2.object.World;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
@@ -12,18 +14,16 @@ import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.Region;
 import io.tofpu.multiworldedit.*;
-import org.bukkit.World;
+import org.bukkit.Material;
 
 import java.io.File;
 import java.io.IOException;
 
 public class WorldEditPaster extends ClipboardPaster {
     private final MultiWorldEdit multiWorldEdit;
-    private final World world;
 
-    public WorldEditPaster(MultiWorldEdit multiWorldEdit, World world) {
+    public WorldEditPaster(MultiWorldEdit multiWorldEdit) {
         this.multiWorldEdit = multiWorldEdit;
-        this.world = world;
     }
 
     @Override
@@ -40,13 +40,13 @@ public class WorldEditPaster extends ClipboardPaster {
     @Override
     public void paste(File schematicFile, Position position) {
         ClipboardWrapper schematic = multiWorldEdit.read(schematicFile);
-        BukkitWorld world = new BukkitWorld(this.world);
+        BukkitWorld world = new BukkitWorld(SpeedBridgeAdapter.toWorld(position.getWorld()));
         try (final EditSessionWrapper editSessionWrapper = multiWorldEdit
                 .create(world, -1)) {
             final Clipboard schematicClipboard = schematic.to();
             final EditSession editSession = editSessionWrapper.to();
 
-            final Operation operation = MultiWorldEditAPI.getMultiWorldEdit()
+            final Operation operation = multiWorldEdit
                     .create(schematicClipboard, editSession, world)
                     .to(position.getX(), position.getY(), position.getZ())
                     .ignoreAirBlocks(true)
@@ -55,6 +55,18 @@ public class WorldEditPaster extends ClipboardPaster {
             Operations.completeLegacy(operation);
         } catch (IOException | MaxChangedBlocksException e) {
             throw new IllegalStateException(e);
+        }
+    }
+
+    @Override
+    public void clear(Vector minPoint, Vector maxPoint, World world) {
+        org.bukkit.World bukkitWorld = SpeedBridgeAdapter.toWorld(world);
+        for (int x = (int) minPoint.x(); x < maxPoint.x(); x++) {
+            for (int y = (int) minPoint.y(); y < maxPoint.y(); y++) {
+                for (int z = (int) minPoint.z(); z < maxPoint.z(); z++) {
+                    bukkitWorld.getBlockAt(x, y, z).setType(Material.AIR);
+                }
+            }
         }
     }
 }

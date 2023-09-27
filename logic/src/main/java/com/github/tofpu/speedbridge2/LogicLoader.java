@@ -1,20 +1,21 @@
 package com.github.tofpu.speedbridge2;
 
+import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandler;
+import com.github.tofpu.speedbridge2.bridge.setup.BridgeSetupHandler;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
-import com.github.tofpu.speedbridge2.game.island.IslandGameHandler;
-import com.github.tofpu.speedbridge2.game.island.arena.IslandArenaManager;
 import com.github.tofpu.speedbridge2.island.IslandService;
-import com.github.tofpu.speedbridge2.island.setup.IslandSetupHandler;
-import com.github.tofpu.speedbridge2.island.setup.IslandSetupController;
+import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupController;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
+import com.github.tofpu.speedbridge2.schematic.SchematicHandler;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 
 public class LogicLoader {
 
     private final SpeedBridge speedBridge;
-    private IslandGameHandler gameHandler;
-    private IslandSetupHandler islandSetupHandler;
+    private BridgeGameHandler gameHandler;
+    private BridgeSetupHandler islandSetupHandler;
     private IslandSetupController setupController;
+    private SchematicHandler schematicHandler;
 
     public LogicLoader(SpeedBridge speedBridge) {
         this.speedBridge = speedBridge;
@@ -32,30 +33,34 @@ public class LogicLoader {
     }
 
     public void enable(LogicBootStrap bootStrap) {
-        initGame(bootStrap);
+        ArenaAdapter arenaAdapter = bootStrap.arenaAdapter();
+        schematicHandler = new SchematicHandler(bootStrap.schematicFolder(), arenaAdapter.schematicResolver());
+
+        initGame(bootStrap.gameAdapter(), arenaAdapter, speedBridge.serviceManager());
+        initSetupGame(arenaAdapter, speedBridge.serviceManager());
     }
 
-    private void initGame(LogicBootStrap bootStrap) {
-        ArenaAdapter arenaAdapter = bootStrap.arenaAdapter();
-
-        ServiceManager serviceManager = speedBridge.serviceManager();
-        IslandArenaManager gameArenaManager = new IslandArenaManager(arenaAdapter);
-        gameArenaManager.prepare();
-
-        gameHandler = new IslandGameHandler(bootStrap.gameAdapter(), serviceManager.get(LobbyService.class), gameArenaManager);
-
-        IslandSetupHandler setupHandler = new IslandSetupHandler(serviceManager.get(IslandService.class), serviceManager.get(LobbyService.class), new IslandArenaManager(arenaAdapter), arenaAdapter.gameWorld());
+    private void initSetupGame(ArenaAdapter arenaAdapter, ServiceManager serviceManager) {
+        BridgeSetupHandler setupHandler = new BridgeSetupHandler(serviceManager.get(IslandService.class), serviceManager.get(LobbyService.class), arenaAdapter, schematicHandler);
         setupController = new IslandSetupController(setupHandler);
+    }
+
+    private void initGame(GameAdapter gameAdapter, ArenaAdapter arenaAdapter, ServiceManager serviceManager) {
+        gameHandler = BridgeGameHandler.load(gameAdapter, serviceManager.get(LobbyService.class), arenaAdapter, schematicHandler);
     }
 
     public void disable() {
     }
 
-    public IslandGameHandler gameHandler() {
+    public BridgeGameHandler gameHandler() {
         return gameHandler;
     }
 
     public IslandSetupController setupController() {
         return setupController;
+    }
+
+    public SchematicHandler schematicHandler() {
+        return schematicHandler;
     }
 }

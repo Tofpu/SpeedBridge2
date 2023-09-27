@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.island;
 
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
-import com.github.tofpu.speedbridge2.game.island.Island;
+import com.github.tofpu.speedbridge2.bridge.game.Island;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.World;
 import org.junit.jupiter.api.AfterEach;

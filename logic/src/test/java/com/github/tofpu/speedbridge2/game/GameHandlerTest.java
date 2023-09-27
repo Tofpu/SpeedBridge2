@@ -4,10 +4,9 @@ import com.github.tofpu.speedbridge2.ArenaAdapter;
 import com.github.tofpu.speedbridge2.GameAdapter;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
-import com.github.tofpu.speedbridge2.game.island.Island;
-import com.github.tofpu.speedbridge2.game.island.IslandGameHandler;
-import com.github.tofpu.speedbridge2.game.core.arena.ClipboardPaster;
-import com.github.tofpu.speedbridge2.game.island.arena.IslandArenaManager;
+import com.github.tofpu.speedbridge2.bridge.game.Island;
+import com.github.tofpu.speedbridge2.bridge.core.arena.ClipboardPaster;
+import com.github.tofpu.speedbridge2.bridge.game.IslandArenaManager;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.Position;
@@ -43,7 +42,7 @@ public class GameHandlerTest {
     void start_and_end_game_test() {
         UUID playerId = UUID.randomUUID();
         World world = mock(World.class);
-        Island island = new Island(1, new Island.IslandSchematic(new Location(world, 1, 1, 1, 1, 1), new File("test-resources/island/schematics/test.schematic")));
+        Island island = new Island(1, new Island.IslandSchematicData(new Location(world, 1, 1, 1, 1, 1), new File("test-resources/island/schematics/test.schematic")));
         OnlinePlayer player = mockPlayer(playerId);
 
         gameHandler.start(player, island);

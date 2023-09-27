@@ -1,6 +1,7 @@
 package com.github.tofpu.speedbridge2.island.setup;
 
 import com.github.tofpu.speedbridge2.adapter.BukkitAdapter;
+import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupController;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

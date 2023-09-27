@@ -4,6 +4,7 @@ import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.object.Vector;
 import com.github.tofpu.speedbridge2.object.World;
+import io.tofpu.multiworldedit.VectorWrapper;
 
 public class BukkitAdapter {
 
@@ -25,6 +26,10 @@ public class BukkitAdapter {
     }
 
     public static Vector toVector(org.bukkit.util.Vector vector) {
+        return new Vector(vector.getX(), vector.getY(), vector.getZ());
+    }
+
+    public static Vector toVector(VectorWrapper vector) {
         return new Vector(vector.getX(), vector.getY(), vector.getZ());
     }
 }

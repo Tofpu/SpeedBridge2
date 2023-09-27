@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.bootstrap.game;
 
-import com.github.tofpu.speedbridge2.game.island.IslandGame;
+import com.github.tofpu.speedbridge2.bridge.game.IslandGame;
 
 import java.util.HashMap;
 import java.util.Map;
