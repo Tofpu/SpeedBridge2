@@ -111,6 +111,14 @@ public class IslandLand {
         return z;
     }
 
+    public VectorWrapper minPoint() {
+        return minPoint;
+    }
+
+    public VectorWrapper maxPoint() {
+        return maxPoint;
+    }
+
     public Location getIslandLocation() {
         final Location absoluteLocation = island.getAbsoluteLocation();
 

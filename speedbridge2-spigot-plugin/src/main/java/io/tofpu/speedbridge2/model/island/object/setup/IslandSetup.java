@@ -118,29 +118,17 @@ public class IslandSetup {
      * It resets the plot to air
      */
     private void resetPlot() {
-        final ClipboardWrapper clipboardWrapper = MultiWorldEditAPI.getMultiWorldEdit()
-                .create(island.getSchematicClipboard());
-
-        final VectorWrapper minimumPoint = clipboardWrapper.getMinimumPoint();
-        final VectorWrapper maximumPoint = clipboardWrapper.getMaximumPoint();
-
         final int offset = 2;
 
-        final int plotX = (int) islandLand.getX() - offset;
-        final int plotY = (int) islandLand.getY() - offset;
-        final int plotZ = (int) islandLand.getZ() - offset;
-
         // resetting the blocks
-        for (int x = 0; x < maximumPoint.getX() - minimumPoint.getX() + offset; x++) {
-            for (int y = 0; y < maximumPoint.getY() - minimumPoint.getY() + offset; y++) {
-                for (int z = 0;
-                     z < maximumPoint.getZ() - minimumPoint.getZ() + offset; z++) {
-                    final int blockX = plotX + x;
-                    final int blockY = plotY + y;
-                    final int blockZ = plotZ + z;
+        VectorWrapper minimumPoint = islandLand.minPoint();
+        VectorWrapper maximumPoint = islandLand.maxPoint();
 
+        for (int x = (int) minimumPoint.getX() - offset; x < maximumPoint.getX() + offset; x++) {
+            for (int y = (int) minimumPoint.getY() - offset; y < maximumPoint.getY() + offset; y++) {
+                for (int z = (int) minimumPoint.getZ() - offset; z < maximumPoint.getZ() + offset; z++) {
                     this.islandLand.getWorld()
-                            .getBlockAt(blockX, blockY, blockZ)
+                            .getBlockAt(x, y, z)
                             .setType(Material.AIR);
                 }
             }
