@@ -44,8 +44,6 @@ dependencies {
     implementation("com.github.Revxrsal.Lamp:common:3.1.5")
     implementation("com.github.Revxrsal.Lamp:bukkit:3.1.5")
 
-    implementation("commons-io:commons-io:2.11.0")
-
     testImplementation("com.github.Tofpu:v1.8-mockbukkit:v1.8-spigot-SNAPSHOT")
 }
 

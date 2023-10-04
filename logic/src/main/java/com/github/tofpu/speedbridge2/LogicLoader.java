@@ -34,7 +34,7 @@ public class LogicLoader {
 
     public void enable(LogicBootStrap bootStrap) {
         ArenaAdapter arenaAdapter = bootStrap.arenaAdapter();
-        schematicHandler = new SchematicHandler(bootStrap.schematicFolder(), arenaAdapter.schematicResolver());
+        schematicHandler = SchematicHandler.load(bootStrap.schematicFolder(), arenaAdapter.schematicResolver(), arenaAdapter.schematicPredicate());
 
         initGame(bootStrap.gameAdapter(), arenaAdapter, speedBridge.serviceManager());
         initSetupGame(arenaAdapter, speedBridge.serviceManager());

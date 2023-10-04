@@ -7,6 +7,7 @@ import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.schematic.SchematicResolver;
 import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
 import org.bukkit.generator.ChunkGenerator;
@@ -14,12 +15,15 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.function.Predicate;
 
 public class BukkitArenaAdapter implements ArenaAdapter {
     private final Plugin plugin;
 
-    public static final String GAME_WORLD_NAME = "speedbridge2";
+    private static final String GAME_WORLD_NAME = "speedbridge2";
+    private static final String[] SUPPORTED_SCHEMATICS_EXTENSIONS = {"schematic", "schem"};
 
     public BukkitArenaAdapter(Plugin plugin) {
         this.plugin = plugin;
@@ -72,6 +76,14 @@ public class BukkitArenaAdapter implements ArenaAdapter {
             MultiWorldEditAPI.load(plugin);
         }
         return new BukkitSchematicResolver(MultiWorldEditAPI.getMultiWorldEdit());
+    }
+
+    @Override
+    public Predicate<String> schematicPredicate() {
+        return schematicFileName -> {
+            String extension = FilenameUtils.getExtension(schematicFileName);
+            return Arrays.asList(SUPPORTED_SCHEMATICS_EXTENSIONS).contains(extension);
+        };
     }
 
     private static final class EmptyChunkGenerator extends ChunkGenerator {

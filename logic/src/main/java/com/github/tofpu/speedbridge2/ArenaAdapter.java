@@ -4,9 +4,11 @@ import com.github.tofpu.speedbridge2.bridge.core.arena.ClipboardPaster;
 import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.schematic.SchematicResolver;
 
+import java.util.function.Predicate;
+
 public interface ArenaAdapter {
-    static ArenaAdapter simple(World world, ClipboardPaster clipboardPaster, SchematicResolver schematicResolver) {
-        return new SimpleArenaAdapter(world, clipboardPaster, schematicResolver);
+    static ArenaAdapter simple(World gameWorld, ClipboardPaster clipboardPaster, SchematicResolver schematicResolver, Predicate<String> schematicPredicate) {
+        return new SimpleArenaAdapter(gameWorld, clipboardPaster, schematicResolver, schematicPredicate);
     }
 
     void resetAndLoadGameWorld();
@@ -15,15 +17,19 @@ public interface ArenaAdapter {
     ClipboardPaster clipboardPaster();
     SchematicResolver schematicResolver();
 
+    Predicate<String> schematicPredicate();
+
     class SimpleArenaAdapter implements ArenaAdapter {
         private final World gameWorld;
         private final ClipboardPaster clipboardPaster;
         private final SchematicResolver schematicResolver;
+        private final Predicate<String> schematicPredicate;
 
-        public SimpleArenaAdapter(World gameWorld, ClipboardPaster clipboardPaster, SchematicResolver schematicResolver) {
+        public SimpleArenaAdapter(World gameWorld, ClipboardPaster clipboardPaster, SchematicResolver schematicResolver, Predicate<String> schematicPredicate) {
             this.gameWorld = gameWorld;
             this.clipboardPaster = clipboardPaster;
             this.schematicResolver = schematicResolver;
+            this.schematicPredicate = schematicPredicate;
         }
 
         @Override
@@ -44,6 +50,11 @@ public interface ArenaAdapter {
         @Override
         public SchematicResolver schematicResolver() {
             return schematicResolver;
+        }
+
+        @Override
+        public Predicate<String> schematicPredicate() {
+            return schematicPredicate;
         }
     }
 }

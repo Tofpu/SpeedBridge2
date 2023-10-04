@@ -9,6 +9,7 @@ public class PluginCommandHandler {
         BukkitCommandHandler commandHandler = BukkitCommandHandler.create(plugin).registerBrigadier();
 
         commandHandler.registerContextResolver(OnlinePlayer.class, context -> plugin.playerAdapter().provideOnlinePlayer(context.actor().getUniqueId()));
+        commandHandler.getAutoCompleter().registerSuggestion("schematics", plugin.schematicHandler().resolvedSchematics());
 
         commandHandler.setHelpWriter((command, actor) -> String.format("/%s %s - %s", command.getPath().toRealString(), command.getUsage(), command.getDescription()));
         commandHandler.register(new PluginCommandHolder(plugin));

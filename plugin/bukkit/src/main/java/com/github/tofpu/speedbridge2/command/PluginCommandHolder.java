@@ -7,10 +7,10 @@ import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupController;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.plugin.BukkitPlugin;
+import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Subcommand;
 
-import java.io.File;
 
 @Command({"speedbridge", "sb"})
 public class PluginCommandHolder {
@@ -46,6 +46,7 @@ public class PluginCommandHolder {
     }
 
     @Subcommand("game setup")
+    @AutoComplete("* * schematics")
     public void gameSetup(final OnlinePlayer player, final int slot, final String schematicName) {
         if (!requireLobbyToBeAvailable(player)) return;
         if (islandSetupService.isInSetup(player.id())) {
