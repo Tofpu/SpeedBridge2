@@ -1,14 +1,17 @@
 package com.github.tofpu.speedbridge2.bridge.game;
 
 import com.github.tofpu.speedbridge2.object.Location;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
+@EqualsAndHashCode
+@ToString
 public class Island {
     @Id
     private final int slot;
@@ -38,6 +41,8 @@ public class Island {
 
     @Embeddable
     @NoArgsConstructor(force = true)
+    @EqualsAndHashCode
+    @ToString
     static class IslandSchematicData {
         private final Location absolute;
         private final String schematicName;
