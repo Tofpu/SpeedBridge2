@@ -29,8 +29,7 @@ public class IslandServiceTest {
     @Test
     void register_and_compare_from_db_test() {
         Location origin = new Location(new World("dummy"), 1, 1, 1, 1, 1);
-        File schematicFile = new File("");
-        islandService.register(1, origin, schematicFile);
+        islandService.register(1, origin, "");
 
         AtomicReference<Island> islandFromDb = new AtomicReference<>();
         databaseService.executeSync(session -> {

@@ -2,16 +2,18 @@ package com.github.tofpu.speedbridge2.game;
 
 import com.github.tofpu.speedbridge2.ArenaAdapter;
 import com.github.tofpu.speedbridge2.GameAdapter;
+import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandler;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.bridge.game.Island;
-import com.github.tofpu.speedbridge2.bridge.core.arena.ClipboardPaster;
 import com.github.tofpu.speedbridge2.bridge.game.IslandArenaManager;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
+import com.github.tofpu.speedbridge2.schematic.SchematicHandler;
+import com.github.tofpu.speedbridge2.schematic.SchematicResolver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,8 +29,8 @@ import static org.mockito.Mockito.*;
 public class GameHandlerTest {
     private final DatabaseService databaseService = new DatabaseService();
     private final LobbyService lobbyService = new LobbyService(databaseService, new EventDispatcherService());
-    private final IslandArenaManager arenaManager = new IslandArenaManager(ArenaAdapter.simple(new World(), ClipboardPaster.empty()));
-    private final IslandGameHandler gameHandler = new IslandGameHandler(GameAdapter.empty(), lobbyService, arenaManager);
+    private final BridgeGameHandler gameHandler = BridgeGameHandler.load(GameAdapter.empty(), lobbyService, ArenaAdapter.simple(new World()), SchematicHandler.load(new File("test-resources/island/schematics"), SchematicResolver.empty(), s -> true));
+    private final IslandArenaManager arenaManager = (IslandArenaManager) gameHandler.landController().arenaManager();
 
     @BeforeEach
     void setUp() throws ExecutionException, InterruptedException, TimeoutException {
@@ -42,7 +44,7 @@ public class GameHandlerTest {
     void start_and_end_game_test() {
         UUID playerId = UUID.randomUUID();
         World world = mock(World.class);
-        Island island = new Island(1, new Island.IslandSchematicData(new Location(world, 1, 1, 1, 1, 1), new File("test-resources/island/schematics/test.schematic")));
+        Island island = new Island(1, new Location(world, 1, 1, 1, 1, 1), "test.schematic");
         OnlinePlayer player = mockPlayer(playerId);
 
         gameHandler.start(player, island);

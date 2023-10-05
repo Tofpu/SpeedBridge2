@@ -11,6 +11,14 @@ public interface ArenaAdapter {
         return new SimpleArenaAdapter(gameWorld, clipboardPaster, schematicResolver, schematicPredicate);
     }
 
+    static ArenaAdapter simple(World gameWorld, ClipboardPaster clipboardPaster, SchematicResolver schematicResolver) {
+        return simple(gameWorld, clipboardPaster, schematicResolver, s -> false);
+    }
+
+    static ArenaAdapter simple(World gameWorld) {
+        return simple(gameWorld, ClipboardPaster.empty(), SchematicResolver.empty());
+    }
+
     void resetAndLoadGameWorld();
 
     World gameWorld();

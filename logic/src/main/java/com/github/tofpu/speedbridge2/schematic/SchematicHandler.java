@@ -31,6 +31,9 @@ public class SchematicHandler {
     }
 
     private void loadSchematics(File directory) {
+        if (!directory.exists()) {
+            throw new RuntimeException("The directory is nonexistent: " + directory);
+        }
         for (File schematicFile : directory.listFiles()) {
             if (schematicFile.isDirectory()) {
                 loadSchematics(schematicFile);
