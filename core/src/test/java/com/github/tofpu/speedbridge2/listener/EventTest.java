@@ -1,11 +1,5 @@
 package com.github.tofpu.speedbridge2.listener;
 
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 import com.github.tofpu.speedbridge2.event.MessageEvent;
 import com.github.tofpu.speedbridge2.event.MessageListener;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
@@ -13,6 +7,8 @@ import com.github.tofpu.speedbridge2.event.dispatcher.invoker.MethodInvoker;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.mockito.Mockito.*;
 
 public class EventTest {
 
@@ -32,7 +28,7 @@ public class EventTest {
         eventDispatcherService.dispatch(messageEvent);
 
         verify(messageListener, times(1)).on(messageEvent);
-        verify(messageListener, never()).on(messageEvent);
+        verifyNoMoreInteractions(messageListener);
     }
 
     @Test
