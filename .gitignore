@@ -4,7 +4,7 @@ build
 .gitattributes
 
 /*/test-resources/runtime
-/plugin/*/test-resources/runtime
+/platform/*/test-resources/runtime
 
 /*/run
 /*/*/run
