@@ -10,11 +10,14 @@ import com.github.tofpu.speedbridge2.bridge.core.GameHandler;
 import com.github.tofpu.speedbridge2.bridge.core.GamePlayer;
 import com.github.tofpu.speedbridge2.bridge.core.state.StartGameState;
 import com.github.tofpu.speedbridge2.bridge.core.state.StopGameState;
+import com.github.tofpu.speedbridge2.bridge.game.event.PlayerScoredEvent;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.schematic.Schematic;
 import com.github.tofpu.speedbridge2.schematic.SchematicHandler;
 
+import java.util.IllegalFormatException;
 import java.util.UUID;
 
 import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
@@ -25,18 +28,20 @@ public class BridgeGameHandler extends GameHandler<OnlinePlayer> {
     private final ArenaAdapter arenaAdapter;
     private final LandController landController;
     private final SchematicHandler schematicHandler;
+    private final EventDispatcherService eventDispatcherService;
 
-    public static BridgeGameHandler load(GameAdapter gameAdapter, LobbyService lobbyService, ArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
+    public static BridgeGameHandler load(GameAdapter gameAdapter, LobbyService lobbyService, ArenaAdapter arenaAdapter, SchematicHandler schematicHandler, EventDispatcherService eventDispatcherService) {
         arenaAdapter.resetAndLoadGameWorld();
-        return new BridgeGameHandler(gameAdapter, lobbyService, arenaAdapter, schematicHandler);
+        return new BridgeGameHandler(gameAdapter, lobbyService, arenaAdapter, schematicHandler, eventDispatcherService);
     }
 
-    private BridgeGameHandler(GameAdapter gameAdapter, LobbyService lobbyService, ArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
+    private BridgeGameHandler(GameAdapter gameAdapter, LobbyService lobbyService, ArenaAdapter arenaAdapter, SchematicHandler schematicHandler, EventDispatcherService eventDispatcherService) {
         this.gameAdapter = gameAdapter;
         this.lobbyService = lobbyService;
         this.arenaAdapter = arenaAdapter;
         this.landController = new LandController(new IslandArenaManager(arenaAdapter));
         this.schematicHandler = schematicHandler;
+        this.eventDispatcherService = eventDispatcherService;
     }
 
     public void start(final OnlinePlayer player, final Island island) {
@@ -193,8 +198,20 @@ public class BridgeGameHandler extends GameHandler<OnlinePlayer> {
 
         public void apply(IslandGame game) {
             IslandGamePlayer player = game.player();
-            player.getPlayer().sendMessage("Scored " + game.timerInSeconds() + " seconds!");
 
+            PlayerScoredEvent event = new PlayerScoredEvent(player, game, game.timerInSeconds());
+            gameHandler.eventDispatcherService.dispatchIfApplicable(event);
+
+            if (event.cancelled()) {
+                return;
+            }
+
+            String finalMessage = event.scoreMessage();
+            try {
+                finalMessage = String.format(event.scoreMessage(), game.timerInSeconds());
+            } catch (IllegalFormatException ignored) {}
+
+            player.getPlayer().sendMessage(finalMessage);
             gameHandler.resetGame(player.id());
         }
 

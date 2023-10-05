@@ -3,6 +3,8 @@ package com.github.tofpu.speedbridge2.game;
 import com.github.tofpu.speedbridge2.ArenaAdapter;
 import com.github.tofpu.speedbridge2.GameAdapter;
 import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandler;
+import com.github.tofpu.speedbridge2.bridge.game.IslandGame;
+import com.github.tofpu.speedbridge2.bridge.game.event.PlayerScoredEvent;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.bridge.game.Island;
@@ -25,11 +27,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
 
 public class GameHandlerTest {
     private final DatabaseService databaseService = new DatabaseService();
-    private final LobbyService lobbyService = new LobbyService(databaseService, new EventDispatcherService());
-    private final BridgeGameHandler gameHandler = BridgeGameHandler.load(GameAdapter.empty(), lobbyService, ArenaAdapter.simple(new World()), SchematicHandler.load(new File("test-resources/island/schematics"), SchematicResolver.empty(), s -> true));
+    private final EventDispatcherService eventDispatcherService = spy(new EventDispatcherService());
+    private final LobbyService lobbyService = new LobbyService(databaseService, eventDispatcherService);
+    private final BridgeGameHandler gameHandler = BridgeGameHandler.load(GameAdapter.empty(), lobbyService, ArenaAdapter.simple(new World()), SchematicHandler.load(new File("test-resources/island/schematics"), SchematicResolver.empty(), s -> true), eventDispatcherService);
     private final IslandArenaManager arenaManager = (IslandArenaManager) gameHandler.landController().arenaManager();
 
     @BeforeEach
@@ -57,6 +61,22 @@ public class GameHandlerTest {
         Assertions.assertTrue(arenaManager.hasAvailableLand(island.getSlot()), "The land belonging to the island should have been stored in the reserves");
 
         Assertions.assertThrows(Exception.class, () -> gameHandler.stop(playerId), "An error should have been thrown since a game cannot be stopped when it's non-existent");
+    }
+
+    @Test
+    void player_scored_test() {
+        UUID playerId = UUID.randomUUID();
+        World world = mock(World.class);
+        Island island = new Island(1, new Location(world, 1, 1, 1, 1, 1), "test.schematic");
+        OnlinePlayer player = mockPlayer(playerId);
+
+        gameHandler.start(player, island);
+        IslandGame game = (IslandGame) gameHandler.get(playerId);
+
+        game.beginTimer(true);
+
+        gameHandler.scoredGame(playerId);
+        verify(eventDispatcherService, times(1)).dispatchIfApplicable(isA(PlayerScoredEvent.class));
     }
 
     OnlinePlayer mockPlayer(final UUID id) {

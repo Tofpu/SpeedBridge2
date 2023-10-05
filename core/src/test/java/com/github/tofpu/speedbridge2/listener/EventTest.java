@@ -25,7 +25,7 @@ public class EventTest {
         Assertions.assertTrue(eventDispatcherService.isRegisteredEvent(MessageEvent.class));
 
         MessageEvent messageEvent = new MessageEvent(sender, message);
-        eventDispatcherService.dispatch(messageEvent);
+        eventDispatcherService.unsafeDispatch(messageEvent);
 
         verify(messageListener, times(1)).on(messageEvent);
         verifyNoMoreInteractions(messageListener);

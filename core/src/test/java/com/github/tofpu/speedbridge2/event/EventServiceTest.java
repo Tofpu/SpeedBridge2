@@ -30,19 +30,19 @@ public class EventServiceTest {
         dispatcherService.register(messageListener);
         dispatcherService.isRegisteredListener(messageListener.getClass());
 
-        dispatcherService.dispatch(new PlayerJoinEvent(mock()));
+        dispatcherService.unsafeDispatch(new PlayerJoinEvent(mock()));
         verify(connectionListener, times(1)).on(any(PlayerJoinEvent.class));
         verifyNoMoreInteractions(connectionListener);
         verifyNoInteractions(messageListener);
 
-        dispatcherService.dispatch(new PlayerLeaveEvent(mock()));
+        dispatcherService.unsafeDispatch(new PlayerLeaveEvent(mock()));
         verify(connectionListener, times(1)).on(any(PlayerLeaveEvent.class));
         verifyNoMoreInteractions(connectionListener);
 
         verify(messageListener, times(1)).on(any(PlayerLeaveEvent.class));
         verifyNoMoreInteractions(messageListener);
 
-        dispatcherService.dispatch(new MessageEvent(UUID.randomUUID(), "Test"));
+        dispatcherService.unsafeDispatch(new MessageEvent(UUID.randomUUID(), "Test"));
         verify(messageListener, times(1)).on(any(MessageEvent.class));
         verifyNoMoreInteractions(messageListener);
         verifyNoMoreInteractions(connectionListener);
@@ -51,7 +51,7 @@ public class EventServiceTest {
         Assertions.assertFalse(
             dispatcherService.isRegisteredListener(connectionListener.getClass()));
 
-        dispatcherService.dispatch(new PlayerLeaveEvent(mock()));
+        dispatcherService.unsafeDispatch(new PlayerLeaveEvent(mock()));
         verify(messageListener, times(1)).on(any(PlayerLeaveEvent.class));
         verifyNoMoreInteractions(messageListener);
         verifyNoMoreInteractions(connectionListener);

@@ -3,6 +3,7 @@ package com.github.tofpu.speedbridge2;
 import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandler;
 import com.github.tofpu.speedbridge2.bridge.setup.BridgeSetupHandler;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.island.IslandService;
 import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupController;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
@@ -46,7 +47,7 @@ public class LogicLoader {
     }
 
     private void initGame(GameAdapter gameAdapter, ArenaAdapter arenaAdapter, ServiceManager serviceManager) {
-        gameHandler = BridgeGameHandler.load(gameAdapter, serviceManager.get(LobbyService.class), arenaAdapter, schematicHandler);
+        gameHandler = BridgeGameHandler.load(gameAdapter, serviceManager.get(LobbyService.class), arenaAdapter, schematicHandler, serviceManager.get(EventDispatcherService.class));
     }
 
     public void disable() {

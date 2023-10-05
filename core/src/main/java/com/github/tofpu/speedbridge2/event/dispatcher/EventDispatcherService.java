@@ -8,13 +8,7 @@ import com.github.tofpu.speedbridge2.event.dispatcher.invoker.ListenerInvoker;
 import com.github.tofpu.speedbridge2.event.dispatcher.invoker.MethodInvoker;
 import com.github.tofpu.speedbridge2.service.Service;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +30,13 @@ public class EventDispatcherService implements Service {
             .collect(Collectors.toMap(k -> (Class<Event>) k.getParameterTypes()[0], v -> v));
     }
 
-    public void dispatch(final Event event) {
+    public void dispatchIfApplicable(final Event event) {
+        List<ListenerInvoker> invokerList = this.listenerMap.getOrDefault(event.getClass(), Collections.emptyList());
+        if (invokerList.isEmpty()) return;
+        invokerList.forEach(listenerInvoker -> listenerInvoker.invoke(event));
+    }
+
+    public void unsafeDispatch(final Event event) {
         Class<? extends Event> eventClass = event.getClass();
         requireState(isRegisteredEvent(eventClass), "There is no listener listening for event %s.",
             eventClass.getSimpleName());
