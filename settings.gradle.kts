@@ -10,4 +10,4 @@
 rootProject.name = "speedbridge2"
 include("core")
 include("platform:bukkit")
-include("logic")
+include("common")
