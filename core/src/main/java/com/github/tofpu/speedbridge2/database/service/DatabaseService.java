@@ -48,7 +48,7 @@ public class DatabaseService implements LoadableService {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T compute(Function<Session, T> sessionFunction) {
+    public <T> T computeSync(Function<Session, T> sessionFunction) {
         final Object[] result = new Object[1];
         executeSync(session -> result[0] = sessionFunction.apply(session));
         return (T) result[0];
@@ -56,7 +56,13 @@ public class DatabaseService implements LoadableService {
 
     public <T> CompletableFuture<T> computeAsync(Function<Session, T> sessionFunction) {
         CompletableFuture<T> future = new CompletableFuture<>();
-        executeAsync(session -> future.complete(sessionFunction.apply(session)));
+        executeAsync(session -> {
+            try {
+                future.complete(sessionFunction.apply(session));
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+            }
+        });
         return future;
     }
 
