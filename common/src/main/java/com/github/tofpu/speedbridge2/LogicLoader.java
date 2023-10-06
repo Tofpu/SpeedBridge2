@@ -1,6 +1,7 @@
 package com.github.tofpu.speedbridge2;
 
 import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandler;
+import com.github.tofpu.speedbridge2.bridge.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.bridge.setup.BridgeSetupHandler;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
@@ -31,6 +32,7 @@ public class LogicLoader {
     public void load() {
         speedBridge.serviceManager().register(LobbyService.class, LobbyService::new);
         speedBridge.serviceManager().register(IslandService.class, serviceManager -> new IslandService(serviceManager.get(DatabaseService.class)));
+        speedBridge.serviceManager().register(BridgeScoreService.class, BridgeScoreService::new);
     }
 
     public void enable(LogicBootStrap bootStrap) {
