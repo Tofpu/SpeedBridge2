@@ -1,14 +1,13 @@
 package com.github.tofpu.speedbridge2.bridge.score;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Scores {
+    public static final int MAXIMUM_SIZE = 5;
     private final PlayerIdSlot id;
     private final LinkedList<Score> scoresList = new LinkedList<>();
 
-    public Scores(PlayerIdSlot id) {
+    Scores(PlayerIdSlot id) {
         this.id = id;
     }
 
@@ -18,13 +17,10 @@ public class Scores {
 
     public void add(Score score) {
         if (id.getIslandSlot() != score.getIslandSlot()) {
-            throw new RuntimeException("Score's island does not match: input=" + score.getIslandSlot() + ", desired=" + id.getIslandSlot());
+            throw new IllegalStateException("Score's island does not match: input=" + score.getIslandSlot() + ", desired=" + id.getIslandSlot());
         }
 
-        if (scoresList.isEmpty() || score.compareTo(scoresList.getLast()) > 0) {
-            scoresList.add(score);
-        }
-
+        scoresList.add(score);
         sortScores();
     }
 
@@ -42,6 +38,14 @@ public class Scores {
         clone.sort(Score::compareTo);
 
         this.scoresList.clear();
-        this.scoresList.addAll(clone);
+        this.scoresList.addAll(clone.subList(0, Math.min(clone.size(), MAXIMUM_SIZE)));
+    }
+
+    public UUID playerId() {
+        return id.getPlayerId();
+    }
+
+    public int islandSlot() {
+        return id.getIslandSlot();
     }
 }

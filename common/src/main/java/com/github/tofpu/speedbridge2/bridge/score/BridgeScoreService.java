@@ -5,17 +5,13 @@ import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.service.LoadableService;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class BridgeScoreService implements LoadableService {
     private final EventDispatcherService eventDispatcherService;
     private final ScoreRepository repository;
 
-    private final Map<UUID, PlayerIdSlot> uuidToCustomIdMapping = new HashMap<>();
     private final Map<PlayerIdSlot, Scores> scoresMap = new HashMap<>();
 
     public BridgeScoreService(EventDispatcherService eventDispatcherService, ScoreRepository repository) {
@@ -42,7 +38,7 @@ public class BridgeScoreService implements LoadableService {
     }
 
     private void addScore(Score score) {
-        PlayerIdSlot id = getId(score.getPlayerId(), score.getIslandSlot());
+        PlayerIdSlot id = createId(score.getPlayerId(), score.getIslandSlot());
         Scores scores = scoresMap.get(id);
         if (scores == null) {
             System.out.println("scores not available, creating the score registry for id: " + id);
@@ -54,7 +50,6 @@ public class BridgeScoreService implements LoadableService {
     private Scores createScoreRegistry(PlayerIdSlot id) {
         Scores value = new Scores(id);
         this.scoresMap.put(id, value);
-        this.uuidToCustomIdMapping.put(id.getPlayerId(), id);
         return value;
     }
 
@@ -63,16 +58,12 @@ public class BridgeScoreService implements LoadableService {
         addScore(score);
     }
 
-    public PlayerIdSlot getId(UUID playerId, int islandSlot) {
+    private PlayerIdSlot createId(UUID playerId, int islandSlot) {
         return new PlayerIdSlot(playerId, islandSlot);
     }
 
-    public PlayerIdSlot getId(UUID playerId) {
-        return this.uuidToCustomIdMapping.get(playerId);
-    }
-
-    public Scores getScores(UUID playerId) {
-        return this.scoresMap.get(getId(playerId));
+    public Scores getScores(UUID playerId, int islandSlot) {
+        return this.scoresMap.get(createId(playerId, islandSlot));
     }
 
     @Override
