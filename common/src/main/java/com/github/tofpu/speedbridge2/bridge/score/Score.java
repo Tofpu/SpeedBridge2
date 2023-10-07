@@ -1,6 +1,7 @@
 package com.github.tofpu.speedbridge2.bridge.score;
 
 import lombok.Data;
+import org.hibernate.annotations.Type;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.Column;
@@ -13,7 +14,8 @@ import java.util.concurrent.TimeUnit;
 @Data
 public class Score implements Comparable<Score> {
     @Id
-    @Column(columnDefinition = "uuid")
+    @Column(columnDefinition = "VARCHAR(36)", updatable = false)
+    @Type(type = "uuid-char")
     private final UUID playerId;
     private final int islandSlot;
     private final double timerInNano;
@@ -32,7 +34,7 @@ public class Score implements Comparable<Score> {
         this.timerInNano = timerInNano;
     }
 
-    public Score() {
+    private Score() {
         this(null, -1, -1);
     }
 
