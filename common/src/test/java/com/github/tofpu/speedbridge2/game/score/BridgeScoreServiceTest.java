@@ -119,9 +119,40 @@ public class BridgeScoreServiceTest {
     }
 
     @Test
+    void get_best_score_with_multiple_entry_in_same_island() {
+        UUID uuid = UUID.randomUUID();
+        int islandSlot = 1;
+        int timerInSeconds = 10;
+        bridgeScoreService.addScore(uuid, islandSlot, 20);
+        bridgeScoreService.addScore(uuid, islandSlot, timerInSeconds);
+
+        Score bestScore = bridgeScoreService.getBestScore(uuid);
+        assertNotNull(bestScore);
+        assertEquals(islandSlot, bestScore.getIslandSlot());
+        assertEquals(timerInSeconds, bestScore.timerInSeconds());
+    }
+
+    @Test
+    void get_best_score_with_multiple_entry_in_different_island() {
+        UUID uuid = UUID.randomUUID();
+        bridgeScoreService.addScore(uuid, 10, 10);
+        bridgeScoreService.addScore(uuid, 20, 20);
+
+        Score bestScore = bridgeScoreService.getBestScore(uuid);
+        assertEquals(10, bestScore.getIslandSlot());
+        assertEquals(10, bestScore.timerInSeconds());
+    }
+
+    @Test
     void get_score_with_no_entries() {
         Scores scores = bridgeScoreService.getScores(UUID.randomUUID(), 10);
         assertNull(scores);
+    }
+
+    @Test
+    void get_best_score_with_no_entries() {
+        Score bestScore = bridgeScoreService.getBestScore(UUID.randomUUID());
+        assertNull(bestScore);
     }
 
     @Test

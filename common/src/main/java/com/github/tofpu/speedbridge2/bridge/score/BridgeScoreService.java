@@ -66,6 +66,14 @@ public class BridgeScoreService implements LoadableService {
         return this.scoresMap.get(createId(playerId, islandSlot));
     }
 
+    public Score getBestScore(UUID playerId) {
+        Optional<Score> bestScore = this.scoresMap.values().stream()
+                .filter(scores -> scores.playerId().equals(playerId))
+                .map(Scores::getBestScore)
+                .min(Score::compareTo);
+        return bestScore.orElse(null);
+    }
+
     @Override
     public void load() {
         eventDispatcherService.register(new ScoreListener(this));

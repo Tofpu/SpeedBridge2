@@ -28,6 +28,10 @@ public class Scores {
         return scoresList.get(index);
     }
 
+    public Score getBestScore() {
+        return scoresList.getFirst();
+    }
+
     public int size() {
         return scoresList.size();
     }
