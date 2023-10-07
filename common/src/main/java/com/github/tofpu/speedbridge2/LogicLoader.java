@@ -53,7 +53,7 @@ public class LogicLoader {
         arenaAdapter.resetAndLoadGameWorld();
         gameHandler = BridgeGameHandlerBuilder.newBuilder()
                 .coreStateProvider(gameAdapter, serviceManager.get(LobbyService.class))
-                .gameStateProvider(gameAdapter, serviceManager.get(EventDispatcherService.class))
+                .gameStateProvider(gameAdapter, serviceManager.get(EventDispatcherService.class), serviceManager.get(BridgeScoreService.class))
                 .build(arenaAdapter, schematicHandler);
     }
 

@@ -4,6 +4,7 @@ import com.github.tofpu.speedbridge2.ArenaAdapter;
 import com.github.tofpu.speedbridge2.GameAdapter;
 import com.github.tofpu.speedbridge2.bridge.game.state.core.BridgeCoreStateProvider;
 import com.github.tofpu.speedbridge2.bridge.game.state.custom.BridgeGameStateProvider;
+import com.github.tofpu.speedbridge2.bridge.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.schematic.SchematicHandler;
@@ -28,8 +29,8 @@ public class BridgeGameHandlerBuilder {
         return this;
     }
 
-    public BridgeGameHandlerBuilder gameStateProvider(GameAdapter gameAdapter, EventDispatcherService eventDispatcherService) {
-        gameStateProvider = new BridgeGameStateProvider(gameAdapter, eventDispatcherService);
+    public BridgeGameHandlerBuilder gameStateProvider(GameAdapter gameAdapter, EventDispatcherService eventDispatcherService, BridgeScoreService scoreService) {
+        gameStateProvider = new BridgeGameStateProvider(gameAdapter, eventDispatcherService, scoreService);
         return this;
     }
 
