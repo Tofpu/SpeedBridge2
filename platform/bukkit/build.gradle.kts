@@ -48,6 +48,8 @@ dependencies {
 }
 
 tasks.shadowJar {
+    archiveBaseName.set("speedbridge2")
+    archiveClassifier.set("")
     dependencies {
         relocate("javax.persistence", "com.github.tofpu.speedbridge2.libs.javax")
         relocate("org.yaml", "com.github.tofpu.speedbridge2.libs.snakeyaml")
