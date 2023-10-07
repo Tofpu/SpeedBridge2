@@ -45,6 +45,12 @@ public class BukkitOnlinePlayer implements OnlinePlayer {
     }
 
     @Override
+    public void sendMessage(ConfigurableMessage message, Object... replace) {
+        sendMessage(configurationService.on(PluginConfigTypes.MESSAGE)
+                .getString(message.key(), String.format(message.defaultMessage(), replace)));
+    }
+
+    @Override
     public void teleport(Position position) {
         player.teleport(SpeedBridgeAdapter.toLocation(position));
     }

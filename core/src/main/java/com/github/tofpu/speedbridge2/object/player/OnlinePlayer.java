@@ -14,6 +14,7 @@ public interface OnlinePlayer {
     void sendMessage(String content);
 
     void sendMessage(ConfigurableMessage message);
+    void sendMessage(ConfigurableMessage message, Object... replace);
 
     void teleport(Position position);
 

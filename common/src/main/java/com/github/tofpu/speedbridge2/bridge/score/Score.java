@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Locale;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Entity(name = "scores")
 @Data
@@ -21,7 +21,7 @@ public class Score implements Comparable<Score> {
     private final double timerInNano;
 
     public static Score inSeconds(UUID playerId, int islandSlot, double seconds) {
-        return new Score(playerId, islandSlot, TimeUnit.SECONDS.toNanos((long) seconds));
+        return new Score(playerId, islandSlot, seconds * 1_000_000_000.0);
     }
 
     public static Score inNano(UUID playerId, int islandSlot, double nano) {
@@ -39,7 +39,12 @@ public class Score implements Comparable<Score> {
     }
 
     public double timerInSeconds() {
-        return TimeUnit.NANOSECONDS.toSeconds((long) timerInNano);
+        return timerInNano / 1_000_000_000.0;
+    }
+
+    public String seconds() {
+        double seconds = timerInSeconds();
+        return String.format(Locale.US, "%.3f", seconds);
     }
 
     @Override

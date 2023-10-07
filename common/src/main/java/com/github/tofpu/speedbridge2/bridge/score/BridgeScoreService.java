@@ -74,6 +74,14 @@ public class BridgeScoreService implements LoadableService {
         return bestScore.orElse(null);
     }
 
+    public Score getBestScore(UUID playerId, int islandSlot) {
+        Scores scores = getScores(playerId, islandSlot);
+        if (scores == null) {
+            return null;
+        }
+        return scores.getBestScore();
+    }
+
     @Override
     public void load() {
         eventDispatcherService.register(new ScoreListener(this));
