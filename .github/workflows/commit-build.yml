@@ -1,0 +1,29 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Auto Commit Build
+
+on:
+  push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: shadowJar
+
+      - name: Uploading
+        uses: actions/upload-artifact@v2
+        with:
+          name: speedbridge2-v2
+          path: ${{ github.workspace }}/platform/bukkit/build/libs/*.jar
