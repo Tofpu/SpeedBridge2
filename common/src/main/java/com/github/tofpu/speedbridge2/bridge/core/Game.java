@@ -4,21 +4,23 @@ import com.github.tofpu.speedbridge2.bridge.core.state.InitiateGameState;
 
 import java.util.Stack;
 
-public class Game {
+public class Game<H extends GameHandler<?, ?, ?>, G extends Game<H, G>> {
+    private final H handler;
     private final GamePlayer gamePlayer;
-    private final Stack<GameState> lastStateDispatch = new Stack<>();
+    private final Stack<GameState<H, G>> lastStateDispatch = new Stack<>();
 
-    private GameState gameState = new InitiateGameState();
+    private GameState<H, G> gameState = new InitiateGameState();
 
-    public Game(GamePlayer gamePlayer) {
+    public Game(H handler, GamePlayer gamePlayer) {
+        this.handler = handler;
         this.gamePlayer = gamePlayer;
     }
 
-    public <S extends GameState> void dispatch(GameState newState) {
-        if (newState.test(this)) {
+    public void dispatch(GameState<H, G> newState) {
+        if (newState.test((G) this)) {
             System.out.printf("Switching to %s state from %s state%n", name(newState), name(gameState));
             lastStateDispatch.add(newState);
-            newState.apply(this);
+            newState.apply(handler, (G) this);
         } else {
             throw new RuntimeException(String.format("%s cannot be applied on %s state", name(newState), name(gameState)));
         }
@@ -30,16 +32,16 @@ public class Game {
         }
     }
 
-    private static String name(GameState newState) {
+    private static String name(GameState<?, ?> newState) {
         return newState.getClass().getSimpleName();
     }
 
-    public interface GameState {
-        void apply(final Game game);
-        boolean test(final Game game);
+    public interface GameState<H extends GameHandler<?, ?, ?>, G extends Game<H, ?>> {
+        void apply(final H handler, final G game);
+        boolean test(final G game);
     }
 
-    public GameState gameState() {
+    public GameState<H, G> gameState() {
         return gameState;
     }
 

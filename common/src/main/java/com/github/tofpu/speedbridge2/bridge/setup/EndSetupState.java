@@ -2,11 +2,12 @@ package com.github.tofpu.speedbridge2.bridge.setup;
 
 import com.github.tofpu.speedbridge2.bridge.LandController;
 import com.github.tofpu.speedbridge2.bridge.core.Game;
+import com.github.tofpu.speedbridge2.bridge.core.GameHandler;
 import com.github.tofpu.speedbridge2.bridge.core.state.StopGameState;
 import com.github.tofpu.speedbridge2.island.IslandService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 
-class EndSetupState extends StopGameState {
+class EndSetupState extends StopGameState<BridgeSetupHandler, IslandSetup> {
     private final IslandService islandService;
     private final LobbyService lobbyService;
     private final LandController landController;
@@ -18,11 +19,7 @@ class EndSetupState extends StopGameState {
     }
 
     @Override
-    public void apply(Game game) {
-        apply((IslandSetup) game);
-    }
-
-    public void apply(IslandSetup game) {
+    public void apply(BridgeSetupHandler handler, IslandSetup game) {
         if (game.origin() == null) return;
         try {
             islandService.register(game.slot(), game.origin(), game.schematicName());

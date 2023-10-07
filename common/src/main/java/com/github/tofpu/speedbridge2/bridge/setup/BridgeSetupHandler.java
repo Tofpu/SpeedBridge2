@@ -2,8 +2,8 @@ package com.github.tofpu.speedbridge2.bridge.setup;
 
 import com.github.tofpu.speedbridge2.ArenaAdapter;
 import com.github.tofpu.speedbridge2.bridge.IslandSchematic;
-import com.github.tofpu.speedbridge2.bridge.LandController;
 import com.github.tofpu.speedbridge2.bridge.Land;
+import com.github.tofpu.speedbridge2.bridge.LandController;
 import com.github.tofpu.speedbridge2.bridge.core.Game;
 import com.github.tofpu.speedbridge2.bridge.core.GameHandler;
 import com.github.tofpu.speedbridge2.bridge.core.state.StartGameState;
@@ -19,7 +19,8 @@ import com.github.tofpu.speedbridge2.schematic.SchematicHandler;
 
 import java.util.UUID;
 
-public class BridgeSetupHandler extends GameHandler<OnlinePlayer> {
+@SuppressWarnings({"unchecked", "rawtypes"})
+public class BridgeSetupHandler extends GameHandler<OnlinePlayer, BridgeSetupHandler, IslandSetup> {
     private final IslandService islandService;
     private final LobbyService lobbyService;
     private final ArenaAdapter arenaAdapter;
@@ -44,7 +45,7 @@ public class BridgeSetupHandler extends GameHandler<OnlinePlayer> {
         IslandSchematic islandSchematic = new IslandSchematic(slot, schematic, originPosition.toLocation(world));
         Land land = landController.reserveSpot(player.id(), islandSchematic, world);
 
-        Game game = new IslandSetup(new SetupPlayer(player), slot, schematicName, land);
+        Game game = new IslandSetup(this, new SetupPlayer(player), slot, schematicName, land);
         super.internalStart(player, game);
     }
 

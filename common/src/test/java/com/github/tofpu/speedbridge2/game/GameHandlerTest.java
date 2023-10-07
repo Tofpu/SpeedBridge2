@@ -2,13 +2,12 @@ package com.github.tofpu.speedbridge2.game;
 
 import com.github.tofpu.speedbridge2.ArenaAdapter;
 import com.github.tofpu.speedbridge2.GameAdapter;
-import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandler;
-import com.github.tofpu.speedbridge2.bridge.game.IslandGame;
+import com.github.tofpu.speedbridge2.bridge.game.*;
 import com.github.tofpu.speedbridge2.bridge.game.event.PlayerScoredEvent;
+import com.github.tofpu.speedbridge2.bridge.score.BridgeScoreService;
+import com.github.tofpu.speedbridge2.bridge.score.ScoreRepository;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
-import com.github.tofpu.speedbridge2.bridge.game.Island;
-import com.github.tofpu.speedbridge2.bridge.game.IslandArenaManager;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.Position;
@@ -33,7 +32,10 @@ public class GameHandlerTest {
     private final DatabaseService databaseService = new DatabaseService();
     private final EventDispatcherService eventDispatcherService = spy(new EventDispatcherService());
     private final LobbyService lobbyService = new LobbyService(databaseService, eventDispatcherService);
-    private final BridgeGameHandler gameHandler = BridgeGameHandler.load(GameAdapter.empty(), lobbyService, ArenaAdapter.simple(new World()), SchematicHandler.load(new File("test-resources/island/schematics"), SchematicResolver.empty(), s -> true), eventDispatcherService);
+    private final IslandGameHandler gameHandler = BridgeGameHandlerBuilder.newBuilder()
+            .coreStateProvider(GameAdapter.empty(), lobbyService)
+            .gameStateProvider(GameAdapter.empty(), eventDispatcherService, new BridgeScoreService(eventDispatcherService, new ScoreRepository(databaseService)))
+            .build(ArenaAdapter.simple(new World()), SchematicHandler.load(new File("test-resources/island/schematics"), SchematicResolver.empty(), s -> true));
     private final IslandArenaManager arenaManager = (IslandArenaManager) gameHandler.landController().arenaManager();
 
     @BeforeEach

@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.command;
 
-import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandler;
+import com.github.tofpu.speedbridge2.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.bridge.game.Island;
 import com.github.tofpu.speedbridge2.island.IslandService;
 import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupController;
@@ -17,9 +17,9 @@ public class PluginCommandHolder {
     private final LobbyService lobbyService;
     private final IslandSetupController islandSetupService;
     private final IslandService islandService;
-    private final BridgeGameHandler gameHandler;
+    private final IslandGameHandler gameHandler;
 
-    public PluginCommandHolder(LobbyService lobbyService, IslandSetupController islandSetupService, IslandService islandService, BridgeGameHandler gameHandler) {
+    public PluginCommandHolder(LobbyService lobbyService, IslandSetupController islandSetupService, IslandService islandService, IslandGameHandler gameHandler) {
         this.lobbyService = lobbyService;
         this.islandSetupService = islandSetupService;
         this.islandService = islandService;

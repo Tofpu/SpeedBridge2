@@ -14,7 +14,7 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = false)
 @Getter @Setter
-public class IslandGame extends Game {
+public class IslandGame extends Game<IslandGameHandler, IslandGame> {
     private final Island island;
     private final Land land;
 
@@ -22,8 +22,8 @@ public class IslandGame extends Game {
 
     private long timerInNanoTime = Integer.MIN_VALUE;
 
-    public IslandGame(GamePlayer gamePlayer, Island island, Land land) {
-        super(gamePlayer);
+    public IslandGame(IslandGameHandler handler, GamePlayer gamePlayer, Island island, Land land) {
+        super(handler, gamePlayer);
         this.island = island;
         this.land = land;
     }

@@ -1,10 +1,11 @@
 package com.github.tofpu.speedbridge2.bridge.core.state;
 
 import com.github.tofpu.speedbridge2.bridge.core.Game;
+import com.github.tofpu.speedbridge2.bridge.core.GameHandler;
 
-public abstract class StopGameState implements Game.GameState {
+public abstract class StopGameState<H extends GameHandler<?, ?, ?>, G extends Game<H, ?>> implements Game.GameState<H, G> {
     @Override
-    public boolean test(Game game) {
+    public boolean test(G game) {
         return !(game.gameState() instanceof StopGameState);
     }
 }

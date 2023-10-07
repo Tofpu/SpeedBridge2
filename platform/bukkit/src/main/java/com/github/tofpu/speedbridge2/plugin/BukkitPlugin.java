@@ -6,7 +6,7 @@ import com.github.tofpu.speedbridge2.PlayerAdapter;
 import com.github.tofpu.speedbridge2.SpeedBridge;
 import com.github.tofpu.speedbridge2.bootstrap.PluginBootstrap;
 import com.github.tofpu.speedbridge2.bootstrap.game.BukkitGameAdapter;
-import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandler;
+import com.github.tofpu.speedbridge2.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.command.PluginCommandHandler;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import java.io.File;
@@ -95,7 +95,7 @@ public class BukkitPlugin extends JavaPlugin {
         return loader.setupController();
     }
 
-    public BridgeGameHandler gameHandler() {
+    public IslandGameHandler gameHandler() {
         return loader.gameHandler();
     }
 

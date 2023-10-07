@@ -11,17 +11,17 @@ import java.util.UUID;
 
 import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
 
-public abstract class GameHandler<P extends OnlinePlayer> {
-    private final Map<UUID, Game> ongoingGameMap = new HashMap<>();
+public abstract class GameHandler<P extends OnlinePlayer, H extends GameHandler<P, H, G>, G extends Game<H, G>> {
+    private final Map<UUID, Game<H, G>> ongoingGameMap = new HashMap<>();
 
     protected void assertPlayerIsNotInGame(P p) {
         requireState(!isInGame(p.id()), "%s is already in a game!", p.id());
     }
 
-    protected void internalStart(final P p, final Game game) {
+    protected void internalStart(final P p, final Game<H, G> game) {
         assertPlayerIsNotInGame(p);
 
-        Game.GameState gameState = createPrepareState();
+        Game.GameState<H, G> gameState = createPrepareState();
         if (gameState == null) {
             gameState = createStartState();
         }
@@ -35,8 +35,8 @@ public abstract class GameHandler<P extends OnlinePlayer> {
         return get(playerId) != null;
     }
 
-    public Game get(final UUID playerId) {
-        Game game = this.ongoingGameMap.get(playerId);
+    public Game<H, G> get(final UUID playerId) {
+        Game<H, G> game = this.ongoingGameMap.get(playerId);
         if (game == null) {
             return null;
         }
@@ -51,8 +51,8 @@ public abstract class GameHandler<P extends OnlinePlayer> {
     }
 
     @NotNull
-    public Game getSafe(final UUID playerId) {
-        Game game = get(playerId);
+    public Game<H, G> getSafe(final UUID playerId) {
+        Game<H, G> game = get(playerId);
         if (game == null) {
             throw new RuntimeException("Player %s is not in a game!");
         }
@@ -62,11 +62,11 @@ public abstract class GameHandler<P extends OnlinePlayer> {
     public void stop(final UUID playerId) {
         requireState(isInGame(playerId), "%s is not in a game!");
 
-        Game game = get(playerId);
+        Game<H, G> game = get(playerId);
 
 //        requireState(!(game.gameState() instanceof StopGameState), "");
 //        assert !(game.gameState() instanceof StopGameState);
-        StopGameState stopState = createStopState();
+        StopGameState<H, G> stopState = createStopState();
         requireState(stopState != null, "StopGameState implementation must be provided on GameHandler!");
         game.dispatch(stopState);
 
@@ -75,7 +75,7 @@ public abstract class GameHandler<P extends OnlinePlayer> {
 
 //    public abstract Game createGame(GamePlayer gamePlayer);
 //    public abstract GamePlayer createGamePlayer(P player);
-    protected abstract Game.GameState createPrepareState();
-    protected abstract StartGameState createStartState();
-    protected abstract StopGameState createStopState();
+    protected abstract Game.GameState<H, G> createPrepareState();
+    protected abstract StartGameState<H, G> createStartState();
+    protected abstract StopGameState<H, G> createStopState();
 }

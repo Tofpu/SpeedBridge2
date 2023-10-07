@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.bootstrap.game;
 
 import com.github.tofpu.speedbridge2.adapter.BukkitAdapter;
-import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandler;
+import com.github.tofpu.speedbridge2.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGame;
 import com.github.tofpu.speedbridge2.object.Position;
 import org.bukkit.event.EventHandler;
@@ -16,10 +16,10 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import java.util.UUID;
 
 public class GameListener implements Listener {
-    private final BridgeGameHandler gameHandler;
+    private final IslandGameHandler gameHandler;
     private final OngoingGameRegistry gameRegistry;
 
-    public GameListener(BridgeGameHandler gameHandler, OngoingGameRegistry gameRegistry) {
+    public GameListener(IslandGameHandler gameHandler, OngoingGameRegistry gameRegistry) {
         this.gameHandler = gameHandler;
         this.gameRegistry = gameRegistry;
     }
