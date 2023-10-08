@@ -15,13 +15,15 @@ public class Scores {
         return Collections.unmodifiableList(scoresList);
     }
 
-    public void add(Score score) {
+    public boolean add(Score score) {
         if (id.getIslandSlot() != score.getIslandSlot()) {
             throw new IllegalStateException("Score's island does not match: input=" + score.getIslandSlot() + ", desired=" + id.getIslandSlot());
         }
 
         scoresList.add(score);
         sortScores();
+
+        return scoresList.contains(score);
     }
 
     public Score get(int index) {

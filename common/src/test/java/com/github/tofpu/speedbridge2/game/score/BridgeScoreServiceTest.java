@@ -69,6 +69,56 @@ public class BridgeScoreServiceTest {
     }
 
     @Test
+    void add_score_and_fetch_test() throws ExecutionException, InterruptedException, TimeoutException {
+        UUID uuid = UUID.randomUUID();
+        int islandSlot = 1;
+        int timerInSeconds = 10;
+        bridgeScoreService.addScore(uuid, islandSlot, timerInSeconds).get(10, TimeUnit.SECONDS);
+
+        bridgeScoreService.clear();
+        bridgeScoreService.handleJoin(uuid).get(10, TimeUnit.SECONDS);
+
+        Scores scores = bridgeScoreService.getScores(uuid, islandSlot);
+        assertNotNull(scores);
+        Score score = scores.get(0);
+        assertNotNull(score);
+        assertEquals(1, score.getIslandSlot());
+        assertEquals(10, score.seconds());
+    }
+
+    @Test
+    void add_identical_scores_and_fetch_test() throws ExecutionException, InterruptedException, TimeoutException {
+        UUID uuid = UUID.randomUUID();
+        int islandSlot = 1;
+        int timerInSeconds = 10;
+        bridgeScoreService.addScore(uuid, islandSlot, timerInSeconds).get(10, TimeUnit.SECONDS);
+        bridgeScoreService.addScore(uuid, islandSlot, timerInSeconds).get(10, TimeUnit.SECONDS);
+
+        bridgeScoreService.clear();
+        bridgeScoreService.handleJoin(uuid).get(10, TimeUnit.SECONDS);
+
+        Scores scores = bridgeScoreService.getScores(uuid, islandSlot);
+        assertEquals(2, scores.size());
+    }
+
+    @Test
+    void add_different_scores_on_same_island_and_fetch_test() throws ExecutionException, InterruptedException, TimeoutException {
+        UUID uuid = UUID.randomUUID();
+        Score firstScore = Score.inSeconds(uuid, 1, 10);
+        Score secondScore = Score.inSeconds(uuid, 1, 20);
+        bridgeScoreService.addScore(firstScore).get(10, TimeUnit.SECONDS);
+        bridgeScoreService.addScore(secondScore).get(10, TimeUnit.SECONDS);
+
+        bridgeScoreService.clear();
+        bridgeScoreService.handleJoin(uuid).get(10, TimeUnit.SECONDS);
+
+        Scores scores = bridgeScoreService.getScores(uuid, 1);
+        assertEquals(2, scores.size());
+        assertEquals(firstScore, scores.get(0));
+        assertEquals(secondScore, scores.get(1));
+    }
+
+    @Test
     void maximum_score_entry_test() {
         UUID uuid = UUID.randomUUID();
         int islandSlot = 1;

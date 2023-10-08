@@ -33,18 +33,26 @@ public class BridgeScoreService implements LoadableService {
             if (scores.isEmpty()) return;
 
             Collections.sort(scores);
-            scores.forEach(this::addScore);
+            scores.forEach(score -> addScore(score, false));
         });
     }
 
-    private void addScore(Score score) {
+    private CompletableFuture<?> addScore(Score score, boolean updateDatabase) {
         PlayerIdSlot id = createId(score.getPlayerId(), score.getIslandSlot());
         Scores scores = scoresMap.get(id);
         if (scores == null) {
             System.out.println("scores not available, creating the score registry for id: " + id);
             scores = createScoreRegistry(id);
         }
-        scores.add(score);
+
+        if (scores.add(score) && updateDatabase) {
+            return repository.storeScore(score);
+        }
+        return CompletableFuture.completedFuture(null);
+    }
+
+    public CompletableFuture<?> addScore(Score score) {
+        return addScore(score, true);
     }
 
     private Scores createScoreRegistry(PlayerIdSlot id) {
@@ -53,9 +61,8 @@ public class BridgeScoreService implements LoadableService {
         return value;
     }
 
-    public void addScore(UUID playerId, int islandSlot, double seconds) {
-        Score score = Score.inSeconds(playerId, islandSlot, seconds);
-        addScore(score);
+    public CompletableFuture<?> addScore(UUID playerId, int islandSlot, double seconds) {
+        return addScore(Score.inSeconds(playerId, islandSlot, seconds));
     }
 
     private PlayerIdSlot createId(UUID playerId, int islandSlot) {
@@ -90,5 +97,9 @@ public class BridgeScoreService implements LoadableService {
     @Override
     public void unload() {
 
+    }
+
+    public void clear() {
+        this.scoresMap.clear();
     }
 }

@@ -13,12 +13,12 @@ public class ScoreRepository {
         this.database = database;
     }
 
-
-    @SuppressWarnings("unchecked")
     public CompletableFuture<List<Score>> loadScores(UUID playerId) {
-        return database.computeAsync(session -> {
-            return (List<Score>) session.createQuery("FROM scores WHERE playerId = ?1").setParameter(1, playerId)
-                    .list();
-        });
+        return database.computeAsync(session -> session.createQuery("FROM scores WHERE playerId = ?1", Score.class).setParameter(1, playerId)
+                .list());
+    }
+
+    public CompletableFuture<?> storeScore(Score score) {
+        return database.executeAsync(session -> session.persist(score));
     }
 }

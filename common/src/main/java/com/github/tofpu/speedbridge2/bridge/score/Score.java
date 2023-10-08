@@ -4,9 +4,7 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.jetbrains.annotations.NotNull;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -14,6 +12,11 @@ import java.util.UUID;
 @Data
 public class Score implements Comparable<Score> {
     @Id
+    @GeneratedValue
+    @Column(columnDefinition = "VARCHAR(36)", updatable = false)
+    @Type(type = "uuid-char")
+    private UUID id;
+
     @Column(columnDefinition = "VARCHAR(36)", updatable = false)
     @Type(type = "uuid-char")
     private final UUID playerId;
@@ -36,6 +39,10 @@ public class Score implements Comparable<Score> {
 
     private Score() {
         this(null, -1, -1);
+    }
+
+    public double nanoseconds() {
+        return nanoseconds;
     }
 
     public double seconds() {
