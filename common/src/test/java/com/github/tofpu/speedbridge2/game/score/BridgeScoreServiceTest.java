@@ -150,7 +150,7 @@ public class BridgeScoreServiceTest {
     }
 
     @Test
-    void score_override_in_case_of_reaching_maximum_score_test() {
+    void score_override_last_spot_in_case_of_reaching_maximum_score_test() {
         UUID uuid = UUID.randomUUID();
         int islandSlot = 1;
         int timerInSeconds = 10;
@@ -166,6 +166,25 @@ public class BridgeScoreServiceTest {
         Scores scores = bridgeScoreService.getScores(uuid, islandSlot);
         Score fifthScore = scores.get(4);
         assertEquals(fifthNewScore, fifthScore.seconds());
+    }
+
+    @Test
+    void score_override_first_spot_in_case_of_reaching_maximum_score_test() throws ExecutionException, InterruptedException, TimeoutException {
+        UUID uuid = UUID.randomUUID();
+        int islandSlot = 1;
+        int timerInSeconds = 10;
+
+        // adds scores of: 10, 20, 30, 40, and 50
+        for (int i = 1; i <= 5; i++) {
+            bridgeScoreService.addScore(uuid, islandSlot, timerInSeconds * i).get(10, TimeUnit.SECONDS);
+        }
+        // to overtake the last score
+        int firstNewScore = 9;
+        bridgeScoreService.addScore(uuid, islandSlot, firstNewScore).get(10, TimeUnit.SECONDS);
+
+        Scores scores = bridgeScoreService.getScores(uuid, islandSlot);
+        Score firstScore = scores.get(0);
+        assertEquals(firstNewScore, firstScore.seconds());
     }
 
     @Test

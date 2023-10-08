@@ -45,8 +45,9 @@ public class BridgeScoreService implements LoadableService {
             scores = createScoreRegistry(id);
         }
 
+        boolean isFilled = scores.size() == Scores.MAXIMUM_SIZE;
         if (scores.add(score) && updateDatabase) {
-            return repository.storeScore(score);
+            return repository.storeScore(score, isFilled);
         }
         return CompletableFuture.completedFuture(null);
     }
