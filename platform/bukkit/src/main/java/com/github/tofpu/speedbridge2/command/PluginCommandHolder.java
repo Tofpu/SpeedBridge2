@@ -5,7 +5,6 @@ import com.github.tofpu.speedbridge2.bridge.game.Island;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.bridge.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.bridge.score.Score;
-import com.github.tofpu.speedbridge2.bridge.score.Scores;
 import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupController;
 import com.github.tofpu.speedbridge2.island.IslandService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
@@ -106,7 +105,7 @@ public class PluginCommandHolder {
             return;
         }
 
-        player.sendMessage(BukkitMessages.PERSONAL_BEST, bestScore.seconds(), bestScore.getIslandSlot());
+        player.sendMessage(BukkitMessages.PERSONAL_BEST, bestScore.textSeconds(), bestScore.getIslandSlot());
     }
 
     public boolean requireLobbyToBeAvailable(final OnlinePlayer player) {

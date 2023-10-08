@@ -54,6 +54,6 @@ public class ScoreTest {
     void seconds_conversion_test() {
         int seconds = 10;
         Score score = Score.inSeconds(UUID.randomUUID(), -1, seconds);
-        assertEquals(10, score.timerInSeconds());
+        assertEquals(10, score.seconds());
     }
 }

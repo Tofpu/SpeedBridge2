@@ -18,37 +18,37 @@ public class Score implements Comparable<Score> {
     @Type(type = "uuid-char")
     private final UUID playerId;
     private final int islandSlot;
-    private final double timerInNano;
+    private final double nanoseconds;
 
     public static Score inSeconds(UUID playerId, int islandSlot, double seconds) {
         return new Score(playerId, islandSlot, seconds * 1_000_000_000.0);
     }
 
-    public static Score inNano(UUID playerId, int islandSlot, double nano) {
-        return new Score(playerId, islandSlot, nano);
+    public static Score inNanoSeconds(UUID playerId, int islandSlot, double nanoseconds) {
+        return new Score(playerId, islandSlot, nanoseconds);
     }
 
-    private Score(UUID playerId, int islandSlot, double timerInNano) {
+    private Score(UUID playerId, int islandSlot, double nanoseconds) {
         this.playerId = playerId;
         this.islandSlot = islandSlot;
-        this.timerInNano = timerInNano;
+        this.nanoseconds = nanoseconds;
     }
 
     private Score() {
         this(null, -1, -1);
     }
 
-    public double timerInSeconds() {
-        return timerInNano / 1_000_000_000.0;
+    public double seconds() {
+        return nanoseconds / 1_000_000_000.0;
     }
 
-    public String seconds() {
-        double seconds = timerInSeconds();
+    public String textSeconds() {
+        double seconds = seconds();
         return String.format(Locale.US, "%.3f", seconds);
     }
 
     @Override
     public int compareTo(@NotNull Score o) {
-        return Double.compare(this.timerInNano, o.timerInNano);
+        return Double.compare(this.nanoseconds, o.nanoseconds);
     }
 }

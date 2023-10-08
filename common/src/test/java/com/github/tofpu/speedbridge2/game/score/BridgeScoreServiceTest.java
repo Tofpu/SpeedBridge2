@@ -39,7 +39,7 @@ public class BridgeScoreServiceTest {
         int timerInSeconds = 10;
         long timerInNano = TimeUnit.SECONDS.toNanos(timerInSeconds);
 
-        database.executeAsync(session -> session.persist(Score.inNano(uuid, islandSlot, timerInNano))).get(10, TimeUnit.SECONDS);
+        database.executeAsync(session -> session.persist(Score.inNanoSeconds(uuid, islandSlot, timerInNano))).get(10, TimeUnit.SECONDS);
 
         bridgeScoreService.handleJoin(uuid).get(10, TimeUnit.SECONDS);
         Scores scores = bridgeScoreService.getScores(uuid, 1);
@@ -47,7 +47,7 @@ public class BridgeScoreServiceTest {
 
         List<Score> scoreList = scores.scoresList();
         assertEquals(1, scoreList.size());
-        assertEquals(timerInNano, scoreList.get(0).getTimerInNano());
+        assertEquals(timerInNano, scoreList.get(0).getNanoseconds());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class BridgeScoreServiceTest {
         assertNotNull(scores);
         assertEquals(uuid, score.getPlayerId());
         assertEquals(islandSlot, score.getIslandSlot());
-        assertEquals(timerInSeconds, score.timerInSeconds());
+        assertEquals(timerInSeconds, score.seconds());
     }
 
     @Test
@@ -115,7 +115,7 @@ public class BridgeScoreServiceTest {
 
         Scores scores = bridgeScoreService.getScores(uuid, islandSlot);
         Score fifthScore = scores.get(4);
-        assertEquals(fifthNewScore, fifthScore.timerInSeconds());
+        assertEquals(fifthNewScore, fifthScore.seconds());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class BridgeScoreServiceTest {
         Score bestScore = bridgeScoreService.getBestScore(uuid);
         assertNotNull(bestScore);
         assertEquals(islandSlot, bestScore.getIslandSlot());
-        assertEquals(timerInSeconds, bestScore.timerInSeconds());
+        assertEquals(timerInSeconds, bestScore.seconds());
     }
 
     @Test
@@ -140,7 +140,7 @@ public class BridgeScoreServiceTest {
 
         Score bestScore = bridgeScoreService.getBestScore(uuid);
         assertEquals(10, bestScore.getIslandSlot());
-        assertEquals(10, bestScore.timerInSeconds());
+        assertEquals(10, bestScore.seconds());
     }
 
     @Test
