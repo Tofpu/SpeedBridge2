@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.event;
+package com.github.tofpu.speedbridge2.listener;
 
 import com.github.tofpu.speedbridge2.PlayerAdapter;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
@@ -23,7 +23,7 @@ public class PlayerConnectionListener implements Listener {
     public void on(final PlayerJoinEvent event) {
         OnlinePlayer player = this.playerAdapter.provideOnlinePlayer(
             event.getPlayer().getUniqueId());
-        dispatcherService.unsafeDispatch(
+        dispatcherService.dispatchIfApplicable(
             new com.github.tofpu.speedbridge2.event.event.PlayerJoinEvent(player));
     }
 
@@ -31,7 +31,7 @@ public class PlayerConnectionListener implements Listener {
     public void on(final PlayerQuitEvent event) {
         OnlinePlayer player = this.playerAdapter.provideOnlinePlayer(
             event.getPlayer().getUniqueId());
-        dispatcherService.unsafeDispatch(
+        dispatcherService.dispatchIfApplicable(
             new com.github.tofpu.speedbridge2.event.event.PlayerLeaveEvent(player));
     }
 }

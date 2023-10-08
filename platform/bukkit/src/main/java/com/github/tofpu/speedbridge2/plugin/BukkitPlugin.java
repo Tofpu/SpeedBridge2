@@ -12,7 +12,9 @@ import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import java.io.File;
 
 import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupController;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.island.setup.IslandSetupListener;
+import com.github.tofpu.speedbridge2.listener.PlayerConnectionListener;
 import com.github.tofpu.speedbridge2.schematic.SchematicHandler;
 import com.github.tofpu.speedbridge2.service.Service;
 import org.bukkit.Bukkit;
@@ -72,6 +74,9 @@ public class BukkitPlugin extends JavaPlugin {
             Bukkit.getPluginManager().registerEvents(islandSetupListener, this);
 
             ((BukkitGameAdapter) bootstrap.gameAdapter()).setPlugin(this);
+
+            PlayerConnectionListener playerConnectionListener = new PlayerConnectionListener(playerAdapter(), getService(EventDispatcherService.class));
+            Bukkit.getPluginManager().registerEvents(playerConnectionListener, this);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
