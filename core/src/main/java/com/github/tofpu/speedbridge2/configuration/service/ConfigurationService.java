@@ -31,6 +31,14 @@ public class ConfigurationService implements LoadableService {
         return dynamicConfigHandler.on(type);
     }
 
+    public void save(final PluginConfigTypes type) {
+        dynamicConfigHandler.save(type);
+    }
+
+    public void reload(final PluginConfigTypes type) {
+        dynamicConfigHandler.load(type);
+    }
+
     public MyConfiguration config() {
         return configurateHandler.config();
     }

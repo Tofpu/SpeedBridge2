@@ -6,6 +6,7 @@ import com.github.tofpu.speedbridge2.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.bridge.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.bridge.score.Score;
 import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupController;
+import com.github.tofpu.speedbridge2.configuration.message.ConfigurableMessageService;
 import com.github.tofpu.speedbridge2.island.IslandService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
@@ -23,17 +24,19 @@ public class PluginCommandHolder {
     private final IslandService islandService;
     private final IslandGameHandler gameHandler;
     private final BridgeScoreService scoreService;
+    private final ConfigurableMessageService configurableMessageService;
 
-    public PluginCommandHolder(LobbyService lobbyService, IslandSetupController islandSetupService, IslandService islandService, IslandGameHandler gameHandler, BridgeScoreService scoreService) {
+    public PluginCommandHolder(LobbyService lobbyService, IslandSetupController islandSetupService, IslandService islandService, IslandGameHandler gameHandler, BridgeScoreService scoreService, ConfigurableMessageService configurableMessageService) {
         this.lobbyService = lobbyService;
         this.islandSetupService = islandSetupService;
         this.islandService = islandService;
         this.gameHandler = gameHandler;
         this.scoreService = scoreService;
+        this.configurableMessageService = configurableMessageService;
     }
 
     public PluginCommandHolder(BukkitPlugin bukkitPlugin) {
-        this(bukkitPlugin.getService(LobbyService.class), bukkitPlugin.setupController(), bukkitPlugin.getService(IslandService.class), bukkitPlugin.gameHandler(), bukkitPlugin.getService(BridgeScoreService.class));
+        this(bukkitPlugin.getService(LobbyService.class), bukkitPlugin.setupController(), bukkitPlugin.getService(IslandService.class), bukkitPlugin.gameHandler(), bukkitPlugin.getService(BridgeScoreService.class), bukkitPlugin.getService(ConfigurableMessageService.class));
     }
 
     @Subcommand("lobby")
@@ -106,6 +109,18 @@ public class PluginCommandHolder {
         }
 
         player.sendMessage(BukkitMessages.PERSONAL_BEST, bestScore.textSeconds(), bestScore.getIslandSlot());
+    }
+
+    @Subcommand("reload")
+    public void reload(final OnlinePlayer player) {
+        try {
+            configurableMessageService.reload();
+        } catch (Exception e) {
+            e.printStackTrace();
+            player.sendMessage(BukkitMessages.RELOAD_ERROR);
+            return;
+        }
+        player.sendMessage(BukkitMessages.SUCCESSFUL_RELOAD);
     }
 
     public boolean requireLobbyToBeAvailable(final OnlinePlayer player) {

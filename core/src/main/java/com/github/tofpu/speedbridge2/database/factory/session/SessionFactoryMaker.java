@@ -6,6 +6,8 @@ import java.util.Properties;
 import java.util.Set;
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+
+import com.github.tofpu.speedbridge2.util.ReflectionUtil;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.reflections.Reflections;
@@ -29,11 +31,11 @@ public class SessionFactoryMaker {
         properties.setProperty("hibernate.show_sql", "true");
 
         Configuration configuration = new Configuration();
-        getTypesAnnotatedWith(packageName, Entity.class).forEach(aClass -> {
+        ReflectionUtil.getTypesAnnotatedWith(packageName, Entity.class).forEach(aClass -> {
             System.out.println("adding " + aClass);
             configuration.addAnnotatedClass(aClass);
         });
-        getTypesAnnotatedWith(packageName, Embeddable.class).forEach(aClass -> {
+        ReflectionUtil.getTypesAnnotatedWith(packageName, Embeddable.class).forEach(aClass -> {
             System.out.println("adding " + aClass);
             configuration.addAnnotatedClass(aClass);
         });
@@ -41,10 +43,5 @@ public class SessionFactoryMaker {
         return configuration
             .setProperties(properties)
             .buildSessionFactory();
-    }
-
-    private static Set<Class<?>> getTypesAnnotatedWith(String packageName,
-        Class<? extends Annotation> annotation) {
-        return new Reflections(packageName).getTypesAnnotatedWith(annotation);
     }
 }

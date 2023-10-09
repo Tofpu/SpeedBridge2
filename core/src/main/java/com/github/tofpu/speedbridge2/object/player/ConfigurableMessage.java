@@ -5,4 +5,6 @@ public interface ConfigurableMessage {
     String key();
 
     String defaultMessage();
+
+    void setMessage(String content);
 }

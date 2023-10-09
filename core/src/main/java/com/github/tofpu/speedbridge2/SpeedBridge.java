@@ -1,6 +1,7 @@
 package com.github.tofpu.speedbridge2;
 
 import com.github.tofpu.speedbridge2.configuration.database.DatabaseConfiguration;
+import com.github.tofpu.speedbridge2.configuration.message.ConfigurableMessageService;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import com.github.tofpu.speedbridge2.database.service.DatabaseMapper;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
@@ -34,6 +35,7 @@ public class SpeedBridge {
             return new DatabaseService(DatabaseMapper.map(database));
         });
         this.serviceManager.register(new EventDispatcherService());
+        this.serviceManager.registerAndLoad(new ConfigurableMessageService(serviceManager.get(ConfigurationService.class)));
     }
 
     public void enable(@NotNull ApplicationBootstrap bootstrap) {
