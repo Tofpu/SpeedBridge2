@@ -54,18 +54,16 @@ public abstract class GameHandler<P extends OnlinePlayer, H extends GameHandler<
     public Game<H, G> getSafe(final UUID playerId) {
         Game<H, G> game = get(playerId);
         if (game == null) {
-            throw new RuntimeException("Player %s is not in a game!");
+            throw new IllegalStateException(String.format("Player %s is not in a game!", playerId));
         }
         return game;
     }
 
     public void stop(final UUID playerId) {
-        requireState(isInGame(playerId), "%s is not in a game!");
+        requireState(isInGame(playerId), "%s is not in a game!", playerId);
 
         Game<H, G> game = get(playerId);
 
-//        requireState(!(game.gameState() instanceof StopGameState), "");
-//        assert !(game.gameState() instanceof StopGameState);
         StopGameState<H, G> stopState = createStopState();
         requireState(stopState != null, "StopGameState implementation must be provided on GameHandler!");
         game.dispatch(stopState);
@@ -73,8 +71,6 @@ public abstract class GameHandler<P extends OnlinePlayer, H extends GameHandler<
         ongoingGameMap.remove(playerId);
     }
 
-//    public abstract Game createGame(GamePlayer gamePlayer);
-//    public abstract GamePlayer createGamePlayer(P player);
     protected abstract Game.GameState<H, G> createPrepareState();
     protected abstract StartGameState<H, G> createStartState();
     protected abstract StopGameState<H, G> createStopState();

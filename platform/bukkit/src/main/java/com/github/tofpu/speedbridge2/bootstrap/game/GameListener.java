@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
 
@@ -22,6 +23,15 @@ public class GameListener implements Listener {
     public GameListener(IslandGameHandler gameHandler, OngoingGameRegistry gameRegistry) {
         this.gameHandler = gameHandler;
         this.gameRegistry = gameRegistry;
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    void on(final PlayerQuitEvent event) {
+        UUID playerId = event.getPlayer().getUniqueId();
+        if (!gameHandler.isInGame(playerId)) {
+            return;
+        }
+        gameHandler.stop(playerId);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
