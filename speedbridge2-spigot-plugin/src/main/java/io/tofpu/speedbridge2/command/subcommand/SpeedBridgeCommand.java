@@ -26,13 +26,7 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import revxrsal.commands.annotation.AutoComplete;
-import revxrsal.commands.annotation.Command;
-import revxrsal.commands.annotation.Default;
-import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.Flag;
-import revxrsal.commands.annotation.Subcommand;
-import revxrsal.commands.annotation.Usage;
+import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.ArrayList;
@@ -65,7 +59,7 @@ public final class SpeedBridgeCommand {
         this.islandService = islandService;
     }
 
-    @Default
+    @DefaultFor("~")
     @Description("The Main Command")
     public String defaultCommand() {
         return INSTANCE.noArgument;
@@ -376,7 +370,6 @@ public final class SpeedBridgeCommand {
     @RestrictDummyModel
     @RestrictSetup
     @RestrictConsole
-    @Default
     public String onStartSetup(final BridgePlayer bridgePlayer, final Island island) {
         if (!isGeneralSetupComplete(bridgePlayer)) {
             return "";
