@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.command.subcommand;
 
+import io.tofpu.speedbridge2.command.NameAndUUID;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictConsole;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictDummyModel;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictSetup;
@@ -17,6 +18,7 @@ import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.setup.IslandSetup;
 import io.tofpu.speedbridge2.model.island.object.setup.IslandSetupHandler;
 import io.tofpu.speedbridge2.model.player.PlayerService;
+import io.tofpu.speedbridge2.model.player.ResetType;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.CommonBridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.score.Score;
@@ -28,6 +30,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
+import revxrsal.commands.bukkit.exception.MalformedEntitySelectorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,31 +135,27 @@ public final class SpeedBridgeCommand {
     @Description("Resets player properties")
     @CommandPermission("speedbridge.player.reset")
     @AutoComplete("@players *")
-    public void onPlayerReset(final CommonBridgePlayer<?> sender, final @PlayerUUID UUID target,
+    public void onPlayerReset(final CommonBridgePlayer<?> sender, final @PlayerUUID NameAndUUID target,
             final ResetType type) {
-        final BridgePlayer targetPlayer = playerService.getIfPresent(target);
+        String targetName = target.playerName();
+        UUID targetId = target.playerUUID();
 
-        if (targetPlayer == null) {
-            throw new IllegalStateException(BridgeUtil.miniMessageToLegacy(INSTANCE.playerDoesntExist));
-        }
-
-        switch (type) {
-            case ALL:
-                onCompletion(targetPlayer.reset(), (Void) -> {
-                    BridgeUtil.sendMessage(sender, String.format(INSTANCE.playerWiped, targetPlayer.getName()));
-                });
-                break;
-            case SCORES:
-                onCompletion(targetPlayer.resetScores(), (Void) -> {
-                    BridgeUtil.sendMessage(sender, String.format(INSTANCE.playerScoreReset, targetPlayer.getName()));
-                });
-                break;
-            case STATS:
-                onCompletion(targetPlayer.resetStats(), (Void) -> {
-                    BridgeUtil.sendMessage(sender, String.format(INSTANCE.playerStatsReset, targetPlayer.getName()));
-                });
-                break;
-        }
+        onCompletion(playerService.reset(targetId, type), unused -> {
+            String message = null;
+            switch (type) {
+                case ALL:
+                    message = String.format(INSTANCE.playerWiped, targetName);
+                    break;
+                case SCORES:
+                    message = String.format(INSTANCE.playerScoreReset, targetName);
+                    break;
+                case STATS:
+                    message = String.format(INSTANCE.playerStatsReset, targetName);
+                    break;
+            }
+            if (message == null) return;
+            BridgeUtil.sendMessage(sender, message);
+        });
     }
 
     @Subcommand("modify")
@@ -448,9 +447,5 @@ public final class SpeedBridgeCommand {
             }
             consumer.accept(t);
         });
-    }
-
-    public enum ResetType {
-        ALL, SCORES, STATS
     }
 }

@@ -75,7 +75,7 @@ public final class ScoreDatabase extends Database {
         });
     }
 
-    public CompletableFuture<?> delete(final UUID uuid) {
+    public CompletableFuture<Void> delete(final UUID uuid) {
         return PluginExecutor.runAsync(() -> {
             try (final DatabaseQuery query = DatabaseQuery.query("DELETE FROM scores " +
                                                                "WHERE uid = ?")) {

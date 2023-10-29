@@ -101,12 +101,16 @@ public final class PlayerService {
     }
 
     /**
-     * Resets the player's data
+     * Resets all the player's data
      *
      * @param uuid The UUID of the player to reset.
      */
     public void reset(final UUID uuid) {
-        playerHandler.reset(uuid);
+        reset(uuid, ResetType.ALL);
+    }
+
+    public @NotNull CompletableFuture<Void> reset(final UUID uuid, ResetType resetType) {
+        return playerHandler.reset(uuid, resetType);
     }
 
     public void shutdown() {

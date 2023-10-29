@@ -146,17 +146,18 @@ public final class PlayerHandler {
                 .values());
     }
 
-    /**
-     * Resets the player's data
-     *
-     * @param uuid The UUID of the player to reset.
-     */
-    public void reset(final UUID uuid) {
-        final BridgePlayer bridgePlayer = getIfPresent(uuid);
-        if (bridgePlayer == null) {
-            return;
+    public @NotNull CompletableFuture<Void> reset(final UUID uuid, ResetType resetType) {
+        BridgePlayer player = getOrDefault(uuid);
+        switch (resetType) {
+            case ALL:
+                return player.reset();
+            case STATS:
+                return player.resetStats();
+            case SCORES:
+                return player.resetScores();
+            default:
+                throw new IllegalStateException("Unsupported reset type: " + resetType);
         }
-        bridgePlayer.reset();
     }
 
     /**
