@@ -29,6 +29,7 @@ __Dependencies__
 - PlaceholderAPI (Optional)
 
 __Thanks to__
+- [JetBrains](https://www.jetbrains.com/community/opensource/)
 - [GitBook](https://gitbook.com)
 - [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html)
 
