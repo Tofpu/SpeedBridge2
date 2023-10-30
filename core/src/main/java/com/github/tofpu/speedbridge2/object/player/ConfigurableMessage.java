@@ -6,5 +6,9 @@ public interface ConfigurableMessage {
 
     String defaultMessage();
 
+    default String defaultMessage(Object... args) {
+        return String.format(defaultMessage(), args);
+    }
+
     void setMessage(String content);
 }

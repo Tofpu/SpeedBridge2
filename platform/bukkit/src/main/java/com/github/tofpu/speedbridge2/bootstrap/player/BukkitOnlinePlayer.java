@@ -46,7 +46,7 @@ public class BukkitOnlinePlayer implements OnlinePlayer {
 
     @Override
     public void sendMessage(ConfigurableMessage message, Object... replace) {
-        sendMessage(String.format(message.defaultMessage(), replace));
+        sendMessage(message.defaultMessage(replace));
     }
 
     @Override
