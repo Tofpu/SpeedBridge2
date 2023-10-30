@@ -10,11 +10,14 @@ import javax.persistence.Embedded;
 @NoArgsConstructor(force = true)
 @Data
 public class Location {
-
     @Embedded
     private final World world;
     private final int x, y, z;
     private final float yaw, pitch;
+
+    public static Location zero(World world) {
+        return new Location(world, 0, 0, 0, 0, 0);
+    }
 
     public Location(World world, int x, int y, int z, float yaw, float pitch) {
         this.world = world;

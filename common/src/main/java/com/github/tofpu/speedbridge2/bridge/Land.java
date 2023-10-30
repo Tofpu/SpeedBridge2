@@ -11,24 +11,56 @@ public class Land {
     private final int islandSlot;
     private final Location islandLocation;
     private final Position landPosition;
-    private final Vector minPoint, maxPoint;
+    private final Vector minPoint;
+    private final Vector maxPoint;
     private final CuboidRegion cuboidRegion;
 
-    public Land(int islandSlot, final Position landPosition, final RegionInfo region, final Location absolute) {
-        this.islandSlot = islandSlot;
+    public static Land newLand(int islandSlot, final Position landPosition, final RegionInfo region, final Location absolute) {
         System.out.println("Soon adapting both land position " + landPosition + " and absolute " + absolute);
-        this.islandLocation = landPosition.substract(absolute)
-                .setYaw(absolute.getYaw())
-                .setPitch(absolute.getPitch());
+
+        final Location islandLocation = resolveIslandLocation(landPosition, absolute);
         System.out.println("Merged into island location " + islandLocation);
-        this.landPosition = landPosition;
 
         Vector regionOrigin = region.getOrigin();
-        this.minPoint = region.getMinimumPoint().subtract(regionOrigin)
-                .add(landPosition.getX(), landPosition.getY(), landPosition.getZ());
-        this.maxPoint = region.getMaximumPoint().subtract(regionOrigin)
-                .add(landPosition.getX(), landPosition.getY(), landPosition.getZ());
+        Vector minMax = resolveMinPoint(landPosition, region, regionOrigin);
+        Vector maxPoint = resolveMaxPoint(landPosition, region, regionOrigin);
 
+        return new Land(islandSlot, islandLocation, landPosition, minMax, maxPoint);
+    }
+
+    private static Vector resolveMaxPoint(Position landPosition, RegionInfo region, Vector regionOrigin) {
+        return region.getMaximumPoint().subtract(regionOrigin)
+                .add(landPosition.getX(), landPosition.getY(), landPosition.getZ());
+    }
+
+    private static Vector resolveMinPoint(Position landPosition, RegionInfo region, Vector regionOrigin) {
+        return region.getMinimumPoint().subtract(regionOrigin)
+                .add(landPosition.getX(), landPosition.getY(), landPosition.getZ());
+    }
+
+    /**
+     * This method is used to determine the spot of the island.
+     *
+     * @param landPosition the position where the land will be placed
+     * @param absolute the location offset
+     * @return a location based on the land position with the offset
+     */
+    public static Location resolveIslandLocation(Position landPosition, Location absolute) {
+        return landPosition.substract(absolute)
+                .setYaw(absolute.getYaw())
+                .setPitch(absolute.getPitch());
+    }
+
+    public static Land newLand(Land land, final Location absolute) {
+        return new Land(land.islandSlot(), resolveIslandLocation(land.landPosition, absolute), land.landPosition, land.minPoint, land.maxPoint);
+    }
+
+    public Land(int islandSlot, Location islandLocation, Position landPosition, Vector minPoint, Vector maxPoint) {
+        this.islandSlot = islandSlot;
+        this.islandLocation = islandLocation;
+        this.landPosition = landPosition;
+        this.minPoint = minPoint;
+        this.maxPoint = maxPoint;
         this.cuboidRegion = new CuboidRegion(minPoint, maxPoint);
     }
 

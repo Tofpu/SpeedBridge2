@@ -3,6 +3,7 @@ package com.github.tofpu.speedbridge2.bridge;
 import com.github.tofpu.speedbridge2.ArenaAdapter;
 import com.github.tofpu.speedbridge2.bridge.core.arena.ArenaManager;
 import com.github.tofpu.speedbridge2.bridge.core.arena.ClipboardPaster;
+import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.object.Vector;
 import com.github.tofpu.speedbridge2.object.World;
@@ -59,6 +60,8 @@ public abstract class BasicArenaManager implements ArenaManager {
         Land land = getAvailableLand(islandSchematic.slot());
         if (land == null) {
             land = generateAndLock(islandSchematic, world);
+        } else {
+            land = Land.newLand(land, islandSchematic.absolutePosition());
         }
         return land;
     }
@@ -67,8 +70,11 @@ public abstract class BasicArenaManager implements ArenaManager {
         File schematicFile = islandSchematic.schematicFile();
         RegionInfo region = clipboardPaster.getRegion(schematicFile);
         Position landPosition = reservePosition(region, world);
-        clipboardPaster.paste(schematicFile, landPosition);
-        return new Land(islandSchematic.slot(), landPosition, region, islandSchematic.absolutePosition());
+
+        Land land = Land.newLand(islandSchematic.slot(), landPosition, region, islandSchematic.absolutePosition());
+        Location islandLocation = land.getIslandLocation();
+        clipboardPaster.paste(schematicFile, new Position(islandLocation.getWorld(), islandLocation.getX(), islandLocation.getY(), islandLocation.getZ()));
+        return land;
     }
 
     @Override

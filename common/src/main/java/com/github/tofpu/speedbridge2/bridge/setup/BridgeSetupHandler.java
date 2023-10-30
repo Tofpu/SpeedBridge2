@@ -8,10 +8,10 @@ import com.github.tofpu.speedbridge2.bridge.core.Game;
 import com.github.tofpu.speedbridge2.bridge.core.GameHandler;
 import com.github.tofpu.speedbridge2.bridge.core.state.StartGameState;
 import com.github.tofpu.speedbridge2.bridge.core.state.StopGameState;
+import com.github.tofpu.speedbridge2.bridge.game.Island;
 import com.github.tofpu.speedbridge2.island.IslandService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.Location;
-import com.github.tofpu.speedbridge2.object.Vector;
 import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.schematic.Schematic;
@@ -39,10 +39,15 @@ public class BridgeSetupHandler extends GameHandler<OnlinePlayer, BridgeSetupHan
         assertPlayerIsNotInGame(player);
 
         Schematic schematic = schematicHandler.resolve(schematicName);
-        Vector originPosition = schematic.originPosition();
-
         World world = arenaAdapter.gameWorld();
-        IslandSchematic islandSchematic = new IslandSchematic(slot, schematic, originPosition.toLocation(world));
+        Location origin = Location.zero(world);
+
+        Island island = islandService.get(slot);
+        if (island != null && island.getAbsolute() != null) {
+            origin = island.getAbsolute();
+        }
+
+        IslandSchematic islandSchematic = new IslandSchematic(slot, schematic, origin);
         Land land = landController.reserveSpot(player.id(), islandSchematic, world);
 
         Game game = new IslandSetup(this, new SetupPlayer(player), slot, schematicName, land);
