@@ -37,9 +37,9 @@ public class ConfigurableMessageService implements LoadableService {
             if (newMessage == null) {
                 System.out.printf("Set %s=%s%n", configurableMessage.key(), configurableMessage.defaultMessage());
                 configuration.set(configurableMessage.key(), configurableMessage.defaultMessage());
+                saveChanges.set(true);
             } else {
                 System.out.println("Located message from file=" + newMessage);
-                saveChanges.set(true);
                 configurableMessage.setMessage(newMessage);
             }
         });
