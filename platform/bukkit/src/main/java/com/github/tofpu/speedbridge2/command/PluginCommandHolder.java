@@ -16,6 +16,8 @@ import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.Subcommand;
 
+import java.util.Map;
+
 
 @Command({"speedbridge", "sb"})
 public class PluginCommandHolder {
@@ -98,17 +100,45 @@ public class PluginCommandHolder {
 
     @Subcommand("score")
     public void score(final OnlinePlayer player, @Optional Integer islandSlot) {
-        Score bestScore;
+        String message;
         if (islandSlot == null) {
-            bestScore = scoreService.getBestScore(player.id());
-        } else bestScore = scoreService.getBestScore(player.id(), islandSlot);
+            message = bestScoresOnAllIslands(player);
+        } else {
+            message = specificBestScore(player, islandSlot);
+        }
 
-        if (bestScore == null) {
+        if (message == null || message.isEmpty()) {
             player.sendMessage(BukkitMessages.NO_PERSONAL_BEST);
             return;
         }
 
-        player.sendMessage(BukkitMessages.PERSONAL_BEST, bestScore.textSeconds(), bestScore.getIslandSlot());
+        player.sendMessage(message);
+    }
+
+    private String specificBestScore(OnlinePlayer player, Integer islandSlot) {
+        Score bestScore = scoreService.getBestScore(player.id(), islandSlot);
+        if (bestScore == null) {
+            return BukkitMessages.NO_PERSONAL_BEST_ON_ISLAND.defaultMessage(islandSlot);
+        }
+        return BukkitMessages.PERSONAL_BEST.defaultMessage(bestScore.textSeconds(), bestScore.getIslandSlot());
+    }
+
+    private String bestScoresOnAllIslands(OnlinePlayer player) {
+        Map<Integer, Score> bestScores = scoreService.getBestScoresFromAllIslands(player.id());
+        if (bestScores.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(BukkitMessages.PERSONAL_BEST_GLOBAL_TITLE.defaultMessage())
+                .append("\n");
+
+        bestScores.forEach((slot, score) -> {
+            builder.append(BukkitMessages.PERSONAL_BEST_GLOBAL_BODY.defaultMessage(score.textSeconds(), slot))
+                    .append("\n");
+        });
+
+        return builder.toString();
     }
 
     @Subcommand("reload")

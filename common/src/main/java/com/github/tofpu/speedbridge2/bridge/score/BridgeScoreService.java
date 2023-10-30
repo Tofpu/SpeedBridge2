@@ -7,6 +7,7 @@ import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class BridgeScoreService implements LoadableService {
     private final EventDispatcherService eventDispatcherService;
@@ -80,6 +81,13 @@ public class BridgeScoreService implements LoadableService {
                 .map(Scores::getBestScore)
                 .min(Score::compareTo);
         return bestScore.orElse(null);
+    }
+
+    public Map<Integer, Score> getBestScoresFromAllIslands(UUID playerId) {
+        return this.scoresMap.values().stream()
+                .filter(scores -> scores.playerId().equals(playerId))
+                .map(scores -> new AbstractMap.SimpleEntry<>(scores.islandSlot(), scores.getBestScore()))
+                .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
     public Score getBestScore(UUID playerId, int islandSlot) {
