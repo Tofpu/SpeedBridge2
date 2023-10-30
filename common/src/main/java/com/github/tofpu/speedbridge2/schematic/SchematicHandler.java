@@ -1,6 +1,8 @@
 package com.github.tofpu.speedbridge2.schematic;
 
 import com.github.tofpu.speedbridge2.object.Vector;
+import com.github.tofpu.speedbridge2.schematic.exception.SchematicNotFoundException;
+import com.github.tofpu.speedbridge2.schematic.exception.UnsupportedSchematicType;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -55,11 +57,11 @@ public class SchematicHandler {
 
     public Schematic resolve(final File schematicFile) {
         if (!schematicFile.exists()) {
-            throw new RuntimeException("There is no schematic at this specified path: " + schematicFile);
+            throw new SchematicNotFoundException(schematicFile);
         }
 
         if (!isSchematic(schematicFile)) {
-            throw new UnsupportedSchematicType(schematicFile.getName());
+            throw new UnsupportedSchematicType(schematicFile);
         }
 
         Vector origin = schematicResolver.origin(schematicFile);
