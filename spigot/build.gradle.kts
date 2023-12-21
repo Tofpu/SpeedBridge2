@@ -31,7 +31,7 @@ dependencies {
         exclude("com.sk89q", "worldedit")
     }
 
-    implementation("com.github.tofpu:umbrella:1.20-support-SNAPSHOT")
+    implementation("com.github.tofpu:umbrella:legacy-SNAPSHOT")
 }
 
 tasks {
