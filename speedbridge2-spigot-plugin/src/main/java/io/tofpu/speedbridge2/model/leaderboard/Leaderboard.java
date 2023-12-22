@@ -11,14 +11,15 @@ import io.tofpu.speedbridge2.model.leaderboard.loader.PlayerPositionLoader;
 import io.tofpu.speedbridge2.model.leaderboard.object.BoardPlayer;
 import io.tofpu.speedbridge2.model.leaderboard.object.IslandBoardPlayer;
 import io.tofpu.speedbridge2.model.player.PlayerService;
-import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.score.Score;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public final class Leaderboard {
     private final PlayerService playerService;
@@ -58,7 +59,7 @@ public final class Leaderboard {
 
             // global leaderboard operation
             try (final DatabaseQuery databaseQuery = DatabaseQuery.query("SELECT DISTINCT *" +
-                                                                     " FROM scores ORDER BY score")) {
+                    " FROM scores ORDER BY score")) {
                 final List<UUID> uuidList = new ArrayList<>();
                 final Map<Integer, BoardPlayer> globalBoardMap = new HashMap<>();
 
@@ -84,11 +85,11 @@ public final class Leaderboard {
 
                         final BoardPlayer value =
                                 BridgeUtil.toBoardPlayer(true,
-                                resultSet);
+                                        resultSet);
                         BridgeUtil.debug("Leaderboard#load(): value == " + value);
                         if (value == null) {
                             BridgeUtil.debug("Leaderboard#load(): value == null; " +
-                                             "continuing");
+                                    "continuing");
                             continue;
                         }
 
@@ -105,53 +106,57 @@ public final class Leaderboard {
         });
 
         BridgeUtil.runBukkitAsync(() -> {
-                    BridgeUtil.debug("Leaderboard#load(): refreshing the leaderboard!");
+            BridgeUtil.debug("Leaderboard#load(): refreshing the leaderboard!");
 
-                    // per-player based position operation
-                    for (final UUID uuid : positionMap.asMap()
-                            .keySet()) {
-                        this.positionMap.synchronous().refresh(uuid);
-                    }
+            // per-player based position operation
+            for (final UUID uuid : positionMap.asMap()
+                    .keySet()) {
+                this.positionMap.synchronous().refresh(uuid);
+            }
 
-                    // update the global leaderboard
-                    globalMap.updateLeaderboard();
-                }, 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
-                        .getGlobalUpdateInterval(), 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
-                        .getGlobalUpdateInterval());
+            // update the global leaderboard
+            globalMap.updateLeaderboard();
+        }, 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
+                .getGlobalUpdateInterval(), 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
+                .getGlobalUpdateInterval());
 
         BridgeUtil.runBukkitAsync(() -> {
-                    // sessional leaderboard operation
-                    final Map<UUID, BoardPlayer> scoreMap = new HashMap<>();
-                    for (final BridgePlayer bridgePlayer : playerService.getBridgePlayers()) {
-                        if (scoreMap.size() == 10) {
-                            break;
-                        }
+            // sessional leaderboard operation
+            final Map<UUID, BoardPlayer> scoreMap = new HashMap<>();
+            for (final BridgePlayer bridgePlayer : playerService.getBridgePlayers()) {
+                if (scoreMap.size() == 10) {
+                    break;
+                }
 
-                        Score bestScore = null;
-                        for (final Score score : bridgePlayer.getSessionScores()) {
-                            // if the best score is not null, and best score is higher
-                            // than or equal to 0
-                            if (bestScore != null && bestScore.compareTo(score) >= 0) {
-                                continue;
-                            }
-                            bestScore = score;
-                        }
-
-                        if (bestScore != null) {
-                            final int position = scoreMap.size() + 1;
-                            final UUID uuid = bridgePlayer.getPlayerUid();
-                            scoreMap.put(uuid, new BoardPlayer(bridgePlayer.getName(), position, uuid, bestScore));
-                        }
+                Score bestScore = null;
+                for (final Score score : bridgePlayer.getSessionScores()) {
+                    // if the best score is not null, and best score is higher
+                    // than or equal to 0
+                    if (bestScore != null && bestScore.compareTo(score) >= 0) {
+                        continue;
                     }
+                    bestScore = score;
+                }
 
-                    this.sessionMap.clear();
-                    for (final Map.Entry<UUID, BoardPlayer> entry : scoreMap.entrySet()) {
-                        final BoardPlayer value = entry.getValue();
-                        this.sessionMap.put(value.getPosition(), value);
-                    }
-                }, ConfigurationManager.INSTANCE.getLeaderboardCategory()
-                        .getSessionUpdateInterval(), 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
-                        .getSessionUpdateInterval());
+                if (bestScore != null) {
+                    final UUID uuid = bridgePlayer.getPlayerUid();
+                    scoreMap.put(uuid, new BoardPlayer(bridgePlayer.getName(), -1, uuid, bestScore));
+                }
+            }
+
+            List<BoardPlayer> sortedPlayers = scoreMap.values().stream()
+                    .sorted(Comparator.comparing(BoardPlayer::getScore))
+                    .collect(Collectors.toList());
+
+            this.sessionMap.clear();
+            int position = 1;
+            for (BoardPlayer boardPlayer : sortedPlayers) {
+                this.sessionMap.put(position, new BoardPlayer(boardPlayer.getName(), position, boardPlayer.getOwner(), boardPlayer.getScore()));
+                position++;
+            }
+        }, ConfigurationManager.INSTANCE.getLeaderboardCategory()
+                .getSessionUpdateInterval(), 20L * ConfigurationManager.INSTANCE.getLeaderboardCategory()
+                .getSessionUpdateInterval());
 
         return loadFuture;
     }
@@ -179,11 +184,11 @@ public final class Leaderboard {
      * Given a position, retrieve the player at that position from the leaderboard
      *
      * @param leaderboardRetrieveType The type of leaderboard to retrieve.
-     * @param position The position of the player in the leaderboard.
+     * @param position                The position of the player in the leaderboard.
      * @return A BoardPlayer object.
      */
     public BoardPlayer retrieve(final LeaderboardRetrieveType leaderboardRetrieveType,
-            final int position) {
+                                final int position) {
         switch (leaderboardRetrieveType) {
             case GLOBAL:
                 return globalMap.get(position);
@@ -197,7 +202,7 @@ public final class Leaderboard {
     /**
      * Retrieve the island board for the given player and island slot.
      *
-     * @param uniqueId The UUID of the player.
+     * @param uniqueId   The UUID of the player.
      * @param islandSlot The slot of the island board to retrieve.
      * @return The IslandBoard object.
      */
