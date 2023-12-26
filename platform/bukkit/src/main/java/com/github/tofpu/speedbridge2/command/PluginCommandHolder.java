@@ -56,8 +56,8 @@ public class PluginCommandHolder {
         player.sendMessage("Lobby location was successfully set.");
     }
 
-    @Subcommand("game setup")
-    @AutoComplete("* * schematics")
+    @Subcommand("game setup create")
+    @AutoComplete("* schematics")
     public void gameSetup(final OnlinePlayer player, final int slot, final String schematicName) {
         if (!requireLobbyToBeAvailable(player)) return;
         if (islandSetupService.isInSetup(player.id())) {
