@@ -1,11 +1,11 @@
-package com.github.tofpu.speedbridge2.bukkit.adapter;
+package com.github.tofpu.speedbridge2.bukkit.helper;
 
 import com.github.tofpu.speedbridge2.object.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-public class SpeedBridgeAdapter {
+public class BukkitConversionHelper {
 
     public static Location toLocation(Position position) {
         return new Location(toWorld(position.getWorld()), position.getX(), position.getY(),

@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.common.bridge.game;
 
-import com.github.tofpu.speedbridge2.common.ArenaAdapter;
+import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.common.bridge.game.state.GameStateHandler;
@@ -19,7 +19,7 @@ public class BridgeGameHandlerBuilder {
     private BridgeBasicStateProvider coreStateProvider;
     private BridgeGameStateProvider.Builder gameStateProviderBuilder;
 
-    public static BridgeGameHandlerBuilder newBuilder(ArenaAdapter arenaAdapter) {
+    public static BridgeGameHandlerBuilder newBuilder(PlatformArenaAdapter arenaAdapter) {
         return new BridgeGameHandlerBuilder(new LandController(new IslandArenaManager(arenaAdapter)));
     }
 
@@ -41,7 +41,7 @@ public class BridgeGameHandlerBuilder {
         return this;
     }
 
-    public IslandGameHandler build(ArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
+    public IslandGameHandler build(PlatformArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
         Objects.requireNonNull(coreStateProvider, "BridgeCoreStateProvider must not be null.");
         Objects.requireNonNull(gameStateProviderBuilder, "BridgeGameStateProvider must not be null.");
         GameStateHandler gameStateHandler = new GameStateHandler(coreStateProvider, gameStateProviderBuilder);

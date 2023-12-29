@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap.game;
 
-import com.github.tofpu.speedbridge2.bukkit.adapter.BukkitAdapter;
+import com.github.tofpu.speedbridge2.bukkit.helper.CoreConversionHelper;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameData;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.common.game.Game;
@@ -44,7 +44,7 @@ public class GameListener implements Listener {
             gameData.beginTimer(true);
         }
 
-        gameData.addBlock(BukkitAdapter.toPosition(event.getBlockPlaced().getLocation()));
+        gameData.addBlock(CoreConversionHelper.toPosition(event.getBlockPlaced().getLocation()));
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -53,7 +53,7 @@ public class GameListener implements Listener {
         Game<IslandGameData> game = gameHandler.getByPlayer(playerId);
         if (game == null) return;
 
-        Position blockPosition = BukkitAdapter.toPosition(event.getBlock().getLocation());
+        Position blockPosition = CoreConversionHelper.toPosition(event.getBlock().getLocation());
         IslandGameData gameData = game.data();
         if (!gameData.hasPlacedBlockAt(blockPosition)) {
             event.setCancelled(true);
@@ -81,7 +81,7 @@ public class GameListener implements Listener {
         if (game == null) return;
 
         IslandGameData gameData = game.data();
-        boolean isInRegion = gameData.getLand().isInsideRegion(BukkitAdapter.toVector(event.getTo().toVector()));
+        boolean isInRegion = gameData.getLand().isInsideRegion(CoreConversionHelper.toVector(event.getTo().toVector()));
         if (!isInRegion) {
             gameHandler.resetGame(playerId);
         }

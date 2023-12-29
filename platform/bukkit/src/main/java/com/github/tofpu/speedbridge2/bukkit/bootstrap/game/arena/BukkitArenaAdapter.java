@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap.game.arena;
 
-import com.github.tofpu.speedbridge2.common.ArenaAdapter;
-import com.github.tofpu.speedbridge2.bukkit.adapter.BukkitAdapter;
+import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
+import com.github.tofpu.speedbridge2.bukkit.helper.CoreConversionHelper;
 import com.github.tofpu.speedbridge2.common.game.ClipboardPaster;
 import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicResolver;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.function.Predicate;
 
-public class BukkitArenaAdapter implements ArenaAdapter {
+public class BukkitArenaAdapter implements PlatformArenaAdapter {
     private final Plugin plugin;
 
     private static final String GAME_WORLD_NAME = "speedbridge2";
@@ -50,7 +50,7 @@ public class BukkitArenaAdapter implements ArenaAdapter {
         if (world == null) {
             throw new IllegalStateException(String.format("The game world %s must be loaded before using it.", GAME_WORLD_NAME));
         }
-        return BukkitAdapter.toWorld(world);
+        return CoreConversionHelper.toWorld(world);
     }
 
     private org.bukkit.World bukkitGameWorld() {

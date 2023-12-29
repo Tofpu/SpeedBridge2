@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.bukkit.command;
 
-import com.github.tofpu.speedbridge2.common.ArenaAdapter;
+import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.bukkit.plugin.BukkitPlugin;
 import com.github.tofpu.speedbridge2.common.game.land.arena.IslandSchematic;
 import com.github.tofpu.speedbridge2.common.game.ArenaManager;
@@ -26,7 +26,7 @@ public class DeveloperCommandHolder {
     private final IslandService islandService;
     private final ArenaManager arenaManager;
     private final SchematicHandler schematicHandler;
-    private final ArenaAdapter arenaAdapter;
+    private final PlatformArenaAdapter arenaAdapter;
 
     private final List<Land> lands = new ArrayList<>();
 
@@ -34,7 +34,7 @@ public class DeveloperCommandHolder {
         this(plugin.getService(LobbyService.class), plugin.getService(IslandService.class), plugin.gameHandler().landController().arenaManager(), plugin.schematicHandler(), plugin.arenaAdapter());
     }
 
-    public DeveloperCommandHolder(LobbyService lobbyService, IslandService islandService, ArenaManager arenaManager, SchematicHandler schematicHandler, ArenaAdapter arenaAdapter) {
+    public DeveloperCommandHolder(LobbyService lobbyService, IslandService islandService, ArenaManager arenaManager, SchematicHandler schematicHandler, PlatformArenaAdapter arenaAdapter) {
         this.lobbyService = lobbyService;
         this.islandService = islandService;
         this.arenaManager = arenaManager;

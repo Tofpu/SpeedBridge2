@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap.game;
 
 import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
-import com.github.tofpu.speedbridge2.bukkit.adapter.SpeedBridgeAdapter;
+import com.github.tofpu.speedbridge2.bukkit.helper.BukkitConversionHelper;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGame;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameData;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGamePlayer;
@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
-public class BukkitPlatformGameAdapter implements PlatformGameAdapter {
+public class BukkitGameAdapter implements PlatformGameAdapter {
     @Override
     public void prepareGame(IslandGame game, IslandGamePlayer player) {
         preparePlayer(game, player);
@@ -34,7 +34,7 @@ public class BukkitPlatformGameAdapter implements PlatformGameAdapter {
     private static void clearGame(IslandGame game) {
         IslandGameData gameData = game.data();
         gameData.blockPlacements().forEach(position -> {
-            Location location = SpeedBridgeAdapter.toLocation(position);
+            Location location = BukkitConversionHelper.toLocation(position);
             location.getWorld().getBlockAt(location).setType(Material.AIR);
         });
         gameData.resetState();

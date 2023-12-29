@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.common.bridge.setup;
 
-import com.github.tofpu.speedbridge2.common.ArenaAdapter;
+import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.bridge.setup.state.SetupStateProvider;
 import com.github.tofpu.speedbridge2.common.game.GameHandler;
 import com.github.tofpu.speedbridge2.common.game.GameState;
@@ -23,12 +23,12 @@ import java.util.UUID;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class BridgeSetupHandler extends GameHandler<OnlinePlayer, IslandSetupData> {
     private final IslandService islandService;
-    private final ArenaAdapter arenaAdapter;
+    private final PlatformArenaAdapter arenaAdapter;
     private final LandController landController;
     private final SchematicHandler schematicHandler;
     private final SetupStateProvider stateProvider;
 
-    public BridgeSetupHandler(IslandService islandService, LobbyService lobbyService, ArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
+    public BridgeSetupHandler(IslandService islandService, LobbyService lobbyService, PlatformArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
         this.islandService = islandService;
         this.arenaAdapter = arenaAdapter;
         this.landController = new LandController(new SetupArenaManager(arenaAdapter));

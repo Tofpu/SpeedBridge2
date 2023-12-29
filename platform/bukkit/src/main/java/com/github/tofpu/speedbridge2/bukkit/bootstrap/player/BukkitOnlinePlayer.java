@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap.player;
 
-import com.github.tofpu.speedbridge2.bukkit.adapter.BukkitAdapter;
-import com.github.tofpu.speedbridge2.bukkit.adapter.SpeedBridgeAdapter;
+import com.github.tofpu.speedbridge2.bukkit.helper.CoreConversionHelper;
+import com.github.tofpu.speedbridge2.bukkit.helper.BukkitConversionHelper;
 import com.github.tofpu.speedbridge2.configuration.service.PluginConfigTypes;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import com.github.tofpu.speedbridge2.object.Location;
@@ -51,12 +51,12 @@ public class BukkitOnlinePlayer implements OnlinePlayer {
 
     @Override
     public void teleport(Position position) {
-        player.teleport(SpeedBridgeAdapter.toLocation(position));
+        player.teleport(BukkitConversionHelper.toLocation(position));
     }
 
     @Override
     public void teleport(Location location) {
-        player.teleport(SpeedBridgeAdapter.toLocation(location));
+        player.teleport(BukkitConversionHelper.toLocation(location));
     }
 
     @Override
@@ -71,11 +71,11 @@ public class BukkitOnlinePlayer implements OnlinePlayer {
 
     @Override
     public World getWorld() {
-        return BukkitAdapter.toWorld(player.getWorld());
+        return CoreConversionHelper.toWorld(player.getWorld());
     }
 
     @Override
     public Position getPosition() {
-        return BukkitAdapter.toPosition(player.getLocation());
+        return CoreConversionHelper.toPosition(player.getLocation());
     }
 }

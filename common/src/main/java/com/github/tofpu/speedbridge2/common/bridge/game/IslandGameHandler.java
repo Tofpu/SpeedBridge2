@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.common.bridge.game;
 
-import com.github.tofpu.speedbridge2.common.ArenaAdapter;
+import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.bridge.game.state.BasicStateProvider;
 import com.github.tofpu.speedbridge2.common.bridge.game.state.GameStateHandler;
 import com.github.tofpu.speedbridge2.common.game.land.arena.IslandSchematic;
@@ -22,17 +22,17 @@ import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class IslandGameHandler extends GameHandler<OnlinePlayer, IslandGameData> {
-    private final ArenaAdapter arenaAdapter;
+    private final PlatformArenaAdapter arenaAdapter;
     private final LandController landController;
     private final SchematicHandler schematicHandler;
     private final GameStateHandler gameStateHandler;
     private final BasicStateProvider basicStateProvider;
 
-    public static IslandGameHandler create(BasicStateProvider basicStateProvider, GameStateHandler gameStateHandler, ArenaAdapter arenaAdapter, LandController landController, SchematicHandler schematicHandler) {
+    public static IslandGameHandler create(BasicStateProvider basicStateProvider, GameStateHandler gameStateHandler, PlatformArenaAdapter arenaAdapter, LandController landController, SchematicHandler schematicHandler) {
         return new IslandGameHandler(basicStateProvider, gameStateHandler, arenaAdapter, landController, schematicHandler);
     }
 
-    private IslandGameHandler(BasicStateProvider basicStateProvider, GameStateHandler gameStateHandler, ArenaAdapter arenaAdapter, LandController landController, SchematicHandler schematicHandler) {
+    private IslandGameHandler(BasicStateProvider basicStateProvider, GameStateHandler gameStateHandler, PlatformArenaAdapter arenaAdapter, LandController landController, SchematicHandler schematicHandler) {
         this.basicStateProvider = basicStateProvider;
         this.gameStateHandler = gameStateHandler;
         this.arenaAdapter = arenaAdapter;

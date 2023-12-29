@@ -1,8 +1,8 @@
 package com.github.tofpu.speedbridge2.bukkit.plugin;
 
-import com.github.tofpu.speedbridge2.common.ArenaAdapter;
+import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.CommonApplication;
-import com.github.tofpu.speedbridge2.PlayerAdapter;
+import com.github.tofpu.speedbridge2.PlatformPlayerAdapter;
 import com.github.tofpu.speedbridge2.CoreApplication;
 import com.github.tofpu.speedbridge2.bukkit.bootstrap.PluginBootstrap;
 import com.github.tofpu.speedbridge2.bukkit.bootstrap.game.GameListener;
@@ -93,7 +93,7 @@ public class BukkitPlugin extends JavaPlugin {
         return coreApplication.serviceManager().get(clazz);
     }
 
-    public PlayerAdapter playerAdapter() {
+    public PlatformPlayerAdapter playerAdapter() {
         return bootstrap.playerAdapter();
     }
 
@@ -105,7 +105,7 @@ public class BukkitPlugin extends JavaPlugin {
         return commonApplication.gameHandler();
     }
 
-    public ArenaAdapter arenaAdapter() {
+    public PlatformArenaAdapter arenaAdapter() {
         return bootstrap.arenaAdapter();
     }
 

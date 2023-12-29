@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.bukkit.adapter;
+package com.github.tofpu.speedbridge2.bukkit.helper;
 
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.Position;
@@ -6,7 +6,7 @@ import com.github.tofpu.speedbridge2.object.Vector;
 import com.github.tofpu.speedbridge2.object.World;
 import io.tofpu.multiworldedit.VectorWrapper;
 
-public class BukkitAdapter {
+public class CoreConversionHelper {
 
     public static World toWorld(org.bukkit.World world) {
         if (world == null) return null;

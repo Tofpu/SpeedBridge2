@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.common.game;
 
-import com.github.tofpu.speedbridge2.common.ArenaAdapter;
+import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
 import com.github.tofpu.speedbridge2.common.bridge.game.BridgeGameHandlerBuilder;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandArenaManager;
@@ -36,7 +36,7 @@ public class GameHandlerTest {
     private final DatabaseService databaseService = new DatabaseService();
     private final EventDispatcherService eventDispatcherService = spy(new EventDispatcherService());
     private final LobbyService lobbyService = new LobbyService(databaseService, eventDispatcherService);
-    private final ArenaAdapter arenaAdapter = ArenaAdapter.simple(new World());
+    private final PlatformArenaAdapter arenaAdapter = PlatformArenaAdapter.simple(new World());
     private final IslandGameHandler gameHandler = BridgeGameHandlerBuilder.newBuilder(arenaAdapter)
             .coreStateProvider(PlatformGameAdapter.empty(), lobbyService)
             .gameStateProvider(PlatformGameAdapter.empty(), eventDispatcherService, new BridgeScoreService(eventDispatcherService, new ScoreRepository(databaseService)))

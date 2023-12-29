@@ -32,19 +32,19 @@ public class CommonApplication {
     }
 
     public void enable(CommonBootstrap bootStrap) {
-        ArenaAdapter arenaAdapter = bootStrap.arenaAdapter();
+        PlatformArenaAdapter arenaAdapter = bootStrap.arenaAdapter();
         schematicHandler = SchematicHandler.load(bootStrap.schematicFolder(), arenaAdapter.schematicResolver(), arenaAdapter.schematicPredicate());
 
         initGame(bootStrap.gameAdapter(), arenaAdapter, speedBridge.serviceManager());
         initSetupGame(arenaAdapter, speedBridge.serviceManager());
     }
 
-    private void initSetupGame(ArenaAdapter arenaAdapter, ServiceManager serviceManager) {
+    private void initSetupGame(PlatformArenaAdapter arenaAdapter, ServiceManager serviceManager) {
         BridgeSetupHandler setupHandler = new BridgeSetupHandler(serviceManager.get(IslandService.class), serviceManager.get(LobbyService.class), arenaAdapter, schematicHandler);
         setupController = new IslandSetupController(setupHandler);
     }
 
-    private void initGame(PlatformGameAdapter gameAdapter, ArenaAdapter arenaAdapter, ServiceManager serviceManager) {
+    private void initGame(PlatformGameAdapter gameAdapter, PlatformArenaAdapter arenaAdapter, ServiceManager serviceManager) {
         arenaAdapter.resetAndLoadGameWorld();
         gameHandler = BridgeGameHandlerBuilder.newBuilder(arenaAdapter)
                 .coreStateProvider(gameAdapter, serviceManager.get(LobbyService.class))

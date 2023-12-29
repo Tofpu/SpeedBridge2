@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.bukkit.island.setup;
 
-import com.github.tofpu.speedbridge2.bukkit.adapter.BukkitAdapter;
+import com.github.tofpu.speedbridge2.bukkit.helper.CoreConversionHelper;
 import com.github.tofpu.speedbridge2.common.bridge.setup.IslandSetupController;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,6 +23,6 @@ public class IslandSetupListener implements Listener {
             return;
         }
 
-        setupHandler.setOrigin(playerId, BukkitAdapter.toLocation(event.getPlayer().getLocation()));
+        setupHandler.setOrigin(playerId, CoreConversionHelper.toLocation(event.getPlayer().getLocation()));
     }
 }

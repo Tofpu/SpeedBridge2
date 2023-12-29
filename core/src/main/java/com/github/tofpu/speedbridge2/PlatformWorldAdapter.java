@@ -2,7 +2,7 @@ package com.github.tofpu.speedbridge2;
 
 import com.github.tofpu.speedbridge2.object.World;
 
-public interface WorldAdapter {
+public interface PlatformWorldAdapter {
 
     World provideWorld(final String worldName);
 

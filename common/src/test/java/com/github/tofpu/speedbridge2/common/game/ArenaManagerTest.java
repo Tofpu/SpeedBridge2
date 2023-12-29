@@ -1,7 +1,6 @@
 package com.github.tofpu.speedbridge2.common.game;
 
-import com.github.tofpu.speedbridge2.common.ArenaAdapter;
-import com.github.tofpu.speedbridge2.common.game.ClipboardPaster;
+import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.game.land.arena.IslandSchematic;
 import com.github.tofpu.speedbridge2.common.game.land.Land;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandArenaManager;
@@ -15,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ArenaManagerTest {
     private final SchematicResolver schematicResolver = SchematicResolver.empty();
-    private final IslandArenaManager arenaManager = new IslandArenaManager(ArenaAdapter.simple(new World(), ClipboardPaster.empty(), schematicResolver));
+    private final IslandArenaManager arenaManager = new IslandArenaManager(PlatformArenaAdapter.simple(new World(), ClipboardPaster.empty(), schematicResolver));
 
     @Test
     void island_reserve_test() {

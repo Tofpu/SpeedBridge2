@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.bukkit.listener;
 
-import com.github.tofpu.speedbridge2.PlayerAdapter;
+import com.github.tofpu.speedbridge2.PlatformPlayerAdapter;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import org.bukkit.event.EventHandler;
@@ -10,11 +10,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerConnectionListener implements Listener {
 
-    private final PlayerAdapter playerAdapter;
+    private final PlatformPlayerAdapter playerAdapter;
     private final EventDispatcherService dispatcherService;
 
-    public PlayerConnectionListener(PlayerAdapter playerAdapter,
-        EventDispatcherService dispatcherService) {
+    public PlayerConnectionListener(PlatformPlayerAdapter playerAdapter,
+                                    EventDispatcherService dispatcherService) {
         this.playerAdapter = playerAdapter;
         this.dispatcherService = dispatcherService;
     }

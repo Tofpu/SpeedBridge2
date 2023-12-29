@@ -6,16 +6,16 @@ import com.github.tofpu.speedbridge2.common.schematic.SchematicResolver;
 
 import java.util.function.Predicate;
 
-public interface ArenaAdapter {
-    static ArenaAdapter simple(World gameWorld, ClipboardPaster clipboardPaster, SchematicResolver schematicResolver, Predicate<String> schematicPredicate) {
+public interface PlatformArenaAdapter {
+    static PlatformArenaAdapter simple(World gameWorld, ClipboardPaster clipboardPaster, SchematicResolver schematicResolver, Predicate<String> schematicPredicate) {
         return new SimpleArenaAdapter(gameWorld, clipboardPaster, schematicResolver, schematicPredicate);
     }
 
-    static ArenaAdapter simple(World gameWorld, ClipboardPaster clipboardPaster, SchematicResolver schematicResolver) {
+    static PlatformArenaAdapter simple(World gameWorld, ClipboardPaster clipboardPaster, SchematicResolver schematicResolver) {
         return simple(gameWorld, clipboardPaster, schematicResolver, s -> false);
     }
 
-    static ArenaAdapter simple(World gameWorld) {
+    static PlatformArenaAdapter simple(World gameWorld) {
         return simple(gameWorld, ClipboardPaster.empty(), SchematicResolver.empty());
     }
 
@@ -27,7 +27,7 @@ public interface ArenaAdapter {
 
     Predicate<String> schematicPredicate();
 
-    class SimpleArenaAdapter implements ArenaAdapter {
+    class SimpleArenaAdapter implements PlatformArenaAdapter {
         private final World gameWorld;
         private final ClipboardPaster clipboardPaster;
         private final SchematicResolver schematicResolver;

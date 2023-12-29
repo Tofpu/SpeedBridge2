@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.common.game.land.arena;
 
-import com.github.tofpu.speedbridge2.common.ArenaAdapter;
+import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.game.ArenaManager;
 import com.github.tofpu.speedbridge2.common.game.ClipboardPaster;
 import com.github.tofpu.speedbridge2.common.game.land.Land;
@@ -15,14 +15,14 @@ import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class BasicArenaManager implements ArenaManager {
-    protected final ArenaAdapter arenaAdapter;
+    protected final PlatformArenaAdapter arenaAdapter;
     protected final ClipboardPaster clipboardPaster;
     protected final Vector initialPosition;
 
     private final AtomicInteger offsetX;
     private final Queue<Land> landReserves;
 
-    public BasicArenaManager(ArenaAdapter arenaAdapter, Vector initialPosition) {
+    public BasicArenaManager(PlatformArenaAdapter arenaAdapter, Vector initialPosition) {
         this.arenaAdapter = arenaAdapter;
         this.clipboardPaster = arenaAdapter.clipboardPaster();
         this.initialPosition = initialPosition;

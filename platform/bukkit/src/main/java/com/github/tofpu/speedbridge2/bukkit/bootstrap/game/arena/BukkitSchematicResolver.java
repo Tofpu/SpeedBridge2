@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap.game.arena;
 
-import com.github.tofpu.speedbridge2.bukkit.adapter.BukkitAdapter;
+import com.github.tofpu.speedbridge2.bukkit.helper.CoreConversionHelper;
 import com.github.tofpu.speedbridge2.object.Vector;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicResolver;
 import io.tofpu.multiworldedit.ClipboardWrapper;
@@ -18,6 +18,6 @@ public class BukkitSchematicResolver implements SchematicResolver {
     @Override
     public Vector origin(File schematicFile) {
         ClipboardWrapper clipboardWrapper = multiWorldEdit.read(schematicFile);
-        return BukkitAdapter.toVector(clipboardWrapper.getOrigin());
+        return CoreConversionHelper.toVector(clipboardWrapper.getOrigin());
     }
 }

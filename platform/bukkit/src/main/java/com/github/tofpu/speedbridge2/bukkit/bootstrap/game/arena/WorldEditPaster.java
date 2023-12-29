@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap.game.arena;
 
-import com.github.tofpu.speedbridge2.bukkit.adapter.SpeedBridgeAdapter;
+import com.github.tofpu.speedbridge2.bukkit.helper.BukkitConversionHelper;
 import com.github.tofpu.speedbridge2.common.game.ClipboardPaster;
 import com.github.tofpu.speedbridge2.common.game.land.arena.RegionInfo;
 import com.github.tofpu.speedbridge2.object.Position;
@@ -40,7 +40,7 @@ public class WorldEditPaster extends ClipboardPaster {
     @Override
     public void paste(File schematicFile, Position position) {
         ClipboardWrapper schematic = multiWorldEdit.read(schematicFile);
-        BukkitWorld world = new BukkitWorld(SpeedBridgeAdapter.toWorld(position.getWorld()));
+        BukkitWorld world = new BukkitWorld(BukkitConversionHelper.toWorld(position.getWorld()));
         try (final EditSessionWrapper editSessionWrapper = multiWorldEdit
                 .create(world, -1)) {
             final Clipboard schematicClipboard = schematic.to();
@@ -60,7 +60,7 @@ public class WorldEditPaster extends ClipboardPaster {
 
     @Override
     public void clear(Vector minPoint, Vector maxPoint, World world) {
-        org.bukkit.World bukkitWorld = SpeedBridgeAdapter.toWorld(world);
+        org.bukkit.World bukkitWorld = BukkitConversionHelper.toWorld(world);
         for (int x = (int) minPoint.x(); x < maxPoint.x(); x++) {
             for (int y = (int) minPoint.y(); y < maxPoint.y(); y++) {
                 for (int z = (int) minPoint.z(); z < maxPoint.z(); z++) {
