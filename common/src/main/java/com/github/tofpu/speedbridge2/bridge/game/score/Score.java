@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.bridge.score;
+package com.github.tofpu.speedbridge2.bridge.game.score;
 
 import lombok.Data;
 import org.hibernate.annotations.Type;

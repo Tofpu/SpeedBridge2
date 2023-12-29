@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.bridge.setup;
 
-import com.github.tofpu.speedbridge2.bridge.core.GamePlayer;
+import com.github.tofpu.speedbridge2.game.GamePlayer;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 
 public class SetupPlayer extends GamePlayer {

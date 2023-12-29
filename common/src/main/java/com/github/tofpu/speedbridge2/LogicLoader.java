@@ -2,7 +2,7 @@ package com.github.tofpu.speedbridge2;
 
 import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandlerBuilder;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGameHandler;
-import com.github.tofpu.speedbridge2.bridge.score.BridgeScoreService;
+import com.github.tofpu.speedbridge2.bridge.game.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.bridge.setup.BridgeSetupHandler;
 import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupController;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;

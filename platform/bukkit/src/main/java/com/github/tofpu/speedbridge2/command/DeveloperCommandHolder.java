@@ -1,10 +1,10 @@
 package com.github.tofpu.speedbridge2.command;
 
 import com.github.tofpu.speedbridge2.ArenaAdapter;
-import com.github.tofpu.speedbridge2.bridge.IslandSchematic;
-import com.github.tofpu.speedbridge2.bridge.core.arena.ArenaManager;
+import com.github.tofpu.speedbridge2.game.land.arena.IslandSchematic;
+import com.github.tofpu.speedbridge2.game.ArenaManager;
 import com.github.tofpu.speedbridge2.island.Island;
-import com.github.tofpu.speedbridge2.bridge.Land;
+import com.github.tofpu.speedbridge2.game.land.Land;
 import com.github.tofpu.speedbridge2.island.IslandService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;

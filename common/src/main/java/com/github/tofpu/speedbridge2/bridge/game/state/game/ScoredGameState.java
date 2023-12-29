@@ -1,15 +1,15 @@
 package com.github.tofpu.speedbridge2.bridge.game.state.game;
 
-import com.github.tofpu.speedbridge2.bridge.core.state.StartGameState;
+import com.github.tofpu.speedbridge2.game.state.StartGameState;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGame;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGameData;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGamePlayer;
 import com.github.tofpu.speedbridge2.bridge.game.event.PlayerScoredEvent;
 import com.github.tofpu.speedbridge2.bridge.game.state.GameStateHandler;
 import com.github.tofpu.speedbridge2.bridge.game.state.generic.BridgeGameState;
-import com.github.tofpu.speedbridge2.bridge.score.BridgeScoreService;
+import com.github.tofpu.speedbridge2.bridge.game.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
-import com.github.tofpu.speedbridge2.bridge.core.Game;
+import com.github.tofpu.speedbridge2.game.Game;
 
 import java.util.IllegalFormatException;
 

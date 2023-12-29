@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.bridge.score;
+package com.github.tofpu.speedbridge2.bridge.game.score;
 
 import com.github.tofpu.speedbridge2.event.Listener;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventListener;

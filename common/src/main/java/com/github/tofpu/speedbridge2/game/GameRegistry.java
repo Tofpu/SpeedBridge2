@@ -1,6 +1,6 @@
-package com.github.tofpu.speedbridge2.bridge.core;
+package com.github.tofpu.speedbridge2.game;
 
-import com.github.tofpu.speedbridge2.bridge.core.state.StopGameState;
+import com.github.tofpu.speedbridge2.game.state.StopGameState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

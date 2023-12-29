@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.bridge.core;
+package com.github.tofpu.speedbridge2.game;
 
 import java.util.UUID;
 

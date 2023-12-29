@@ -6,7 +6,7 @@ import com.github.tofpu.speedbridge2.bridge.game.IslandGameData;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGamePlayer;
 import com.github.tofpu.speedbridge2.bridge.game.state.game.IslandResetGameState;
 import com.github.tofpu.speedbridge2.bridge.game.state.generic.BridgeGameState;
-import com.github.tofpu.speedbridge2.bridge.core.Game;
+import com.github.tofpu.speedbridge2.game.Game;
 
 class GamePrepareState implements BridgeGameState {
     private final PlatformGameAdapter gameAdapter;

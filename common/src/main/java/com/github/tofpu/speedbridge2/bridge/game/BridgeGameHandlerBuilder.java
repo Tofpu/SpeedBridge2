@@ -2,11 +2,11 @@ package com.github.tofpu.speedbridge2.bridge.game;
 
 import com.github.tofpu.speedbridge2.ArenaAdapter;
 import com.github.tofpu.speedbridge2.PlatformGameAdapter;
-import com.github.tofpu.speedbridge2.bridge.LandController;
+import com.github.tofpu.speedbridge2.game.land.LandController;
 import com.github.tofpu.speedbridge2.bridge.game.state.GameStateHandler;
 import com.github.tofpu.speedbridge2.bridge.game.state.basic.BridgeBasicStateProvider;
 import com.github.tofpu.speedbridge2.bridge.game.state.game.BridgeGameStateProvider;
-import com.github.tofpu.speedbridge2.bridge.score.BridgeScoreService;
+import com.github.tofpu.speedbridge2.bridge.game.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.schematic.SchematicHandler;

@@ -1,14 +1,15 @@
 package com.github.tofpu.speedbridge2.bridge.setup;
 
 import com.github.tofpu.speedbridge2.ArenaAdapter;
-import com.github.tofpu.speedbridge2.bridge.IslandSchematic;
-import com.github.tofpu.speedbridge2.bridge.Land;
-import com.github.tofpu.speedbridge2.bridge.LandController;
-import com.github.tofpu.speedbridge2.bridge.core.GameHandler;
-import com.github.tofpu.speedbridge2.bridge.core.state.StartGameState;
-import com.github.tofpu.speedbridge2.bridge.core.state.StopGameState;
+import com.github.tofpu.speedbridge2.bridge.setup.state.SetupStateProvider;
+import com.github.tofpu.speedbridge2.game.GameHandler;
+import com.github.tofpu.speedbridge2.game.GameState;
+import com.github.tofpu.speedbridge2.game.land.Land;
+import com.github.tofpu.speedbridge2.game.land.LandController;
+import com.github.tofpu.speedbridge2.game.land.arena.IslandSchematic;
+import com.github.tofpu.speedbridge2.game.state.StartGameState;
+import com.github.tofpu.speedbridge2.game.state.StopGameState;
 import com.github.tofpu.speedbridge2.island.Island;
-import com.github.tofpu.speedbridge2.bridge.core.GameState;
 import com.github.tofpu.speedbridge2.island.IslandService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.Location;
@@ -22,17 +23,17 @@ import java.util.UUID;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class BridgeSetupHandler extends GameHandler<OnlinePlayer, IslandSetupData> {
     private final IslandService islandService;
-    private final LobbyService lobbyService;
     private final ArenaAdapter arenaAdapter;
     private final LandController landController;
     private final SchematicHandler schematicHandler;
+    private final SetupStateProvider stateProvider;
 
     public BridgeSetupHandler(IslandService islandService, LobbyService lobbyService, ArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
         this.islandService = islandService;
-        this.lobbyService = lobbyService;
         this.arenaAdapter = arenaAdapter;
         this.landController = new LandController(new SetupArenaManager(arenaAdapter));
         this.schematicHandler = schematicHandler;
+        this.stateProvider = new SetupStateProvider(islandService, lobbyService, landController);
     }
 
     public void start(final OnlinePlayer player, final int slot, final String schematicName) {
@@ -55,7 +56,7 @@ public class BridgeSetupHandler extends GameHandler<OnlinePlayer, IslandSetupDat
     }
 
     public void setOrigin(UUID playerId, Location location) {
-        getSafe(playerId).dispatch(new SetOriginState(this, location));
+        getSafe(playerId).dispatch(stateProvider.originState(location));
     }
 
     @Override
@@ -65,11 +66,11 @@ public class BridgeSetupHandler extends GameHandler<OnlinePlayer, IslandSetupDat
 
     @Override
     protected StartGameState createStartState() {
-        return new BeginSetupState();
+        return stateProvider.startState();
     }
 
     @Override
     protected StopGameState createStopState() {
-        return new EndSetupState(islandService, lobbyService, landController);
+        return stateProvider.stopState();
     }
 }

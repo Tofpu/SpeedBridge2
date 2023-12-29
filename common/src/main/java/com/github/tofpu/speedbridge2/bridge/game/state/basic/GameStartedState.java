@@ -3,7 +3,7 @@ package com.github.tofpu.speedbridge2.bridge.game.state.basic;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGameData;
 import com.github.tofpu.speedbridge2.bridge.game.state.game.IslandResetGameState;
 import com.github.tofpu.speedbridge2.bridge.game.state.generic.BridgeStartedState;
-import com.github.tofpu.speedbridge2.bridge.core.Game;
+import com.github.tofpu.speedbridge2.game.Game;
 
 class GameStartedState extends BridgeStartedState {
     @Override

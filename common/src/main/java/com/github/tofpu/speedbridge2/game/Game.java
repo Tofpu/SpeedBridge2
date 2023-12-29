@@ -1,10 +1,9 @@
-package com.github.tofpu.speedbridge2.bridge.core;
+package com.github.tofpu.speedbridge2.game;
 
-import com.github.tofpu.speedbridge2.bridge.core.state.InitiateGameState;
+import com.github.tofpu.speedbridge2.game.state.InitiateGameState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Stack;
-import java.util.UUID;
 
 public class Game<D extends GameData> {
     private final D gameData;

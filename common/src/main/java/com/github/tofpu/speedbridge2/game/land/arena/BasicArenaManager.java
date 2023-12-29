@@ -1,8 +1,9 @@
-package com.github.tofpu.speedbridge2.bridge;
+package com.github.tofpu.speedbridge2.game.land.arena;
 
 import com.github.tofpu.speedbridge2.ArenaAdapter;
-import com.github.tofpu.speedbridge2.bridge.core.arena.ArenaManager;
-import com.github.tofpu.speedbridge2.bridge.core.arena.ClipboardPaster;
+import com.github.tofpu.speedbridge2.game.ArenaManager;
+import com.github.tofpu.speedbridge2.game.ClipboardPaster;
+import com.github.tofpu.speedbridge2.game.land.Land;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.object.Vector;

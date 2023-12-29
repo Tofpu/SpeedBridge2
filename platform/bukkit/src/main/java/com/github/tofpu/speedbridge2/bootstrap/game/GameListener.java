@@ -3,7 +3,7 @@ package com.github.tofpu.speedbridge2.bootstrap.game;
 import com.github.tofpu.speedbridge2.adapter.BukkitAdapter;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGameData;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGameHandler;
-import com.github.tofpu.speedbridge2.bridge.core.Game;
+import com.github.tofpu.speedbridge2.game.Game;
 import com.github.tofpu.speedbridge2.object.Position;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

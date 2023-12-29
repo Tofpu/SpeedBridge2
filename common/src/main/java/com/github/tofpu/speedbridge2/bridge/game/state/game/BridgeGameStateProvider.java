@@ -4,7 +4,7 @@ import com.github.tofpu.speedbridge2.PlatformGameAdapter;
 import com.github.tofpu.speedbridge2.bridge.game.state.GameStateHandler;
 import com.github.tofpu.speedbridge2.bridge.game.state.GameStateProvider;
 import com.github.tofpu.speedbridge2.bridge.game.state.generic.BridgeGameState;
-import com.github.tofpu.speedbridge2.bridge.score.BridgeScoreService;
+import com.github.tofpu.speedbridge2.bridge.game.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import org.jetbrains.annotations.NotNull;
 

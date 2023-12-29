@@ -1,16 +1,18 @@
-package com.github.tofpu.speedbridge2.bridge.setup;
+package com.github.tofpu.speedbridge2.bridge.setup.state;
 
-import com.github.tofpu.speedbridge2.bridge.core.state.StartGameState;
-import com.github.tofpu.speedbridge2.bridge.core.Game;
-import com.github.tofpu.speedbridge2.bridge.core.GameState;
+import com.github.tofpu.speedbridge2.bridge.setup.BridgeSetupHandler;
+import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupData;
+import com.github.tofpu.speedbridge2.game.state.StartGameState;
+import com.github.tofpu.speedbridge2.game.Game;
+import com.github.tofpu.speedbridge2.game.GameState;
 import com.github.tofpu.speedbridge2.object.Location;
 
 class SetOriginState implements GameState<IslandSetupData> {
-    private final BridgeSetupHandler setupHandler;
+    private final SetupStateProvider stateHandler;
     private final Location origin;
 
-    SetOriginState(BridgeSetupHandler setupHandler, Location origin) {
-        this.setupHandler = setupHandler;
+    SetOriginState(SetupStateProvider stateHandler, Location origin) {
+        this.stateHandler = stateHandler;
         this.origin = origin;
     }
 
@@ -21,8 +23,7 @@ class SetOriginState implements GameState<IslandSetupData> {
                 .setYaw(origin.getYaw()).setPitch(origin.getPitch());
         data.origin(subtracted);
         System.out.println("Setting island's setup location to " + subtracted);
-        setupHandler.stop(data.player().id());
-
+        game.dispatch(stateHandler.stopState());
     }
 
     @Override

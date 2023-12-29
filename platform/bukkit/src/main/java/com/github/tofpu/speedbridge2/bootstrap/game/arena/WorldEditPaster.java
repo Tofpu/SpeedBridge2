@@ -1,8 +1,8 @@
 package com.github.tofpu.speedbridge2.bootstrap.game.arena;
 
 import com.github.tofpu.speedbridge2.adapter.SpeedBridgeAdapter;
-import com.github.tofpu.speedbridge2.bridge.core.arena.ClipboardPaster;
-import com.github.tofpu.speedbridge2.bridge.RegionInfo;
+import com.github.tofpu.speedbridge2.game.ClipboardPaster;
+import com.github.tofpu.speedbridge2.game.land.arena.RegionInfo;
 import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.object.Vector;
 import com.github.tofpu.speedbridge2.object.World;

@@ -1,5 +1,6 @@
-package com.github.tofpu.speedbridge2.bridge;
+package com.github.tofpu.speedbridge2.game.land;
 
+import com.github.tofpu.speedbridge2.game.land.arena.RegionInfo;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.object.Vector;

@@ -1,7 +1,9 @@
-package com.github.tofpu.speedbridge2.bridge.setup;
+package com.github.tofpu.speedbridge2.bridge.setup.state;
 
-import com.github.tofpu.speedbridge2.bridge.core.state.StartGameState;
-import com.github.tofpu.speedbridge2.bridge.core.Game;
+import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupData;
+import com.github.tofpu.speedbridge2.bridge.setup.SetupPlayer;
+import com.github.tofpu.speedbridge2.game.state.StartGameState;
+import com.github.tofpu.speedbridge2.game.Game;
 
 class BeginSetupState extends StartGameState<IslandSetupData> {
     @Override

@@ -1,9 +1,8 @@
 package com.github.tofpu.speedbridge2.game;
 
 import com.github.tofpu.speedbridge2.ArenaAdapter;
-import com.github.tofpu.speedbridge2.bridge.IslandSchematic;
-import com.github.tofpu.speedbridge2.bridge.Land;
-import com.github.tofpu.speedbridge2.bridge.core.arena.ClipboardPaster;
+import com.github.tofpu.speedbridge2.game.land.arena.IslandSchematic;
+import com.github.tofpu.speedbridge2.game.land.Land;
 import com.github.tofpu.speedbridge2.bridge.game.IslandArenaManager;
 import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.schematic.Schematic;

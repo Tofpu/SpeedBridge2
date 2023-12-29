@@ -1,16 +1,16 @@
 package com.github.tofpu.speedbridge2.bridge.game;
 
 import com.github.tofpu.speedbridge2.ArenaAdapter;
-import com.github.tofpu.speedbridge2.bridge.IslandSchematic;
-import com.github.tofpu.speedbridge2.bridge.Land;
-import com.github.tofpu.speedbridge2.bridge.LandController;
-import com.github.tofpu.speedbridge2.bridge.core.GameHandler;
-import com.github.tofpu.speedbridge2.bridge.core.state.StartGameState;
-import com.github.tofpu.speedbridge2.bridge.core.state.StopGameState;
+import com.github.tofpu.speedbridge2.game.land.arena.IslandSchematic;
+import com.github.tofpu.speedbridge2.game.land.Land;
+import com.github.tofpu.speedbridge2.game.land.LandController;
+import com.github.tofpu.speedbridge2.game.GameHandler;
+import com.github.tofpu.speedbridge2.game.state.StartGameState;
+import com.github.tofpu.speedbridge2.game.state.StopGameState;
 import com.github.tofpu.speedbridge2.bridge.game.state.BasicStateProvider;
 import com.github.tofpu.speedbridge2.bridge.game.state.GameStateHandler;
-import com.github.tofpu.speedbridge2.bridge.core.Game;
-import com.github.tofpu.speedbridge2.bridge.core.GameState;
+import com.github.tofpu.speedbridge2.game.Game;
+import com.github.tofpu.speedbridge2.game.GameState;
 import com.github.tofpu.speedbridge2.island.Island;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.schematic.Schematic;

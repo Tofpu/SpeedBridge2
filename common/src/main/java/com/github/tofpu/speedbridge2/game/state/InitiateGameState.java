@@ -1,8 +1,8 @@
-package com.github.tofpu.speedbridge2.bridge.core.state;
+package com.github.tofpu.speedbridge2.game.state;
 
-import com.github.tofpu.speedbridge2.bridge.core.Game;
-import com.github.tofpu.speedbridge2.bridge.core.GameData;
-import com.github.tofpu.speedbridge2.bridge.core.GameState;
+import com.github.tofpu.speedbridge2.game.Game;
+import com.github.tofpu.speedbridge2.game.GameData;
+import com.github.tofpu.speedbridge2.game.GameState;
 
 @SuppressWarnings("all")
 public class InitiateGameState<D extends GameData> implements GameState<D> {

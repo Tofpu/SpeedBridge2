@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.bridge.score;
+package com.github.tofpu.speedbridge2.bridge.game.score;
 
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import org.hibernate.Session;

@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.bridge.game.state.basic;
 
 import com.github.tofpu.speedbridge2.PlatformGameAdapter;
-import com.github.tofpu.speedbridge2.bridge.LandController;
+import com.github.tofpu.speedbridge2.game.land.LandController;
 import com.github.tofpu.speedbridge2.bridge.game.state.BasicStateProvider;
 import com.github.tofpu.speedbridge2.bridge.game.state.generic.BridgeGameState;
 import com.github.tofpu.speedbridge2.bridge.game.state.generic.BridgeStartedState;

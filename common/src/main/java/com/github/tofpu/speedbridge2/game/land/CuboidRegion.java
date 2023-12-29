@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.bridge;
+package com.github.tofpu.speedbridge2.game.land;
 
 import com.github.tofpu.speedbridge2.object.Vector;
 

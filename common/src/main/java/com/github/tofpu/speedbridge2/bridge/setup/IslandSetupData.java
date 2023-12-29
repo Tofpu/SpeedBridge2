@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.bridge.setup;
 
-import com.github.tofpu.speedbridge2.bridge.Land;
-import com.github.tofpu.speedbridge2.bridge.core.GameData;
+import com.github.tofpu.speedbridge2.game.land.Land;
+import com.github.tofpu.speedbridge2.game.GameData;
 import com.github.tofpu.speedbridge2.object.Location;
 
 public class IslandSetupData extends GameData {

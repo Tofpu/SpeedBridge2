@@ -1,12 +1,12 @@
 package com.github.tofpu.speedbridge2.bridge.game.state.basic;
 
 import com.github.tofpu.speedbridge2.PlatformGameAdapter;
-import com.github.tofpu.speedbridge2.bridge.LandController;
+import com.github.tofpu.speedbridge2.game.land.LandController;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGame;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGameData;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGamePlayer;
 import com.github.tofpu.speedbridge2.bridge.game.state.generic.BridgeStopState;
-import com.github.tofpu.speedbridge2.bridge.core.Game;
+import com.github.tofpu.speedbridge2.game.Game;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 
 class GameStopState extends BridgeStopState {

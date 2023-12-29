@@ -3,7 +3,7 @@ package com.github.tofpu.speedbridge2.bridge.game.state;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGameData;
 import com.github.tofpu.speedbridge2.bridge.game.state.basic.BridgeBasicStateProvider;
 import com.github.tofpu.speedbridge2.bridge.game.state.game.BridgeGameStateProvider;
-import com.github.tofpu.speedbridge2.bridge.core.Game;
+import com.github.tofpu.speedbridge2.game.Game;
 import org.jetbrains.annotations.NotNull;
 
 public class GameStateHandler {

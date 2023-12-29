@@ -1,6 +1,7 @@
-package com.github.tofpu.speedbridge2.bridge;
+package com.github.tofpu.speedbridge2.game.land;
 
-import com.github.tofpu.speedbridge2.bridge.core.arena.ArenaManager;
+import com.github.tofpu.speedbridge2.game.ArenaManager;
+import com.github.tofpu.speedbridge2.game.land.arena.IslandSchematic;
 import com.github.tofpu.speedbridge2.object.World;
 
 import java.util.HashMap;
