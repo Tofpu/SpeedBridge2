@@ -1,11 +1,12 @@
 package com.github.tofpu.speedbridge2.bridge.setup.state;
 
-import com.github.tofpu.speedbridge2.bridge.setup.BridgeSetupHandler;
 import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupData;
-import com.github.tofpu.speedbridge2.game.state.StartGameState;
 import com.github.tofpu.speedbridge2.game.Game;
 import com.github.tofpu.speedbridge2.game.GameState;
+import com.github.tofpu.speedbridge2.game.GameStateTag;
+import com.github.tofpu.speedbridge2.game.state.BasicGameStateTag;
 import com.github.tofpu.speedbridge2.object.Location;
+import org.jetbrains.annotations.NotNull;
 
 class SetOriginState implements GameState<IslandSetupData> {
     private final SetupStateProvider stateHandler;
@@ -28,7 +29,12 @@ class SetOriginState implements GameState<IslandSetupData> {
 
     @Override
     public boolean test(Game<IslandSetupData> game) {
-        System.out.println("gameState=" + game.state() + " (" + (game.state() instanceof StartGameState) + ")");
-        return game.state() instanceof StartGameState;
+        System.out.println("gameState=" + game.state() + " (" + (game.state().getClass().getSimpleName()) + ")");
+        return game.state().tag() == BasicGameStateTag.STARTED;
+    }
+
+    @Override
+    public @NotNull GameStateTag tag() {
+        return BridgeSetupStateTag.SET_ORIGIN;
     }
 }

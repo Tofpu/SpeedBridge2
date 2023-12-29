@@ -5,7 +5,7 @@ import com.github.tofpu.speedbridge2.bridge.setup.SetupPlayer;
 import com.github.tofpu.speedbridge2.game.state.StartGameState;
 import com.github.tofpu.speedbridge2.game.Game;
 
-class BeginSetupState extends StartGameState<IslandSetupData> {
+class StartSetupState extends StartGameState<IslandSetupData> {
     @Override
     public void apply(Game<IslandSetupData> game) {
         IslandSetupData data = game.data();

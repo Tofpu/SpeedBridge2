@@ -1,7 +1,6 @@
 package com.github.tofpu.speedbridge2.bridge.setup.state;
 
 import com.github.tofpu.speedbridge2.game.land.LandController;
-import com.github.tofpu.speedbridge2.game.state.StartGameState;
 import com.github.tofpu.speedbridge2.island.IslandService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.Location;
@@ -17,15 +16,15 @@ public class SetupStateProvider {
         this.landController = landController;
     }
 
-    public BeginSetupState startState() {
-        return new BeginSetupState();
+    public StartSetupState startState() {
+        return new StartSetupState();
     }
 
     public SetOriginState originState(Location location) {
         return new SetOriginState(this, location);
     }
 
-    public EndSetupState stopState() {
-        return new EndSetupState(islandService, lobbyService, landController);
+    public StopSetupState stopState() {
+        return new StopSetupState(islandService, lobbyService, landController);
     }
 }

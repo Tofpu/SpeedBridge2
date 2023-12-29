@@ -8,12 +8,12 @@ import com.github.tofpu.speedbridge2.game.state.StopGameState;
 import com.github.tofpu.speedbridge2.island.IslandService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 
-class EndSetupState extends StopGameState<IslandSetupData> {
+class StopSetupState extends StopGameState<IslandSetupData> {
     private final IslandService islandService;
     private final LobbyService lobbyService;
     private final LandController landController;
 
-    EndSetupState(IslandService islandService, LobbyService lobbyService, LandController landController) {
+    StopSetupState(IslandService islandService, LobbyService lobbyService, LandController landController) {
         this.islandService = islandService;
         this.lobbyService = lobbyService;
         this.landController = landController;
