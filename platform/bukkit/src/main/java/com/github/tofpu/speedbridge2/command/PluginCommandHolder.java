@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.command;
 
 import com.github.tofpu.speedbridge2.BukkitMessages;
-import com.github.tofpu.speedbridge2.bridge.game.Island;
+import com.github.tofpu.speedbridge2.island.Island;
 import com.github.tofpu.speedbridge2.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.bridge.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.bridge.score.Score;
@@ -74,6 +74,8 @@ public class PluginCommandHolder {
             player.sendMessage("You are not in a setup!");
             return;
         }
+
+//        islandSetupService.getSetupSlot(player.id())
         islandSetupService.cancel(player);
     }
 
@@ -85,7 +87,7 @@ public class PluginCommandHolder {
             player.sendMessage("Unknown island: " + slot);
             return;
         }
-        gameHandler.start(player, island);
+        gameHandler.createAndStart(player, island);
     }
 
     @Subcommand("game end")

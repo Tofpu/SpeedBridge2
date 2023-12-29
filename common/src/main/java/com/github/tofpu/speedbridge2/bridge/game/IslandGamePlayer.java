@@ -10,15 +10,9 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = false)
 public class IslandGamePlayer extends GamePlayer {
     private final OnlinePlayer player;
-//    private final int slot;
 
     public IslandGamePlayer(OnlinePlayer player) {
         super(player.id());
         this.player = player;
-//        this.slot = slot;
     }
-
-//    public int slot() {
-//        return slot;
-//    }
 }

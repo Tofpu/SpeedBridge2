@@ -1,26 +1,26 @@
 package com.github.tofpu.speedbridge2.bridge.core;
 
 import com.github.tofpu.speedbridge2.bridge.core.state.InitiateGameState;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Stack;
+import java.util.UUID;
 
-public class Game<H extends GameHandler<?, ?, ?>, G extends Game<H, G>> {
-    private final H handler;
-    private final GamePlayer gamePlayer;
-    private final Stack<GameState<H, G>> lastStateDispatch = new Stack<>();
+public class Game<D extends GameData> {
+    private final D gameData;
+    private @NotNull GameState<D> gameState = new InitiateGameState<>();
 
-    private GameState<H, G> gameState = new InitiateGameState();
+    private final Stack<GameState<D>> lastStateDispatch = new Stack<>();
 
-    public Game(H handler, GamePlayer gamePlayer) {
-        this.handler = handler;
-        this.gamePlayer = gamePlayer;
+    public Game(@NotNull D gameData) {
+        this.gameData = gameData;
     }
 
-    public void dispatch(GameState<H, G> newState) {
-        if (newState.test((G) this)) {
+    public void dispatch(@NotNull GameState<D> newState) {
+        if (newState.test(this)) {
             System.out.printf("Switching to %s state from %s state%n", name(newState), name(gameState));
             lastStateDispatch.add(newState);
-            newState.apply(handler, (G) this);
+            newState.apply(this);
         } else {
             throw new RuntimeException(String.format("%s cannot be applied on %s state", name(newState), name(gameState)));
         }
@@ -32,20 +32,15 @@ public class Game<H extends GameHandler<?, ?, ?>, G extends Game<H, G>> {
         }
     }
 
-    private static String name(GameState<?, ?> newState) {
+    private String name(GameState<D> newState) {
         return newState.getClass().getSimpleName();
     }
 
-    public interface GameState<H extends GameHandler<?, ?, ?>, G extends Game<H, ?>> {
-        void apply(final H handler, final G game);
-        boolean test(final G game);
+    public D data() {
+        return gameData;
     }
 
-    public GameState<H, G> gameState() {
+    public GameState<D> state() {
         return gameState;
-    }
-
-    public GamePlayer gamePlayer() {
-        return gamePlayer;
     }
 }

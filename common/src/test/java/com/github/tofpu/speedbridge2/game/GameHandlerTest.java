@@ -1,13 +1,14 @@
 package com.github.tofpu.speedbridge2.game;
 
 import com.github.tofpu.speedbridge2.ArenaAdapter;
-import com.github.tofpu.speedbridge2.GameAdapter;
+import com.github.tofpu.speedbridge2.PlatformGameAdapter;
 import com.github.tofpu.speedbridge2.bridge.game.*;
 import com.github.tofpu.speedbridge2.bridge.game.event.PlayerScoredEvent;
 import com.github.tofpu.speedbridge2.bridge.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.bridge.score.ScoreRepository;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
+import com.github.tofpu.speedbridge2.island.Island;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.Position;
@@ -32,10 +33,11 @@ public class GameHandlerTest {
     private final DatabaseService databaseService = new DatabaseService();
     private final EventDispatcherService eventDispatcherService = spy(new EventDispatcherService());
     private final LobbyService lobbyService = new LobbyService(databaseService, eventDispatcherService);
-    private final IslandGameHandler gameHandler = BridgeGameHandlerBuilder.newBuilder()
-            .coreStateProvider(GameAdapter.empty(), lobbyService)
-            .gameStateProvider(GameAdapter.empty(), eventDispatcherService, new BridgeScoreService(eventDispatcherService, new ScoreRepository(databaseService)))
-            .build(ArenaAdapter.simple(new World()), SchematicHandler.load(new File("test-resources/island/schematics"), SchematicResolver.empty(), s -> true));
+    private final ArenaAdapter arenaAdapter = ArenaAdapter.simple(new World());
+    private final IslandGameHandler gameHandler = BridgeGameHandlerBuilder.newBuilder(arenaAdapter)
+            .coreStateProvider(PlatformGameAdapter.empty(), lobbyService)
+            .gameStateProvider(PlatformGameAdapter.empty(), eventDispatcherService, new BridgeScoreService(eventDispatcherService, new ScoreRepository(databaseService)))
+            .build(arenaAdapter, SchematicHandler.load(new File("test-resources/island/schematics"), SchematicResolver.empty(), s -> true));
     private final IslandArenaManager arenaManager = (IslandArenaManager) gameHandler.landController().arenaManager();
 
     @BeforeEach
@@ -53,8 +55,8 @@ public class GameHandlerTest {
         Island island = new Island(1, new Location(world, 1, 1, 1, 1, 1), "test.schematic");
         OnlinePlayer player = mockPlayer(playerId);
 
-        gameHandler.start(player, island);
-        Assertions.assertThrows(Exception.class, () -> gameHandler.start(player, island), "A player cannot be in two games simultaneously");
+        gameHandler.createAndStart(player, island);
+        Assertions.assertThrows(Exception.class, () -> gameHandler.createAndStart(player, island), "A player cannot be in two games simultaneously");
 
         Assertions.assertTrue(gameHandler.isInGame(playerId), "The player should have been in a game");
         Assertions.assertDoesNotThrow(() -> gameHandler.stop(playerId), "An error was thrown while attempting to stop an ongoing game");
@@ -72,10 +74,10 @@ public class GameHandlerTest {
         Island island = new Island(1, new Location(world, 1, 1, 1, 1, 1), "test.schematic");
         OnlinePlayer player = mockPlayer(playerId);
 
-        gameHandler.start(player, island);
-        IslandGame game = (IslandGame) gameHandler.get(playerId);
+        gameHandler.createAndStart(player, island);
+        IslandGame game = (IslandGame) gameHandler.getByPlayer(playerId);
 
-        game.beginTimer(true);
+        game.data().beginTimer(true);
 
         gameHandler.scoredGame(playerId);
         verify(eventDispatcherService, times(1)).dispatchIfApplicable(isA(PlayerScoredEvent.class));

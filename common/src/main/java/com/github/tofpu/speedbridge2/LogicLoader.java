@@ -1,13 +1,13 @@
 package com.github.tofpu.speedbridge2;
 
-import com.github.tofpu.speedbridge2.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.bridge.game.BridgeGameHandlerBuilder;
+import com.github.tofpu.speedbridge2.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.bridge.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.bridge.setup.BridgeSetupHandler;
+import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupController;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.island.IslandService;
-import com.github.tofpu.speedbridge2.bridge.setup.IslandSetupController;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.schematic.SchematicHandler;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
@@ -49,9 +49,9 @@ public class LogicLoader {
         setupController = new IslandSetupController(setupHandler);
     }
 
-    private void initGame(GameAdapter gameAdapter, ArenaAdapter arenaAdapter, ServiceManager serviceManager) {
+    private void initGame(PlatformGameAdapter gameAdapter, ArenaAdapter arenaAdapter, ServiceManager serviceManager) {
         arenaAdapter.resetAndLoadGameWorld();
-        gameHandler = BridgeGameHandlerBuilder.newBuilder()
+        gameHandler = BridgeGameHandlerBuilder.newBuilder(arenaAdapter)
                 .coreStateProvider(gameAdapter, serviceManager.get(LobbyService.class))
                 .gameStateProvider(gameAdapter, serviceManager.get(EventDispatcherService.class), serviceManager.get(BridgeScoreService.class))
                 .build(arenaAdapter, schematicHandler);

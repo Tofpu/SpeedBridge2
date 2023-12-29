@@ -4,7 +4,6 @@ import com.github.tofpu.speedbridge2.ArenaAdapter;
 import com.github.tofpu.speedbridge2.bridge.IslandSchematic;
 import com.github.tofpu.speedbridge2.bridge.Land;
 import com.github.tofpu.speedbridge2.bridge.core.arena.ClipboardPaster;
-import com.github.tofpu.speedbridge2.bridge.game.Island;
 import com.github.tofpu.speedbridge2.bridge.game.IslandArenaManager;
 import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.schematic.Schematic;

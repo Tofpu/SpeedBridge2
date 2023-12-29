@@ -41,8 +41,8 @@ dependencies {
         exclude("com.sk89q", "worldedit")
     }
 
-    implementation("com.github.Revxrsal.Lamp:common:3.1.5")
-    implementation("com.github.Revxrsal.Lamp:bukkit:3.1.5")
+    implementation("com.github.Revxrsal.Lamp:common:3.1.8")
+    implementation("com.github.Revxrsal.Lamp:bukkit:3.1.8")
 
     testImplementation("com.github.Tofpu:v1.8-mockbukkit:v1.8-spigot-SNAPSHOT")
 }

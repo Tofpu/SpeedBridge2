@@ -5,54 +5,41 @@ import com.github.tofpu.speedbridge2.bridge.core.state.StopGameState;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
 
-public abstract class GameHandler<P extends OnlinePlayer, H extends GameHandler<P, H, G>, G extends Game<H, G>> {
-    private final Map<UUID, Game<H, G>> ongoingGameMap = new HashMap<>();
+public abstract class GameHandler<P extends OnlinePlayer, D extends GameData> {
+    protected final GameRegistry<Game<D>> gameRegistry = new GameRegistry<>();
 
     protected void assertPlayerIsNotInGame(P p) {
         requireState(!isInGame(p.id()), "%s is already in a game!", p.id());
     }
 
-    protected void internalStart(final P p, final Game<H, G> game) {
+    protected void prepareAndRegister(final P p, final Game<D> game) {
         assertPlayerIsNotInGame(p);
 
-        Game.GameState<H, G> gameState = createPrepareState();
+        GameState<D> gameState = createPrepareState();
         if (gameState == null) {
             gameState = createStartState();
         }
         requireState(gameState != null, "Prepare or start game state must be provided for the game to be fully functional.");
         game.dispatch(gameState);
 
-        this.ongoingGameMap.put(p.id(), game);
+        gameRegistry.register(p.id(), game);
     }
 
     public boolean isInGame(final UUID playerId) {
-        return get(playerId) != null;
+        return gameRegistry.isInGame(playerId);
     }
 
-    public Game<H, G> get(final UUID playerId) {
-        Game<H, G> game = this.ongoingGameMap.get(playerId);
-        if (game == null) {
-            return null;
-        }
-
-        // todo: log this as automatic game correction; as this is abnormal behavior
-        if (game.gameState() instanceof StopGameState) {
-            this.ongoingGameMap.remove(playerId);
-            return null;
-        }
-
-        return game;
+    public Game<D> getByPlayer(final UUID playerId) {
+        return gameRegistry.getByPlayer(playerId);
     }
 
     @NotNull
-    public Game<H, G> getSafe(final UUID playerId) {
-        Game<H, G> game = get(playerId);
+    public Game<D> getSafe(final UUID playerId) {
+        Game<D> game = getByPlayer(playerId);
         if (game == null) {
             throw new IllegalStateException(String.format("Player %s is not in a game!", playerId));
         }
@@ -62,16 +49,16 @@ public abstract class GameHandler<P extends OnlinePlayer, H extends GameHandler<
     public void stop(final UUID playerId) {
         requireState(isInGame(playerId), "%s is not in a game!", playerId);
 
-        Game<H, G> game = get(playerId);
+        Game<D> game = getByPlayer(playerId);
 
-        StopGameState<H, G> stopState = createStopState();
+        StopGameState<D> stopState = createStopState();
         requireState(stopState != null, "StopGameState implementation must be provided on GameHandler!");
         game.dispatch(stopState);
 
-        ongoingGameMap.remove(playerId);
+        gameRegistry.removeByPlayer(playerId);
     }
 
-    protected abstract Game.GameState<H, G> createPrepareState();
-    protected abstract StartGameState<H, G> createStartState();
-    protected abstract StopGameState<H, G> createStopState();
+    protected abstract GameState<D> createPrepareState();
+    protected abstract StartGameState<D> createStartState();
+    protected abstract StopGameState<D> createStopState();
 }

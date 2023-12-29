@@ -1,9 +1,11 @@
 package com.github.tofpu.speedbridge2.bridge.game;
 
 import com.github.tofpu.speedbridge2.ArenaAdapter;
-import com.github.tofpu.speedbridge2.GameAdapter;
-import com.github.tofpu.speedbridge2.bridge.game.state.core.BridgeCoreStateProvider;
-import com.github.tofpu.speedbridge2.bridge.game.state.custom.BridgeGameStateProvider;
+import com.github.tofpu.speedbridge2.PlatformGameAdapter;
+import com.github.tofpu.speedbridge2.bridge.LandController;
+import com.github.tofpu.speedbridge2.bridge.game.state.GameStateHandler;
+import com.github.tofpu.speedbridge2.bridge.game.state.basic.BridgeBasicStateProvider;
+import com.github.tofpu.speedbridge2.bridge.game.state.game.BridgeGameStateProvider;
 import com.github.tofpu.speedbridge2.bridge.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
@@ -13,30 +15,36 @@ import java.util.Objects;
 
 public class BridgeGameHandlerBuilder {
 
-    private BridgeCoreStateProvider coreStateProvider;
-    private BridgeGameStateProvider gameStateProvider;
+    private final LandController landController;
+    private BridgeBasicStateProvider coreStateProvider;
+    private BridgeGameStateProvider.Builder gameStateProviderBuilder;
 
-    public static BridgeGameHandlerBuilder newBuilder() {
-        return new BridgeGameHandlerBuilder();
+    public static BridgeGameHandlerBuilder newBuilder(ArenaAdapter arenaAdapter) {
+        return new BridgeGameHandlerBuilder(new LandController(new IslandArenaManager(arenaAdapter)));
     }
 
-    private BridgeGameHandlerBuilder() {
+    private BridgeGameHandlerBuilder(LandController landController) {
         // prevents direct initialization
+        this.landController = landController;
     }
 
-    public BridgeGameHandlerBuilder coreStateProvider(GameAdapter gameAdapter, LobbyService lobbyService) {
-        coreStateProvider = new BridgeCoreStateProvider(gameAdapter, lobbyService);
+    public BridgeGameHandlerBuilder coreStateProvider(PlatformGameAdapter gameAdapter, LobbyService lobbyService) {
+        coreStateProvider = new BridgeBasicStateProvider(gameAdapter, lobbyService, landController);
         return this;
     }
 
-    public BridgeGameHandlerBuilder gameStateProvider(GameAdapter gameAdapter, EventDispatcherService eventDispatcherService, BridgeScoreService scoreService) {
-        gameStateProvider = new BridgeGameStateProvider(gameAdapter, eventDispatcherService, scoreService);
+    public BridgeGameHandlerBuilder gameStateProvider(PlatformGameAdapter gameAdapter, EventDispatcherService eventDispatcherService, BridgeScoreService scoreService) {
+        gameStateProviderBuilder = BridgeGameStateProvider.newBuilder()
+                .setGameAdapter(gameAdapter)
+                .setEventDispatcherService(eventDispatcherService)
+                .setScoreService(scoreService);
         return this;
     }
 
     public IslandGameHandler build(ArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
         Objects.requireNonNull(coreStateProvider, "BridgeCoreStateProvider must not be null.");
-        Objects.requireNonNull(gameStateProvider, "BridgeGameStateProvider must not be null.");
-        return IslandGameHandler.create(coreStateProvider, gameStateProvider, arenaAdapter, schematicHandler);
+        Objects.requireNonNull(gameStateProviderBuilder, "BridgeGameStateProvider must not be null.");
+        GameStateHandler gameStateHandler = new GameStateHandler(coreStateProvider, gameStateProviderBuilder);
+        return IslandGameHandler.create(coreStateProvider, gameStateHandler, arenaAdapter, schematicHandler);
     }
 }

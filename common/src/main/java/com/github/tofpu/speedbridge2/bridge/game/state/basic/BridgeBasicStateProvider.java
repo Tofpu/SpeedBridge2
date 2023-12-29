@@ -1,19 +1,22 @@
-package com.github.tofpu.speedbridge2.bridge.game.state.core;
+package com.github.tofpu.speedbridge2.bridge.game.state.basic;
 
-import com.github.tofpu.speedbridge2.GameAdapter;
-import com.github.tofpu.speedbridge2.bridge.game.state.CoreStateProvider;
+import com.github.tofpu.speedbridge2.PlatformGameAdapter;
+import com.github.tofpu.speedbridge2.bridge.LandController;
+import com.github.tofpu.speedbridge2.bridge.game.state.BasicStateProvider;
 import com.github.tofpu.speedbridge2.bridge.game.state.generic.BridgeGameState;
 import com.github.tofpu.speedbridge2.bridge.game.state.generic.BridgeStartedState;
 import com.github.tofpu.speedbridge2.bridge.game.state.generic.BridgeStopState;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;
 
-public class BridgeCoreStateProvider implements CoreStateProvider {
-    private final GameAdapter gameAdapter;
+public class BridgeBasicStateProvider implements BasicStateProvider {
+    private final PlatformGameAdapter gameAdapter;
     private final LobbyService lobbyService;
+    private final LandController landController;
 
-    public BridgeCoreStateProvider(GameAdapter gameAdapter, LobbyService lobbyService) {
+    public  BridgeBasicStateProvider(PlatformGameAdapter gameAdapter, LobbyService lobbyService, LandController landController) {
         this.gameAdapter = gameAdapter;
         this.lobbyService = lobbyService;
+        this.landController = landController;
     }
 
     @Override
@@ -28,6 +31,6 @@ public class BridgeCoreStateProvider implements CoreStateProvider {
 
     @Override
     public BridgeStopState stopState() {
-        return new IslandStopStateState(lobbyService, gameAdapter);
+        return new GameStopState(lobbyService, gameAdapter, landController);
     }
 }

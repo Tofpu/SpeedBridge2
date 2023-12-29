@@ -1,6 +1,5 @@
 package com.github.tofpu.speedbridge2.bridge.setup;
 
-import com.github.tofpu.speedbridge2.bridge.setup.BridgeSetupHandler;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.service.Service;

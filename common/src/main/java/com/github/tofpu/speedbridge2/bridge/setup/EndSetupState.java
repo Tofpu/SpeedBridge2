@@ -1,8 +1,6 @@
 package com.github.tofpu.speedbridge2.bridge.setup;
 
 import com.github.tofpu.speedbridge2.bridge.LandController;
-import com.github.tofpu.speedbridge2.bridge.core.Game;
-import com.github.tofpu.speedbridge2.bridge.core.GameHandler;
 import com.github.tofpu.speedbridge2.bridge.core.state.StopGameState;
 import com.github.tofpu.speedbridge2.island.IslandService;
 import com.github.tofpu.speedbridge2.lobby.LobbyService;

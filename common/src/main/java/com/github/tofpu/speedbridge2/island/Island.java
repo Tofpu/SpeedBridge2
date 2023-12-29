@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.bridge.game;
+package com.github.tofpu.speedbridge2.island;
 
 import com.github.tofpu.speedbridge2.object.Location;
 import lombok.EqualsAndHashCode;

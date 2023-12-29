@@ -1,13 +1,13 @@
 package com.github.tofpu.speedbridge2.bridge.setup;
 
-import com.github.tofpu.speedbridge2.bridge.core.Game;
-import com.github.tofpu.speedbridge2.bridge.core.GameHandler;
 import com.github.tofpu.speedbridge2.bridge.core.state.StartGameState;
+import com.github.tofpu.speedbridge2.bridge.core.Game;
 
-class BeginSetupState extends StartGameState<BridgeSetupHandler, IslandSetup> {
+class BeginSetupState extends StartGameState<IslandSetupData> {
     @Override
-    public void apply(BridgeSetupHandler handler, IslandSetup game) {
-        SetupPlayer gamePlayer = (SetupPlayer) game.gamePlayer();
-        gamePlayer.player().teleport(game.land().getIslandLocation());
+    public void apply(Game<IslandSetupData> game) {
+        IslandSetupData data = game.data();
+        SetupPlayer gamePlayer = data.player();
+        gamePlayer.player().teleport(data.land().getIslandLocation());
     }
 }
