@@ -28,15 +28,15 @@ public class IslandGameHandler extends GameHandler<OnlinePlayer, IslandGameData>
     private final GameStateHandler gameStateHandler;
     private final BasicStateProvider basicStateProvider;
 
-    public static IslandGameHandler create(BasicStateProvider basicStateProvider, GameStateHandler gameStateHandler, ArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
-        return new IslandGameHandler(basicStateProvider, gameStateHandler, arenaAdapter, schematicHandler);
+    public static IslandGameHandler create(BasicStateProvider basicStateProvider, GameStateHandler gameStateHandler, ArenaAdapter arenaAdapter, LandController landController, SchematicHandler schematicHandler) {
+        return new IslandGameHandler(basicStateProvider, gameStateHandler, arenaAdapter, landController, schematicHandler);
     }
 
-    private IslandGameHandler(BasicStateProvider basicStateProvider, GameStateHandler gameStateHandler, ArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
+    private IslandGameHandler(BasicStateProvider basicStateProvider, GameStateHandler gameStateHandler, ArenaAdapter arenaAdapter, LandController landController, SchematicHandler schematicHandler) {
         this.basicStateProvider = basicStateProvider;
         this.gameStateHandler = gameStateHandler;
         this.arenaAdapter = arenaAdapter;
-        this.landController = new LandController(new IslandArenaManager(arenaAdapter));
+        this.landController = landController;
         this.schematicHandler = schematicHandler;
     }
 

@@ -45,6 +45,6 @@ public class BridgeGameHandlerBuilder {
         Objects.requireNonNull(coreStateProvider, "BridgeCoreStateProvider must not be null.");
         Objects.requireNonNull(gameStateProviderBuilder, "BridgeGameStateProvider must not be null.");
         GameStateHandler gameStateHandler = new GameStateHandler(coreStateProvider, gameStateProviderBuilder);
-        return IslandGameHandler.create(coreStateProvider, gameStateHandler, arenaAdapter, schematicHandler);
+        return IslandGameHandler.create(coreStateProvider, gameStateHandler, arenaAdapter, landController, schematicHandler);
     }
 }
