@@ -1,5 +1,6 @@
 package com.github.tofpu.speedbridge2.common.bridge.setup;
 
+import com.github.tofpu.speedbridge2.common.game.Game;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.service.Service;
@@ -23,6 +24,14 @@ public class IslandSetupController implements Service {
 
     public boolean isInSetup(UUID playerId) {
         return setupHandler.isInGame(playerId);
+    }
+
+    public int getSetupSlot(UUID playerId) {
+        Game<IslandSetupData> dataGame = setupHandler.getByPlayer(playerId);
+        if (dataGame == null) {
+            return -1;
+        }
+        return dataGame.data().slot();
     }
 
     public void setOrigin(UUID playerId, Location location) {

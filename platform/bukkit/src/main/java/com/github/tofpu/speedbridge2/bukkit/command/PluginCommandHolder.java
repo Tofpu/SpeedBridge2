@@ -15,6 +15,8 @@ import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.exception.CommandErrorException;
+import revxrsal.commands.exception.SendMessageException;
 
 import java.util.Map;
 
@@ -44,7 +46,7 @@ public class PluginCommandHolder {
     @Subcommand("lobby")
     public void lobby(final OnlinePlayer player) {
         if (!lobbyService.isLobbyAvailable()) {
-            player.sendMessage("Lobby is not currently available!");
+            player.sendMessage(BukkitMessages.LOBBY_NOT_AVAILABLE);
             return;
         }
         player.teleport(lobbyService.position());
@@ -53,38 +55,40 @@ public class PluginCommandHolder {
     @Subcommand("setlobby")
     public void setLobby(final OnlinePlayer player) {
         lobbyService.updateLocation(player.getPosition());
-        player.sendMessage("Lobby location was successfully set.");
+        player.sendMessage(BukkitMessages.LOBBY_SET);
     }
 
     @Subcommand("game setup create")
     @AutoComplete("* @schematics")
     public void gameSetup(final OnlinePlayer player, final int slot, final String schematicName) {
-        if (!requireLobbyToBeAvailable(player)) return;
+        requireLobbyToBeAvailable();
         if (islandSetupService.isInSetup(player.id())) {
-            player.sendMessage("You are already in a setup!");
+            player.sendMessage(BukkitMessages.GAME_SETUP_PLAYER_BUSY);
             return;
         }
         islandSetupService.begin(player, slot, schematicName);
+        player.sendMessage(BukkitMessages.GAME_SETUP_CREATED, slot);
     }
 
     @Subcommand("game setup cancel")
     public void gameSetupCancel(final OnlinePlayer player) {
-        if (!requireLobbyToBeAvailable(player)) return;
-        if (!islandSetupService.isInSetup(player.id())) {
-            player.sendMessage("You are not in a setup!");
+        requireLobbyToBeAvailable();
+        int setupSlot = islandSetupService.getSetupSlot(player.id());
+        if (setupSlot == -1) {
+            player.sendMessage(BukkitMessages.GAME_SETUP_PLAYER_MISSING);
             return;
         }
 
-//        islandSetupService.getSetupSlot(player.id())
         islandSetupService.cancel(player);
+        player.sendMessage(BukkitMessages.GAME_SETUP_CANCELLED, setupSlot);
     }
 
     @Subcommand("game join")
     public void gameJoin(final OnlinePlayer player, final int slot) {
-        if (!requireLobbyToBeAvailable(player)) return;
+        requireLobbyToBeAvailable();
         Island island = islandService.get(slot);
         if (island == null) {
-            player.sendMessage("Unknown island: " + slot);
+            player.sendMessage(BukkitMessages.LOBBY_UNKNOWN, slot);
             return;
         }
         gameHandler.createAndStart(player, island);
@@ -92,12 +96,13 @@ public class PluginCommandHolder {
 
     @Subcommand("game end")
     public void gameEnd(final OnlinePlayer player) {
-        if (!requireLobbyToBeAvailable(player)) return;
+        requireLobbyToBeAvailable();
         if (!gameHandler.isInGame(player.id())) {
-            player.sendMessage("You are not playing!");
+            player.sendMessage(BukkitMessages.NOT_IN_GAME);
             return;
         }
         gameHandler.stop(player.id());
+        player.sendMessage(BukkitMessages.LEFT_GAME);
     }
 
     @Subcommand("score")
@@ -155,11 +160,9 @@ public class PluginCommandHolder {
         player.sendMessage(BukkitMessages.SUCCESSFUL_RELOAD);
     }
 
-    public boolean requireLobbyToBeAvailable(final OnlinePlayer player) {
+    public void requireLobbyToBeAvailable() {
         if (!lobbyService.isLobbyAvailable()) {
-            player.sendMessage("Lobby is not currently available!");
-            return false;
+            throw new CommandErrorException(BukkitMessages.LOBBY_NOT_AVAILABLE.defaultMessage());
         }
-        return true;
     }
 }

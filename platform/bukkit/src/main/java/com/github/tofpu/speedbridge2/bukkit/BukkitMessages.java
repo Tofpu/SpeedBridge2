@@ -5,6 +5,15 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
 public enum BukkitMessages implements ConfigurableMessage {
+    LEFT_GAME("left_game", ChatColor.GREEN + "You left the game!"),
+    LOBBY_SET("lobby_set", ChatColor.GREEN + "Lobby location was successfully set."),
+    NOT_IN_GAME("not_in_game", ChatColor.RED + "You must be in a game to leave."),
+    LOBBY_NOT_AVAILABLE("lobby_not_available", ChatColor.RED + "Lobby is not currently available!"),
+    LOBBY_UNKNOWN("lobby_unknown", ChatColor.RED + "Unknown island: %s".replace("%s", BukkitMessages.wrapValueWithYellow())),
+    GAME_SETUP_CANCELLED("game_setup_cancelled", ChatColor.GREEN + "You have successfully cancelled your setup of %s".replace("%s", BukkitMessages.wrapValueWithYellow())),
+    GAME_SETUP_PLAYER_MISSING("game_setup_player_missing", ChatColor.RED + "You must be in a setup to leave."),
+    GAME_SETUP_PLAYER_BUSY("game_setup_player_busy", ChatColor.RED + "You are already setting up an island."),
+    GAME_SETUP_CREATED("game_setup_created", ChatColor.YELLOW + "You are now setting up %s island.".replace("%s", BukkitMessages.wrapValueWithYellow())),
     PERSONAL_BEST("personal_best", ChatColor.YELLOW + "A best score of %s on %s island!".replace("%s", BukkitMessages.wrapValueWithYellow())),
     PERSONAL_BEST_GLOBAL_TITLE("personal_best_global_title", ChatColor.YELLOW + String.valueOf(ChatColor.BOLD) + "Best scores on all islands"),
     PERSONAL_BEST_GLOBAL_BODY("personal_best_global_body", ChatColor.DARK_GRAY + String.valueOf(ChatColor.BOLD) + "| " + ChatColor.DARK_GRAY + "-> %s on island %s".replace("%s", wrapValueWithYellow())),
