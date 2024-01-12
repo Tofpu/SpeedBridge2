@@ -21,7 +21,7 @@ class GamePrepareState implements BridgeGameState {
     @Override
     public void apply(Game<IslandGameData> game) {
         IslandGamePlayer player = game.data().gamePlayer();
-        gameAdapter.prepareGame((IslandGame) game, player);
+        gameAdapter.onGamePrepare((IslandGame) game, player);
         game.dispatch(new GameStartedState());
     }
 

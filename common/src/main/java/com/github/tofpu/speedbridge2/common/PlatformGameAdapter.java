@@ -7,22 +7,22 @@ public interface PlatformGameAdapter {
     static PlatformGameAdapter empty() {
         return new PlatformGameAdapter() {
             @Override
-            public void prepareGame(IslandGame game, IslandGamePlayer player) {
+            public void onGamePrepare(IslandGame game, IslandGamePlayer player) {
             }
 
             @Override
-            public void cleanGame(IslandGame game, IslandGamePlayer player) {
+            public void onGameReset(IslandGame game, IslandGamePlayer player) {
             }
 
             @Override
-            public void resetGame(IslandGame game, IslandGamePlayer player) {
+            public void onGameStop(IslandGame game, IslandGamePlayer player) {
             }
         };
     }
 
-    void prepareGame(IslandGame game, IslandGamePlayer player);
+    void onGamePrepare(IslandGame game, IslandGamePlayer player);
 
-    void cleanGame(IslandGame game, IslandGamePlayer player);
+    void onGameReset(IslandGame game, IslandGamePlayer player);
 
-    void resetGame(IslandGame game, IslandGamePlayer player);
+    void onGameStop(IslandGame game, IslandGamePlayer player);
 }

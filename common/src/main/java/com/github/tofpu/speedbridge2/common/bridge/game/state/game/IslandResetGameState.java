@@ -27,7 +27,7 @@ class IslandResetGameState implements BridgeGameState {
         IslandGamePlayer player = game.data().gamePlayer();
 
         System.out.println("IslandResetGameState -- resetting game");
-        gameAdapter.resetGame((IslandGame) game, player);
+        gameAdapter.onGameReset((IslandGame) game, player);
 
         System.out.println("IslandResetGameState -- dispatching GameStartedState");
         stateHandler.triggerStartedState(game);

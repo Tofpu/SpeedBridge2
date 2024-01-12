@@ -28,7 +28,7 @@ class GameStopState extends BridgeStopState {
         gamePlayer.getPlayer().teleport(lobbyService.position());
         landController.releaseSpot(gamePlayer.id());
 
-        gameAdapter.cleanGame((IslandGame) game, gamePlayer);
+        gameAdapter.onGameStop((IslandGame) game, gamePlayer);
         gamePlayer.getPlayer().sendMessage("Game ended within " + gameData.timerInSeconds() + " seconds, bravo!");
     }
 }

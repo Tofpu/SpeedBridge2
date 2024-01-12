@@ -16,17 +16,17 @@ import java.util.UUID;
 
 public class BukkitGameAdapter implements PlatformGameAdapter {
     @Override
-    public void prepareGame(IslandGame game, IslandGamePlayer player) {
+    public void onGamePrepare(IslandGame game, IslandGamePlayer player) {
         preparePlayer(game, player);
     }
 
     @Override
-    public void cleanGame(IslandGame game, IslandGamePlayer player) {
+    public void onGameStop(IslandGame game, IslandGamePlayer player) {
         clearGame(game);
     }
 
     @Override
-    public void resetGame(IslandGame game, IslandGamePlayer player) {
+    public void onGameReset(IslandGame game, IslandGamePlayer player) {
         clearGame(game);
         preparePlayer(game, player);
     }
