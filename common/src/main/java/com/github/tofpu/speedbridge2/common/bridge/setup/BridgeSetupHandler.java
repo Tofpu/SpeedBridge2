@@ -17,6 +17,7 @@ import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.common.schematic.Schematic;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
+import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 
 import java.util.UUID;
 
@@ -34,6 +35,10 @@ public class BridgeSetupHandler extends GameHandler<OnlinePlayer, IslandSetupDat
         this.landController = new LandController(new SetupArenaManager(arenaAdapter));
         this.schematicHandler = schematicHandler;
         this.stateProvider = new SetupStateProvider(islandService, lobbyService, landController);
+    }
+
+    public BridgeSetupHandler(ServiceManager serviceManager, PlatformArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
+        this(serviceManager.get(IslandService.class), serviceManager.get(LobbyService.class), arenaAdapter, schematicHandler);
     }
 
     public void start(final OnlinePlayer player, final int slot, final String schematicName) {

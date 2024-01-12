@@ -5,6 +5,7 @@ import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import com.github.tofpu.speedbridge2.configuration.service.PluginConfigTypes;
 import com.github.tofpu.speedbridge2.object.player.ConfigurableMessage;
 import com.github.tofpu.speedbridge2.service.LoadableService;
+import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 import com.github.tofpu.speedbridge2.util.ReflectionUtil;
 import io.github.tofpu.dynamicconfiguration.Configuration;
 import org.reflections.Reflections;
@@ -20,6 +21,10 @@ public class ConfigurableMessageService implements LoadableService {
 
     public ConfigurableMessageService(ConfigurationService configurationService) {
         this.configurationService = configurationService;
+    }
+
+    public ConfigurableMessageService(ServiceManager serviceManager) {
+        this(serviceManager.get(ConfigurationService.class));
     }
 
     @Override

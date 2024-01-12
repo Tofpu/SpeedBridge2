@@ -3,6 +3,7 @@ package com.github.tofpu.speedbridge2.common.island;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.service.LoadableService;
+import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,10 @@ public class IslandService implements LoadableService {
 
     public IslandService(DatabaseService databaseService) {
         this.databaseService = databaseService;
+    }
+
+    public IslandService(ServiceManager serviceManager) {
+        this(serviceManager.get(DatabaseService.class));
     }
 
     @Override

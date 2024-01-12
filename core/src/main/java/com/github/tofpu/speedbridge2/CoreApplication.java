@@ -35,7 +35,7 @@ public class CoreApplication {
             return new DatabaseService(DatabaseMapper.map(database));
         });
         this.serviceManager.register(new EventDispatcherService());
-        this.serviceManager.registerAndLoad(new ConfigurableMessageService(serviceManager.get(ConfigurationService.class)));
+        this.serviceManager.registerAndLoad(new ConfigurableMessageService(serviceManager));
     }
 
     public void enable(@NotNull CoreBootstrap bootstrap) {

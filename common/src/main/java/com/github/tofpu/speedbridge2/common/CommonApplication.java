@@ -27,7 +27,7 @@ public class CommonApplication {
 
     public void load() {
         speedBridge.serviceManager().register(LobbyService.class, LobbyService::new);
-        speedBridge.serviceManager().register(IslandService.class, serviceManager -> new IslandService(serviceManager.get(DatabaseService.class)));
+        speedBridge.serviceManager().register(IslandService.class, IslandService::new);
         speedBridge.serviceManager().register(BridgeScoreService.class, BridgeScoreService::new);
     }
 
@@ -40,15 +40,15 @@ public class CommonApplication {
     }
 
     private void initSetupGame(PlatformArenaAdapter arenaAdapter, ServiceManager serviceManager) {
-        BridgeSetupHandler setupHandler = new BridgeSetupHandler(serviceManager.get(IslandService.class), serviceManager.get(LobbyService.class), arenaAdapter, schematicHandler);
+        BridgeSetupHandler setupHandler = new BridgeSetupHandler(serviceManager, arenaAdapter, schematicHandler);
         setupController = new IslandSetupController(setupHandler);
     }
 
     private void initGame(PlatformGameAdapter gameAdapter, PlatformArenaAdapter arenaAdapter, ServiceManager serviceManager) {
         arenaAdapter.resetAndLoadGameWorld();
         gameHandler = BridgeGameHandlerBuilder.newBuilder(arenaAdapter)
-                .coreStateProvider(gameAdapter, serviceManager.get(LobbyService.class))
-                .gameStateProvider(gameAdapter, serviceManager.get(EventDispatcherService.class), serviceManager.get(BridgeScoreService.class))
+                .coreStateProvider(gameAdapter, serviceManager)
+                .gameStateProvider(gameAdapter, serviceManager)
                 .build(arenaAdapter, schematicHandler);
     }
 

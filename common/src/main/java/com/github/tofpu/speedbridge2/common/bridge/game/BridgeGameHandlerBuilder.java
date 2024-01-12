@@ -10,6 +10,7 @@ import com.github.tofpu.speedbridge2.common.bridge.game.state.basic.BridgeBasicS
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
+import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 
 import java.util.Objects;
 
@@ -26,6 +27,14 @@ public class BridgeGameHandlerBuilder {
     private BridgeGameHandlerBuilder(LandController landController) {
         // prevents direct initialization
         this.landController = landController;
+    }
+
+    public BridgeGameHandlerBuilder coreStateProvider(PlatformGameAdapter gameAdapter, ServiceManager serviceManager) {
+        return coreStateProvider(gameAdapter, serviceManager.get(LobbyService.class));
+    }
+
+    public BridgeGameHandlerBuilder gameStateProvider(PlatformGameAdapter gameAdapter, ServiceManager serviceManager) {
+        return gameStateProvider(gameAdapter, serviceManager.get(EventDispatcherService.class), serviceManager.get(BridgeScoreService.class));
     }
 
     public BridgeGameHandlerBuilder coreStateProvider(PlatformGameAdapter gameAdapter, LobbyService lobbyService) {
