@@ -1,19 +1,20 @@
 package com.github.tofpu.speedbridge2.event;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventListener;
+import com.github.tofpu.speedbridge2.event.dispatcher.ListeningState;
 import com.github.tofpu.speedbridge2.event.event.PlayerJoinEvent;
 import com.github.tofpu.speedbridge2.event.event.PlayerLeaveEvent;
-import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 public class EventServiceTest {
 
@@ -49,11 +50,38 @@ public class EventServiceTest {
 
         dispatcherService.unregister(connectionListener.getClass());
         Assertions.assertFalse(
-            dispatcherService.isRegisteredListener(connectionListener.getClass()));
+                dispatcherService.isRegisteredListener(connectionListener.getClass()));
 
         dispatcherService.unsafeDispatch(new PlayerLeaveEvent(mock()));
         verify(messageListener, times(1)).on(any(PlayerLeaveEvent.class));
         verifyNoMoreInteractions(messageListener);
         verifyNoMoreInteractions(connectionListener);
+    }
+
+    @Test
+    void monitor_state_test() {
+        Queue<String> logs = new LinkedList<>();
+
+        Listener listeningListener = new Listener() {
+            @EventListener
+            void on(PlayerJoinEvent ignoredEvent) {
+                logs.add("listening");
+            }
+        };
+
+        Listener monitoringListener = new Listener() {
+            @EventListener(state = ListeningState.MONITORING)
+            void on(PlayerJoinEvent ignoredEvent) {
+                logs.add("monitoring");
+            }
+        };
+
+        dispatcherService.register(monitoringListener);
+        dispatcherService.register(listeningListener);
+        dispatcherService.dispatchIfApplicable(new PlayerJoinEvent(mock()));
+
+        assertEquals(2, logs.size());
+        assertEquals("listening", logs.poll());
+        assertEquals("monitoring", logs.poll());
     }
 }

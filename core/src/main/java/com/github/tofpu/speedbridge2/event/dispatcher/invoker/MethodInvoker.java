@@ -57,4 +57,12 @@ public class MethodInvoker implements ListenerInvoker {
     public String name() {
         return object.getClass().getSimpleName();
     }
+
+    public Object object() {
+        return object;
+    }
+
+    public Method method() {
+        return method;
+    }
 }

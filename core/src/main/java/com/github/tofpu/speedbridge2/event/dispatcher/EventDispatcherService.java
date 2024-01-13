@@ -1,22 +1,22 @@
 package com.github.tofpu.speedbridge2.event.dispatcher;
 
-import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
-
 import com.github.tofpu.speedbridge2.event.Event;
 import com.github.tofpu.speedbridge2.event.Listener;
-import com.github.tofpu.speedbridge2.event.dispatcher.invoker.ListenerInvoker;
 import com.github.tofpu.speedbridge2.event.dispatcher.invoker.MethodInvoker;
 import com.github.tofpu.speedbridge2.service.Service;
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-import org.jetbrains.annotations.NotNull;
+
+import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
 
 @SuppressWarnings("unused")
 public class EventDispatcherService implements Service {
 
-    private final Map<Class<? extends Event>, List<ListenerInvoker>> listenerMap = new HashMap<>();
+    private final Map<Class<? extends Event>, Invokers> listenerMap = new HashMap<>();
     private final Set<Class<Listener>> registeredListeners = new HashSet<>();
 
     @NotNull
@@ -31,17 +31,17 @@ public class EventDispatcherService implements Service {
     }
 
     public void dispatchIfApplicable(final Event event) {
-        List<ListenerInvoker> invokerList = this.listenerMap.getOrDefault(event.getClass(), Collections.emptyList());
-        if (invokerList.isEmpty()) return;
-        invokerList.forEach(listenerInvoker -> listenerInvoker.invoke(event));
+        Invokers invokers = this.listenerMap.getOrDefault(event.getClass(), Invokers.EMPTY);
+        invokers.dispatch(event);
     }
 
     public void unsafeDispatch(final Event event) {
         Class<? extends Event> eventClass = event.getClass();
-        requireState(isRegisteredEvent(eventClass), "There is no listener listening for event %s.",
-            eventClass.getSimpleName());
 
-        this.listenerMap.get(eventClass).forEach(listenerInvoker -> listenerInvoker.invoke(event));
+        Invokers invokers = this.listenerMap.get(eventClass);
+        requireState(invokers != null, "There is no listener listening for event %s.",
+            eventClass.getSimpleName());
+        invokers.dispatch(event);
     }
 
     public boolean isRegisteredEvent(Class<? extends Event> eventClass) {
@@ -55,17 +55,11 @@ public class EventDispatcherService implements Service {
             "There is already a registered %s listener.",
             listenerClass.getSimpleName());
 
-        Map<Class<Event>, Method> eventMap = getMethodMap(listenerClass);
+        Map<Class<Event>, Method> listeningMethods = getMethodMap(listenerClass);
 
-        eventMap.forEach((aClass, method) -> {
+        listeningMethods.forEach((eventClass, method) -> {
             MethodInvoker invoker = new MethodInvoker(listener, method);
-            this.listenerMap.compute(aClass, (ignored, invokers) -> {
-                if (invokers == null) {
-                    invokers = new ArrayList<>();
-                }
-                invokers.add(invoker);
-                return invokers;
-            });
+            this.listenerMap.computeIfAbsent(eventClass, aClass -> new Invokers()).add(invoker);
         });
         this.registeredListeners.add(listenerClass);
     }
@@ -92,9 +86,12 @@ public class EventDispatcherService implements Service {
         AtomicBoolean contains = new AtomicBoolean(false);
 
         getMethodMap(listenerClass).keySet().forEach(eventClass -> {
-            for (ListenerInvoker invoker : this.listenerMap.get(eventClass)) {
-                System.out.println(invoker.name() + " vs " + listenerClass);
-                if (listenerClass.getSimpleName().equals(invoker.name())) {
+            Invokers invokers = this.listenerMap.get(eventClass);
+            if (invokers == null) return;
+
+            for (String invokerListenerName : invokers.listenerNames()) {
+                System.out.println(invokerListenerName + " vs " + listenerClass);
+                if (listenerClass.getSimpleName().equals(invokerListenerName)) {
                     contains.set(true);
                     break;
                 }
