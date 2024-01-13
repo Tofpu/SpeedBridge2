@@ -26,6 +26,10 @@ public class CoreApplication {
         return instance.serviceManager.get(clazz);
     }
 
+    public static EventDispatcherService eventDispatcher() {
+        return getService(EventDispatcherService.class);
+    }
+
     public void load(final File pluginDirectory) {
         instance = this;
         this.serviceManager.registerAndLoad(new ConfigurationService(pluginDirectory));

@@ -39,7 +39,7 @@ public class GameHandlerTest {
     private final PlatformArenaAdapter arenaAdapter = PlatformArenaAdapter.simple(new World());
     private final IslandGameHandler gameHandler = BridgeGameHandlerBuilder.newBuilder(arenaAdapter)
             .coreStateProvider(PlatformGameAdapter.empty(), lobbyService)
-            .gameStateProvider(PlatformGameAdapter.empty(), eventDispatcherService, new BridgeScoreService(eventDispatcherService, new ScoreRepository(databaseService)))
+            .gameStateProvider(PlatformGameAdapter.empty(), new BridgeScoreService(eventDispatcherService, new ScoreRepository(databaseService)))
             .build(arenaAdapter, SchematicHandler.load(new File("test-resources/island/schematics"), SchematicResolver.empty(), s -> true));
     private final IslandArenaManager arenaManager = (IslandArenaManager) gameHandler.landController().arenaManager();
 

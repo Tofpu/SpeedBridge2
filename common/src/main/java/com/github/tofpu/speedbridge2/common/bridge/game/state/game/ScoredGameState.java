@@ -1,5 +1,6 @@
 package com.github.tofpu.speedbridge2.common.bridge.game.state.game;
 
+import com.github.tofpu.speedbridge2.CoreApplication;
 import com.github.tofpu.speedbridge2.common.bridge.game.state.BridgeGameStateTag;
 import com.github.tofpu.speedbridge2.common.game.GameStateTag;
 import com.github.tofpu.speedbridge2.common.game.state.BasicGameStateTag;
@@ -10,7 +11,6 @@ import com.github.tofpu.speedbridge2.common.bridge.game.event.PlayerScoredEvent;
 import com.github.tofpu.speedbridge2.common.bridge.game.state.GameStateHandler;
 import com.github.tofpu.speedbridge2.common.bridge.game.state.generic.BridgeGameState;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
-import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.common.game.Game;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,12 +18,10 @@ import java.util.IllegalFormatException;
 
 class ScoredGameState implements BridgeGameState {
     private final GameStateHandler stateHandler;
-    private final EventDispatcherService eventDispatcherService;
     private final BridgeScoreService scoreService;
 
-    public ScoredGameState(GameStateHandler stateHandler, EventDispatcherService eventDispatcherService, BridgeScoreService scoreService) {
+    public ScoredGameState(GameStateHandler stateHandler, BridgeScoreService scoreService) {
         this.stateHandler = stateHandler;
-        this.eventDispatcherService = eventDispatcherService;
         this.scoreService = scoreService;
     }
 
@@ -33,7 +31,7 @@ class ScoredGameState implements BridgeGameState {
         IslandGamePlayer player = data.gamePlayer();
 
         PlayerScoredEvent event = new PlayerScoredEvent(player, (IslandGame) game, data.timerInSeconds());
-        eventDispatcherService.dispatchIfApplicable(event);
+        CoreApplication.eventDispatcher().dispatchIfApplicable(event);
 
         if (event.cancelled()) {
             return;

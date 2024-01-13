@@ -34,7 +34,7 @@ public class BridgeGameHandlerBuilder {
     }
 
     public BridgeGameHandlerBuilder gameStateProvider(PlatformGameAdapter gameAdapter, ServiceManager serviceManager) {
-        return gameStateProvider(gameAdapter, serviceManager.get(EventDispatcherService.class), serviceManager.get(BridgeScoreService.class));
+        return gameStateProvider(gameAdapter, serviceManager.get(BridgeScoreService.class));
     }
 
     public BridgeGameHandlerBuilder coreStateProvider(PlatformGameAdapter gameAdapter, LobbyService lobbyService) {
@@ -42,10 +42,9 @@ public class BridgeGameHandlerBuilder {
         return this;
     }
 
-    public BridgeGameHandlerBuilder gameStateProvider(PlatformGameAdapter gameAdapter, EventDispatcherService eventDispatcherService, BridgeScoreService scoreService) {
+    public BridgeGameHandlerBuilder gameStateProvider(PlatformGameAdapter gameAdapter, BridgeScoreService scoreService) {
         gameStateProviderBuilder = BridgeGameStateProvider.newBuilder()
                 .setGameAdapter(gameAdapter)
-                .setEventDispatcherService(eventDispatcherService)
                 .setScoreService(scoreService);
         return this;
     }

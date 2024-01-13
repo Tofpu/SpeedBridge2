@@ -13,23 +13,21 @@ import java.util.Objects;
 public class BridgeGameStateProvider implements GameStateProvider {
     private final GameStateHandler stateHandler;
     private final PlatformGameAdapter gameAdapter;
-    private final EventDispatcherService eventDispatcherService;
     private final BridgeScoreService scoreService;
 
     public static BridgeGameStateProvider.Builder newBuilder() {
         return new Builder();
     }
 
-    private BridgeGameStateProvider(GameStateHandler stateHandler, PlatformGameAdapter gameAdapter, EventDispatcherService eventDispatcherService, BridgeScoreService scoreService) {
+    private BridgeGameStateProvider(GameStateHandler stateHandler, PlatformGameAdapter gameAdapter, BridgeScoreService scoreService) {
         this.stateHandler = stateHandler;
         this.gameAdapter = gameAdapter;
-        this.eventDispatcherService = eventDispatcherService;
         this.scoreService = scoreService;
     }
 
     @Override
     public BridgeGameState scoreState() {
-        return new ScoredGameState(stateHandler, eventDispatcherService, scoreService);
+        return new ScoredGameState(stateHandler, scoreService);
     }
 
     @Override
@@ -39,18 +37,12 @@ public class BridgeGameStateProvider implements GameStateProvider {
 
     public static class Builder {
         private PlatformGameAdapter gameAdapter;
-        private EventDispatcherService eventDispatcherService;
         private BridgeScoreService scoreService;
 
         private Builder() {}
 
         public Builder setGameAdapter(PlatformGameAdapter gameAdapter) {
             this.gameAdapter = gameAdapter;
-            return this;
-        }
-
-        public Builder setEventDispatcherService(EventDispatcherService eventDispatcherService) {
-            this.eventDispatcherService = eventDispatcherService;
             return this;
         }
 
@@ -61,9 +53,8 @@ public class BridgeGameStateProvider implements GameStateProvider {
 
         public BridgeGameStateProvider build(@NotNull GameStateHandler stateHandler) {
             Objects.requireNonNull(gameAdapter);
-            Objects.requireNonNull(eventDispatcherService);
             Objects.requireNonNull(scoreService);
-            return new BridgeGameStateProvider(stateHandler, gameAdapter, eventDispatcherService, scoreService);
+            return new BridgeGameStateProvider(stateHandler, gameAdapter, scoreService);
         }
     }
 }
