@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EventListener {
     ListeningState state() default ListeningState.LISTENING;
+    boolean ignoreCancelled() default false;
 }

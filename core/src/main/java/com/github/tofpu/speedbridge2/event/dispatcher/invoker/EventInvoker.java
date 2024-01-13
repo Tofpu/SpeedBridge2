@@ -2,7 +2,7 @@ package com.github.tofpu.speedbridge2.event.dispatcher.invoker;
 
 import com.github.tofpu.speedbridge2.event.Event;
 
-public interface ListenerInvoker {
+public interface EventInvoker {
 
     void invoke(final Event event);
 

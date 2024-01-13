@@ -84,4 +84,68 @@ public class EventServiceTest {
         assertEquals("listening", logs.poll());
         assertEquals("monitoring", logs.poll());
     }
+
+    @Test
+    void pass_in_cancelled_event_with_a_listener_that_excludes_cancelled_events() {
+        Queue<String> logs = new LinkedList<>();
+
+        Listener listener = new Listener() {
+            @EventListener(ignoreCancelled = true)
+            void on(AnEventThatIsCancellable ignoredEvent) {
+                logs.add("triggered");
+            }
+        };
+
+        dispatcherService.register(listener);
+        dispatcherService.dispatchIfApplicable(new AnEventThatIsCancellable(true));
+
+        assertEquals(0, logs.size());
+    }
+
+    @Test
+    void pass_in_cancellable_event_that_gets_cancelled_throughout_the_pipline_with_a_listener_that_excludes_cancelled_events() {
+        Queue<String> logs = new LinkedList<>();
+
+        Listener listenerThatCancelsEvents = new Listener() {
+            @EventListener
+            void on(AnEventThatIsCancellable ignoredEvent) {
+                logs.add("cancelling event");
+                ignoredEvent.cancel(true);
+            }
+        };
+
+        Listener ignoreCancelledEventListener = new Listener() {
+            @EventListener(ignoreCancelled = true)
+            void on(AnEventThatIsCancellable ignoredEvent) {
+                logs.add("triggered");
+            }
+        };
+
+        dispatcherService.register(listenerThatCancelsEvents);
+        dispatcherService.register(ignoreCancelledEventListener);
+        dispatcherService.dispatchIfApplicable(new AnEventThatIsCancellable());
+
+        assertEquals(1, logs.size());
+    }
+
+    static class AnEventThatIsCancellable extends Event implements Cancellable {
+        private boolean cancelled = false;
+
+        public AnEventThatIsCancellable(boolean cancelled) {
+            this.cancelled = cancelled;
+        }
+
+        public AnEventThatIsCancellable() {
+        }
+
+        @Override
+        public void cancel(boolean state) {
+            cancelled = state;
+        }
+
+        @Override
+        public boolean cancelled() {
+            return cancelled;
+        }
+    }
 }

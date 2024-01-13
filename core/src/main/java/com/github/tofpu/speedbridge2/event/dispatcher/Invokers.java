@@ -1,12 +1,10 @@
 package com.github.tofpu.speedbridge2.event.dispatcher;
 
 import com.github.tofpu.speedbridge2.event.Event;
-import com.github.tofpu.speedbridge2.event.Listener;
-import com.github.tofpu.speedbridge2.event.dispatcher.invoker.MethodInvoker;
+import com.github.tofpu.speedbridge2.event.dispatcher.invoker.EventInvoker;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -14,11 +12,11 @@ import java.util.function.Predicate;
 public class Invokers {
     public static final Invokers EMPTY = new Invokers();
 
-    private final List<MethodInvoker> listeningMethods = new ArrayList<>();
-    private final List<MethodInvoker> monitoringMethods = new ArrayList<>();
+    private final List<EventInvoker> listeningMethods = new ArrayList<>();
+    private final List<EventInvoker> monitoringMethods = new ArrayList<>();
 
-    public void add(MethodInvoker methodInvoker) {
-        EventListener annotation = methodInvoker.method().getAnnotation(EventListener.class);
+    public void add(ListenerInvokerWrapper methodInvoker) {
+        EventListener annotation = methodInvoker.eventListener();
         ListeningState state = annotation.state();
         if (state == ListeningState.LISTENING) {
             listeningMethods.add(methodInvoker);
@@ -34,7 +32,7 @@ public class Invokers {
         monitoringMethods.forEach(methodInvoker -> methodInvoker.invoke(event));
     }
 
-    public void removeIf(Predicate<MethodInvoker> filter) {
+    public void removeIf(Predicate<EventInvoker> filter) {
         listeningMethods.removeIf(filter);
         monitoringMethods.removeIf(filter);
     }
@@ -46,7 +44,7 @@ public class Invokers {
         return names;
     }
 
-    public void forEach(Consumer<MethodInvoker> action) {
+    public void forEach(Consumer<EventInvoker> action) {
         listeningMethods.forEach(action);
         monitoringMethods.forEach(action);
     }

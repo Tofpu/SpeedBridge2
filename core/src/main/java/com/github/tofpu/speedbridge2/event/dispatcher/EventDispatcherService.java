@@ -58,7 +58,8 @@ public class EventDispatcherService implements Service {
         Map<Class<Event>, Method> listeningMethods = getMethodMap(listenerClass);
 
         listeningMethods.forEach((eventClass, method) -> {
-            MethodInvoker invoker = new MethodInvoker(listener, method);
+            MethodInvoker methodInvoker = new MethodInvoker(listener, method);
+            ListenerInvokerWrapper invoker = new ListenerInvokerWrapper(methodInvoker, method);
             this.listenerMap.computeIfAbsent(eventClass, aClass -> new Invokers()).add(invoker);
         });
         this.registeredListeners.add(listenerClass);

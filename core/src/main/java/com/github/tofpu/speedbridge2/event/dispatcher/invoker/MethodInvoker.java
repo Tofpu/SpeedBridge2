@@ -5,7 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import org.reflections.ReflectionUtils;
 
-public class MethodInvoker implements ListenerInvoker {
+public class MethodInvoker implements EventInvoker {
 
     private final Object object;
     private final Method method;
