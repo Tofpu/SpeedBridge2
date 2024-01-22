@@ -1,9 +1,11 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap.game;
 
 import com.github.tofpu.speedbridge2.bukkit.helper.CoreConversionHelper;
+import com.github.tofpu.speedbridge2.common.bridge.BridgeSystem;
+import com.github.tofpu.speedbridge2.common.bridge.game.BridgeStateTypes;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameData;
-import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.object.Position;
+import io.github.tofpu.speedbridge.gameengine.Game;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -17,25 +19,25 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.UUID;
 
 public class GameListener implements Listener {
-    private final IslandGameHandler gameHandler;
+    private final BridgeSystem bridgeSystem;
 
-    public GameListener(IslandGameHandler gameHandler) {
-        this.gameHandler = gameHandler;
+    public GameListener(BridgeSystem bridgeSystem) {
+        this.bridgeSystem = bridgeSystem;
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     void on(final PlayerQuitEvent event) {
         UUID playerId = event.getPlayer().getUniqueId();
-        if (!gameHandler.isInGame(playerId)) {
+        if (!bridgeSystem.isInGame(playerId)) {
             return;
         }
-        gameHandler.stop(playerId);
+        bridgeSystem.leaveGame(playerId);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     void on(final BlockPlaceEvent event) {
         UUID playerId = event.getPlayer().getUniqueId();
-        Game<IslandGameData> game = gameHandler.getByPlayer(playerId);
+        Game<IslandGameData> game = bridgeSystem.getGameByPlayer(playerId);
         if (game == null) return;
 
         IslandGameData gameData = game.data();
@@ -49,7 +51,7 @@ public class GameListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     void on(final BlockBreakEvent event) {
         UUID playerId = event.getPlayer().getUniqueId();
-        Game<IslandGameData> game = gameHandler.getByPlayer(playerId);
+        Game<IslandGameData> game = bridgeSystem.getGameByPlayer(playerId);
         if (game == null) return;
 
         Position blockPosition = CoreConversionHelper.toPosition(event.getBlock().getLocation());
@@ -67,22 +69,22 @@ public class GameListener implements Listener {
         if (event.getAction() != Action.PHYSICAL) return;
 
         UUID playerId = event.getPlayer().getUniqueId();
-        Game<IslandGameData> game = gameHandler.getByPlayer(playerId);
+        Game<IslandGameData> game = bridgeSystem.getGameByPlayer(playerId);
         if (game == null || !game.data().hasTimerBegun()) return;
 
-        gameHandler.scoredGame(playerId);
+        game.dispatch(BridgeStateTypes.SCORED);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     void on(final PlayerMoveEvent event) {
         UUID playerId = event.getPlayer().getUniqueId();
-        Game<IslandGameData> game = gameHandler.getByPlayer(playerId);
+        Game<IslandGameData> game = bridgeSystem.getGameByPlayer(playerId);
         if (game == null) return;
 
         IslandGameData gameData = game.data();
         boolean isInRegion = gameData.getLand().isInsideRegion(CoreConversionHelper.toVector(event.getTo().toVector()));
         if (!isInRegion) {
-            gameHandler.resetGame(playerId);
+            game.dispatch(BridgeStateTypes.RESET);
         }
     }
 }

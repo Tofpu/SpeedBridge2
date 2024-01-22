@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.bukkit.command;
 
 import com.github.tofpu.speedbridge2.bukkit.plugin.BukkitPlugin;
-import com.github.tofpu.speedbridge2.common.bridge.game.GameLandReserver;
+import com.github.tofpu.speedbridge2.common.gameextra.land.GameLandReserver;
 import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
