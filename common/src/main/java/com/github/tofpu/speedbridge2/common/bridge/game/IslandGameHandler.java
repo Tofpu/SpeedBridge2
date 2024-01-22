@@ -2,7 +2,6 @@ package com.github.tofpu.speedbridge2.common.bridge.game;
 
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
-import com.github.tofpu.speedbridge2.common.bridge.BridgeGameAPI;
 import com.github.tofpu.speedbridge2.common.bridge.game.listener.GameListener;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.common.bridge.game.state.basic.GamePrepareState;
@@ -18,6 +17,7 @@ import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.common.schematic.Schematic;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 import io.github.tofpu.speedbridge.gameengine.BaseGameHandler;
@@ -27,31 +27,34 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class IslandGameHandler extends BaseGameHandler<IslandGameData> {
-
+    private final EventDispatcherService eventDispatcher;
     private final SchematicHandler schematicHandler;
     private final LandController landController;
     private final PlatformArenaAdapter arenaAdapter;
 
     private final GameRegistry<IslandGame> gameRegistry = new GameRegistry<>();
 
-    public IslandGameHandler(SchematicHandler schematicHandler, LandController landController, PlatformArenaAdapter arenaAdapter) {
+    public IslandGameHandler(EventDispatcherService eventDispatcher, SchematicHandler schematicHandler, LandController landController, PlatformArenaAdapter arenaAdapter) {
+        this.eventDispatcher = eventDispatcher;
         this.schematicHandler = schematicHandler;
         this.landController = landController;
         this.arenaAdapter = arenaAdapter;
+
+        registerStates();
     }
 
     @Override
     public void registerStates() {
-        this.stateManager.addState(BridgeStateTypes.PREPARE, new GamePrepareState());
+        this.stateManager.addState(BridgeStateTypes.PREPARE, new GamePrepareState(eventDispatcher));
         this.stateManager.addState(BridgeStateTypes.START, new GameStartedState());
-        this.stateManager.addState(BridgeStateTypes.STOP, new GameStopState());
+        this.stateManager.addState(BridgeStateTypes.STOP, new GameStopState(eventDispatcher));
 
-        this.stateManager.addState(BridgeStateTypes.SCORED, new ScoredGameState());
-        this.stateManager.addState(BridgeStateTypes.RESET, new IslandResetGameState());
+        this.stateManager.addState(BridgeStateTypes.SCORED, new ScoredGameState(eventDispatcher));
+        this.stateManager.addState(BridgeStateTypes.RESET, new IslandResetGameState(eventDispatcher));
     }
 
     public void registerListener(PlatformGameAdapter gameAdapter, ServiceManager serviceManager) {
-        BridgeGameAPI.instance().eventDispatcherService().register(new GameListener(gameAdapter, serviceManager.get(BridgeScoreService.class), serviceManager.get(LobbyService.class), landController));
+        eventDispatcher.register(new GameListener(gameAdapter, serviceManager.get(BridgeScoreService.class), serviceManager.get(LobbyService.class), landController));
     }
 
     public boolean start(final OnlinePlayer player, final Island island) {

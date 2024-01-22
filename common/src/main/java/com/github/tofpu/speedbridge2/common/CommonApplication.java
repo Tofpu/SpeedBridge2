@@ -1,7 +1,6 @@
 package com.github.tofpu.speedbridge2.common;
 
 import com.github.tofpu.speedbridge2.CoreApplication;
-import com.github.tofpu.speedbridge2.common.bridge.BridgeGameAPI;
 import com.github.tofpu.speedbridge2.common.bridge.game.BridgeGameHandlerBuilder;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
@@ -35,7 +34,6 @@ public class CommonApplication {
         PlatformArenaAdapter arenaAdapter = bootStrap.arenaAdapter();
         schematicHandler = SchematicHandler.load(bootStrap.schematicFolder(), arenaAdapter.schematicResolver(), arenaAdapter.schematicPredicate());
 
-        BridgeGameAPI.setInstance(new BridgeGameAPI(speedBridge.serviceManager().get(EventDispatcherService.class)));
         initGame(bootStrap.gameAdapter(), arenaAdapter, speedBridge.serviceManager());
         initSetupGame(arenaAdapter, speedBridge.serviceManager());
     }
@@ -48,7 +46,7 @@ public class CommonApplication {
     private void initGame(PlatformGameAdapter gameAdapter, PlatformArenaAdapter arenaAdapter, ServiceManager serviceManager) {
         arenaAdapter.resetAndLoadGameWorld();
         gameHandler = BridgeGameHandlerBuilder.newBuilder(arenaAdapter)
-                .build(arenaAdapter, schematicHandler);
+                .build(serviceManager.get(EventDispatcherService.class), arenaAdapter, schematicHandler);
     }
 
     public void disable() {

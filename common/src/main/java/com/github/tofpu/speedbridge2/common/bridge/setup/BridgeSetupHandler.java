@@ -12,6 +12,7 @@ import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
 import com.github.tofpu.speedbridge2.common.schematic.Schematic;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
@@ -23,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class BridgeSetupHandler extends BaseGameHandler<IslandSetupData> {
-
+    private final EventDispatcherService eventDispatcher;
     private final IslandService islandService;
     private final PlatformArenaAdapter arenaAdapter;
     private final LandController landController;
@@ -32,20 +33,23 @@ public class BridgeSetupHandler extends BaseGameHandler<IslandSetupData> {
     private final GameRegistry<IslandSetup> gameRegistry = new GameRegistry<>();
 
     public BridgeSetupHandler(ServiceManager serviceManager, PlatformArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
-        this(serviceManager.get(IslandService.class), arenaAdapter, schematicHandler);
+        this(serviceManager.get(EventDispatcherService.class), serviceManager.get(IslandService.class), arenaAdapter, schematicHandler);
     }
 
-    public BridgeSetupHandler(IslandService islandService, PlatformArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
+    public BridgeSetupHandler(EventDispatcherService eventDispatcher, IslandService islandService, PlatformArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
+        this.eventDispatcher = eventDispatcher;
         this.islandService = islandService;
         this.arenaAdapter = arenaAdapter;
         this.landController = new LandController(new SetupArenaManager(arenaAdapter));
         this.schematicHandler = schematicHandler;
+
+        registerStates();
     }
 
     @Override
     public void registerStates() {
         this.stateManager.addState(IslandSetupStates.START, new StartSetupState());
-        this.stateManager.addState(IslandSetupStates.STOP, new StopSetupState());
+        this.stateManager.addState(IslandSetupStates.STOP, new StopSetupState(eventDispatcher));
         this.stateManager.addState(IslandSetupStates.SET_ORIGIN, new SetOriginState());
     }
 

@@ -3,6 +3,7 @@ package com.github.tofpu.speedbridge2.common.bridge.game;
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.gameextra.land.LandController;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 
 public class BridgeGameHandlerBuilder {
 
@@ -17,7 +18,7 @@ public class BridgeGameHandlerBuilder {
         this.landController = landController;
     }
 
-    public IslandGameHandler build(PlatformArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
-        return new IslandGameHandler(schematicHandler, landController, arenaAdapter);
+    public IslandGameHandler build(EventDispatcherService eventDispatcherService, PlatformArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
+        return new IslandGameHandler(eventDispatcherService, schematicHandler, landController, arenaAdapter);
     }
 }

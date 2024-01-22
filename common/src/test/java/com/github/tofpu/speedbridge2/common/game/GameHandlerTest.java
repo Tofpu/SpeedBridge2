@@ -2,7 +2,6 @@ package com.github.tofpu.speedbridge2.common.game;
 
 import com.github.tofpu.speedbridge2.common.MockedDatabaseService;
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
-import com.github.tofpu.speedbridge2.common.bridge.BridgeGameAPI;
 import com.github.tofpu.speedbridge2.common.bridge.game.*;
 import com.github.tofpu.speedbridge2.common.bridge.game.event.PlayerScoredEvent;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
@@ -16,7 +15,6 @@ import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,8 +25,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class GameHandlerTest {
@@ -36,13 +33,11 @@ public class GameHandlerTest {
     private final LobbyService lobbyService = new LobbyService(new MockedDatabaseService(), eventDispatcherService);
     private final PlatformArenaAdapter arenaAdapter = PlatformArenaAdapter.simple(new World());
     private final IslandGameHandler gameHandler = BridgeGameHandlerBuilder.newBuilder(arenaAdapter)
-            .build(arenaAdapter, SchematicHandler.load(new File("test-resources/island/schematics"), SchematicResolver.empty(), s -> true));
+            .build(eventDispatcherService, arenaAdapter, SchematicHandler.load(new File("test-resources/island/schematics"), SchematicResolver.empty(), s -> true));
     private final IslandArenaManager arenaManager = (IslandArenaManager) gameHandler.landController().arenaManager();
 
     @BeforeEach
     void setUp() throws ExecutionException, InterruptedException, TimeoutException {
-        BridgeGameAPI.setInstance(new BridgeGameAPI(eventDispatcherService));
-
         ServiceManager serviceManager = new ServiceManager();
         serviceManager.register(new BridgeScoreService(eventDispatcherService, mock()));
         serviceManager.register(lobbyService);
@@ -50,11 +45,6 @@ public class GameHandlerTest {
 
         lobbyService.updateLocation(new Position(new World(), 10, 10, 10)).get(10, TimeUnit.SECONDS);
         Assertions.assertEquals(lobbyService.position(), new Position(new World(), 10, 10, 10));
-    }
-
-    @AfterEach
-    void tearDown() {
-        BridgeGameAPI.clearInstance();
     }
 
     @Test
