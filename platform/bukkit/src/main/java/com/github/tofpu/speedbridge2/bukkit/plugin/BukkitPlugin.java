@@ -8,6 +8,7 @@ import com.github.tofpu.speedbridge2.bukkit.bootstrap.PluginBootstrap;
 import com.github.tofpu.speedbridge2.bukkit.bootstrap.game.GameListener;
 import com.github.tofpu.speedbridge2.bukkit.listener.PlayerConnectionListener;
 import com.github.tofpu.speedbridge2.bukkit.command.PluginCommandHandler;
+import com.github.tofpu.speedbridge2.common.bridge.BridgeSystem;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import java.io.File;
@@ -115,5 +116,9 @@ public class BukkitPlugin extends JavaPlugin {
 
     public SchematicHandler schematicHandler() {
         return commonApplication.schematicHandler();
+    }
+
+    public BridgeSystem bridgeSystem() {
+        return commonApplication.bridgeSystem();
     }
 }

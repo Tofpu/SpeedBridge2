@@ -1,16 +1,12 @@
 package com.github.tofpu.speedbridge2.bukkit.command;
 
-import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.bukkit.plugin.BukkitPlugin;
-import com.github.tofpu.speedbridge2.common.gameextra.land.arena.IslandSchematic;
-import com.github.tofpu.speedbridge2.common.gameextra.ArenaManager;
-import com.github.tofpu.speedbridge2.common.island.Island;
+import com.github.tofpu.speedbridge2.common.bridge.game.GameLandReserver;
 import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
+import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
-import com.github.tofpu.speedbridge2.common.schematic.Schematic;
-import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Default;
 import revxrsal.commands.annotation.Subcommand;
@@ -24,22 +20,18 @@ import java.util.List;
 public class DeveloperCommandHolder {
     private final LobbyService lobbyService;
     private final IslandService islandService;
-    private final ArenaManager arenaManager;
-    private final SchematicHandler schematicHandler;
-    private final PlatformArenaAdapter arenaAdapter;
+    private final GameLandReserver landReserver;
 
     private final List<Land> lands = new ArrayList<>();
 
     public DeveloperCommandHolder(BukkitPlugin plugin) {
-        this(plugin.getService(LobbyService.class), plugin.getService(IslandService.class), plugin.gameHandler().landController().arenaManager(), plugin.schematicHandler(), plugin.arenaAdapter());
+        this(plugin.getService(LobbyService.class), plugin.getService(IslandService.class), plugin.bridgeSystem().landReserver());
     }
 
-    public DeveloperCommandHolder(LobbyService lobbyService, IslandService islandService, ArenaManager arenaManager, SchematicHandler schematicHandler, PlatformArenaAdapter arenaAdapter) {
+    public DeveloperCommandHolder(LobbyService lobbyService, IslandService islandService, GameLandReserver landReserver) {
         this.lobbyService = lobbyService;
         this.islandService = islandService;
-        this.arenaManager = arenaManager;
-        this.schematicHandler = schematicHandler;
-        this.arenaAdapter = arenaAdapter;
+        this.landReserver = landReserver;
     }
 
     @Subcommand("game create")
@@ -52,9 +44,7 @@ public class DeveloperCommandHolder {
         }
 
         for (int i = 0; i < amount; i++) {
-            Schematic schematic = schematicHandler.getSafe(island.getSchematicName());
-            IslandSchematic islandSchematic = new IslandSchematic(island.getSlot(), schematic, arenaAdapter.gameWorld());
-            lands.add(arenaManager.generate(islandSchematic, arenaAdapter.gameWorld()));
+            lands.add(landReserver.generate(island));
         }
         player.sendMessage(String.format("Generated %s amount of games", amount));
     }
@@ -67,7 +57,7 @@ public class DeveloperCommandHolder {
         }
         int maximumAmount = Math.min(amount, lands.size());
         for (int i = 0; i < maximumAmount; i++) {
-            arenaManager.unlock(lands.remove(0));
+            landReserver.unlock(lands.remove(0));
         }
         player.sendMessage(String.format("Unlocked %s amount of games", maximumAmount));
     }
@@ -82,7 +72,7 @@ public class DeveloperCommandHolder {
         System.out.println(String.format("Requested removal of %s but there's %s lands", amount, lands.size()));
         int maximumAmount = Math.min(amount, lands.size());
         for (int i = 0; i < maximumAmount; i++) {
-            arenaManager.clear(lands.remove(0));
+            landReserver.clear(lands.remove(0));
         }
         player.sendMessage(String.format("Cleared %s amount of games", maximumAmount));
     }

@@ -1,10 +1,7 @@
 package com.github.tofpu.speedbridge2.common.bridge.game.listener;
 
 import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
-import com.github.tofpu.speedbridge2.common.bridge.game.BridgeStateTypes;
-import com.github.tofpu.speedbridge2.common.bridge.game.IslandGame;
-import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameData;
-import com.github.tofpu.speedbridge2.common.bridge.game.IslandGamePlayer;
+import com.github.tofpu.speedbridge2.common.bridge.game.*;
 import com.github.tofpu.speedbridge2.common.bridge.game.event.IslandGamePrepareEvent;
 import com.github.tofpu.speedbridge2.common.bridge.game.event.IslandGameResetEvent;
 import com.github.tofpu.speedbridge2.common.bridge.game.event.IslandGameStopEvent;
@@ -23,13 +20,13 @@ public class GameListener implements Listener {
     private final PlatformGameAdapter gameAdapter;
     private final BridgeScoreService scoreService;
     private final LobbyService lobbyService;
-    private final LandController landController;
+    private final GameLandReserver landReserver;
 
-    public GameListener(PlatformGameAdapter gameAdapter, BridgeScoreService scoreService, LobbyService lobbyService, LandController landController) {
+    public GameListener(PlatformGameAdapter gameAdapter, BridgeScoreService scoreService, LobbyService lobbyService, GameLandReserver landReserver) {
         this.gameAdapter = gameAdapter;
         this.scoreService = scoreService;
         this.lobbyService = lobbyService;
-        this.landController = landController;
+        this.landReserver = landReserver;
     }
 
     @EventListener(state = ListeningState.MONITORING, ignoreCancelled = true)
@@ -72,7 +69,7 @@ public class GameListener implements Listener {
         OnlinePlayer onlinePlayer = player.getPlayer();
 
         onlinePlayer.teleport(lobbyService.position());
-        landController.releaseSpot(player.id());
+        landReserver.releaseSpot(player.id());
 
         IslandGame game = event.game();
         IslandGameData data = game.data();

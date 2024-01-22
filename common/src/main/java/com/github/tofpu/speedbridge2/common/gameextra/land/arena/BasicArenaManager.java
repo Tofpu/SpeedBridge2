@@ -30,6 +30,7 @@ public abstract class BasicArenaManager implements ArenaManager {
         this.landReserves = new LinkedList<>();
     }
 
+    @Override
     public boolean hasAvailableLand(int slot) {
         for (Land availableLand : landReserves) {
             if (availableLand.islandSlot() == slot) {

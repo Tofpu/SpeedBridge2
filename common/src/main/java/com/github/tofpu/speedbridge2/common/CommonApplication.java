@@ -1,6 +1,7 @@
 package com.github.tofpu.speedbridge2.common;
 
 import com.github.tofpu.speedbridge2.CoreApplication;
+import com.github.tofpu.speedbridge2.common.bridge.BridgeSystem;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.common.bridge.setup.BridgeSetupHandler;
@@ -14,9 +15,9 @@ import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 public class CommonApplication {
 
     private final CoreApplication speedBridge;
-    private IslandGameHandler gameHandler;
     private IslandSetupController setupController;
     private SchematicHandler schematicHandler;
+    private BridgeSystem bridgeSystem;
 
     public CommonApplication(CoreApplication speedBridge) {
         this.speedBridge = speedBridge;
@@ -32,7 +33,7 @@ public class CommonApplication {
         PlatformArenaAdapter arenaAdapter = bootStrap.arenaAdapter();
         schematicHandler = SchematicHandler.load(bootStrap.schematicFolder(), arenaAdapter.schematicResolver(), arenaAdapter.schematicPredicate());
 
-        initGame(arenaAdapter, speedBridge.serviceManager());
+        initGame(bootStrap.gameAdapter(), arenaAdapter, speedBridge.serviceManager());
         initSetupGame(arenaAdapter, speedBridge.serviceManager());
     }
 
@@ -41,16 +42,17 @@ public class CommonApplication {
         setupController = new IslandSetupController(setupHandler);
     }
 
-    private void initGame(PlatformArenaAdapter arenaAdapter, ServiceManager serviceManager) {
+    private void initGame(PlatformGameAdapter gameAdapter, PlatformArenaAdapter arenaAdapter, ServiceManager serviceManager) {
         arenaAdapter.resetAndLoadGameWorld();
-        gameHandler = new IslandGameHandler(serviceManager.get(EventDispatcherService.class), schematicHandler, arenaAdapter);
+        bridgeSystem = new BridgeSystem(serviceManager.get(EventDispatcherService.class), schematicHandler, arenaAdapter);
+        bridgeSystem.registerListener(gameAdapter, serviceManager);
     }
 
     public void disable() {
     }
 
-    public IslandGameHandler gameHandler() {
-        return gameHandler;
+    public BridgeSystem bridgeSystem() {
+        return bridgeSystem;
     }
 
     public IslandSetupController setupController() {
