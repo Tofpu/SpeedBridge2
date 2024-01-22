@@ -32,8 +32,7 @@ public class GameHandlerTest {
     private final EventDispatcherService eventDispatcherService = spy(new EventDispatcherService());
     private final LobbyService lobbyService = new LobbyService(new MockedDatabaseService(), eventDispatcherService);
     private final PlatformArenaAdapter arenaAdapter = PlatformArenaAdapter.simple(new World());
-    private final IslandGameHandler gameHandler = BridgeGameHandlerBuilder.newBuilder(arenaAdapter)
-            .build(eventDispatcherService, arenaAdapter, SchematicHandler.load(new File("test-resources/island/schematics"), SchematicResolver.empty(), s -> true));
+    private final IslandGameHandler gameHandler = new IslandGameHandler(eventDispatcherService, SchematicHandler.load(new File("test-resources/island/schematics"), SchematicResolver.empty(), s -> true), arenaAdapter);
     private final IslandArenaManager arenaManager = (IslandArenaManager) gameHandler.landController().arenaManager();
 
     @BeforeEach

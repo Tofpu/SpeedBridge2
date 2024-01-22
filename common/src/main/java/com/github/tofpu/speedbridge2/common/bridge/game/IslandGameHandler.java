@@ -34,10 +34,10 @@ public class IslandGameHandler extends BaseGameHandler<IslandGameData> {
 
     private final GameRegistry<IslandGame> gameRegistry = new GameRegistry<>();
 
-    public IslandGameHandler(EventDispatcherService eventDispatcher, SchematicHandler schematicHandler, LandController landController, PlatformArenaAdapter arenaAdapter) {
+    public IslandGameHandler(EventDispatcherService eventDispatcher, SchematicHandler schematicHandler, PlatformArenaAdapter arenaAdapter) {
         this.eventDispatcher = eventDispatcher;
         this.schematicHandler = schematicHandler;
-        this.landController = landController;
+        this.landController = new LandController(new IslandArenaManager(arenaAdapter));
         this.arenaAdapter = arenaAdapter;
 
         registerStates();

@@ -1,7 +1,6 @@
 package com.github.tofpu.speedbridge2.common;
 
 import com.github.tofpu.speedbridge2.CoreApplication;
-import com.github.tofpu.speedbridge2.common.bridge.game.BridgeGameHandlerBuilder;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.common.bridge.setup.BridgeSetupHandler;
@@ -16,7 +15,6 @@ public class CommonApplication {
 
     private final CoreApplication speedBridge;
     private IslandGameHandler gameHandler;
-    private BridgeSetupHandler islandSetupHandler;
     private IslandSetupController setupController;
     private SchematicHandler schematicHandler;
 
@@ -34,7 +32,7 @@ public class CommonApplication {
         PlatformArenaAdapter arenaAdapter = bootStrap.arenaAdapter();
         schematicHandler = SchematicHandler.load(bootStrap.schematicFolder(), arenaAdapter.schematicResolver(), arenaAdapter.schematicPredicate());
 
-        initGame(bootStrap.gameAdapter(), arenaAdapter, speedBridge.serviceManager());
+        initGame(arenaAdapter, speedBridge.serviceManager());
         initSetupGame(arenaAdapter, speedBridge.serviceManager());
     }
 
@@ -43,10 +41,9 @@ public class CommonApplication {
         setupController = new IslandSetupController(setupHandler);
     }
 
-    private void initGame(PlatformGameAdapter gameAdapter, PlatformArenaAdapter arenaAdapter, ServiceManager serviceManager) {
+    private void initGame(PlatformArenaAdapter arenaAdapter, ServiceManager serviceManager) {
         arenaAdapter.resetAndLoadGameWorld();
-        gameHandler = BridgeGameHandlerBuilder.newBuilder(arenaAdapter)
-                .build(serviceManager.get(EventDispatcherService.class), arenaAdapter, schematicHandler);
+        gameHandler = new IslandGameHandler(serviceManager.get(EventDispatcherService.class), schematicHandler, arenaAdapter);
     }
 
     public void disable() {
