@@ -1,10 +1,11 @@
 package com.github.tofpu.speedbridge2.common.bridge.game;
 
-import com.github.tofpu.speedbridge2.common.game.Game;
+import io.github.tofpu.speedbridge.gameengine.Game;
+import io.github.tofpu.speedbridge.gameengine.StateManager;
 import org.jetbrains.annotations.NotNull;
 
 public class IslandGame extends Game<IslandGameData> {
-    public IslandGame(@NotNull IslandGameData gameData) {
-        super(gameData);
+    public IslandGame(@NotNull IslandGameData gameData, @NotNull StateManager<IslandGameData> stateChangeListener) {
+        super(gameData, stateChangeListener);
     }
 }

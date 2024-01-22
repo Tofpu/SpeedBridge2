@@ -1,22 +1,21 @@
 package com.github.tofpu.speedbridge2.bukkit.command;
 
 import com.github.tofpu.speedbridge2.bukkit.BukkitMessages;
-import com.github.tofpu.speedbridge2.common.island.Island;
+import com.github.tofpu.speedbridge2.bukkit.plugin.BukkitPlugin;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.Score;
 import com.github.tofpu.speedbridge2.common.bridge.setup.IslandSetupController;
-import com.github.tofpu.speedbridge2.configuration.message.ConfigurableMessageService;
+import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
+import com.github.tofpu.speedbridge2.configuration.message.ConfigurableMessageService;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
-import com.github.tofpu.speedbridge2.bukkit.plugin.BukkitPlugin;
 import revxrsal.commands.annotation.AutoComplete;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.exception.CommandErrorException;
-import revxrsal.commands.exception.SendMessageException;
 
 import java.util.Map;
 
@@ -91,7 +90,7 @@ public class PluginCommandHolder {
             player.sendMessage(BukkitMessages.LOBBY_UNKNOWN, slot);
             return;
         }
-        gameHandler.createAndStart(player, island);
+        gameHandler.start(player, island);
     }
 
     @Subcommand("game end")

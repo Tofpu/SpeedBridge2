@@ -1,36 +1,16 @@
 package com.github.tofpu.speedbridge2.common.bridge.setup.state;
 
+import com.github.tofpu.speedbridge2.common.bridge.BridgeGameAPI;
+import com.github.tofpu.speedbridge2.common.bridge.setup.IslandSetup;
 import com.github.tofpu.speedbridge2.common.bridge.setup.IslandSetupData;
-import com.github.tofpu.speedbridge2.common.bridge.setup.SetupPlayer;
-import com.github.tofpu.speedbridge2.common.game.Game;
-import com.github.tofpu.speedbridge2.common.game.land.LandController;
-import com.github.tofpu.speedbridge2.common.game.state.StopGameState;
-import com.github.tofpu.speedbridge2.common.island.IslandService;
-import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
+import com.github.tofpu.speedbridge2.common.bridge.setup.event.StopIslandSetupEvent;
+import com.github.tofpu.speedbridge2.common.gameextra.state.StopGameState;
+import io.github.tofpu.speedbridge.gameengine.Game;
+import io.github.tofpu.speedbridge.gameengine.GameStateType;
 
-class StopSetupState extends StopGameState<IslandSetupData> {
-    private final IslandService islandService;
-    private final LobbyService lobbyService;
-    private final LandController landController;
-
-    StopSetupState(IslandService islandService, LobbyService lobbyService, LandController landController) {
-        this.islandService = islandService;
-        this.lobbyService = lobbyService;
-        this.landController = landController;
-    }
+public class StopSetupState extends StopGameState<IslandSetupData> {
     @Override
-    public void apply(Game<IslandSetupData> game) {
-        IslandSetupData data = game.data();
-        if (data.origin() == null) return;
-        try {
-            islandService.register(data.slot(), data.origin(), data.schematicName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        SetupPlayer setupPlayer = data.player();
-        landController.releaseSpot(setupPlayer.id());
-
-        setupPlayer.player().teleport(lobbyService.position());
+    public void onGameStateChange(Game<IslandSetupData> game, GameStateType<IslandSetupData> stateChange) {
+        BridgeGameAPI.instance().dispatchEvent(new StopIslandSetupEvent((IslandSetup) game));
     }
 }

@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.common;
 
-import com.github.tofpu.speedbridge2.common.game.ClipboardPaster;
+import com.github.tofpu.speedbridge2.common.gameextra.ClipboardPaster;
 import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicResolver;
 

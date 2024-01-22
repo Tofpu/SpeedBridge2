@@ -1,100 +1,102 @@
 package com.github.tofpu.speedbridge2.common.bridge.game;
 
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
-import com.github.tofpu.speedbridge2.common.bridge.game.state.BasicStateProvider;
-import com.github.tofpu.speedbridge2.common.bridge.game.state.GameStateHandler;
-import com.github.tofpu.speedbridge2.common.game.land.arena.IslandSchematic;
-import com.github.tofpu.speedbridge2.common.game.land.Land;
-import com.github.tofpu.speedbridge2.common.game.land.LandController;
-import com.github.tofpu.speedbridge2.common.game.GameHandler;
-import com.github.tofpu.speedbridge2.common.game.state.StartGameState;
-import com.github.tofpu.speedbridge2.common.game.state.StopGameState;
-import com.github.tofpu.speedbridge2.common.game.Game;
-import com.github.tofpu.speedbridge2.common.game.GameState;
+import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
+import com.github.tofpu.speedbridge2.common.bridge.BridgeGameAPI;
+import com.github.tofpu.speedbridge2.common.bridge.game.listener.GameListener;
+import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
+import com.github.tofpu.speedbridge2.common.bridge.game.state.basic.GamePrepareState;
+import com.github.tofpu.speedbridge2.common.bridge.game.state.basic.GameStartedState;
+import com.github.tofpu.speedbridge2.common.bridge.game.state.basic.GameStopState;
+import com.github.tofpu.speedbridge2.common.bridge.game.state.game.IslandResetGameState;
+import com.github.tofpu.speedbridge2.common.bridge.game.state.game.ScoredGameState;
+import com.github.tofpu.speedbridge2.common.gameextra.GameRegistry;
+import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
+import com.github.tofpu.speedbridge2.common.gameextra.land.LandController;
+import com.github.tofpu.speedbridge2.common.gameextra.land.arena.IslandSchematic;
 import com.github.tofpu.speedbridge2.common.island.Island;
-import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
+import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.common.schematic.Schematic;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
+import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
+import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
+import io.github.tofpu.speedbridge.gameengine.BaseGameHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
+public class IslandGameHandler extends BaseGameHandler<IslandGameData> {
 
-@SuppressWarnings({"rawtypes", "unchecked"})
-public class IslandGameHandler extends GameHandler<OnlinePlayer, IslandGameData> {
-    private final PlatformArenaAdapter arenaAdapter;
-    private final LandController landController;
     private final SchematicHandler schematicHandler;
-    private final GameStateHandler gameStateHandler;
-    private final BasicStateProvider basicStateProvider;
+    private final LandController landController;
+    private final PlatformArenaAdapter arenaAdapter;
 
-    public static IslandGameHandler create(BasicStateProvider basicStateProvider, GameStateHandler gameStateHandler, PlatformArenaAdapter arenaAdapter, LandController landController, SchematicHandler schematicHandler) {
-        return new IslandGameHandler(basicStateProvider, gameStateHandler, arenaAdapter, landController, schematicHandler);
-    }
+    private final GameRegistry<IslandGame> gameRegistry = new GameRegistry<>();
 
-    private IslandGameHandler(BasicStateProvider basicStateProvider, GameStateHandler gameStateHandler, PlatformArenaAdapter arenaAdapter, LandController landController, SchematicHandler schematicHandler) {
-        this.basicStateProvider = basicStateProvider;
-        this.gameStateHandler = gameStateHandler;
-        this.arenaAdapter = arenaAdapter;
-        this.landController = landController;
+    public IslandGameHandler(SchematicHandler schematicHandler, LandController landController, PlatformArenaAdapter arenaAdapter) {
         this.schematicHandler = schematicHandler;
+        this.landController = landController;
+        this.arenaAdapter = arenaAdapter;
     }
 
-    public void createAndStart(final OnlinePlayer player, final Island island) {
-        assertPlayerIsNotInGame(player);
+    @Override
+    public void registerStates() {
+        this.stateManager.addState(BridgeStateTypes.PREPARE, new GamePrepareState());
+        this.stateManager.addState(BridgeStateTypes.START, new GameStartedState());
+        this.stateManager.addState(BridgeStateTypes.STOP, new GameStopState());
 
+        this.stateManager.addState(BridgeStateTypes.SCORED, new ScoredGameState());
+        this.stateManager.addState(BridgeStateTypes.RESET, new IslandResetGameState());
+    }
+
+    public void registerListener(PlatformGameAdapter gameAdapter, ServiceManager serviceManager) {
+        BridgeGameAPI.instance().eventDispatcherService().register(new GameListener(gameAdapter, serviceManager.get(BridgeScoreService.class), serviceManager.get(LobbyService.class), landController));
+    }
+
+    public boolean start(final OnlinePlayer player, final Island island) {
+        if (gameRegistry.isInGame(player.id())) {
+            return false;
+        }
+
+        IslandGame game = prepareGameObject(player, island);
+        game.dispatch(BridgeStateTypes.PREPARE);
+        gameRegistry.register(player.id(), game);
+        return true;
+    }
+
+    @NotNull
+    private IslandGame prepareGameObject(OnlinePlayer player, Island island) {
         IslandGamePlayer gamePlayer = new IslandGamePlayer(player);
 
         Schematic schematic = schematicHandler.resolve(island.getSchematicName());
         IslandSchematic islandSchematic = new IslandSchematic(island.getSlot(), schematic, island.getAbsolute());
 
         Land land = this.landController.reserveSpot(player.id(), islandSchematic, arenaAdapter.gameWorld());
-        IslandGame game = new IslandGame(new IslandGameData(gamePlayer, island, land));
-        prepareAndRegister(player, game);
+        return new IslandGame(new IslandGameData(gamePlayer, island, land), stateManager);
     }
 
-    public void resetGame(UUID playerId) {
-        requirePlayerToBeInGame(playerId, "%s must already be in a game to reset it");
-
-        Game<IslandGameData> game = gameRegistry.getByPlayer(playerId);
-        if (game != null) {
-            gameStateHandler.triggerResetState(game);
+    public boolean stop(final UUID playerId) {
+        IslandGame game = getGameByPlayer(playerId);
+        if (game == null) {
+            return false;
         }
+
+        game.dispatch(BridgeStateTypes.STOP);
+        gameRegistry.removeByPlayer(playerId);
+        return true;
     }
 
-    public void scoredGame(UUID playerId) {
-        requirePlayerToBeInGame(playerId, "%s must already be in a game to score");
-
-        Game<IslandGameData> game = gameRegistry.getByPlayer(playerId);
-        if (game != null) {
-            gameStateHandler.triggerScoreState(game);
-        }
+    public boolean isInGame(final UUID playerId) {
+        return getGameByPlayer(playerId) != null;
     }
 
-    private void requirePlayerToBeInGame(UUID playerId, String template) {
-        requireState(gameRegistry.isInGame(playerId), template, playerId);
+    @Nullable
+    public IslandGame getGameByPlayer(UUID playerId) {
+        return gameRegistry.getByPlayer(playerId);
     }
 
     public LandController landController() {
         return landController;
-    }
-
-    @Override
-    protected GameState<IslandGameData> createPrepareState() {
-        return basicStateProvider.prepareState();
-    }
-
-    @Override
-    protected StartGameState createStartState() {
-        return basicStateProvider.startedState();
-    }
-
-    @Override
-    protected StopGameState createStopState() {
-        return basicStateProvider.stopState();
-    }
-
-    public GameStateHandler gameStateHandler() {
-        return gameStateHandler;
     }
 }

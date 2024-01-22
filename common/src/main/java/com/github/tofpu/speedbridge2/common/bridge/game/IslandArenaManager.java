@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.common.bridge.game;
 
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
-import com.github.tofpu.speedbridge2.common.game.land.arena.BasicArenaManager;
+import com.github.tofpu.speedbridge2.common.gameextra.land.arena.BasicArenaManager;
 import com.github.tofpu.speedbridge2.object.Vector;
 
 public class IslandArenaManager extends BasicArenaManager {

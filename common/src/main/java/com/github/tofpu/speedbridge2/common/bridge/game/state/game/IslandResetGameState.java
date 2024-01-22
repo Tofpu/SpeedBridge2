@@ -1,47 +1,19 @@
 package com.github.tofpu.speedbridge2.common.bridge.game.state.game;
 
-import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
-import com.github.tofpu.speedbridge2.common.bridge.game.state.BridgeGameStateTag;
-import com.github.tofpu.speedbridge2.common.game.GameStateTag;
-import com.github.tofpu.speedbridge2.common.game.state.BasicGameStateTag;
+import com.github.tofpu.speedbridge2.common.bridge.BridgeGameAPI;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGame;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameData;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGamePlayer;
-import com.github.tofpu.speedbridge2.common.bridge.game.state.GameStateHandler;
+import com.github.tofpu.speedbridge2.common.bridge.game.event.IslandGameResetEvent;
 import com.github.tofpu.speedbridge2.common.bridge.game.state.generic.BridgeGameState;
-import com.github.tofpu.speedbridge2.common.game.Game;
-import org.jetbrains.annotations.NotNull;
+import io.github.tofpu.speedbridge.gameengine.Game;
+import io.github.tofpu.speedbridge.gameengine.GameStateType;
 
-class IslandResetGameState implements BridgeGameState {
-    private final GameStateHandler stateHandler;
-    private final PlatformGameAdapter gameAdapter;
-
-    IslandResetGameState(GameStateHandler stateHandler, PlatformGameAdapter gameAdapter) {
-        this.stateHandler = stateHandler;
-        this.gameAdapter = gameAdapter;
-    }
-
+public class IslandResetGameState implements BridgeGameState {
     @Override
-    public void apply(Game<IslandGameData> game) {
-        System.out.println("IslandResetGameState -- beginning");
+    public void onGameStateChange(Game<IslandGameData> game, GameStateType<IslandGameData> stateChange) {
         IslandGamePlayer player = game.data().gamePlayer();
-
-        System.out.println("IslandResetGameState -- resetting game");
-        gameAdapter.onGameReset((IslandGame) game, player);
-
-        System.out.println("IslandResetGameState -- dispatching GameStartedState");
-        stateHandler.triggerStartedState(game);
-
-        System.out.println("IslandResetGameState -- ending");
-    }
-
-    @Override
-    public boolean test(Game<IslandGameData> game) {
-        return game.state().tag() == BasicGameStateTag.STARTED;
-    }
-
-    @Override
-    public @NotNull GameStateTag tag() {
-        return BridgeGameStateTag.RESET;
+        IslandGameResetEvent event = new IslandGameResetEvent((IslandGame) game, player);
+        BridgeGameAPI.instance().dispatchEvent(event);
     }
 }

@@ -1,9 +1,9 @@
 package com.github.tofpu.speedbridge2.common.bridge.game;
 
-import com.github.tofpu.speedbridge2.common.game.land.Land;
-import com.github.tofpu.speedbridge2.common.game.GameData;
+import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.object.Position;
+import io.github.tofpu.speedbridge.gameengine.GameData;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

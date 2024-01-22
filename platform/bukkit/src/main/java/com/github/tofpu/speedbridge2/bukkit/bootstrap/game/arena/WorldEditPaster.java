@@ -1,8 +1,8 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap.game.arena;
 
 import com.github.tofpu.speedbridge2.bukkit.helper.BukkitConversionHelper;
-import com.github.tofpu.speedbridge2.common.game.ClipboardPaster;
-import com.github.tofpu.speedbridge2.common.game.land.arena.RegionInfo;
+import com.github.tofpu.speedbridge2.common.gameextra.ClipboardPaster;
+import com.github.tofpu.speedbridge2.common.gameextra.land.arena.RegionInfo;
 import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.object.Vector;
 import com.github.tofpu.speedbridge2.object.World;

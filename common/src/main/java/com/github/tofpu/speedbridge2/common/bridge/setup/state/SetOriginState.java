@@ -1,40 +1,22 @@
 package com.github.tofpu.speedbridge2.common.bridge.setup.state;
 
 import com.github.tofpu.speedbridge2.common.bridge.setup.IslandSetupData;
-import com.github.tofpu.speedbridge2.common.game.Game;
-import com.github.tofpu.speedbridge2.common.game.GameState;
-import com.github.tofpu.speedbridge2.common.game.GameStateTag;
-import com.github.tofpu.speedbridge2.common.game.state.BasicGameStateTag;
+import com.github.tofpu.speedbridge2.common.bridge.setup.IslandSetupStates;
 import com.github.tofpu.speedbridge2.object.Location;
-import org.jetbrains.annotations.NotNull;
+import io.github.tofpu.speedbridge.gameengine.Game;
+import io.github.tofpu.speedbridge.gameengine.GameStateType;
+import io.github.tofpu.speedbridge.gameengine.StateChangeListener;
 
-class SetOriginState implements GameState<IslandSetupData> {
-    private final SetupStateProvider stateHandler;
-    private final Location origin;
-
-    SetOriginState(SetupStateProvider stateHandler, Location origin) {
-        this.stateHandler = stateHandler;
-        this.origin = origin;
-    }
-
+public class SetOriginState implements StateChangeListener<IslandSetupData> {
     @Override
-    public void apply(Game<IslandSetupData> game) {
+    public void onGameStateChange(Game<IslandSetupData> game, GameStateType<IslandSetupData> stateChange) {
         IslandSetupData data = game.data();
-        Location subtracted = data.land().getIslandLocation().subtract(origin)
-                .setYaw(origin.getYaw()).setPitch(origin.getPitch());
+        Location originalLocation = data.originalLocation();
+        Location subtracted = data.land().getIslandLocation().subtract(originalLocation)
+                .setYaw(originalLocation.getYaw()).setPitch(originalLocation.getPitch());
+
         data.origin(subtracted);
         System.out.println("Setting island's setup location to " + subtracted);
-        game.dispatch(stateHandler.stopState());
-    }
-
-    @Override
-    public boolean test(Game<IslandSetupData> game) {
-        System.out.println("gameState=" + game.state() + " (" + (game.state().getClass().getSimpleName()) + ")");
-        return game.state().tag() == BasicGameStateTag.STARTED;
-    }
-
-    @Override
-    public @NotNull GameStateTag tag() {
-        return BridgeSetupStateTag.SET_ORIGIN;
+        game.dispatch(IslandSetupStates.STOP);
     }
 }

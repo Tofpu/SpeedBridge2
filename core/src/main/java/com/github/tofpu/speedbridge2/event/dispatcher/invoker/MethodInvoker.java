@@ -23,8 +23,11 @@ public class MethodInvoker implements EventInvoker {
             invoke(method, object, event);
         } catch (Exception e) {
             if (!(e instanceof IllegalAccessException)) {
-                throw new IllegalStateException("Failed to call method " + method.getName() + "()",
-                    e);
+                Throwable cause = e.getCause();
+                if (e.getCause() != null && e instanceof InvocationTargetException) {
+                    cause = e.getCause();
+                }
+                throw new IllegalStateException("Ran into an error while calling method " + method.getName() + "()", cause);
             }
 
             accessible = false;

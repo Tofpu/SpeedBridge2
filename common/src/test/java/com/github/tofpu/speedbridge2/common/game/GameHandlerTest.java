@@ -1,24 +1,22 @@
 package com.github.tofpu.speedbridge2.common.game;
 
+import com.github.tofpu.speedbridge2.common.MockedDatabaseService;
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
-import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
-import com.github.tofpu.speedbridge2.common.bridge.game.BridgeGameHandlerBuilder;
-import com.github.tofpu.speedbridge2.common.bridge.game.IslandArenaManager;
-import com.github.tofpu.speedbridge2.common.bridge.game.IslandGame;
-import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameHandler;
+import com.github.tofpu.speedbridge2.common.bridge.BridgeGameAPI;
+import com.github.tofpu.speedbridge2.common.bridge.game.*;
 import com.github.tofpu.speedbridge2.common.bridge.game.event.PlayerScoredEvent;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
-import com.github.tofpu.speedbridge2.common.bridge.game.score.ScoreRepository;
-import com.github.tofpu.speedbridge2.database.service.DatabaseService;
-import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
+import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
+import com.github.tofpu.speedbridge2.common.schematic.SchematicResolver;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
-import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
-import com.github.tofpu.speedbridge2.common.schematic.SchematicResolver;
+import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,26 +27,34 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.spy;
 
 public class GameHandlerTest {
-    private final DatabaseService databaseService = new DatabaseService();
     private final EventDispatcherService eventDispatcherService = spy(new EventDispatcherService());
-    private final LobbyService lobbyService = new LobbyService(databaseService, eventDispatcherService);
+    private final LobbyService lobbyService = new LobbyService(new MockedDatabaseService(), eventDispatcherService);
     private final PlatformArenaAdapter arenaAdapter = PlatformArenaAdapter.simple(new World());
     private final IslandGameHandler gameHandler = BridgeGameHandlerBuilder.newBuilder(arenaAdapter)
-            .coreStateProvider(PlatformGameAdapter.empty(), lobbyService)
-            .gameStateProvider(PlatformGameAdapter.empty(), new BridgeScoreService(eventDispatcherService, new ScoreRepository(databaseService)))
             .build(arenaAdapter, SchematicHandler.load(new File("test-resources/island/schematics"), SchematicResolver.empty(), s -> true));
     private final IslandArenaManager arenaManager = (IslandArenaManager) gameHandler.landController().arenaManager();
 
     @BeforeEach
     void setUp() throws ExecutionException, InterruptedException, TimeoutException {
-        databaseService.load();
+        BridgeGameAPI.setInstance(new BridgeGameAPI(eventDispatcherService));
+
+        ServiceManager serviceManager = new ServiceManager();
+        serviceManager.register(new BridgeScoreService(eventDispatcherService, mock()));
+        serviceManager.register(lobbyService);
+        gameHandler.registerListener(mock(), serviceManager);
 
         lobbyService.updateLocation(new Position(new World(), 10, 10, 10)).get(10, TimeUnit.SECONDS);
         Assertions.assertEquals(lobbyService.position(), new Position(new World(), 10, 10, 10));
+    }
+
+    @AfterEach
+    void tearDown() {
+        BridgeGameAPI.clearInstance();
     }
 
     @Test
@@ -58,16 +64,16 @@ public class GameHandlerTest {
         Island island = new Island(1, new Location(world, 1, 1, 1, 1, 1), "test.schematic");
         OnlinePlayer player = mockPlayer(playerId);
 
-        gameHandler.createAndStart(player, island);
-        Assertions.assertThrows(Exception.class, () -> gameHandler.createAndStart(player, island), "A player cannot be in two games simultaneously");
+        assertTrue(gameHandler.start(player, island));
+        assertFalse(gameHandler.start(player, island), "A player cannot be in two games simultaneously");
 
-        Assertions.assertTrue(gameHandler.isInGame(playerId), "The player should have been in a game");
-        Assertions.assertDoesNotThrow(() -> gameHandler.stop(playerId), "An error was thrown while attempting to stop an ongoing game");
-        Assertions.assertFalse(gameHandler.isInGame(playerId), "The game was stopped, so the player should be no longer be in a game");
+        assertTrue(gameHandler.isInGame(playerId), "The player should have been in a game");
+        assertTrue(gameHandler.stop(playerId), "The game should have been stopped");
+        assertFalse(gameHandler.isInGame(playerId), "The game was stopped, so the player should be no longer be in a game");
 
-        Assertions.assertTrue(arenaManager.hasAvailableLand(island.getSlot()), "The land belonging to the island should have been stored in the reserves");
+        assertTrue(arenaManager.hasAvailableLand(island.getSlot()), "The land belonging to the island should have been stored in the reserves");
 
-        Assertions.assertThrows(Exception.class, () -> gameHandler.stop(playerId), "An error should have been thrown since a game cannot be stopped when it's non-existent");
+        Assertions.assertFalse(() -> gameHandler.stop(playerId), "We shouldn't be able to stop a game twice in a row...");
     }
 
     @Test
@@ -77,12 +83,12 @@ public class GameHandlerTest {
         Island island = new Island(1, new Location(world, 1, 1, 1, 1, 1), "test.schematic");
         OnlinePlayer player = mockPlayer(playerId);
 
-        gameHandler.createAndStart(player, island);
-        IslandGame game = (IslandGame) gameHandler.getByPlayer(playerId);
+        gameHandler.start(player, island);
+        IslandGame game = gameHandler.getGameByPlayer(playerId);
 
         game.data().beginTimer(true);
+        game.dispatch(BridgeStateTypes.SCORED);
 
-        gameHandler.scoredGame(playerId);
         verify(eventDispatcherService, times(1)).dispatchIfApplicable(isA(PlayerScoredEvent.class));
     }
 

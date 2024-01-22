@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.common.bridge.game;
 
-import com.github.tofpu.speedbridge2.common.game.GamePlayer;
+import com.github.tofpu.speedbridge2.common.gameextra.GamePlayer;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

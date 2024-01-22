@@ -29,7 +29,7 @@ public class Invokers {
 
     public void dispatch(Event event) {
         listeningMethods.forEach(methodInvoker -> methodInvoker.invoke(event));
-        monitoringMethods.forEach(methodInvoker -> methodInvoker.invoke(event));
+        monitoringMethods.forEach(methodInvoker ->  methodInvoker.invoke(event));
     }
 
     public void removeIf(Predicate<EventInvoker> filter) {

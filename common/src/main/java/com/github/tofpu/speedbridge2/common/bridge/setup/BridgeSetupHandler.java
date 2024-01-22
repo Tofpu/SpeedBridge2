@@ -1,49 +1,64 @@
 package com.github.tofpu.speedbridge2.common.bridge.setup;
 
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
-import com.github.tofpu.speedbridge2.common.bridge.setup.state.SetupStateProvider;
-import com.github.tofpu.speedbridge2.common.game.GameHandler;
-import com.github.tofpu.speedbridge2.common.game.GameState;
-import com.github.tofpu.speedbridge2.common.game.land.Land;
-import com.github.tofpu.speedbridge2.common.game.land.LandController;
-import com.github.tofpu.speedbridge2.common.game.land.arena.IslandSchematic;
-import com.github.tofpu.speedbridge2.common.game.state.StartGameState;
-import com.github.tofpu.speedbridge2.common.game.state.StopGameState;
+import com.github.tofpu.speedbridge2.common.bridge.setup.state.SetOriginState;
+import com.github.tofpu.speedbridge2.common.bridge.setup.state.StartSetupState;
+import com.github.tofpu.speedbridge2.common.bridge.setup.state.StopSetupState;
+import com.github.tofpu.speedbridge2.common.gameextra.GameRegistry;
+import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
+import com.github.tofpu.speedbridge2.common.gameextra.land.LandController;
+import com.github.tofpu.speedbridge2.common.gameextra.land.arena.IslandSchematic;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
-import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
+import com.github.tofpu.speedbridge2.common.schematic.Schematic;
+import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
-import com.github.tofpu.speedbridge2.common.schematic.Schematic;
-import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
+import io.github.tofpu.speedbridge.gameengine.BaseGameHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-@SuppressWarnings({"unchecked", "rawtypes"})
-public class BridgeSetupHandler extends GameHandler<OnlinePlayer, IslandSetupData> {
+public class BridgeSetupHandler extends BaseGameHandler<IslandSetupData> {
+
     private final IslandService islandService;
     private final PlatformArenaAdapter arenaAdapter;
     private final LandController landController;
     private final SchematicHandler schematicHandler;
-    private final SetupStateProvider stateProvider;
 
-    public BridgeSetupHandler(IslandService islandService, LobbyService lobbyService, PlatformArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
+    private final GameRegistry<IslandSetup> gameRegistry = new GameRegistry<>();
+
+    public BridgeSetupHandler(ServiceManager serviceManager, PlatformArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
+        this(serviceManager.get(IslandService.class), arenaAdapter, schematicHandler);
+    }
+
+    public BridgeSetupHandler(IslandService islandService, PlatformArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
         this.islandService = islandService;
         this.arenaAdapter = arenaAdapter;
         this.landController = new LandController(new SetupArenaManager(arenaAdapter));
         this.schematicHandler = schematicHandler;
-        this.stateProvider = new SetupStateProvider(islandService, lobbyService, landController);
     }
 
-    public BridgeSetupHandler(ServiceManager serviceManager, PlatformArenaAdapter arenaAdapter, SchematicHandler schematicHandler) {
-        this(serviceManager.get(IslandService.class), serviceManager.get(LobbyService.class), arenaAdapter, schematicHandler);
+    @Override
+    public void registerStates() {
+        this.stateManager.addState(IslandSetupStates.START, new StartSetupState());
+        this.stateManager.addState(IslandSetupStates.STOP, new StopSetupState());
+        this.stateManager.addState(IslandSetupStates.SET_ORIGIN, new SetOriginState());
     }
 
     public void start(final OnlinePlayer player, final int slot, final String schematicName) {
-        assertPlayerIsNotInGame(player);
+        if (gameRegistry.isInGame(player.id())) {
+            return;
+        }
+        IslandSetup game = prepareGameObject(player, slot, schematicName);
+        game.dispatch(IslandSetupStates.START);
+    }
 
+    @NotNull
+    private IslandSetup prepareGameObject(OnlinePlayer player, int slot, String schematicName) {
         Schematic schematic = schematicHandler.resolve(schematicName);
         World world = arenaAdapter.gameWorld();
         Location origin = Location.zero(world);
@@ -56,26 +71,19 @@ public class BridgeSetupHandler extends GameHandler<OnlinePlayer, IslandSetupDat
         IslandSchematic islandSchematic = new IslandSchematic(slot, schematic, origin);
         Land land = landController.reserveSpot(player.id(), islandSchematic, world);
 
-        IslandSetup game = new IslandSetup(new IslandSetupData(new SetupPlayer(player), slot, schematicName, land));
-        super.prepareAndRegister(player, game);
+        IslandSetupData data = new IslandSetupData(new SetupPlayer(player), slot, schematicName, land);
+        return new IslandSetup(data, stateManager);
     }
 
-    public void setOrigin(UUID playerId, Location location) {
-        getSafe(playerId).dispatch(stateProvider.originState(location));
-    }
+    public void stopGame(final UUID playerId) {
+        IslandSetup game = getGameByPlayer(playerId);
+        if (game == null) return;
 
-    @Override
-    protected GameState<IslandSetupData> createPrepareState() {
-        return null;
+        game.dispatch(IslandSetupStates.STOP);
+        gameRegistry.removeByPlayer(playerId);
     }
-
-    @Override
-    protected StartGameState createStartState() {
-        return stateProvider.startState();
-    }
-
-    @Override
-    protected StopGameState createStopState() {
-        return stateProvider.stopState();
+    @Nullable
+    public IslandSetup getGameByPlayer(UUID playerId) {
+        return gameRegistry.getByPlayer(playerId);
     }
 }

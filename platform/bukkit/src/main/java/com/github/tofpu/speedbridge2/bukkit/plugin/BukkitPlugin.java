@@ -6,9 +6,9 @@ import com.github.tofpu.speedbridge2.PlatformPlayerAdapter;
 import com.github.tofpu.speedbridge2.CoreApplication;
 import com.github.tofpu.speedbridge2.bukkit.bootstrap.PluginBootstrap;
 import com.github.tofpu.speedbridge2.bukkit.bootstrap.game.GameListener;
-import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.bukkit.listener.PlayerConnectionListener;
 import com.github.tofpu.speedbridge2.bukkit.command.PluginCommandHandler;
+import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import java.io.File;
 

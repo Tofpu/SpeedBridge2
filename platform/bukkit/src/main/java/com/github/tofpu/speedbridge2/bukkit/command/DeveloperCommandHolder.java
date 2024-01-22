@@ -2,10 +2,10 @@ package com.github.tofpu.speedbridge2.bukkit.command;
 
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.bukkit.plugin.BukkitPlugin;
-import com.github.tofpu.speedbridge2.common.game.land.arena.IslandSchematic;
-import com.github.tofpu.speedbridge2.common.game.ArenaManager;
+import com.github.tofpu.speedbridge2.common.gameextra.land.arena.IslandSchematic;
+import com.github.tofpu.speedbridge2.common.gameextra.ArenaManager;
 import com.github.tofpu.speedbridge2.common.island.Island;
-import com.github.tofpu.speedbridge2.common.game.land.Land;
+import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
