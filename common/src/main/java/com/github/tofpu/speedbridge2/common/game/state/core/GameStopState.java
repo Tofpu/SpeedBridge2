@@ -17,7 +17,7 @@ public class GameStopState implements BridgeGameState {
     }
 
     @Override
-    public void onGameStateChange(Game<IslandGameData> game, GameStateType<IslandGameData> stateChange) {
+    public void onGameStateChange(Game<IslandGameData> game, GameStateType<IslandGameData> prevState, GameStateType<IslandGameData> newState) {
         IslandGameData gameData = game.data();
         IslandGamePlayer gamePlayer = gameData.gamePlayer();
         eventDispatcher.dispatchIfApplicable(new IslandGameStopEvent((IslandGame) game, gamePlayer));

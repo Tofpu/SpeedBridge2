@@ -14,8 +14,8 @@ public class StateManagerTest {
 
     @Test
     void name() {
-        stateManager.addState(StateTypes.ODD, (game, stateChange) -> game.data().count += 1);
-        stateManager.addState(StateTypes.EVEN, (game, stateChange) -> game.data().count += 1);
+        stateManager.addState(StateTypes.ODD, (game, prevState, stateChange) -> game.data().count += 1);
+        stateManager.addState(StateTypes.EVEN, (game, prevState, stateChange) -> game.data().count += 1);
 
         CountData countData = new CountData(1);
         Game<CountData> game = new Game<>(countData, stateManager);

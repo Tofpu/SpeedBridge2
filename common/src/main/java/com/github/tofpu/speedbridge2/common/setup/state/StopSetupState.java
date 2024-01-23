@@ -16,7 +16,7 @@ public class StopSetupState extends StopGameState<IslandSetupData> {
     }
 
     @Override
-    public void onGameStateChange(Game<IslandSetupData> game, GameStateType<IslandSetupData> stateChange) {
+    public void onGameStateChange(Game<IslandSetupData> game, GameStateType<IslandSetupData> prevState, GameStateType<IslandSetupData> newState) {
         eventDispatcher.dispatchIfApplicable(new StopIslandSetupEvent((IslandSetup) game));
     }
 }

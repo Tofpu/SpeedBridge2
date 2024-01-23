@@ -17,7 +17,7 @@ public class PlayerScoredState implements BridgeGameState {
     }
 
     @Override
-    public void onGameStateChange(Game<IslandGameData> game, GameStateType<IslandGameData> stateChange) {
+    public void onGameStateChange(Game<IslandGameData> game, GameStateType<IslandGameData> prevState, GameStateType<IslandGameData> newState) {
         IslandGameData data = game.data();
         IslandGamePlayer player = data.gamePlayer();
 

@@ -8,8 +8,8 @@ import io.github.tofpu.speedbridge.gameengine.GameStateType;
 
 public class GameStartedState implements BridgeGameState {
     @Override
-    public void onGameStateChange(Game<IslandGameData> game, GameStateType<IslandGameData> stateChange) {
-        if (stateChange == IslandGameStates.RESET) {
+    public void onGameStateChange(Game<IslandGameData> game, GameStateType<IslandGameData> prevState, GameStateType<IslandGameData> newState) {
+        if (prevState == IslandGameStates.RESET) {
             return;
         }
         game.data().gamePlayer().getPlayer().sendMessage("Game has begun, good luck!");

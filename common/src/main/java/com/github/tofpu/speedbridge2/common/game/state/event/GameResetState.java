@@ -17,7 +17,7 @@ public class GameResetState implements BridgeGameState {
     }
 
     @Override
-    public void onGameStateChange(Game<IslandGameData> game, GameStateType<IslandGameData> stateChange) {
+    public void onGameStateChange(Game<IslandGameData> game, GameStateType<IslandGameData> prevState, GameStateType<IslandGameData> newState) {
         IslandGamePlayer player = game.data().gamePlayer();
         IslandGameResetEvent event = new IslandGameResetEvent((IslandGame) game, player);
         eventDispatcher.dispatchIfApplicable(event);

@@ -9,7 +9,7 @@ import io.github.tofpu.speedbridge.gameengine.StateChangeListener;
 
 public class SetOriginState implements StateChangeListener<IslandSetupData> {
     @Override
-    public void onGameStateChange(Game<IslandSetupData> game, GameStateType<IslandSetupData> stateChange) {
+    public void onGameStateChange(Game<IslandSetupData> game, GameStateType<IslandSetupData> prevState, GameStateType<IslandSetupData> newState) {
         IslandSetupData data = game.data();
         Location originalLocation = data.originalLocation();
         Location subtracted = data.land().getIslandLocation().subtract(originalLocation)

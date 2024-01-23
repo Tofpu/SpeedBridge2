@@ -16,7 +16,7 @@ public class GamePrepareState implements BridgeGameState {
     }
 
     @Override
-    public void onGameStateChange(Game<IslandGameData> game, GameStateType<IslandGameData> stateChange) {
+    public void onGameStateChange(Game<IslandGameData> game, GameStateType<IslandGameData> prevState, GameStateType<IslandGameData> newState) {
         IslandGame islandGame = (IslandGame) game;
         eventDispatcher.dispatchIfApplicable(new IslandGamePrepareEvent(islandGame, game.data().gamePlayer()));
     }

@@ -13,7 +13,7 @@ public class StateManager<D extends GameData> {
     public void callListener(GameStateType<D> state, Game<D> game) {
         StateChangeListener<D> listener = stateListenerMap.get(state);
         if (listener != null) {
-            listener.onGameStateChange(game, state);
+            listener.onGameStateChange(game, game.stateType() , state);
         }
     }
 }
