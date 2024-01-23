@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.common.bridge.setup;
+package com.github.tofpu.speedbridge2.common.setup.game;
 
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.gameextra.land.arena.BasicArenaManager;

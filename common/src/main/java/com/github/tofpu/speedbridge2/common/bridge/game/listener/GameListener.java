@@ -7,7 +7,7 @@ import com.github.tofpu.speedbridge2.common.bridge.game.event.IslandGameResetEve
 import com.github.tofpu.speedbridge2.common.bridge.game.event.IslandGameStopEvent;
 import com.github.tofpu.speedbridge2.common.bridge.game.event.PlayerScoredEvent;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
-import com.github.tofpu.speedbridge2.common.gameextra.land.LandController;
+import com.github.tofpu.speedbridge2.common.gameextra.land.GameLandReserver;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.event.Listener;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventListener;

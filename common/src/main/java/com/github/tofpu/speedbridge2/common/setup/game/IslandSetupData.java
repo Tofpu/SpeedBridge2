@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.common.bridge.setup;
+package com.github.tofpu.speedbridge2.common.setup.game;
 
 import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
 import com.github.tofpu.speedbridge2.object.Location;

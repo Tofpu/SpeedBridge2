@@ -9,10 +9,10 @@ import com.github.tofpu.speedbridge2.bukkit.bootstrap.game.GameListener;
 import com.github.tofpu.speedbridge2.bukkit.listener.PlayerConnectionListener;
 import com.github.tofpu.speedbridge2.bukkit.command.PluginCommandHandler;
 import com.github.tofpu.speedbridge2.common.bridge.BridgeSystem;
+import com.github.tofpu.speedbridge2.common.setup.GameSetupSystem;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import java.io.File;
 
-import com.github.tofpu.speedbridge2.common.bridge.setup.IslandSetupController;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.bukkit.island.setup.IslandSetupListener;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
@@ -73,7 +73,7 @@ public class BukkitPlugin extends JavaPlugin {
 
             Bukkit.getPluginManager().registerEvents(new GameListener(commonApplication.bridgeSystem()), this);
 
-            IslandSetupListener islandSetupListener = new IslandSetupListener(commonApplication.setupController());
+            IslandSetupListener islandSetupListener = new IslandSetupListener(commonApplication.setupSystem());
             Bukkit.getPluginManager().registerEvents(islandSetupListener, this);
 
             PlayerConnectionListener playerConnectionListener = new PlayerConnectionListener(playerAdapter(), getService(EventDispatcherService.class));
@@ -97,8 +97,8 @@ public class BukkitPlugin extends JavaPlugin {
         return bootstrap.playerAdapter();
     }
 
-    public IslandSetupController setupController() {
-        return commonApplication.setupController();
+    public GameSetupSystem setupSystem() {
+        return commonApplication.setupSystem();
     }
 
     public PlatformArenaAdapter arenaAdapter() {

@@ -5,10 +5,10 @@ import com.github.tofpu.speedbridge2.bukkit.plugin.BukkitPlugin;
 import com.github.tofpu.speedbridge2.common.bridge.BridgeSystem;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.Score;
-import com.github.tofpu.speedbridge2.common.bridge.setup.IslandSetupController;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
+import com.github.tofpu.speedbridge2.common.setup.GameSetupSystem;
 import com.github.tofpu.speedbridge2.configuration.message.ConfigurableMessageService;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import revxrsal.commands.annotation.AutoComplete;
@@ -23,15 +23,15 @@ import java.util.Map;
 @Command({"speedbridge", "sb"})
 public class PluginCommandHolder {
     private final LobbyService lobbyService;
-    private final IslandSetupController islandSetupService;
+    private final GameSetupSystem setupSystem;
     private final IslandService islandService;
     private final BridgeSystem bridgeSystem;
     private final BridgeScoreService scoreService;
     private final ConfigurableMessageService configurableMessageService;
 
-    public PluginCommandHolder(LobbyService lobbyService, IslandSetupController islandSetupService, IslandService islandService, BridgeSystem bridgeSystem, BridgeScoreService scoreService, ConfigurableMessageService configurableMessageService) {
+    public PluginCommandHolder(LobbyService lobbyService, GameSetupSystem setupSystem, IslandService islandService, BridgeSystem bridgeSystem, BridgeScoreService scoreService, ConfigurableMessageService configurableMessageService) {
         this.lobbyService = lobbyService;
-        this.islandSetupService = islandSetupService;
+        this.setupSystem = setupSystem;
         this.islandService = islandService;
         this.bridgeSystem = bridgeSystem;
         this.scoreService = scoreService;
@@ -39,7 +39,7 @@ public class PluginCommandHolder {
     }
 
     public PluginCommandHolder(BukkitPlugin bukkitPlugin) {
-        this(bukkitPlugin.getService(LobbyService.class), bukkitPlugin.setupController(), bukkitPlugin.getService(IslandService.class), bukkitPlugin.bridgeSystem(), bukkitPlugin.getService(BridgeScoreService.class), bukkitPlugin.getService(ConfigurableMessageService.class));
+        this(bukkitPlugin.getService(LobbyService.class), bukkitPlugin.setupSystem(), bukkitPlugin.getService(IslandService.class), bukkitPlugin.bridgeSystem(), bukkitPlugin.getService(BridgeScoreService.class), bukkitPlugin.getService(ConfigurableMessageService.class));
     }
 
     @Subcommand("lobby")
@@ -61,24 +61,24 @@ public class PluginCommandHolder {
     @AutoComplete("* @schematics")
     public void gameSetup(final OnlinePlayer player, final int slot, final String schematicName) {
         requireLobbyToBeAvailable();
-        if (islandSetupService.isInSetup(player.id())) {
+        if (setupSystem.isInSetup(player.id())) {
             player.sendMessage(BukkitMessages.GAME_SETUP_PLAYER_BUSY);
             return;
         }
-        islandSetupService.begin(player, slot, schematicName);
+        setupSystem.startSetup(player, slot, schematicName);
         player.sendMessage(BukkitMessages.GAME_SETUP_CREATED, slot);
     }
 
     @Subcommand("game setup cancel")
     public void gameSetupCancel(final OnlinePlayer player) {
         requireLobbyToBeAvailable();
-        int setupSlot = islandSetupService.getSetupSlot(player.id());
+        int setupSlot = setupSystem.getSetupSlot(player.id());
         if (setupSlot == -1) {
             player.sendMessage(BukkitMessages.GAME_SETUP_PLAYER_MISSING);
             return;
         }
 
-        islandSetupService.cancel(player);
+        setupSystem.cancelSetup(player);
         player.sendMessage(BukkitMessages.GAME_SETUP_CANCELLED, setupSlot);
     }
 

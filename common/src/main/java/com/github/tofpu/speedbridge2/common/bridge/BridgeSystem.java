@@ -5,7 +5,7 @@ import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandArenaManager;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGame;
 import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameHandler;
-import com.github.tofpu.speedbridge2.common.bridge.game.GameLandReserver;
+import com.github.tofpu.speedbridge2.common.gameextra.land.GameLandReserver;
 import com.github.tofpu.speedbridge2.common.bridge.game.listener.GameListener;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.common.gameextra.land.Land;

@@ -2,10 +2,8 @@ package com.github.tofpu.speedbridge2.common;
 
 import com.github.tofpu.speedbridge2.CoreApplication;
 import com.github.tofpu.speedbridge2.common.bridge.BridgeSystem;
-import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameHandler;
 import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
-import com.github.tofpu.speedbridge2.common.bridge.setup.BridgeSetupHandler;
-import com.github.tofpu.speedbridge2.common.bridge.setup.IslandSetupController;
+import com.github.tofpu.speedbridge2.common.setup.GameSetupSystem;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
@@ -15,9 +13,9 @@ import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 public class CommonApplication {
 
     private final CoreApplication speedBridge;
-    private IslandSetupController setupController;
     private SchematicHandler schematicHandler;
     private BridgeSystem bridgeSystem;
+    private GameSetupSystem gameSetupSystem;
 
     public CommonApplication(CoreApplication speedBridge) {
         this.speedBridge = speedBridge;
@@ -38,8 +36,8 @@ public class CommonApplication {
     }
 
     private void initSetupGame(PlatformArenaAdapter arenaAdapter, ServiceManager serviceManager) {
-        BridgeSetupHandler setupHandler = new BridgeSetupHandler(serviceManager, arenaAdapter, schematicHandler);
-        setupController = new IslandSetupController(setupHandler);
+        gameSetupSystem = new GameSetupSystem(serviceManager.get(EventDispatcherService.class), arenaAdapter, schematicHandler, serviceManager.get(IslandService.class));
+        gameSetupSystem.registerListener(serviceManager);
     }
 
     private void initGame(PlatformGameAdapter gameAdapter, PlatformArenaAdapter arenaAdapter, ServiceManager serviceManager) {
@@ -55,8 +53,8 @@ public class CommonApplication {
         return bridgeSystem;
     }
 
-    public IslandSetupController setupController() {
-        return setupController;
+    public GameSetupSystem setupSystem() {
+        return gameSetupSystem;
     }
 
     public SchematicHandler schematicHandler() {

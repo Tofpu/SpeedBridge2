@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.common.bridge.game;
+package com.github.tofpu.speedbridge2.common.gameextra.land;
 
 import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
 import com.github.tofpu.speedbridge2.common.gameextra.land.LandController;

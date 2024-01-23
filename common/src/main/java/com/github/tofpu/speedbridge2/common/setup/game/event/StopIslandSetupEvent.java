@@ -1,6 +1,6 @@
-package com.github.tofpu.speedbridge2.common.bridge.setup.event;
+package com.github.tofpu.speedbridge2.common.setup.game.event;
 
-import com.github.tofpu.speedbridge2.common.bridge.setup.IslandSetup;
+import com.github.tofpu.speedbridge2.common.setup.game.IslandSetup;
 import com.github.tofpu.speedbridge2.event.Cancellable;
 import com.github.tofpu.speedbridge2.event.Event;
 
