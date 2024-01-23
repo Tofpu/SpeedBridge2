@@ -3,8 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":speedbridge2-common"))
-
     compileOnly("org.xerial:sqlite-jdbc:3.36.0.3")
     compileOnly("com.sk89q:worldedit:6.0.0-SNAPSHOT")
 
