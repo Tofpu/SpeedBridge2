@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class IslandGameHandler extends BaseGameHandler<IslandGameData> {
+class IslandGameHandler extends BaseGameHandler<IslandGameData> {
     private final EventDispatcherService eventDispatcher;
 
     private final GameRegistry<IslandGame> gameRegistry = new GameRegistry<>();

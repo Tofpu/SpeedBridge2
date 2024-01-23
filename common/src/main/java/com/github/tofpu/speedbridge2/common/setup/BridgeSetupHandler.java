@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class BridgeSetupHandler extends BaseGameHandler<IslandSetupData> {
+class BridgeSetupHandler extends BaseGameHandler<IslandSetupData> {
     private final EventDispatcherService eventDispatcher;
 
     private final GameRegistry<IslandSetup> gameRegistry = new GameRegistry<>();
