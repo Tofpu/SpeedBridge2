@@ -7,16 +7,20 @@ import com.github.tofpu.speedbridge2.common.gameextra.land.GameLandReserver;
 import com.github.tofpu.speedbridge2.common.game.listener.GameListener;
 import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
 import com.github.tofpu.speedbridge2.common.gameextra.land.LandController;
+import com.github.tofpu.speedbridge2.common.gameextra.land.arena.ArenaManagerOptions;
+import com.github.tofpu.speedbridge2.common.gameextra.land.arena.BasicArenaManager;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
+import com.github.tofpu.speedbridge2.object.Vector;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 
 import java.util.UUID;
 
 public class BridgeSystem {
+    private static final ArenaManagerOptions DEFAULT_OPTIONS = new ArenaManagerOptions(new Vector(0, 100, 0), 10);
     private final EventDispatcherService eventDispatcher;
     private final IslandGameHandler gameHandler;
     private final GameLandReserver landReserver;
@@ -25,7 +29,7 @@ public class BridgeSystem {
         this.eventDispatcher = eventDispatcher;
         this.gameHandler = new IslandGameHandler(eventDispatcher);
 
-        LandController landController = new LandController(new IslandGameArenaManager(arenaAdapter));
+        LandController landController = new LandController(new BasicArenaManager(arenaAdapter, DEFAULT_OPTIONS));
         this.landReserver = new GameLandReserver(arenaAdapter.gameWorld(), schematicHandler, landController);
     }
 

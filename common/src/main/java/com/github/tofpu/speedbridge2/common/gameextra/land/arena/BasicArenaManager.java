@@ -14,19 +14,17 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class BasicArenaManager implements ArenaManager {
-    protected final PlatformArenaAdapter arenaAdapter;
+public class BasicArenaManager implements ArenaManager {
+    protected final ArenaManagerOptions options;
     protected final ClipboardPaster clipboardPaster;
-    protected final Vector initialPosition;
 
     private final AtomicInteger offsetX;
     private final Queue<Land> landReserves;
 
-    public BasicArenaManager(PlatformArenaAdapter arenaAdapter, Vector initialPosition) {
-        this.arenaAdapter = arenaAdapter;
+    public BasicArenaManager(PlatformArenaAdapter arenaAdapter, ArenaManagerOptions options) {
+        this.options = options;
         this.clipboardPaster = arenaAdapter.clipboardPaster();
-        this.initialPosition = initialPosition;
-        this.offsetX = new AtomicInteger((int) initialPosition.x());
+        this.offsetX = new AtomicInteger((int) initialPosition().x());
         this.landReserves = new LinkedList<>();
     }
 
@@ -91,10 +89,14 @@ public abstract class BasicArenaManager implements ArenaManager {
     }
 
     protected Position reservePosition(RegionInfo region, World world) {
-        return new Position(world, offsetX.getAndAdd(region.getWidth() + gapBetweenLand()), (int) initialPosition.y(), (int) initialPosition.z());
+        return new Position(world, offsetX.getAndAdd(region.getWidth() + gapBetweenLand()), (int) initialPosition().y(), (int) initialPosition().z());
     }
 
     protected int gapBetweenLand() {
-        return 10;
+        return options.gapBetweenIsland();
+    }
+
+    public Vector initialPosition() {
+        return options.initialPosition();
     }
 }

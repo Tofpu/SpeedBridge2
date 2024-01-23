@@ -4,6 +4,8 @@ import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.gameextra.land.GameLandReserver;
 import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
 import com.github.tofpu.speedbridge2.common.gameextra.land.LandController;
+import com.github.tofpu.speedbridge2.common.gameextra.land.arena.ArenaManagerOptions;
+import com.github.tofpu.speedbridge2.common.gameextra.land.arena.BasicArenaManager;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
@@ -11,6 +13,7 @@ import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
 import com.github.tofpu.speedbridge2.common.setup.listener.IslandSetupListener;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.object.Location;
+import com.github.tofpu.speedbridge2.object.Vector;
 import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
@@ -19,6 +22,7 @@ import io.github.tofpu.speedbridge.gameengine.Game;
 import java.util.UUID;
 
 public class GameSetupSystem {
+    private static final ArenaManagerOptions DEFAULT_OPTIONS = new ArenaManagerOptions(new Vector(0, 100, 100));
     private final IslandSetupHandler setupHandler;
     private final EventDispatcherService eventDispatcherService;
     private final World world;
@@ -29,7 +33,7 @@ public class GameSetupSystem {
         this.setupHandler = new IslandSetupHandler(eventDispatcherService);
         this.eventDispatcherService = eventDispatcherService;
         this.world = arenaAdapter.gameWorld();
-        this.landReserver = new GameLandReserver(world, schematicHandler, new LandController(new IslandSetupArenaManager(arenaAdapter)));
+        this.landReserver = new GameLandReserver(world, schematicHandler, new LandController(new BasicArenaManager(arenaAdapter, DEFAULT_OPTIONS)));
         this.islandService = islandService;
     }
 
