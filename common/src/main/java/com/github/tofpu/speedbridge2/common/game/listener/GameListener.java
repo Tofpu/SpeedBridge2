@@ -6,7 +6,7 @@ import com.github.tofpu.speedbridge2.common.game.event.IslandGameResetEvent;
 import com.github.tofpu.speedbridge2.common.game.event.IslandGameStopEvent;
 import com.github.tofpu.speedbridge2.common.game.event.PlayerScoredEvent;
 import com.github.tofpu.speedbridge2.common.game.score.BridgeScoreService;
-import com.github.tofpu.speedbridge2.common.game.BridgeStateTypes;
+import com.github.tofpu.speedbridge2.common.game.IslandGameStates;
 import com.github.tofpu.speedbridge2.common.game.IslandGame;
 import com.github.tofpu.speedbridge2.common.game.IslandGameData;
 import com.github.tofpu.speedbridge2.common.game.IslandGamePlayer;
@@ -36,7 +36,7 @@ public class GameListener implements Listener {
     public void on(IslandGamePrepareEvent event)  {
         IslandGame game = event.game();
         gameAdapter.onGamePrepare(game, event.player());
-        game.dispatch(BridgeStateTypes.START);
+        game.dispatch(IslandGameStates.START);
     }
 
     @EventListener(state = ListeningState.MONITORING, ignoreCancelled = true)
@@ -45,7 +45,7 @@ public class GameListener implements Listener {
         gameAdapter.onGameReset(game, event.player());
 
         System.out.println("IslandResetGameState -- dispatching GameStartedState");
-        game.dispatch(BridgeStateTypes.START);
+        game.dispatch(IslandGameStates.START);
     }
 
     @EventListener(state = ListeningState.MONITORING, ignoreCancelled = true)
@@ -63,7 +63,7 @@ public class GameListener implements Listener {
         scoreService.addScore(player.id(), data.getIsland().getSlot(), timerInSeconds);
 
         event.player().getPlayer().sendMessage(finalMessage);
-        game.dispatch(BridgeStateTypes.RESET);
+        game.dispatch(IslandGameStates.RESET);
     }
 
     @EventListener(state = ListeningState.MONITORING, ignoreCancelled = true)

@@ -19,17 +19,17 @@ import io.github.tofpu.speedbridge.gameengine.Game;
 import java.util.UUID;
 
 public class GameSetupSystem {
-    private final BridgeSetupHandler setupHandler;
+    private final IslandSetupHandler setupHandler;
     private final EventDispatcherService eventDispatcherService;
     private final World world;
     private final GameLandReserver landReserver;
     private final IslandService islandService;
 
     public GameSetupSystem(EventDispatcherService eventDispatcherService, PlatformArenaAdapter arenaAdapter, SchematicHandler schematicHandler, IslandService islandService) {
-        this.setupHandler = new BridgeSetupHandler(eventDispatcherService);
+        this.setupHandler = new IslandSetupHandler(eventDispatcherService);
         this.eventDispatcherService = eventDispatcherService;
         this.world = arenaAdapter.gameWorld();
-        this.landReserver = new GameLandReserver(world, schematicHandler, new LandController(new SetupArenaManager(arenaAdapter)));
+        this.landReserver = new GameLandReserver(world, schematicHandler, new LandController(new IslandSetupArenaManager(arenaAdapter)));
         this.islandService = islandService;
     }
 

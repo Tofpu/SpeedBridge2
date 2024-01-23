@@ -13,12 +13,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-class BridgeSetupHandler extends BaseGameHandler<IslandSetupData> {
+class IslandSetupHandler extends BaseGameHandler<IslandSetupData> {
     private final EventDispatcherService eventDispatcher;
 
     private final GameRegistry<IslandSetup> gameRegistry = new GameRegistry<>();
 
-    public BridgeSetupHandler(EventDispatcherService eventDispatcher) {
+    public IslandSetupHandler(EventDispatcherService eventDispatcher) {
         this.eventDispatcher = eventDispatcher;
         registerStates();
     }
@@ -40,7 +40,7 @@ class BridgeSetupHandler extends BaseGameHandler<IslandSetupData> {
 
     @NotNull
     private IslandSetup createGame(OnlinePlayer player, int slot, String schematicName, Land land) {
-        SetupPlayer gamePlayer = new SetupPlayer(player);
+        IslandSetupPlayer gamePlayer = new IslandSetupPlayer(player);
         IslandSetupData gameData = new IslandSetupData(gamePlayer, slot, schematicName, land);
         return new IslandSetup(gameData, stateManager);
     }

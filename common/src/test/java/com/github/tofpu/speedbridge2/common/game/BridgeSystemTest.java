@@ -2,7 +2,6 @@ package com.github.tofpu.speedbridge2.common.game;
 
 import com.github.tofpu.speedbridge2.common.MockedDatabaseService;
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
-import com.github.tofpu.speedbridge2.common.bridge.game.*;
 import com.github.tofpu.speedbridge2.common.game.event.PlayerScoredEvent;
 import com.github.tofpu.speedbridge2.common.game.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.common.gameextra.land.GameLandReserver;
@@ -30,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class GameHandlerTest {
+public class BridgeSystemTest {
     private final EventDispatcherService eventDispatcherService = spy(new EventDispatcherService());
     private final LobbyService lobbyService = new LobbyService(new MockedDatabaseService(), eventDispatcherService);
     private final PlatformArenaAdapter arenaAdapter = PlatformArenaAdapter.simple(new World());
@@ -78,7 +77,7 @@ public class GameHandlerTest {
         IslandGame game = bridgeSystem.getGameByPlayer(playerId);
 
         game.data().beginTimer(true);
-        game.dispatch(BridgeStateTypes.SCORED);
+        game.dispatch(IslandGameStates.SCORED);
 
         verify(eventDispatcherService, times(1)).dispatchIfApplicable(isA(PlayerScoredEvent.class));
     }

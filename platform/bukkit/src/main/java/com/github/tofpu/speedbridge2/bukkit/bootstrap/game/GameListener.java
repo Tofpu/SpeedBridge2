@@ -2,7 +2,7 @@ package com.github.tofpu.speedbridge2.bukkit.bootstrap.game;
 
 import com.github.tofpu.speedbridge2.bukkit.helper.CoreConversionHelper;
 import com.github.tofpu.speedbridge2.common.game.BridgeSystem;
-import com.github.tofpu.speedbridge2.common.game.BridgeStateTypes;
+import com.github.tofpu.speedbridge2.common.game.IslandGameStates;
 import com.github.tofpu.speedbridge2.common.game.IslandGameData;
 import com.github.tofpu.speedbridge2.object.Position;
 import io.github.tofpu.speedbridge.gameengine.Game;
@@ -72,7 +72,7 @@ public class GameListener implements Listener {
         Game<IslandGameData> game = bridgeSystem.getGameByPlayer(playerId);
         if (game == null || !game.data().hasTimerBegun()) return;
 
-        game.dispatch(BridgeStateTypes.SCORED);
+        game.dispatch(IslandGameStates.SCORED);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -84,7 +84,7 @@ public class GameListener implements Listener {
         IslandGameData gameData = game.data();
         boolean isInRegion = gameData.getLand().isInsideRegion(CoreConversionHelper.toVector(event.getTo().toVector()));
         if (!isInRegion) {
-            game.dispatch(BridgeStateTypes.RESET);
+            game.dispatch(IslandGameStates.RESET);
         }
     }
 }

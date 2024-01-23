@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ArenaManagerTest {
     private final SchematicResolver schematicResolver = SchematicResolver.empty();
-    private final IslandArenaManager arenaManager = new IslandArenaManager(PlatformArenaAdapter.simple(new World(), ClipboardPaster.empty(), schematicResolver));
+    private final IslandGameArenaManager arenaManager = new IslandGameArenaManager(PlatformArenaAdapter.simple(new World(), ClipboardPaster.empty(), schematicResolver));
 
     @Test
     void island_reserve_test() {

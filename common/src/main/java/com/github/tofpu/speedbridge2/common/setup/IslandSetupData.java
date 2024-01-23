@@ -5,7 +5,7 @@ import com.github.tofpu.speedbridge2.object.Location;
 import io.github.tofpu.speedbridge.gameengine.GameData;
 
 public class IslandSetupData extends GameData {
-    private final SetupPlayer player;
+    private final IslandSetupPlayer player;
     private final int slot;
     private final String schematicName;
     private final Land land;
@@ -13,14 +13,14 @@ public class IslandSetupData extends GameData {
     private Location originalLocation;
     private Location origin;
 
-    public IslandSetupData(SetupPlayer player, int slot, String schematicName, Land land) {
+    public IslandSetupData(IslandSetupPlayer player, int slot, String schematicName, Land land) {
         this.player = player;
         this.slot = slot;
         this.schematicName = schematicName;
         this.land = land;
     }
 
-    public SetupPlayer player() {
+    public IslandSetupPlayer player() {
         return player;
     }
 

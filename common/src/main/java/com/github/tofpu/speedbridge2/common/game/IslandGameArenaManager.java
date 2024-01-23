@@ -4,11 +4,11 @@ import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.gameextra.land.arena.BasicArenaManager;
 import com.github.tofpu.speedbridge2.object.Vector;
 
-public class IslandArenaManager extends BasicArenaManager {
+public class IslandGameArenaManager extends BasicArenaManager {
     // todo: make this option configurable
     private static final int ISLAND_GAP = 10;
 
-    public IslandArenaManager(PlatformArenaAdapter arenaAdapter) {
+    public IslandGameArenaManager(PlatformArenaAdapter arenaAdapter) {
         super(arenaAdapter, new Vector(0, 100, 0));
     }
 

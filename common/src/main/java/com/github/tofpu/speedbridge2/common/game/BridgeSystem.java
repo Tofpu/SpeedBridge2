@@ -25,7 +25,7 @@ public class BridgeSystem {
         this.eventDispatcher = eventDispatcher;
         this.gameHandler = new IslandGameHandler(eventDispatcher);
 
-        LandController landController = new LandController(new IslandArenaManager(arenaAdapter));
+        LandController landController = new LandController(new IslandGameArenaManager(arenaAdapter));
         this.landReserver = new GameLandReserver(arenaAdapter.gameWorld(), schematicHandler, landController);
     }
 

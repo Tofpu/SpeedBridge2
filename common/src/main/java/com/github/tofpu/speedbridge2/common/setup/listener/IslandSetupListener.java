@@ -4,7 +4,7 @@ import com.github.tofpu.speedbridge2.common.gameextra.land.GameLandReserver;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.common.setup.IslandSetupData;
-import com.github.tofpu.speedbridge2.common.setup.SetupPlayer;
+import com.github.tofpu.speedbridge2.common.setup.IslandSetupPlayer;
 import com.github.tofpu.speedbridge2.common.setup.event.StopIslandSetupEvent;
 import com.github.tofpu.speedbridge2.event.Listener;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventListener;
@@ -32,7 +32,7 @@ public class IslandSetupListener implements Listener {
             e.printStackTrace();
         }
 
-        SetupPlayer setupPlayer = data.player();
+        IslandSetupPlayer setupPlayer = data.player();
         landReserver.releaseSpot(setupPlayer.id());
 
         setupPlayer.player().teleport(lobbyService.position());

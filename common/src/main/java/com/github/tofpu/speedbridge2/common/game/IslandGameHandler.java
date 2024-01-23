@@ -28,12 +28,12 @@ class IslandGameHandler extends BaseGameHandler<IslandGameData> {
 
     @Override
     public void registerStates() {
-        this.stateManager.addState(BridgeStateTypes.PREPARE, new GamePrepareState(eventDispatcher));
-        this.stateManager.addState(BridgeStateTypes.START, new GameStartedState());
-        this.stateManager.addState(BridgeStateTypes.STOP, new GameStopState(eventDispatcher));
+        this.stateManager.addState(IslandGameStates.PREPARE, new GamePrepareState(eventDispatcher));
+        this.stateManager.addState(IslandGameStates.START, new GameStartedState());
+        this.stateManager.addState(IslandGameStates.STOP, new GameStopState(eventDispatcher));
 
-        this.stateManager.addState(BridgeStateTypes.SCORED, new ScoredGameState(eventDispatcher));
-        this.stateManager.addState(BridgeStateTypes.RESET, new IslandResetGameState(eventDispatcher));
+        this.stateManager.addState(IslandGameStates.SCORED, new ScoredGameState(eventDispatcher));
+        this.stateManager.addState(IslandGameStates.RESET, new IslandResetGameState(eventDispatcher));
     }
 
     public boolean start(final OnlinePlayer player, final Island island, Land land) {
@@ -42,7 +42,7 @@ class IslandGameHandler extends BaseGameHandler<IslandGameData> {
         }
 
         IslandGame game = createGame(player, island, land);
-        game.dispatch(BridgeStateTypes.PREPARE);
+        game.dispatch(IslandGameStates.PREPARE);
         gameRegistry.register(player.id(), game);
         return true;
     }
@@ -58,7 +58,7 @@ class IslandGameHandler extends BaseGameHandler<IslandGameData> {
             return false;
         }
 
-        game.dispatch(BridgeStateTypes.STOP);
+        game.dispatch(IslandGameStates.STOP);
         gameRegistry.removeByPlayer(playerId);
         return true;
     }
