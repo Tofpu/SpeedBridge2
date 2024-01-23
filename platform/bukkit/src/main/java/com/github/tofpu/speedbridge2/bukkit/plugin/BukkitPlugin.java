@@ -1,21 +1,19 @@
 package com.github.tofpu.speedbridge2.bukkit.plugin;
 
-import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
-import com.github.tofpu.speedbridge2.common.CommonApplication;
-import com.github.tofpu.speedbridge2.PlatformPlayerAdapter;
 import com.github.tofpu.speedbridge2.CoreApplication;
+import com.github.tofpu.speedbridge2.PlatformPlayerAdapter;
 import com.github.tofpu.speedbridge2.bukkit.bootstrap.PluginBootstrap;
 import com.github.tofpu.speedbridge2.bukkit.bootstrap.game.GameListener;
-import com.github.tofpu.speedbridge2.bukkit.listener.PlayerConnectionListener;
 import com.github.tofpu.speedbridge2.bukkit.command.PluginCommandHandler;
+import com.github.tofpu.speedbridge2.bukkit.island.setup.IslandSetupListener;
+import com.github.tofpu.speedbridge2.bukkit.listener.PlayerConnectionListener;
+import com.github.tofpu.speedbridge2.common.CommonApplication;
+import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.game.BridgeSystem;
+import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
 import com.github.tofpu.speedbridge2.common.setup.GameSetupSystem;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
-import java.io.File;
-
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
-import com.github.tofpu.speedbridge2.bukkit.island.setup.IslandSetupListener;
-import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
 import com.github.tofpu.speedbridge2.service.Service;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -23,6 +21,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+
+import java.io.File;
 
 public class BukkitPlugin extends JavaPlugin {
 

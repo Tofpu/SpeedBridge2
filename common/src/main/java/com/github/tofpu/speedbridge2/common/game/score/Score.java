@@ -4,7 +4,10 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.jetbrains.annotations.NotNull;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Locale;
 import java.util.UUID;
 

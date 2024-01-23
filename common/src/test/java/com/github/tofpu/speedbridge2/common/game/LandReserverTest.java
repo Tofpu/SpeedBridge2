@@ -2,19 +2,22 @@ package com.github.tofpu.speedbridge2.common.game;
 
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.gameextra.ClipboardPaster;
-import com.github.tofpu.speedbridge2.common.gameextra.land.arena.IslandSchematic;
-import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
-import com.github.tofpu.speedbridge2.object.World;
+import com.github.tofpu.speedbridge2.common.gameextra.land.object.Land;
+import com.github.tofpu.speedbridge2.common.gameextra.land.object.ArenaManagerOptions;
+import com.github.tofpu.speedbridge2.common.gameextra.land.BasicLandReserver;
+import com.github.tofpu.speedbridge2.common.gameextra.land.object.IslandSchematic;
 import com.github.tofpu.speedbridge2.common.schematic.Schematic;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicResolver;
+import com.github.tofpu.speedbridge2.object.Vector;
+import com.github.tofpu.speedbridge2.object.World;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ArenaManagerTest {
+public class LandReserverTest {
     private final SchematicResolver schematicResolver = SchematicResolver.empty();
-    private final IslandGameArenaManager arenaManager = new IslandGameArenaManager(PlatformArenaAdapter.simple(new World(), ClipboardPaster.empty(), schematicResolver));
+    private final BasicLandReserver arenaManager = new BasicLandReserver(PlatformArenaAdapter.simple(new World(), ClipboardPaster.empty(), schematicResolver), new ArenaManagerOptions(new Vector(0, 0, 0)));
 
     @Test
     void island_reserve_test() {
@@ -26,13 +29,13 @@ public class ArenaManagerTest {
         Land land;
 
         assertFalse(arenaManager.hasAvailableLand(islandSlot));
-        land = arenaManager.generate(islandSchematic, world); // generates new land
+        land = arenaManager.reserveLand(islandSchematic); // generates new land
         assertFalse(arenaManager.hasAvailableLand(islandSlot));
 
-        arenaManager.unlock(land); // puts the land into reserve for future use
+        arenaManager.releaseLand(land); // puts the land into reserve for future use
         assertTrue(arenaManager.hasAvailableLand(islandSlot));
 
-        arenaManager.generate(islandSchematic, world); // uses the reserved land
+        arenaManager.reserveLand(islandSchematic); // uses the reserved land
         assertFalse(arenaManager.hasAvailableLand(islandSlot));
     }
 
@@ -45,21 +48,21 @@ public class ArenaManagerTest {
         int secondaryIslandSlot = secondaryIsland.slot();
 
         // generates new lands
-        Land primaryLand = arenaManager.generate(primaryIsland, new World());
-        Land secondaryLand = arenaManager.generate(secondaryIsland, world);
+        Land primaryLand = arenaManager.reserveLand(primaryIsland);
+        Land secondaryLand = arenaManager.reserveLand(secondaryIsland);
 
         // puts the lands into reserve for future use
-        arenaManager.unlock(primaryLand);
+        arenaManager.releaseLand(primaryLand);
         assertTrue(arenaManager.hasAvailableLand(primaryIslandSlot));
 
-        arenaManager.unlock(secondaryLand);
+        arenaManager.releaseLand(secondaryLand);
         assertTrue(arenaManager.hasAvailableLand(primaryIslandSlot));
 
         // uses the reserved lands
-        arenaManager.generate(secondaryIsland, world);
+        arenaManager.reserveLand(secondaryIsland);
         assertFalse(arenaManager.hasAvailableLand(secondaryIslandSlot));
 
-        arenaManager.generate(primaryIsland, world);
+        arenaManager.reserveLand(primaryIsland);
         assertFalse(arenaManager.hasAvailableLand(primaryIslandSlot));
     }
 }

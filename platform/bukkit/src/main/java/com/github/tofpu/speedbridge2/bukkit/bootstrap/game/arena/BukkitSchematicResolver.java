@@ -1,8 +1,8 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap.game.arena;
 
 import com.github.tofpu.speedbridge2.bukkit.helper.CoreConversionHelper;
-import com.github.tofpu.speedbridge2.object.Vector;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicResolver;
+import com.github.tofpu.speedbridge2.object.Vector;
 import io.tofpu.multiworldedit.ClipboardWrapper;
 import io.tofpu.multiworldedit.MultiWorldEdit;
 

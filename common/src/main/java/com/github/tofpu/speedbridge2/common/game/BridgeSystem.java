@@ -2,13 +2,12 @@ package com.github.tofpu.speedbridge2.common.game;
 
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
-import com.github.tofpu.speedbridge2.common.game.score.BridgeScoreService;
-import com.github.tofpu.speedbridge2.common.gameextra.land.GameLandReserver;
 import com.github.tofpu.speedbridge2.common.game.listener.GameListener;
-import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
-import com.github.tofpu.speedbridge2.common.gameextra.land.LandController;
-import com.github.tofpu.speedbridge2.common.gameextra.land.arena.ArenaManagerOptions;
-import com.github.tofpu.speedbridge2.common.gameextra.land.arena.BasicArenaManager;
+import com.github.tofpu.speedbridge2.common.game.score.BridgeScoreService;
+import com.github.tofpu.speedbridge2.common.gameextra.land.PlayerLandReserver;
+import com.github.tofpu.speedbridge2.common.gameextra.land.object.Land;
+import com.github.tofpu.speedbridge2.common.gameextra.land.object.ArenaManagerOptions;
+import com.github.tofpu.speedbridge2.common.gameextra.land.BasicLandReserver;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
@@ -23,14 +22,12 @@ public class BridgeSystem {
     private static final ArenaManagerOptions DEFAULT_OPTIONS = new ArenaManagerOptions(new Vector(0, 100, 0), 10);
     private final EventDispatcherService eventDispatcher;
     private final IslandGameHandler gameHandler;
-    private final GameLandReserver landReserver;
+    private final PlayerLandReserver landReserver;
 
     public BridgeSystem(EventDispatcherService eventDispatcher, SchematicHandler schematicHandler, PlatformArenaAdapter arenaAdapter) {
         this.eventDispatcher = eventDispatcher;
         this.gameHandler = new IslandGameHandler(eventDispatcher);
-
-        LandController landController = new LandController(new BasicArenaManager(arenaAdapter, DEFAULT_OPTIONS));
-        this.landReserver = new GameLandReserver(arenaAdapter.gameWorld(), schematicHandler, landController);
+        this.landReserver = new PlayerLandReserver(schematicHandler, new BasicLandReserver(arenaAdapter, DEFAULT_OPTIONS));
     }
 
     public void registerListener(PlatformGameAdapter gameAdapter, ServiceManager serviceManager) {
@@ -58,7 +55,7 @@ public class BridgeSystem {
         return gameHandler.isInGame(playerId);
     }
 
-    public GameLandReserver landReserver() {
+    public PlayerLandReserver landReserver() {
         return landReserver;
     }
 }

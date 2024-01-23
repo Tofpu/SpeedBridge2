@@ -2,7 +2,7 @@ package com.github.tofpu.speedbridge2.bukkit.bootstrap.game.arena;
 
 import com.github.tofpu.speedbridge2.bukkit.helper.BukkitConversionHelper;
 import com.github.tofpu.speedbridge2.common.gameextra.ClipboardPaster;
-import com.github.tofpu.speedbridge2.common.gameextra.land.arena.RegionInfo;
+import com.github.tofpu.speedbridge2.common.gameextra.land.object.RegionInfo;
 import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.object.Vector;
 import com.github.tofpu.speedbridge2.object.World;
@@ -13,7 +13,10 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.regions.Region;
-import io.tofpu.multiworldedit.*;
+import io.tofpu.multiworldedit.ClipboardWrapper;
+import io.tofpu.multiworldedit.EditSessionWrapper;
+import io.tofpu.multiworldedit.MultiWorldEdit;
+import io.tofpu.multiworldedit.VectorWrapper;
 import org.bukkit.Material;
 
 import java.io.File;

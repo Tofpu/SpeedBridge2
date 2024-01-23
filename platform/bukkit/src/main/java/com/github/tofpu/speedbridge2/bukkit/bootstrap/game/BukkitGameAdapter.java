@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap.game;
 
-import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
 import com.github.tofpu.speedbridge2.bukkit.helper.BukkitConversionHelper;
+import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
 import com.github.tofpu.speedbridge2.common.game.IslandGame;
 import com.github.tofpu.speedbridge2.common.game.IslandGameData;
 import com.github.tofpu.speedbridge2.common.game.IslandGamePlayer;

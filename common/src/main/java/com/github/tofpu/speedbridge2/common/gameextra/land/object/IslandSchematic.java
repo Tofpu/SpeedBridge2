@@ -1,8 +1,8 @@
-package com.github.tofpu.speedbridge2.common.gameextra.land.arena;
+package com.github.tofpu.speedbridge2.common.gameextra.land.object;
 
+import com.github.tofpu.speedbridge2.common.schematic.Schematic;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.World;
-import com.github.tofpu.speedbridge2.common.schematic.Schematic;
 
 public class IslandSchematic extends Schematic {
     private final int slot;

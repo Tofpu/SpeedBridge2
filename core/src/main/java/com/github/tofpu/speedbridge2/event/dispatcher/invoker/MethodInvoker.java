@@ -1,9 +1,10 @@
 package com.github.tofpu.speedbridge2.event.dispatcher.invoker;
 
 import com.github.tofpu.speedbridge2.event.Event;
+import org.reflections.ReflectionUtils;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.reflections.ReflectionUtils;
 
 public class MethodInvoker implements EventInvoker {
 

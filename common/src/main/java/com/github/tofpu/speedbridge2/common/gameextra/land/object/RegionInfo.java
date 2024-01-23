@@ -1,4 +1,4 @@
-package com.github.tofpu.speedbridge2.common.gameextra.land.arena;
+package com.github.tofpu.speedbridge2.common.gameextra.land.object;
 
 import com.github.tofpu.speedbridge2.object.Vector;
 import lombok.Data;

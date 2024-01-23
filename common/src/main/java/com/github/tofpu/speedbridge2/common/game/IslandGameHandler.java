@@ -6,7 +6,7 @@ import com.github.tofpu.speedbridge2.common.game.state.basic.GameStopState;
 import com.github.tofpu.speedbridge2.common.game.state.game.IslandResetGameState;
 import com.github.tofpu.speedbridge2.common.game.state.game.ScoredGameState;
 import com.github.tofpu.speedbridge2.common.gameextra.GameRegistry;
-import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
+import com.github.tofpu.speedbridge2.common.gameextra.land.object.Land;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;

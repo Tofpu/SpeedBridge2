@@ -1,8 +1,9 @@
 package com.github.tofpu.speedbridge2;
 
-import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
 
 public class JavaTest {
 

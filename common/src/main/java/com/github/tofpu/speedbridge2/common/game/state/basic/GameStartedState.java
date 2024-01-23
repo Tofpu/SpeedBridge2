@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.common.game.state.basic;
 
-import com.github.tofpu.speedbridge2.common.game.IslandGameStates;
 import com.github.tofpu.speedbridge2.common.game.IslandGameData;
+import com.github.tofpu.speedbridge2.common.game.IslandGameStates;
 import com.github.tofpu.speedbridge2.common.game.state.generic.BridgeStartedState;
 import io.github.tofpu.speedbridge.gameengine.Game;
 import io.github.tofpu.speedbridge.gameengine.GameStateType;

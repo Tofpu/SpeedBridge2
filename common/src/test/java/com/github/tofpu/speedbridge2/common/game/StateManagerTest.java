@@ -1,6 +1,5 @@
 package com.github.tofpu.speedbridge2.common.game;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import io.github.tofpu.speedbridge.gameengine.Game;
 import io.github.tofpu.speedbridge.gameengine.GameData;
 import io.github.tofpu.speedbridge.gameengine.GameStateType;

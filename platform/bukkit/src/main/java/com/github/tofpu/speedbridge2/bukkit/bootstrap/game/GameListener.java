@@ -2,8 +2,8 @@ package com.github.tofpu.speedbridge2.bukkit.bootstrap.game;
 
 import com.github.tofpu.speedbridge2.bukkit.helper.CoreConversionHelper;
 import com.github.tofpu.speedbridge2.common.game.BridgeSystem;
-import com.github.tofpu.speedbridge2.common.game.IslandGameStates;
 import com.github.tofpu.speedbridge2.common.game.IslandGameData;
+import com.github.tofpu.speedbridge2.common.game.IslandGameStates;
 import com.github.tofpu.speedbridge2.object.Position;
 import io.github.tofpu.speedbridge.gameengine.Game;
 import org.bukkit.event.EventHandler;

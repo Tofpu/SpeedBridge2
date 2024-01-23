@@ -6,7 +6,7 @@ import com.github.tofpu.speedbridge2.bukkit.plugin.BukkitPlugin;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-public class ArenaManagerTest {
+public class LandReserverTest {
     private ServerMock server;
     private BukkitPlugin plugin;
 

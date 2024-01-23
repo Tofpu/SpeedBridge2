@@ -1,6 +1,9 @@
 package com.github.tofpu.speedbridge2.common.game.score;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 public class Scores {
     public static final int MAXIMUM_SIZE = 5;

@@ -3,10 +3,10 @@ package com.github.tofpu.speedbridge2.common;
 import com.github.tofpu.speedbridge2.CoreApplication;
 import com.github.tofpu.speedbridge2.common.game.BridgeSystem;
 import com.github.tofpu.speedbridge2.common.game.score.BridgeScoreService;
-import com.github.tofpu.speedbridge2.common.setup.GameSetupSystem;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
+import com.github.tofpu.speedbridge2.common.setup.GameSetupSystem;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 

@@ -1,8 +1,8 @@
 package com.github.tofpu.speedbridge2.util;
 
-import static java.util.Locale.US;
-
 import org.jetbrains.annotations.Nullable;
+
+import static java.util.Locale.US;
 
 public class ProgramCorrectness {
 

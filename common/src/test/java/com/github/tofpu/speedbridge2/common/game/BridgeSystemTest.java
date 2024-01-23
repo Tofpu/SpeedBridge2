@@ -4,7 +4,7 @@ import com.github.tofpu.speedbridge2.common.MockedDatabaseService;
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.game.event.PlayerScoredEvent;
 import com.github.tofpu.speedbridge2.common.game.score.BridgeScoreService;
-import com.github.tofpu.speedbridge2.common.gameextra.land.GameLandReserver;
+import com.github.tofpu.speedbridge2.common.gameextra.land.PlayerLandReserver;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.common.schematic.SchematicHandler;
@@ -34,7 +34,7 @@ public class BridgeSystemTest {
     private final LobbyService lobbyService = new LobbyService(new MockedDatabaseService(), eventDispatcherService);
     private final PlatformArenaAdapter arenaAdapter = PlatformArenaAdapter.simple(new World());
     private final BridgeSystem bridgeSystem = new BridgeSystem(eventDispatcherService, SchematicHandler.load(new File("test-resources/island/schematics"), SchematicResolver.empty(), s -> true), arenaAdapter);
-    private final GameLandReserver landReserver = bridgeSystem.landReserver();
+    private final PlayerLandReserver landReserver = bridgeSystem.landReserver();
 
     @BeforeEach
     void setUp() throws ExecutionException, InterruptedException, TimeoutException {

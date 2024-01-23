@@ -1,16 +1,16 @@
 package com.github.tofpu.speedbridge2.common.game.listener;
 
 import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
+import com.github.tofpu.speedbridge2.common.game.IslandGame;
+import com.github.tofpu.speedbridge2.common.game.IslandGameData;
+import com.github.tofpu.speedbridge2.common.game.IslandGamePlayer;
+import com.github.tofpu.speedbridge2.common.game.IslandGameStates;
 import com.github.tofpu.speedbridge2.common.game.event.IslandGamePrepareEvent;
 import com.github.tofpu.speedbridge2.common.game.event.IslandGameResetEvent;
 import com.github.tofpu.speedbridge2.common.game.event.IslandGameStopEvent;
 import com.github.tofpu.speedbridge2.common.game.event.PlayerScoredEvent;
 import com.github.tofpu.speedbridge2.common.game.score.BridgeScoreService;
-import com.github.tofpu.speedbridge2.common.game.IslandGameStates;
-import com.github.tofpu.speedbridge2.common.game.IslandGame;
-import com.github.tofpu.speedbridge2.common.game.IslandGameData;
-import com.github.tofpu.speedbridge2.common.game.IslandGamePlayer;
-import com.github.tofpu.speedbridge2.common.gameextra.land.GameLandReserver;
+import com.github.tofpu.speedbridge2.common.gameextra.land.PlayerLandReserver;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.event.Listener;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventListener;
@@ -23,9 +23,9 @@ public class GameListener implements Listener {
     private final PlatformGameAdapter gameAdapter;
     private final BridgeScoreService scoreService;
     private final LobbyService lobbyService;
-    private final GameLandReserver landReserver;
+    private final PlayerLandReserver landReserver;
 
-    public GameListener(PlatformGameAdapter gameAdapter, BridgeScoreService scoreService, LobbyService lobbyService, GameLandReserver landReserver) {
+    public GameListener(PlatformGameAdapter gameAdapter, BridgeScoreService scoreService, LobbyService lobbyService, PlayerLandReserver landReserver) {
         this.gameAdapter = gameAdapter;
         this.scoreService = scoreService;
         this.lobbyService = lobbyService;

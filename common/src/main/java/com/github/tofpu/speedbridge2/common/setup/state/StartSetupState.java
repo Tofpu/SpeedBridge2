@@ -1,8 +1,8 @@
 package com.github.tofpu.speedbridge2.common.setup.state;
 
+import com.github.tofpu.speedbridge2.common.gameextra.state.StartGameStateType;
 import com.github.tofpu.speedbridge2.common.setup.IslandSetupData;
 import com.github.tofpu.speedbridge2.common.setup.IslandSetupPlayer;
-import com.github.tofpu.speedbridge2.common.gameextra.state.StartGameStateType;
 import io.github.tofpu.speedbridge.gameengine.Game;
 import io.github.tofpu.speedbridge.gameengine.GameStateType;
 

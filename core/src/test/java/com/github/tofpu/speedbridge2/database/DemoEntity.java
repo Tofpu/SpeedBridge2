@@ -1,12 +1,13 @@
 package com.github.tofpu.speedbridge2.database;
 
-import java.util.Objects;
-import java.util.StringJoiner;
-import java.util.UUID;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.hibernate.annotations.Type;
+import java.util.Objects;
+import java.util.StringJoiner;
+import java.util.UUID;
 
 @Entity
 @Table(name = "demo_entities_with_uuid")

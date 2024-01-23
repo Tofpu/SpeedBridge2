@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.common.setup;
 
 import com.github.tofpu.speedbridge2.common.gameextra.GameRegistry;
-import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
+import com.github.tofpu.speedbridge2.common.gameextra.land.object.Land;
 import com.github.tofpu.speedbridge2.common.setup.state.SetOriginState;
 import com.github.tofpu.speedbridge2.common.setup.state.StartSetupState;
 import com.github.tofpu.speedbridge2.common.setup.state.StopSetupState;

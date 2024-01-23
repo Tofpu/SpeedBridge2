@@ -1,7 +1,5 @@
 package com.github.tofpu.speedbridge2.common.island;
 
-import com.github.tofpu.speedbridge2.common.island.Island;
-import com.github.tofpu.speedbridge2.common.island.IslandService;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.World;

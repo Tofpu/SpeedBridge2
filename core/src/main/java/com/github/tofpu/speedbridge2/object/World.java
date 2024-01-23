@@ -1,8 +1,9 @@
 package com.github.tofpu.speedbridge2.object;
 
-import javax.persistence.Embeddable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Embeddable;
 
 @Embeddable
 @NoArgsConstructor(force = true)

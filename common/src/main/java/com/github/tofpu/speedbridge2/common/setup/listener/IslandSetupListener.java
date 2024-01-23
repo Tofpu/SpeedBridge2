@@ -1,6 +1,6 @@
 package com.github.tofpu.speedbridge2.common.setup.listener;
 
-import com.github.tofpu.speedbridge2.common.gameextra.land.GameLandReserver;
+import com.github.tofpu.speedbridge2.common.gameextra.land.PlayerLandReserver;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.common.setup.IslandSetupData;
@@ -14,9 +14,9 @@ public class IslandSetupListener implements Listener {
 
     private final IslandService islandService;
     private final LobbyService lobbyService;
-    private final GameLandReserver landReserver;
+    private final PlayerLandReserver landReserver;
 
-    public IslandSetupListener(IslandService islandService, LobbyService lobbyService, GameLandReserver landReserver) {
+    public IslandSetupListener(IslandService islandService, LobbyService lobbyService, PlayerLandReserver landReserver) {
         this.islandService = islandService;
         this.lobbyService = lobbyService;
         this.landReserver = landReserver;

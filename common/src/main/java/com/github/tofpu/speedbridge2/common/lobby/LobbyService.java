@@ -1,14 +1,15 @@
 package com.github.tofpu.speedbridge2.common.lobby;
 
-import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireArgument;
-import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
-
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.service.LoadableService;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
+
 import java.util.concurrent.CompletableFuture;
+
+import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireArgument;
+import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
 
 public class LobbyService implements LoadableService {
 

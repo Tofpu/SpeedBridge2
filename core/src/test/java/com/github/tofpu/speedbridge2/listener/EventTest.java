@@ -4,9 +4,10 @@ import com.github.tofpu.speedbridge2.event.MessageEvent;
 import com.github.tofpu.speedbridge2.event.MessageListener;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import com.github.tofpu.speedbridge2.event.dispatcher.invoker.MethodInvoker;
-import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 

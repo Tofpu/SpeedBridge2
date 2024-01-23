@@ -1,12 +1,14 @@
 package com.github.tofpu.speedbridge2.common.schematic;
 
-import com.github.tofpu.speedbridge2.object.Vector;
 import com.github.tofpu.speedbridge2.common.schematic.exception.SchematicNotFoundException;
 import com.github.tofpu.speedbridge2.common.schematic.exception.UnsupportedSchematicType;
+import com.github.tofpu.speedbridge2.object.Vector;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Predicate;
 
 public class SchematicHandler {

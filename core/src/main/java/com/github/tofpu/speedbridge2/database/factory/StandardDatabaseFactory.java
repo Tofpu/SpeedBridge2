@@ -1,15 +1,14 @@
 package com.github.tofpu.speedbridge2.database.factory;
 
 import com.github.tofpu.speedbridge2.database.Database;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 
 public class StandardDatabaseFactory extends DatabaseFactory<Database> {
     private final ExecutorService executor;

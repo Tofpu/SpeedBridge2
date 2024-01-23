@@ -1,16 +1,17 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap.player;
 
-import com.github.tofpu.speedbridge2.bukkit.helper.CoreConversionHelper;
 import com.github.tofpu.speedbridge2.bukkit.helper.BukkitConversionHelper;
-import com.github.tofpu.speedbridge2.configuration.service.PluginConfigTypes;
+import com.github.tofpu.speedbridge2.bukkit.helper.CoreConversionHelper;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
+import com.github.tofpu.speedbridge2.configuration.service.PluginConfigTypes;
 import com.github.tofpu.speedbridge2.object.Location;
 import com.github.tofpu.speedbridge2.object.Position;
 import com.github.tofpu.speedbridge2.object.World;
 import com.github.tofpu.speedbridge2.object.player.ConfigurableMessage;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
-import java.util.UUID;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class BukkitOnlinePlayer implements OnlinePlayer {
 

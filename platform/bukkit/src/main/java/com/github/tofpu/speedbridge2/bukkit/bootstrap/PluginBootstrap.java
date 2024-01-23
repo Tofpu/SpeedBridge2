@@ -1,12 +1,14 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap;
 
-import com.github.tofpu.speedbridge2.*;
+import com.github.tofpu.speedbridge2.CoreBootstrap;
+import com.github.tofpu.speedbridge2.PlatformPlayerAdapter;
+import com.github.tofpu.speedbridge2.PlatformWorldAdapter;
 import com.github.tofpu.speedbridge2.bukkit.bootstrap.game.BukkitGameAdapter;
 import com.github.tofpu.speedbridge2.bukkit.bootstrap.game.arena.BukkitArenaAdapter;
 import com.github.tofpu.speedbridge2.bukkit.bootstrap.player.BukkitPlayerAdapter;
 import com.github.tofpu.speedbridge2.bukkit.bootstrap.world.BukkitWorldAdapter;
-import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.CommonBootstrap;
+import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
 import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import org.bukkit.plugin.Plugin;

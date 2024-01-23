@@ -1,11 +1,10 @@
 package com.github.tofpu.speedbridge2.common.setup;
 
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
-import com.github.tofpu.speedbridge2.common.gameextra.land.GameLandReserver;
-import com.github.tofpu.speedbridge2.common.gameextra.land.Land;
-import com.github.tofpu.speedbridge2.common.gameextra.land.LandController;
-import com.github.tofpu.speedbridge2.common.gameextra.land.arena.ArenaManagerOptions;
-import com.github.tofpu.speedbridge2.common.gameextra.land.arena.BasicArenaManager;
+import com.github.tofpu.speedbridge2.common.gameextra.land.PlayerLandReserver;
+import com.github.tofpu.speedbridge2.common.gameextra.land.object.Land;
+import com.github.tofpu.speedbridge2.common.gameextra.land.object.ArenaManagerOptions;
+import com.github.tofpu.speedbridge2.common.gameextra.land.BasicLandReserver;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
@@ -26,14 +25,14 @@ public class GameSetupSystem {
     private final IslandSetupHandler setupHandler;
     private final EventDispatcherService eventDispatcherService;
     private final World world;
-    private final GameLandReserver landReserver;
+    private final PlayerLandReserver landReserver;
     private final IslandService islandService;
 
     public GameSetupSystem(EventDispatcherService eventDispatcherService, PlatformArenaAdapter arenaAdapter, SchematicHandler schematicHandler, IslandService islandService) {
         this.setupHandler = new IslandSetupHandler(eventDispatcherService);
         this.eventDispatcherService = eventDispatcherService;
         this.world = arenaAdapter.gameWorld();
-        this.landReserver = new GameLandReserver(world, schematicHandler, new LandController(new BasicArenaManager(arenaAdapter, DEFAULT_OPTIONS)));
+        this.landReserver = new PlayerLandReserver(schematicHandler, new BasicLandReserver(arenaAdapter, DEFAULT_OPTIONS));
         this.islandService = islandService;
     }
 

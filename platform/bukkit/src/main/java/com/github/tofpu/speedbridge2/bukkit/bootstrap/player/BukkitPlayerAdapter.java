@@ -1,12 +1,13 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap.player;
 
-import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
-
 import com.github.tofpu.speedbridge2.PlatformPlayerAdapter;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
-import java.util.UUID;
 import org.bukkit.Bukkit;
+
+import java.util.UUID;
+
+import static com.github.tofpu.speedbridge2.util.ProgramCorrectness.requireState;
 
 public class BukkitPlayerAdapter implements PlatformPlayerAdapter {
 

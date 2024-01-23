@@ -1,9 +1,9 @@
 package com.github.tofpu.speedbridge2.bukkit.command;
 
 import com.github.tofpu.speedbridge2.bukkit.plugin.BukkitPlugin;
-import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import com.github.tofpu.speedbridge2.common.schematic.exception.SchematicNotFoundException;
 import com.github.tofpu.speedbridge2.common.schematic.exception.UnsupportedSchematicType;
+import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import revxrsal.commands.bukkit.BukkitCommandHandler;
 
 public class PluginCommandHandler {
