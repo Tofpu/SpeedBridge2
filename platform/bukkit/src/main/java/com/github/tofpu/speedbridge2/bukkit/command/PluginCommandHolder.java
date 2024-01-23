@@ -4,7 +4,7 @@ import com.github.tofpu.speedbridge2.bukkit.BukkitMessages;
 import com.github.tofpu.speedbridge2.bukkit.plugin.BukkitPlugin;
 import com.github.tofpu.speedbridge2.common.game.BridgeSystem;
 import com.github.tofpu.speedbridge2.common.game.score.BridgeScoreService;
-import com.github.tofpu.speedbridge2.common.game.score.Score;
+import com.github.tofpu.speedbridge2.common.game.score.object.Score;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;

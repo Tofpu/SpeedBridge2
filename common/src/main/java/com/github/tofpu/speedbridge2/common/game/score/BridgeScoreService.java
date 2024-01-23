@@ -1,7 +1,11 @@
 package com.github.tofpu.speedbridge2.common.game.score;
 
+import com.github.tofpu.speedbridge2.common.game.score.object.Score;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
+import com.github.tofpu.speedbridge2.event.Listener;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
+import com.github.tofpu.speedbridge2.event.dispatcher.EventListener;
+import com.github.tofpu.speedbridge2.event.event.PlayerJoinEvent;
 import com.github.tofpu.speedbridge2.service.LoadableService;
 import com.github.tofpu.speedbridge2.service.manager.ServiceManager;
 
@@ -100,7 +104,7 @@ public class BridgeScoreService implements LoadableService {
 
     @Override
     public void load() {
-        eventDispatcherService.register(new ScoreListener(this));
+        eventDispatcherService.register(new EventsListener(this));
     }
 
     @Override
@@ -110,5 +114,18 @@ public class BridgeScoreService implements LoadableService {
 
     public void clear() {
         this.scoresMap.clear();
+    }
+
+    static class EventsListener implements Listener {
+        private final BridgeScoreService scoreService;
+
+        EventsListener(BridgeScoreService scoreService) {
+            this.scoreService = scoreService;
+        }
+
+        @EventListener
+        void on(final PlayerJoinEvent event) {
+            scoreService.handleJoin(event.getPlayer().id());
+        }
     }
 }

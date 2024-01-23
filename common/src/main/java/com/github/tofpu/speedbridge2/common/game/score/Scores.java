@@ -1,11 +1,13 @@
 package com.github.tofpu.speedbridge2.common.game.score;
 
+import com.github.tofpu.speedbridge2.common.game.score.object.Score;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-public class Scores {
+class Scores {
     public static final int MAXIMUM_SIZE = 5;
     private final PlayerIdSlot id;
     private final LinkedList<Score> scoresList = new LinkedList<>();

@@ -1,10 +1,10 @@
 package com.github.tofpu.speedbridge2.common.game;
 
-import com.github.tofpu.speedbridge2.common.game.state.basic.GamePrepareState;
-import com.github.tofpu.speedbridge2.common.game.state.basic.GameStartedState;
-import com.github.tofpu.speedbridge2.common.game.state.basic.GameStopState;
-import com.github.tofpu.speedbridge2.common.game.state.game.IslandResetGameState;
-import com.github.tofpu.speedbridge2.common.game.state.game.ScoredGameState;
+import com.github.tofpu.speedbridge2.common.game.state.core.GamePrepareState;
+import com.github.tofpu.speedbridge2.common.game.state.core.GameStartedState;
+import com.github.tofpu.speedbridge2.common.game.state.core.GameStopState;
+import com.github.tofpu.speedbridge2.common.game.state.event.GameResetState;
+import com.github.tofpu.speedbridge2.common.game.state.event.PlayerScoredState;
 import com.github.tofpu.speedbridge2.common.gameextra.GameRegistry;
 import com.github.tofpu.speedbridge2.common.gameextra.land.object.Land;
 import com.github.tofpu.speedbridge2.common.island.Island;
@@ -32,8 +32,8 @@ class IslandGameHandler extends BaseGameHandler<IslandGameData> {
         this.stateManager.addState(IslandGameStates.START, new GameStartedState());
         this.stateManager.addState(IslandGameStates.STOP, new GameStopState(eventDispatcher));
 
-        this.stateManager.addState(IslandGameStates.SCORED, new ScoredGameState(eventDispatcher));
-        this.stateManager.addState(IslandGameStates.RESET, new IslandResetGameState(eventDispatcher));
+        this.stateManager.addState(IslandGameStates.SCORED, new PlayerScoredState(eventDispatcher));
+        this.stateManager.addState(IslandGameStates.RESET, new GameResetState(eventDispatcher));
     }
 
     public boolean start(final OnlinePlayer player, final Island island, Land land) {

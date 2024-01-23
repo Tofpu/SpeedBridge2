@@ -1,25 +1,25 @@
-package com.github.tofpu.speedbridge2.common.game.state.game;
+package com.github.tofpu.speedbridge2.common.game.state.core;
 
 import com.github.tofpu.speedbridge2.common.game.IslandGame;
 import com.github.tofpu.speedbridge2.common.game.IslandGameData;
 import com.github.tofpu.speedbridge2.common.game.IslandGamePlayer;
-import com.github.tofpu.speedbridge2.common.game.event.IslandGameResetEvent;
-import com.github.tofpu.speedbridge2.common.game.state.generic.BridgeGameState;
+import com.github.tofpu.speedbridge2.common.game.event.IslandGameStopEvent;
+import com.github.tofpu.speedbridge2.common.game.state.BridgeGameState;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import io.github.tofpu.speedbridge.gameengine.Game;
 import io.github.tofpu.speedbridge.gameengine.GameStateType;
 
-public class IslandResetGameState implements BridgeGameState {
+public class GameStopState implements BridgeGameState {
     private final EventDispatcherService eventDispatcher;
 
-    public IslandResetGameState(EventDispatcherService eventDispatcher) {
+    public GameStopState(EventDispatcherService eventDispatcher) {
         this.eventDispatcher = eventDispatcher;
     }
 
     @Override
     public void onGameStateChange(Game<IslandGameData> game, GameStateType<IslandGameData> stateChange) {
-        IslandGamePlayer player = game.data().gamePlayer();
-        IslandGameResetEvent event = new IslandGameResetEvent((IslandGame) game, player);
-        eventDispatcher.dispatchIfApplicable(event);
+        IslandGameData gameData = game.data();
+        IslandGamePlayer gamePlayer = gameData.gamePlayer();
+        eventDispatcher.dispatchIfApplicable(new IslandGameStopEvent((IslandGame) game, gamePlayer));
     }
 }

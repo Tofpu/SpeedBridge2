@@ -1,14 +1,14 @@
-package com.github.tofpu.speedbridge2.common.game.state.basic;
+package com.github.tofpu.speedbridge2.common.game.state.core;
 
 import com.github.tofpu.speedbridge2.common.game.IslandGame;
 import com.github.tofpu.speedbridge2.common.game.IslandGameData;
 import com.github.tofpu.speedbridge2.common.game.event.IslandGamePrepareEvent;
+import com.github.tofpu.speedbridge2.common.game.state.BridgeGameState;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import io.github.tofpu.speedbridge.gameengine.Game;
 import io.github.tofpu.speedbridge.gameengine.GameStateType;
-import io.github.tofpu.speedbridge.gameengine.StateChangeListener;
 
-public class GamePrepareState implements StateChangeListener<IslandGameData> {
+public class GamePrepareState implements BridgeGameState {
     private final EventDispatcherService eventDispatcher;
 
     public GamePrepareState(EventDispatcherService eventDispatcher) {

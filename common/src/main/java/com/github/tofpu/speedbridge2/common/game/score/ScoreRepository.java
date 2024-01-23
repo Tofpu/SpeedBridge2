@@ -1,5 +1,6 @@
 package com.github.tofpu.speedbridge2.common.game.score;
 
+import com.github.tofpu.speedbridge2.common.game.score.object.Score;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import org.hibernate.Session;
 
