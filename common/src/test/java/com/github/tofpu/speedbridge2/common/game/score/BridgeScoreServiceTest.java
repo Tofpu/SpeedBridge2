@@ -1,9 +1,5 @@
 package com.github.tofpu.speedbridge2.common.game.score;
 
-import com.github.tofpu.speedbridge2.common.bridge.game.score.Score;
-import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
-import com.github.tofpu.speedbridge2.common.bridge.game.score.ScoreRepository;
-import com.github.tofpu.speedbridge2.common.bridge.game.score.Scores;
 import com.github.tofpu.speedbridge2.database.service.DatabaseService;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
 import org.junit.jupiter.api.AfterEach;

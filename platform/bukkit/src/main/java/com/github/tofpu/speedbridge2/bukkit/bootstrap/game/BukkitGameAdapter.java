@@ -2,9 +2,9 @@ package com.github.tofpu.speedbridge2.bukkit.bootstrap.game;
 
 import com.github.tofpu.speedbridge2.common.PlatformGameAdapter;
 import com.github.tofpu.speedbridge2.bukkit.helper.BukkitConversionHelper;
-import com.github.tofpu.speedbridge2.common.bridge.game.IslandGame;
-import com.github.tofpu.speedbridge2.common.bridge.game.IslandGameData;
-import com.github.tofpu.speedbridge2.common.bridge.game.IslandGamePlayer;
+import com.github.tofpu.speedbridge2.common.game.IslandGame;
+import com.github.tofpu.speedbridge2.common.game.IslandGameData;
+import com.github.tofpu.speedbridge2.common.game.IslandGamePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;

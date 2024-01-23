@@ -2,10 +2,9 @@ package com.github.tofpu.speedbridge2.common.game;
 
 import com.github.tofpu.speedbridge2.common.MockedDatabaseService;
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
-import com.github.tofpu.speedbridge2.common.bridge.BridgeSystem;
 import com.github.tofpu.speedbridge2.common.bridge.game.*;
-import com.github.tofpu.speedbridge2.common.bridge.game.event.PlayerScoredEvent;
-import com.github.tofpu.speedbridge2.common.bridge.game.score.BridgeScoreService;
+import com.github.tofpu.speedbridge2.common.game.event.PlayerScoredEvent;
+import com.github.tofpu.speedbridge2.common.game.score.BridgeScoreService;
 import com.github.tofpu.speedbridge2.common.gameextra.land.GameLandReserver;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.lobby.LobbyService;

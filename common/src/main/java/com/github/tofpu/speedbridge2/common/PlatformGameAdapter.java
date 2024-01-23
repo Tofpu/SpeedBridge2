@@ -1,7 +1,7 @@
 package com.github.tofpu.speedbridge2.common;
 
-import com.github.tofpu.speedbridge2.common.bridge.game.IslandGame;
-import com.github.tofpu.speedbridge2.common.bridge.game.IslandGamePlayer;
+import com.github.tofpu.speedbridge2.common.game.IslandGame;
+import com.github.tofpu.speedbridge2.common.game.IslandGamePlayer;
 
 public interface PlatformGameAdapter {
     static PlatformGameAdapter empty() {

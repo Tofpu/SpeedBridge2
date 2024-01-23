@@ -8,7 +8,7 @@ import com.github.tofpu.speedbridge2.bukkit.bootstrap.PluginBootstrap;
 import com.github.tofpu.speedbridge2.bukkit.bootstrap.game.GameListener;
 import com.github.tofpu.speedbridge2.bukkit.listener.PlayerConnectionListener;
 import com.github.tofpu.speedbridge2.bukkit.command.PluginCommandHandler;
-import com.github.tofpu.speedbridge2.common.bridge.BridgeSystem;
+import com.github.tofpu.speedbridge2.common.game.BridgeSystem;
 import com.github.tofpu.speedbridge2.common.setup.GameSetupSystem;
 import com.github.tofpu.speedbridge2.configuration.service.ConfigurationService;
 import java.io.File;

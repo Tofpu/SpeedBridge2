@@ -1,6 +1,5 @@
 package com.github.tofpu.speedbridge2.common.game.score;
 
-import com.github.tofpu.speedbridge2.common.bridge.game.score.Score;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
