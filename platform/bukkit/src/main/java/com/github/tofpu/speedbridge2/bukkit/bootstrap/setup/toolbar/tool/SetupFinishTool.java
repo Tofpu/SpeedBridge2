@@ -1,6 +1,7 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap.setup.toolbar.tool;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.github.tofpu.speedbridge2.bukkit.BukkitMessages;
 import com.github.tofpu.speedbridge2.bukkit.bootstrap.setup.toolbar.SetupTool;
 import com.github.tofpu.speedbridge2.bukkit.util.ItemStackBuilder;
 import com.github.tofpu.speedbridge2.common.setup.GameSetupSystem;
@@ -18,7 +19,13 @@ public class SetupFinishTool extends SetupTool {
         super("finish", TOOL_ITEM , event -> {
             IslandSetup setup = setupSystem.getSetup(event.getPlayer().getUniqueId());
             if (setup == null) return;
+
+            if (!setup.data().isReady()) {
+                event.getPlayer().sendMessage(BukkitMessages.GAME_SETUP_NOT_READY.defaultMessage());
+                return;
+            }
             setup.dispatch(IslandSetupStates.STOP);
+            event.getPlayer().sendMessage(BukkitMessages.GAME_SETUP_CREATED.defaultMessage());
         });
     }
 }

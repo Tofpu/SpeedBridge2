@@ -11,6 +11,7 @@ public class IslandSetupData extends GameData {
     private final Land land;
 
     private Location origin;
+    private boolean cancelled = false;
 
     public IslandSetupData(IslandSetupPlayer player, int slot, String schematicName, Land land) {
         this.player = player;
@@ -46,5 +47,17 @@ public class IslandSetupData extends GameData {
 
     public Location origin() {
         return origin;
+    }
+
+    public boolean cancelled() {
+        return cancelled;
+    }
+
+    public void cancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
+
+    public boolean isReady() {
+        return origin() != null;
     }
 }

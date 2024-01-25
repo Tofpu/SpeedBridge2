@@ -44,7 +44,7 @@ public class IslandSetupListener implements Listener {
     public void on(final StopIslandSetupEvent event) {
         IslandSetup islandSetup = event.islandSetup();
         IslandSetupData setupData = islandSetup.data();
-        if (setupData.origin() != null) {
+        if (!setupData.cancelled() && setupData.isReady()) {
             registerIsland(setupData);
         }
 

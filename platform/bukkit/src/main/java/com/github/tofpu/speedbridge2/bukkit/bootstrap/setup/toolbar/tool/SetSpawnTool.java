@@ -19,8 +19,9 @@ public class SetSpawnTool extends SetupTool {
         super("set_spawn", TOOL_ITEM, event -> {
             IslandSetup setup = setupSystem.getSetup(event.getPlayer().getUniqueId());
             if (setup == null) return;
-            setup.data().origin(CoreConversionHelper.toLocation(event.getPlayer().getLocation()));
+
             event.getPlayer().sendMessage(BukkitMessages.GAME_SETUP_SET_SPAWNPOINT.defaultMessage());
+            setup.data().origin(CoreConversionHelper.toLocation(event.getPlayer().getLocation()));
         });
     }
 }

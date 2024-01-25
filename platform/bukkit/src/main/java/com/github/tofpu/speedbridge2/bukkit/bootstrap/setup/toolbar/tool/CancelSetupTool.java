@@ -1,6 +1,7 @@
 package com.github.tofpu.speedbridge2.bukkit.bootstrap.setup.toolbar.tool;
 
 import com.cryptomorin.xseries.XMaterial;
+import com.github.tofpu.speedbridge2.bukkit.BukkitMessages;
 import com.github.tofpu.speedbridge2.bukkit.bootstrap.setup.toolbar.SetupTool;
 import com.github.tofpu.speedbridge2.bukkit.util.ItemStackBuilder;
 import com.github.tofpu.speedbridge2.common.setup.GameSetupSystem;
@@ -18,6 +19,9 @@ public class CancelSetupTool extends SetupTool {
         super("cancel", TOOL_ITEM , event -> {
             IslandSetup setup = setupSystem.getSetup(event.getPlayer().getUniqueId());
             if (setup == null) return;
+
+            setup.data().cancelled(true);
+            event.getPlayer().sendMessage(BukkitMessages.GAME_SETUP_CANCELLED.defaultMessage(setup.data().slot()));
             setup.dispatch(IslandSetupStates.STOP);
         });
     }
