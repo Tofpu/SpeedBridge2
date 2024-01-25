@@ -10,10 +10,10 @@ public class StateManager<D extends GameData> {
         stateListenerMap.put(state, stateChangeListener);
     }
 
-    public void callListener(GameStateType<D> state, Game<D> game) {
-        StateChangeListener<D> listener = stateListenerMap.get(state);
+    public void callListener(GameStateType<D> newState, GameStateType<D> prevState, Game<D> game) {
+        StateChangeListener<D> listener = stateListenerMap.get(newState);
         if (listener != null) {
-            listener.onGameStateChange(game, game.stateType() , state);
+            listener.onGameStateChange(game, prevState, newState);
         }
     }
 }
