@@ -5,5 +5,6 @@ import java.io.File;
 public interface CommonBootstrap {
     PlatformArenaAdapter arenaAdapter();
     PlatformGameAdapter gameAdapter();
+    PlatformSetupAdapter setupAdapter();
     File schematicFolder();
 }

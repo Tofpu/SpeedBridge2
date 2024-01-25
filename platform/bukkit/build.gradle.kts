@@ -1,5 +1,5 @@
 plugins {
-    id("xyz.jpenilla.run-paper") version "2.0.1"
+    id("xyz.jpenilla.run-paper") version "2.2.2"
 }
 
 configurations {
@@ -44,6 +44,9 @@ dependencies {
     implementation("com.github.Revxrsal.Lamp:common:3.1.8")
     implementation("com.github.Revxrsal.Lamp:bukkit:3.1.8")
 
+    implementation("com.github.tofpu.toolbar:toolbar-api:v2-SNAPSHOT")
+    implementation("com.github.cryptomorin:XSeries:9.8.1") { isTransitive = false }
+
     testImplementation("com.github.Tofpu:v1.8-mockbukkit:v1.8-spigot-SNAPSHOT")
 }
 
@@ -53,11 +56,13 @@ tasks.shadowJar {
     dependencies {
         relocate("javax.persistence", "com.github.tofpu.speedbridge2.libs.javax")
         relocate("org.yaml", "com.github.tofpu.speedbridge2.libs.snakeyaml")
+        relocate("com.cryptomorin.xseries", "com.github.tofpu.speedbridge2.libs.xseries")
     }
 }
 
 tasks.runServer {
     minecraftVersion("1.8.8")
 //    pluginJars(project.file("libs/worldedit-bukkit-7.2.15.jar"))
-        pluginJars(project.file("libs/worldedit-bukkit-6.1.jar"))
+    pluginJars(project.file("libs/worldedit-bukkit-6.1.jar"))
+
 }

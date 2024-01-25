@@ -32,12 +32,12 @@ public class CommonApplication {
         schematicHandler = SchematicHandler.load(bootStrap.schematicFolder(), arenaAdapter.schematicResolver(), arenaAdapter.schematicPredicate());
 
         initGame(bootStrap.gameAdapter(), arenaAdapter, speedBridge.serviceManager());
-        initSetupGame(arenaAdapter, speedBridge.serviceManager());
+        initSetupGame(bootStrap, speedBridge.serviceManager());
     }
 
-    private void initSetupGame(PlatformArenaAdapter arenaAdapter, ServiceManager serviceManager) {
-        gameSetupSystem = new GameSetupSystem(serviceManager.get(EventDispatcherService.class), arenaAdapter, schematicHandler, serviceManager.get(IslandService.class));
-        gameSetupSystem.registerListener(serviceManager);
+    private void initSetupGame(CommonBootstrap commonBootstrap, ServiceManager serviceManager) {
+        gameSetupSystem = new GameSetupSystem(serviceManager.get(EventDispatcherService.class), commonBootstrap.arenaAdapter(), schematicHandler, serviceManager.get(IslandService.class));
+        gameSetupSystem.registerListener(commonBootstrap.setupAdapter(), serviceManager);
     }
 
     private void initGame(PlatformGameAdapter gameAdapter, PlatformArenaAdapter arenaAdapter, ServiceManager serviceManager) {

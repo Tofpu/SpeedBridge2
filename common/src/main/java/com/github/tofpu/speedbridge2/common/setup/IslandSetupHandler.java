@@ -2,7 +2,6 @@ package com.github.tofpu.speedbridge2.common.setup;
 
 import com.github.tofpu.speedbridge2.common.gameextra.GameRegistry;
 import com.github.tofpu.speedbridge2.common.gameextra.land.object.Land;
-import com.github.tofpu.speedbridge2.common.setup.state.SetOriginState;
 import com.github.tofpu.speedbridge2.common.setup.state.StartSetupState;
 import com.github.tofpu.speedbridge2.common.setup.state.StopSetupState;
 import com.github.tofpu.speedbridge2.event.dispatcher.EventDispatcherService;
@@ -25,35 +24,35 @@ class IslandSetupHandler extends BaseGameHandler<IslandSetupData> {
 
     @Override
     public void registerStates() {
-        this.stateManager.addState(IslandSetupStates.START, new StartSetupState());
+        this.stateManager.addState(IslandSetupStates.START, new StartSetupState(eventDispatcher));
         this.stateManager.addState(IslandSetupStates.STOP, new StopSetupState(eventDispatcher));
-        this.stateManager.addState(IslandSetupStates.SET_ORIGIN, new SetOriginState());
     }
 
     public void start(final OnlinePlayer player, final int slot, final String schematicName, final Land land) {
         if (gameRegistry.isInGame(player.id())) {
             return;
         }
-        IslandSetup game = createGame(player, slot, schematicName, land);
-        game.dispatch(IslandSetupStates.START);
+        IslandSetup islandSetup = createSetup(player, slot, schematicName, land);
+        islandSetup.dispatch(IslandSetupStates.START);
+        gameRegistry.register(player.id(), islandSetup);
     }
 
     @NotNull
-    private IslandSetup createGame(OnlinePlayer player, int slot, String schematicName, Land land) {
+    private IslandSetup createSetup(OnlinePlayer player, int slot, String schematicName, Land land) {
         IslandSetupPlayer gamePlayer = new IslandSetupPlayer(player);
         IslandSetupData gameData = new IslandSetupData(gamePlayer, slot, schematicName, land);
         return new IslandSetup(gameData, stateManager);
     }
 
-    public void stopGame(final UUID playerId) {
-        IslandSetup game = getGameByPlayer(playerId);
+    public void stopSetup(final UUID playerId) {
+        IslandSetup game = getSetupByPlayer(playerId);
         if (game == null) return;
 
         game.dispatch(IslandSetupStates.STOP);
         gameRegistry.removeByPlayer(playerId);
     }
     @Nullable
-    public IslandSetup getGameByPlayer(UUID playerId) {
+    public IslandSetup getSetupByPlayer(UUID playerId) {
         return gameRegistry.getByPlayer(playerId);
     }
 }

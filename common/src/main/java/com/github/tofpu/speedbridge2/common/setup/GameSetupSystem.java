@@ -1,6 +1,7 @@
 package com.github.tofpu.speedbridge2.common.setup;
 
 import com.github.tofpu.speedbridge2.common.PlatformArenaAdapter;
+import com.github.tofpu.speedbridge2.common.PlatformSetupAdapter;
 import com.github.tofpu.speedbridge2.common.gameextra.land.PlayerLandReserver;
 import com.github.tofpu.speedbridge2.common.gameextra.land.object.Land;
 import com.github.tofpu.speedbridge2.common.gameextra.land.object.ArenaManagerOptions;
@@ -36,8 +37,9 @@ public class GameSetupSystem {
         this.islandService = islandService;
     }
 
-    public void registerListener(ServiceManager serviceManager) {
-        eventDispatcherService.register(new IslandSetupListener(islandService, serviceManager.get(LobbyService.class), landReserver));
+    public void registerListener(PlatformSetupAdapter setupAdapter, ServiceManager serviceManager) {
+        IslandSetupListener listener = new IslandSetupListener(setupAdapter, islandService, serviceManager.get(LobbyService.class), landReserver);
+        eventDispatcherService.register(listener);
     }
 
     public void startSetup(final OnlinePlayer player, final int slot, final String schematicName) {
@@ -56,25 +58,22 @@ public class GameSetupSystem {
     }
 
     public void cancelSetup(OnlinePlayer player) {
-        setupHandler.stopGame(player.id());
+        setupHandler.stopSetup(player.id());
     }
 
     public boolean isInSetup(UUID playerId) {
-        return setupHandler.getGameByPlayer(playerId) != null;
+        return setupHandler.getSetupByPlayer(playerId) != null;
     }
 
     public int getSetupSlot(UUID playerId) {
-        Game<IslandSetupData> dataGame = setupHandler.getGameByPlayer(playerId);
+        Game<IslandSetupData> dataGame = setupHandler.getSetupByPlayer(playerId);
         if (dataGame == null) {
             return -1;
         }
         return dataGame.data().slot();
     }
 
-    public void setOrigin(UUID playerId, Location location) {
-        IslandSetup setupGame = setupHandler.getGameByPlayer(playerId);
-        if (setupGame == null) return;
-        setupGame.data().originalLocation(location);
-        setupGame.dispatch(IslandSetupStates.SET_ORIGIN);
+    public IslandSetup getSetup(UUID playerId) {
+        return setupHandler.getSetupByPlayer(playerId);
     }
 }

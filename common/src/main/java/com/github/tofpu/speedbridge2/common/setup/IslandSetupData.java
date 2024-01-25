@@ -10,7 +10,6 @@ public class IslandSetupData extends GameData {
     private final String schematicName;
     private final Land land;
 
-    private Location originalLocation;
     private Location origin;
 
     public IslandSetupData(IslandSetupPlayer player, int slot, String schematicName, Land land) {
@@ -36,16 +35,13 @@ public class IslandSetupData extends GameData {
         return schematicName;
     }
 
-    public void originalLocation(Location originalLocation) {
-        this.originalLocation = originalLocation;
-    }
-
-    public Location originalLocation() {
-        return originalLocation;
-    }
-
     public void origin(Location origin) {
-        this.origin = origin;
+        // we need the relative coords as the positioning of the land will vary
+        Location relativeLocation = land().getIslandLocation().subtract(origin);
+        // use the origin's yaw and pitch
+        relativeLocation = relativeLocation.setYaw(origin.getYaw()).setPitch(origin.getPitch());
+
+        this.origin = relativeLocation;
     }
 
     public Location origin() {
