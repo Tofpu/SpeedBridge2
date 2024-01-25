@@ -38,7 +38,7 @@ public class GameSetupSystem {
     }
 
     public void registerListener(PlatformSetupAdapter setupAdapter, ServiceManager serviceManager) {
-        IslandSetupListener listener = new IslandSetupListener(setupAdapter, islandService, serviceManager.get(LobbyService.class), landReserver);
+        IslandSetupListener listener = new IslandSetupListener(this, setupAdapter, islandService, serviceManager.get(LobbyService.class), landReserver);
         eventDispatcherService.register(listener);
     }
 

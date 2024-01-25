@@ -48,7 +48,11 @@ class IslandSetupHandler extends BaseGameHandler<IslandSetupData> {
         IslandSetup game = getSetupByPlayer(playerId);
         if (game == null) return;
 
-        game.dispatch(IslandSetupStates.STOP);
+        // sometimes this method is called by the event since anybody
+        // could dispatch the stop state, not just this method
+        if (game.stateType() != IslandSetupStates.STOP) {
+            game.dispatch(IslandSetupStates.STOP);
+        }
         gameRegistry.removeByPlayer(playerId);
     }
     @Nullable

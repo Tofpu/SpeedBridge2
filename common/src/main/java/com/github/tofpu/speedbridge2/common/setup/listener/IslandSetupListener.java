@@ -16,12 +16,14 @@ import com.github.tofpu.speedbridge2.event.dispatcher.ListeningState;
 
 public class IslandSetupListener implements Listener {
 
+    private final GameSetupSystem setupSystem;
     private final PlatformSetupAdapter setupAdapter;
     private final IslandService islandService;
     private final LobbyService lobbyService;
     private final PlayerLandReserver landReserver;
 
-    public IslandSetupListener(PlatformSetupAdapter setupAdapter, IslandService islandService, LobbyService lobbyService, PlayerLandReserver landReserver) {
+    public IslandSetupListener(GameSetupSystem setupSystem, PlatformSetupAdapter setupAdapter, IslandService islandService, LobbyService lobbyService, PlayerLandReserver landReserver) {
+        this.setupSystem = setupSystem;
         this.setupAdapter = setupAdapter;
         this.islandService = islandService;
         this.lobbyService = lobbyService;
@@ -47,6 +49,10 @@ public class IslandSetupListener implements Listener {
         }
 
         IslandSetupPlayer setupPlayer = setupData.player();
+        // this may not have been called by the setupSystem,
+        // so we need to notify the system of the island stoppage
+        setupSystem.cancelSetup(setupPlayer.player());
+
         landReserver.releaseSpot(setupPlayer.id());
         setupAdapter.onSetupStop(islandSetup, setupPlayer);
         setupPlayer.player().teleport(lobbyService.position());
