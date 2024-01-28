@@ -27,7 +27,8 @@ public class PluginCommandHandler {
 
         registerExceptions(commandHandler);
 
-        commandHandler.registerContextResolver((Class) MinimalCommandHelp.class, new MinimalCommandHelpResolver(commandHandler));
+        commandHandler.registerContextResolver((Class) RelatedCommandHelp.class, new RelatedCommandHelp.Resolver(commandHandler));
+        commandHandler.registerContextResolver((Class) MinimalCommandHelp.class, new MinimalCommandHelp.Resolver(commandHandler));
         commandHandler.setHelpWriter((command, actor) -> {
             String description = command.getDescription();
             if (description == null) {

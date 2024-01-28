@@ -67,7 +67,7 @@ public class PluginCommandHolder {
 
     @Subcommand("help")
     @Description("View the available commands")
-    public void help(final OnlinePlayer player, final CommandHelp<String> helpEntries, final @Default("1") int page) {
+    public void help(final OnlinePlayer player, final MinimalCommandHelp<String> helpEntries, final @Default("1") int page) {
         MessageBuilder messageBuilder = new MessageBuilder()
                 .appendNewLine()
                 .append("&8&l|>&r &e&lSpeedBridge3 &fv2.0-dev").appendNewLine()
