@@ -27,8 +27,20 @@ public class PluginCommandHandler {
 
         registerExceptions(commandHandler);
 
-        commandHandler.setHelpWriter((command, actor) -> String.format("/%s %s - %s", command.getPath().toRealString(), command.getUsage(), command.getDescription()));
         commandHandler.registerContextResolver((Class) MinimalCommandHelp.class, new MinimalCommandHelpResolver(commandHandler));
+        commandHandler.setHelpWriter((command, actor) -> {
+            String description = command.getDescription();
+            if (description == null) {
+                description = "No description provided!";
+            }
+            CommandPath commandPath = command.getPath();
+            String last = commandPath.getLast();
+            if (commandPath.getFirst().equals(last)) {
+                return ChatUtil.colorize(String.format("&8|-> /&e%s &f%s &8- &7%s", commandPath.toRealString(), command.getUsage(), description));
+            }
+            String pathExcludingLast = commandPath.toRealString().replace(" " + last, "");
+            return ChatUtil.colorize(String.format("&8|-> /&e%s &f%s &e%s &r&8- &7%s", pathExcludingLast, last, command.getUsage(), description).trim());
+        });
 
         commandHandler.register(new PluginCommandHolder(plugin));
         commandHandler.register(new DeveloperCommandHolder(plugin));
@@ -48,20 +60,6 @@ public class PluginCommandHandler {
             if (!lobbyAvailable) {
                 throw new CommandErrorException(BukkitMessages.LOBBY_NOT_AVAILABLE.defaultMessage());
             }
-        });
-
-        commandHandler.setHelpWriter((command, actor) -> {
-            String description = command.getDescription();
-            if (description == null) {
-                description = "No description provided!";
-            }
-            CommandPath commandPath = command.getPath();
-            String last = commandPath.getLast();
-            if (commandPath.getFirst().equals(last)) {
-                return ChatUtil.colorize(String.format("&8|-> /&e%s &f%s &8- &7%s", commandPath.toRealString(), command.getUsage(), description));
-            }
-            String pathExcludingLast = commandPath.toRealString().replace(" " + last, "");
-            return ChatUtil.colorize(String.format("&8|-> /&e%s &f%s &e%s &r&8- &7%s", pathExcludingLast, last, command.getUsage(), description).trim());
         });
 
         Arrays.stream(new CoreCommandExtension().commands(plugin.bridgeSystem(), plugin.setupSystem()))
