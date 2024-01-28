@@ -64,5 +64,8 @@ tasks.runServer {
     minecraftVersion("1.8.8")
 //    pluginJars(project.file("libs/worldedit-bukkit-7.2.15.jar"))
     pluginJars(project.file("libs/worldedit-bukkit-6.1.jar"))
+}
 
+tasks.compileJava {
+    options.compilerArgs.add("-parameters")
 }
