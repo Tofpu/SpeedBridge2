@@ -2,13 +2,12 @@ package com.github.tofpu.speedbridge2.bukkit.command.subcommand;
 
 import com.github.tofpu.speedbridge2.bukkit.BukkitMessages;
 import com.github.tofpu.speedbridge2.bukkit.command.annotation.RequireLobbyToBeAvailable;
-import com.github.tofpu.speedbridge2.bukkit.util.MessageBuilder;
 import com.github.tofpu.speedbridge2.common.game.BridgeSystem;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import org.jetbrains.annotations.NotNull;
+import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Subcommand;
-import revxrsal.commands.help.CommandHelp;
 
 class GameCommand extends CoreCommand {
     private final BridgeSystem bridgeSystem;
@@ -18,14 +17,16 @@ class GameCommand extends CoreCommand {
     }
 
     @Subcommand("join")
+    @Description("Join a game")
     @RequireLobbyToBeAvailable
     public void gameJoin(final OnlinePlayer player, final Island island) {
         bridgeSystem.joinGame(player, island);
     }
 
-    @Subcommand("end")
+    @Subcommand("leave")
+    @Description("Leave your game")
     @RequireLobbyToBeAvailable
-    public void gameEnd(final OnlinePlayer player) {
+    public void gameLeave(final OnlinePlayer player) {
         if (!bridgeSystem.isInGame(player.id())) {
             player.sendMessage(BukkitMessages.NOT_IN_GAME);
             return;

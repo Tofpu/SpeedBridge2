@@ -6,6 +6,7 @@ import com.github.tofpu.speedbridge2.common.setup.GameSetupSystem;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.annotation.AutoComplete;
+import revxrsal.commands.annotation.Description;
 import revxrsal.commands.annotation.Subcommand;
 
 class SetupCommand extends CoreCommand {
@@ -17,6 +18,7 @@ class SetupCommand extends CoreCommand {
 
     @Subcommand("create")
     @AutoComplete("* @schematics")
+    @Description("Setup a game")
     @RequireLobbyToBeAvailable
     public void gameSetup(final OnlinePlayer player, final int slot, final String schematicName) {
         if (setupSystem.isInSetup(player.id())) {
@@ -28,6 +30,7 @@ class SetupCommand extends CoreCommand {
     }
 
     @Subcommand("cancel")
+    @Description("Cancel your game setup")
     @RequireLobbyToBeAvailable
     public void gameSetupCancel(final OnlinePlayer player) {
         int setupSlot = setupSystem.getSetupSlot(player.id());
