@@ -9,7 +9,7 @@ public enum BukkitMessages implements ConfigurableMessage {
     LOBBY_SET("lobby_set", ChatColor.GREEN + "Lobby location was successfully set."),
     NOT_IN_GAME("not_in_game", ChatColor.RED + "You must be in a game to leave."),
     LOBBY_NOT_AVAILABLE("lobby_not_available", ChatColor.RED + "Lobby is not currently available!"),
-    LOBBY_UNKNOWN("lobby_unknown", ChatColor.RED + "Unknown island: %s".replace("%s", BukkitMessages.wrapValueWithYellow())),
+    NONEXISTENT_ISLAND("nonexistent-island", ChatColor.RED + "Unknown island: %s".replace("%s", BukkitMessages.wrapValueWithYellow())),
     GAME_SETUP_CANCELLED("game_setup_cancelled", ChatColor.GREEN + "You have successfully cancelled your setup"),
     GAME_SETUP_PLAYER_MISSING("game_setup_player_missing", ChatColor.RED + "You must be in a setup to leave."),
     GAME_SETUP_PLAYER_BUSY("game_setup_player_busy", ChatColor.RED + "You are already setting up an island."),

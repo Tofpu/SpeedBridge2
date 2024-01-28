@@ -1,11 +1,11 @@
 package com.github.tofpu.speedbridge2.bukkit.command;
 
+import com.github.tofpu.speedbridge2.bukkit.command.annotation.RequireLobbyToBeAvailable;
 import com.github.tofpu.speedbridge2.bukkit.plugin.BukkitPlugin;
 import com.github.tofpu.speedbridge2.common.gameextra.land.PlayerLandReserver;
 import com.github.tofpu.speedbridge2.common.gameextra.land.object.Land;
 import com.github.tofpu.speedbridge2.common.island.Island;
 import com.github.tofpu.speedbridge2.common.island.IslandService;
-import com.github.tofpu.speedbridge2.common.lobby.LobbyService;
 import com.github.tofpu.speedbridge2.object.player.OnlinePlayer;
 import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Default;
@@ -19,25 +19,23 @@ import java.util.UUID;
 @Command({"speedbridge dev", "sb dev"})
 @CommandPermission("sb.dev")
 public class DeveloperCommandHolder {
-    private final LobbyService lobbyService;
     private final IslandService islandService;
     private final PlayerLandReserver landReserver;
 
     private final List<Land> lands = new ArrayList<>();
 
     public DeveloperCommandHolder(BukkitPlugin plugin) {
-        this(plugin.getService(LobbyService.class), plugin.getService(IslandService.class), plugin.bridgeSystem().landReserver());
+        this(plugin.getService(IslandService.class), plugin.bridgeSystem().landReserver());
     }
 
-    public DeveloperCommandHolder(LobbyService lobbyService, IslandService islandService, PlayerLandReserver landReserver) {
-        this.lobbyService = lobbyService;
+    public DeveloperCommandHolder(IslandService islandService, PlayerLandReserver landReserver) {
         this.islandService = islandService;
         this.landReserver = landReserver;
     }
 
     @Subcommand("game create")
+    @RequireLobbyToBeAvailable
     public void gameCreate(final OnlinePlayer player, final int slot, final @Default("1") int amount) {
-        if (!requireLobbyToBeAvailable(player)) return;
         Island island = islandService.get(slot);
         if (island == null) {
             player.sendMessage("Unknown island: " + slot);
@@ -79,16 +77,8 @@ public class DeveloperCommandHolder {
     }
 
     @Subcommand("game size")
+    @RequireLobbyToBeAvailable
     public void gameSize(final OnlinePlayer player) {
-        if (!requireLobbyToBeAvailable(player)) return;
         player.sendMessage(String.format("There are %s amount of games available", lands.size()));
-    }
-
-    private boolean requireLobbyToBeAvailable(final OnlinePlayer player) {
-        if (!lobbyService.isLobbyAvailable()) {
-            player.sendMessage("Lobby is not currently available!");
-            return false;
-        }
-        return true;
     }
 }
