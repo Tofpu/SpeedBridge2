@@ -13,6 +13,7 @@ import io.tofpu.umbrella.domain.Umbrella;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -169,10 +170,11 @@ public class IslandSetup {
 
         resetState();
 
-        // teleporting the player to the lobby location
-        player.getPlayer()
-                .teleport(ConfigurationManager.INSTANCE.getLobbyCategory()
-                        .getLobbyLocation());
+        Player bukkitPlayer = player.getPlayer();
+        if (bukkitPlayer != null && bukkitPlayer.isOnline()) {
+            // teleporting the player to the lobby location
+            bukkitPlayer.teleport(ConfigurationManager.INSTANCE.getLobbyCategory().getLobbyLocation());
+        }
 
         resetPlot();
     }
@@ -181,10 +183,12 @@ public class IslandSetup {
         player.toggleSetup();
 
         // inactivate the setup umbrella
-        umbrella.inactivate(player.getPlayer());
-
-        // setting the player's gamemode back to survival
-        player.getPlayer().setGameMode(GameMode.SURVIVAL);
+        Player bukkitPlayer = player.getPlayer();
+        umbrella.inactivate(bukkitPlayer);
+        if (bukkitPlayer != null && bukkitPlayer.isOnline()) {
+            // setting the player's gamemode back to survival
+            bukkitPlayer.setGameMode(GameMode.SURVIVAL);
+        }
     }
 
     /**
