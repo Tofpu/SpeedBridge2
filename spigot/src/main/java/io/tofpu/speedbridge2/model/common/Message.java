@@ -119,6 +119,9 @@ public final class Message {
             "for %s seconds.";
 
     public final String invalidUuid = error + "%s is not a valid uuid format. Please try again";
+    public final String mustBeOnline = error + "%s must be available to modify their data";
+    public final String setChosenType = SUCCESS + "Changed %s's selected block type to %s";
+    public final String blockTypeMustBeSolid = error + "%s must be a solid block to be selectable!";
 
     private static String runCommand(final String command) {
         return "<hover:show_text:'<yellow>Click to run " +

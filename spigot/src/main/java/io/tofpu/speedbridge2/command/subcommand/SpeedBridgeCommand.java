@@ -25,12 +25,12 @@ import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
-import revxrsal.commands.bukkit.exception.MalformedEntitySelectorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -433,6 +433,18 @@ public final class SpeedBridgeCommand {
 
         islandSetup.cancel();
         return INSTANCE.setupCancelled;
+    }
+
+    @Subcommand("admin set selectedBlockType")
+    @Description("Changes the selected block type for a specified player")
+    @CommandPermission("speedbridge.admin.set.selectedBlockType")
+    @AutoComplete("* @players")
+    public String setSelectedBlockType(final Material material, final BridgePlayer target) {
+        if (!material.isSolid()) {
+            return String.format(INSTANCE.blockTypeMustBeSolid, material);
+        }
+        target.setChosenMaterial(material);
+        return String.format(INSTANCE.setChosenType, target.getName(), material);
     }
 
     private String hover(final String hoverContent, final String content) {
