@@ -445,6 +445,11 @@ public final class SpeedBridgeCommand {
         if (!material.isSolid()) {
             return String.format(INSTANCE.blockTypeMustBeSolid, material);
         }
+
+        if (target.getChoseMaterial() == material) {
+            return String.format(INSTANCE.blockAlreadySelected, target.getName(), material);
+        }
+
         target.setChosenMaterial(material);
         return String.format(INSTANCE.setChosenType, target.getName(), material);
     }
