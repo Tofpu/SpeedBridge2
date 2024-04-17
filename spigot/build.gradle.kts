@@ -49,7 +49,7 @@ dependencies {
         exclude("com.sk89q", "worldedit")
     }
 
-    implementation("com.github.tofpu:umbrella:legacy-SNAPSHOT")
+    implementation("com.github.tofpu:toolbar:v1-SNAPSHOT")
     implementation("com.github.Tofpu:dynamicclass:1.3") {
         exclude("com.google.guava", "guava")
     }
@@ -79,7 +79,8 @@ tasks {
     runServer {
 //        minecraftVersion("1.8.8")
 //        pluginJars(project.file("libs/worldedit-bukkit-6.1.jar"))
-        minecraftVersion("1.20.4")
+//        minecraftVersion("1.20.4")
+        minecraftVersion("1.19.4")
         pluginJars(project.file("libs/worldedit-bukkit-7.3.0.jar"))
     }
 }
