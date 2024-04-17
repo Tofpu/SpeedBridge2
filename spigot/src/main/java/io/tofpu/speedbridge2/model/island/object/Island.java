@@ -100,13 +100,17 @@ public class Island {
         return new AbstractMap.SimpleImmutableEntry<>(gamePlayer, gameIsland);
     }
 
+    public void leaveGame(final BridgePlayer bridgePlayer) {
+        leaveGame(bridgePlayer, true);
+    }
+
     /**
      * When a player leaves the island, the island is removed from the island map and the
      * game player is removed from the game player map
      *
      * @param bridgePlayer The bridge player that is leaving the game island.
      */
-    public void leaveGame(final BridgePlayer bridgePlayer) {
+    public void leaveGame(final BridgePlayer bridgePlayer, final boolean clearInventory) {
         final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
         if (gamePlayer == null) {
             return;
@@ -118,7 +122,7 @@ public class Island {
         }
 
         final Player player = bridgePlayer.getPlayer();
-        if (player != null) {
+        if (player != null && clearInventory) {
             player.getInventory()
                     .clear();
         }
@@ -128,6 +132,10 @@ public class Island {
 
         // reset the game island
         gameIsland.remove();
+    }
+
+    public void abortGame(BridgePlayer bridgePlayer) {
+        leaveGame(bridgePlayer, false);
     }
 
     /**

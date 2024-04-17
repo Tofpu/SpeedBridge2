@@ -9,6 +9,7 @@ import io.tofpu.speedbridge2.model.support.worldedit.CuboidRegion;
 import io.tofpu.speedbridge2.model.support.worldedit.Vector;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +19,22 @@ public final class IslandRegionListener extends GameListener {
 
     public IslandRegionListener(final PlayerService playerService) {
         this.playerService = playerService;
+    }
+
+    @EventHandler
+    private void onWorldChange(PlayerChangedWorldEvent event) {
+        final BridgePlayer bridgePlayer = playerService.getIfPresent(event.getPlayer()
+                .getUniqueId());
+        if (bridgePlayer == null ||!bridgePlayer.isPlaying()) {
+            return;
+        }
+
+        final GameIsland currentGame = bridgePlayer.getCurrentGame();
+        if (currentGame == null) {
+            return;
+        }
+
+        currentGame.abortGame();
     }
 
     @EventHandler(ignoreCancelled = true) // skipcq: JAVA-W0324
