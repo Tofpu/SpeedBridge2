@@ -333,12 +333,15 @@ public final class SpeedBridgeCommand {
     @RestrictSetup
     @RestrictDummyModel
     @RestrictConsole
-    public String onRandomJoin(final BridgePlayer bridgePlayer) {
-        if (!isGeneralSetupComplete(bridgePlayer)) {
+    @AutoComplete("@players")
+    public String onRandomJoin(
+            final BridgePlayer sender,
+            @revxrsal.commands.annotation.Optional final BridgePlayer target) {
+        if (!isGeneralSetupComplete(sender)) {
             return "";
         }
 
-        if (bridgePlayer.isPlaying()) {
+        if (sender.isPlaying()) {
             return INSTANCE.alreadyInAIsland;
         }
 
@@ -349,9 +352,13 @@ public final class SpeedBridgeCommand {
         }
 
         final Island island = optionalIsland.get();
-        island.join(bridgePlayer);
+        if (target == null || target.equals(sender)) {
+            island.join(sender);
+            return String.format(INSTANCE.joinedAnIsland, island.getSlot());
+        }
 
-        return String.format(INSTANCE.joinedAnIsland, island.getSlot() + "");
+        island.join(target);
+        return String.format(INSTANCE.otherJoinedAnIsland, target.getName(), island.getSlot());
     }
 
     @NotNull
