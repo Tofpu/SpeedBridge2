@@ -27,17 +27,6 @@ allprojects {
     }
 
     dependencies {
-        compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
-
-        implementation("com.github.Revxrsal.Lamp:common:3.1.7")
-
-        implementation("net.kyori:adventure-api:4.10.1")
-        implementation("net.kyori:adventure-text-minimessage:4.10.1")
-
-        implementation("com.github.tofpu:DynamicClass:1.1") {
-            exclude("com.google.guava", "guava")
-        }
-
         testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     }

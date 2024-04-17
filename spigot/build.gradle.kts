@@ -3,10 +3,16 @@ plugins {
 }
 
 dependencies {
+    compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
+
     compileOnly("org.xerial:sqlite-jdbc:3.36.0.3")
     compileOnly("com.sk89q:worldedit:6.0.0-SNAPSHOT")
 
+    implementation("com.github.Revxrsal.Lamp:common:3.1.7")
     implementation("com.github.Revxrsal.Lamp:bukkit:3.1.7")
+
+    implementation("net.kyori:adventure-api:4.10.1")
+    implementation("net.kyori:adventure-text-minimessage:4.10.1")
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
 
     implementation("com.github.tofpu:DynamicClass:1.1") {
@@ -32,10 +38,13 @@ dependencies {
     }
 
     implementation("com.github.tofpu:umbrella:legacy-SNAPSHOT")
+    implementation("com.github.Tofpu:dynamicclass:1.3") {
+        exclude("com.google.guava", "guava")
+    }
 }
 
 tasks {
-    named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+    shadowJar {
         archiveName = "Speedbridge2-${version}-all.jar"
 
         dependencies {
@@ -56,8 +65,9 @@ tasks {
     }
 
     runServer {
-        minecraftVersion("1.8.8")
-//        pluginJars(project.file("libs/worldedit-bukkit-7.2.15.jar"))
-        pluginJars(project.file("libs/worldedit-bukkit-6.1.jar"))
+//        minecraftVersion("1.8.8")
+//        pluginJars(project.file("libs/worldedit-bukkit-6.1.jar"))
+        minecraftVersion("1.20.4")
+        pluginJars(project.file("libs/worldedit-bukkit-7.3.0.jar"))
     }
 }
