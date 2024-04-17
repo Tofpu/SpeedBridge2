@@ -14,23 +14,6 @@ allprojects {
     group = "io.tofpu.speedbridge2"
     version = "1.1.4-" + "git rev-parse --short=8 HEAD".runCommand(rootDir)
 
-    repositories {
-        mavenLocal()
-        mavenCentral()
-
-        maven("https://jitpack.io")
-        maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
-        maven("https://maven.enginehub.org/repo/")
-        maven("https://oss.sonatype.org/content/groups/public/")
-        maven("https://repo.codemc.org/repository/maven-public/")
-        maven("https://libraries.minecraft.net")
-    }
-
-    dependencies {
-        testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
-        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    }
-
     publishing {
         publications {
             create<MavenPublication>("maven") {
