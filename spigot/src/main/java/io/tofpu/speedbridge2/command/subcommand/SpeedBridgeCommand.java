@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.command.subcommand;
 
 import io.tofpu.speedbridge2.command.NameAndUUID;
+import io.tofpu.speedbridge2.command.condition.annotation.MaterialType;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictConsole;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictDummyModel;
 import io.tofpu.speedbridge2.command.condition.annotation.RestrictSetup;
@@ -23,6 +24,7 @@ import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.CommonBridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
+import io.tofpu.speedbridge2.util.material.MaterialCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -439,7 +441,7 @@ public final class SpeedBridgeCommand {
     @Description("Changes the selected block type for a specified player")
     @CommandPermission("speedbridge.admin.set.selectedBlockType")
     @AutoComplete("* @players")
-    public String setSelectedBlockType(final Material material, final BridgePlayer target) {
+    public String setSelectedBlockType(final @MaterialType(category = MaterialCategory.BLOCK) Material material, final BridgePlayer target) {
         if (!material.isSolid()) {
             return String.format(INSTANCE.blockTypeMustBeSolid, material);
         }
