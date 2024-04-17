@@ -369,7 +369,12 @@ public final class SpeedBridgeCommand {
                 .filter(Island::isReady)
                 .collect(Collectors.toList());
 
-        return Optional.ofNullable(filteredIslands.get(ThreadLocalRandom.current().nextInt(filteredIslands.size())));
+        if (filteredIslands.isEmpty()) {
+            return Optional.empty();
+        }
+
+        int randomIndex = ThreadLocalRandom.current().nextInt(filteredIslands.size());
+        return Optional.ofNullable(filteredIslands.get(randomIndex));
     }
 
     @Subcommand("setup")
