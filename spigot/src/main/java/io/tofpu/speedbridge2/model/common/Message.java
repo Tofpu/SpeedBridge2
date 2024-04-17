@@ -58,6 +58,7 @@ public final class Message {
                                      "> YOUR SCORES</bold></gold>" + " " +
                                      SCORE_TITLE_BAR;
     public final String joinedAnIsland = SUCCESS + "You're now on island %s!";
+    public final String otherJoinedAnIsland = SUCCESS + "Player %s is now on island %s!";
     public final String leftAnIsland = SUCCESS + "You left from island" + " %s!";
     public final String notInAIsland = error + "You're not on an island!";
     public final String deletedAnIsland = SUCCESS + "Island %s has been deleted!";
