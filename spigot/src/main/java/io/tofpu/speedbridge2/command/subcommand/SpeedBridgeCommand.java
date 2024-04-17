@@ -1,10 +1,7 @@
 package io.tofpu.speedbridge2.command.subcommand;
 
 import io.tofpu.speedbridge2.command.NameAndUUID;
-import io.tofpu.speedbridge2.command.condition.annotation.MaterialType;
-import io.tofpu.speedbridge2.command.condition.annotation.RestrictConsole;
-import io.tofpu.speedbridge2.command.condition.annotation.RestrictDummyModel;
-import io.tofpu.speedbridge2.command.condition.annotation.RestrictSetup;
+import io.tofpu.speedbridge2.command.condition.annotation.*;
 import io.tofpu.speedbridge2.command.parser.annotation.PlayerUUID;
 import io.tofpu.speedbridge2.model.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.model.common.Message;
@@ -36,7 +33,7 @@ import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
@@ -88,7 +85,7 @@ public final class SpeedBridgeCommand {
     @RestrictDummyModel
     @RestrictConsole
     public String onIslandCreate(final BridgePlayer player, final int slot, final String schematic,
-                                 @revxrsal.commands.annotation.Optional @Flag("c") String category) {
+                                 @Optional @Flag("c") String category) {
         if (!isGeneralSetupComplete(player)) {
             return "";
         }
@@ -162,10 +159,9 @@ public final class SpeedBridgeCommand {
     @Usage("modify <slot> [-c category|-s schematic]")
     @Description("Modify an island properties")
     @CommandPermission("speedbridge.island.modify")
-    public String onIslandSelect(final Island island, final @revxrsal.commands.annotation.Optional
-    @Flag(value = "c") @Default("")
-    String category, final @revxrsal.commands.annotation.Optional
-                                 @Flag(value = "s") @Default("") String schematic) {
+    public String onIslandSelect(final Island island,
+                                 final @Optional @Flag(value = "c") @Default("") String category,
+                                 final @Optional @Flag(value = "s") @Default("") String schematic) {
         final int slot = island.getSlot();
 
         if (!category.isEmpty()) {
@@ -214,38 +210,70 @@ public final class SpeedBridgeCommand {
     @Description("Join an island")
     @RestrictDummyModel
     @RestrictConsole
-    public String onIslandJoin(final BridgePlayer bridgePlayer, final Island island) {
-        if (!isGeneralSetupComplete(bridgePlayer)) {
+    public String onIslandJoin(final BridgePlayer sender, final Island island, @OptionalPermission("sb.join.other") BridgePlayer target) {
+        if (!isGeneralSetupComplete(sender)) {
             return "";
         }
 
-        if (bridgePlayer.isPlaying()) {
+        if (target == null && sender.isPlaying()) {
             return INSTANCE.alreadyInAIsland;
+        } else if (target != null && target.isPlaying()) {
+            return String.format(INSTANCE.otherIsAlreadyInAIsland, target.getName());
         }
 
         if (!island.isReady()) {
             return String.format(INSTANCE.invalidIsland, island.getSlot());
         }
 
-        island.join(bridgePlayer);
-        return String.format(INSTANCE.joinedAnIsland, island.getSlot() + "");
+        if (target == null) {
+            island.join(sender);
+            return String.format(INSTANCE.joinedAnIsland, island.getSlot());
+        }
+
+        island.join(target);
+        return String.format(INSTANCE.otherJoinedAnIsland, target.getName(), island.getSlot());
     }
 
     @Command({"sb leave", "speedbridge leave", "leave"})
     @Description("Leave an island")
-    public void onIslandLeave(final GameIsland gameIsland) {
-        gameIsland.stopGame();
+    public String onIslandLeave(final BridgePlayer sender,
+                                final @Optional GameIsland senderGame,
+                                @OptionalPermission("sb.leave.other") BridgePlayer target) {
+        if (Objects.equals(sender, target)) {
+            target = null;
+        }
+
+        System.out.println("onIslandLeave command called");
+        if (senderGame == null && target == null) {
+            return String.format(INSTANCE.notInAIsland);
+        } else if (target == null) {
+            senderGame.stopGame();
+            return ""; // handled by method
+        }
+
+        GameIsland targetGame = target.getCurrentGame();
+        int slot = targetGame == null ? -1 : targetGame.getIsland().getSlot();
+        if (targetGame == null || !targetGame.stopGame()) {
+            return String.format(INSTANCE.otherNotInAIsland, target.getName(), slot);
+        }
+        return String.format(INSTANCE.otherLeftTheIsland, target.getName(), slot);
     }
 
     @Command({"sb score", "speedbridge score", "score"})
     @Description("Shows a list of your scores")
     @RestrictConsole
-    public String onScore(final BridgePlayer bridgePlayer) {
+    public String onScore(final BridgePlayer sender,
+                          @OptionalPermission("sb.score.other") BridgePlayer target) {
+        boolean isSender = target == null;
+        if (isSender) {
+            target = sender;
+        }
+
         final List<String> scoreList = new ArrayList<>();
 
-        for (final Score score : bridgePlayer.getScores()) {
+        for (final Score score : target.getScores()) {
             if (scoreList.isEmpty()) {
-                scoreList.add(INSTANCE.scoreTitle);
+                scoreList.add(isSender ? INSTANCE.scoreTitle : String.format(INSTANCE.otherScoreTitle, target.getName()));
             }
 
             scoreList.add(String.format(FORMATTED_SCORE, score.getScoredOn(), BridgeUtil.formatNumber(score.getScore())));
@@ -334,7 +362,7 @@ public final class SpeedBridgeCommand {
     @AutoComplete("@players")
     public String onRandomJoin(
             final BridgePlayer sender,
-            @revxrsal.commands.annotation.Optional final BridgePlayer target) {
+            @OptionalPermission("sb.randomjoin.other") final BridgePlayer target) {
         if (!isGeneralSetupComplete(sender)) {
             return "";
         }
@@ -343,7 +371,7 @@ public final class SpeedBridgeCommand {
             return INSTANCE.alreadyInAIsland;
         }
 
-        final Optional<Island> optionalIsland = getRandomIsland();
+        final java.util.Optional<Island> optionalIsland = getRandomIsland();
 
         if (!optionalIsland.isPresent()) {
             return INSTANCE.noAvailableIsland;
@@ -360,7 +388,7 @@ public final class SpeedBridgeCommand {
     }
 
     @NotNull
-    private Optional<Island> getRandomIsland() {
+    private java.util.Optional<Island> getRandomIsland() {
         final List<Island> filteredIslands = islandService.getAllIslands()
                 .stream()
                 .parallel()
@@ -368,11 +396,11 @@ public final class SpeedBridgeCommand {
                 .collect(Collectors.toList());
 
         if (filteredIslands.isEmpty()) {
-            return Optional.empty();
+            return java.util.Optional.empty();
         }
 
         int randomIndex = ThreadLocalRandom.current().nextInt(filteredIslands.size());
-        return Optional.ofNullable(filteredIslands.get(randomIndex));
+        return java.util.Optional.ofNullable(filteredIslands.get(randomIndex));
     }
 
     @Subcommand("setup")

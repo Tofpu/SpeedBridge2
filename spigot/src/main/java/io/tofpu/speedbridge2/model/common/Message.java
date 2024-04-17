@@ -6,10 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -58,10 +55,14 @@ public final class Message {
     public final String scoreTitle = "<yellow>" + SCORE_TITLE_BAR + "<gold><bold" +
             "> YOUR SCORES</bold></gold>" + " " +
             SCORE_TITLE_BAR;
+    public final String otherScoreTitle = "<yellow>" + SCORE_TITLE_BAR + "<gold><bold" +
+            "> %s SCORES</bold></gold>" + " " +
+            SCORE_TITLE_BAR;
     public final String joinedAnIsland = SUCCESS + "You're now on island %s!";
     public final String otherJoinedAnIsland = SUCCESS + "Player %s is now on island %s!";
     public final String leftAnIsland = SUCCESS + "You left from island" + " %s!";
     public final String notInAIsland = error + "You're not on an island!";
+    public final String otherNotInAIsland = error + "Player % is not on an island!";
     public final String deletedAnIsland = SUCCESS + "Island %s has been deleted!";
     public final String emptySelect = error + "You haven't modified anything...";
     public final String reloaded = SUCCESS + "The config has been reloaded!";
@@ -111,6 +112,8 @@ public final class Message {
     public final String blockTypeMustBeSolid = error + "%s must be a solid block to be selectable!";
     public final String invalidMaterial = error + "Invalid material: %s";
     public final String blockAlreadySelected = error + "Player %s has already selected material %s!";
+    public final String otherIsAlreadyInAIsland = error + "Player % is already in an island";
+    public final String otherLeftTheIsland = error + "Player % left from island %s!";
 
     private static String runCommand(final String command) {
         return "<hover:show_text:'<yellow>Click to run " +

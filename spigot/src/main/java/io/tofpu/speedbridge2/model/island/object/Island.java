@@ -99,8 +99,8 @@ public class Island {
         return new AbstractMap.SimpleImmutableEntry<>(gamePlayer, gameIsland);
     }
 
-    public void leaveGame(final BridgePlayer bridgePlayer) {
-        leaveGame(bridgePlayer, true);
+    public boolean leaveGame(final BridgePlayer bridgePlayer) {
+        return leaveGame(bridgePlayer, true);
     }
 
     /**
@@ -109,15 +109,15 @@ public class Island {
      *
      * @param bridgePlayer The bridge player that is leaving the game island.
      */
-    public void leaveGame(final BridgePlayer bridgePlayer, final boolean clearInventory) {
+    public boolean leaveGame(final BridgePlayer bridgePlayer, final boolean clearInventory) {
         final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
         if (gamePlayer == null) {
-            return;
+            return false;
         }
 
         final GameIsland gameIsland = this.islandMap.remove(gamePlayer);
         if (gameIsland == null) {
-            return;
+            return false;
         }
 
         final Player player = bridgePlayer.getPlayer();
@@ -131,6 +131,7 @@ public class Island {
 
         // reset the game island
         gameIsland.remove();
+        return true;
     }
 
     public void abortGame(BridgePlayer bridgePlayer) {

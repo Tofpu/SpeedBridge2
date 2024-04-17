@@ -147,8 +147,8 @@ public class GameIsland {
         return islandLand;
     }
 
-    public void stopGame() {
-        getIsland().leaveGame(getGamePlayer().getBridgePlayer());
+    public boolean stopGame() {
+        return getIsland().leaveGame(getGamePlayer().getBridgePlayer());
     }
 
     public void abortGame() {
