@@ -20,8 +20,8 @@ dependencies {
     compileOnly("org.xerial:sqlite-jdbc:3.36.0.3")
     compileOnly("com.sk89q:worldedit:6.0.0-SNAPSHOT")
 
-    implementation("com.github.Revxrsal.Lamp:common:3.1.7")
-    implementation("com.github.Revxrsal.Lamp:bukkit:3.1.7")
+    implementation("com.github.Revxrsal.Lamp:common:3.2.1")
+    implementation("com.github.Revxrsal.Lamp:bukkit:3.2.1")
 
     implementation("net.kyori:adventure-api:4.10.1")
     implementation("net.kyori:adventure-text-minimessage:4.10.1")
