@@ -13,14 +13,14 @@ public class EventWrapper<E extends Event> extends Event {
     private final @NotNull BridgePlayer bridgePlayer;
     private final @NotNull E event;
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
     public EventWrapper(final @NotNull BridgePlayer bridgePlayer,
-            final @NotNull E event) {
+                        final @NotNull E event) {
         this.bridgePlayer = bridgePlayer;
         this.event = event;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
     }
 
     public @NotNull E getEvent() {

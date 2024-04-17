@@ -13,6 +13,23 @@ public final class PlayerNameCache {
 
     private final Map<UUID, String> nameMap = new HashMap<>();
 
+    private static String getPlayerName(final UUID uuid) {
+        final AtomicReference<String> result = new AtomicReference<>("");
+        try (final DatabaseQuery databaseQuery = DatabaseQuery.query("SELECT * FROM " +
+                "players " + "where uid = ?")) {
+            databaseQuery.setString(uuid.toString());
+
+            databaseQuery.executeQuery(databaseSet -> {
+                if (databaseSet.next()) {
+                    result.set(databaseSet.getString("name"));
+                }
+            });
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+        return result.get();
+    }
+
     /**
      * This method caches the player's name
      *
@@ -27,7 +44,6 @@ public final class PlayerNameCache {
      * Retrieves the player's name synchronously
      *
      * @param uid player unique identification
-     *
      * @return the player name immediately if cached, otherwise it'll retrieve the name
      * from the "players" table database in sync
      */
@@ -39,7 +55,6 @@ public final class PlayerNameCache {
      * Retrieves the player's name asynchronously
      *
      * @param uid player unique identification
-     *
      * @return the player name immediately if cached, otherwise it'll retrieve the name
      * from the "players" table database in async
      */
@@ -57,22 +72,5 @@ public final class PlayerNameCache {
         }
 
         return future;
-    }
-
-    private static String getPlayerName(final UUID uuid) {
-        final AtomicReference<String> result = new AtomicReference<>("");
-        try (final DatabaseQuery databaseQuery = DatabaseQuery.query("SELECT * FROM " +
-                                                                   "players " + "where uid = ?")) {
-            databaseQuery.setString(uuid.toString());
-
-            databaseQuery.executeQuery(databaseSet -> {
-                if (databaseSet.next()) {
-                    result.set(databaseSet.getString("name"));
-                }
-            });
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-        return result.get();
     }
 }

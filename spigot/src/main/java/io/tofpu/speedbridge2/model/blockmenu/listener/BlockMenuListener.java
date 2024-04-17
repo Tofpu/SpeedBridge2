@@ -29,7 +29,7 @@ public final class BlockMenuListener extends GameListener {
     public void onInventoryClick(final InventoryClickEvent event) {
         final Inventory clickedInventory = event.getClickedInventory();
         if (clickedInventory == null ||
-            (!(clickedInventory.getHolder() instanceof BlockMenuHolder))) {
+                (!(clickedInventory.getHolder() instanceof BlockMenuHolder))) {
             return;
         }
         event.setCancelled(true);

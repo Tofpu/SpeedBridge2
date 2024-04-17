@@ -14,10 +14,6 @@ public class DatabaseQuery implements AutoCloseable {
     private final @Nullable PreparedStatement preparedStatement;
     private final @NotNull AtomicInteger setterCounter;
 
-    public static DatabaseQuery query(final @NotNull String query) {
-        return new DatabaseQuery(query);
-    }
-
     private DatabaseQuery(final @NotNull String query) {
         try {
             this.preparedStatement =
@@ -26,6 +22,10 @@ public class DatabaseQuery implements AutoCloseable {
             throw new IllegalStateException(exception);
         }
         this.setterCounter = new AtomicInteger(0);
+    }
+
+    public static DatabaseQuery query(final @NotNull String query) {
+        return new DatabaseQuery(query);
     }
 
     public @NotNull DatabaseQuery setInt(final Integer integer) {

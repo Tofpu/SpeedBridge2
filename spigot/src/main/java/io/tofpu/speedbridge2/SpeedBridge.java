@@ -50,6 +50,13 @@ public final class SpeedBridge {
         this.leaderboard = new Leaderboard(playerService);
     }
 
+    public static BukkitAudiences getAdventure() {
+        if (adventure == null) {
+            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
+        }
+        return adventure;
+    }
+
     public void load() {
         // reset the world, in-case it does exist
         arenaManager.resetWorld();
@@ -84,7 +91,7 @@ public final class SpeedBridge {
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             ExpansionHandler.INSTANCE.load();
-            
+
             log("Hooking into PlaceholderAPI...");
             new PluginExpansion(javaPlugin, playerService);
         }
@@ -176,12 +183,5 @@ public final class SpeedBridge {
 
     private void log(final String content) {
         javaPlugin.getLogger().info(content);
-    }
-
-    public static BukkitAudiences getAdventure() {
-        if(adventure == null) {
-            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
-        }
-        return adventure;
     }
 }

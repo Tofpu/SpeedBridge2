@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 public final class MessagePresenterHolderImpl implements MessagePresenterHolder {
     private static final String HEADER_FORMAT = "<dark_gray>| <<gold>-</gold>> " +
-                                                "<yellow><bold>%s </bold><reset>";
+            "<yellow><bold>%s </bold><reset>";
 
     private final StringBuilder builder;
 

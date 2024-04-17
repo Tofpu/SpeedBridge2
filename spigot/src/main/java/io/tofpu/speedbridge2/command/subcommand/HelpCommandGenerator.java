@@ -10,11 +10,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
-import revxrsal.commands.annotation.Description;
-import revxrsal.commands.annotation.Flag;
-import revxrsal.commands.annotation.Optional;
-import revxrsal.commands.annotation.Subcommand;
-import revxrsal.commands.annotation.Usage;
+import revxrsal.commands.annotation.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -75,7 +71,7 @@ public final class HelpCommandGenerator {
     }
 
     public static String generateUsageOfMethod(final Subcommand subcommand,
-            final Method method) {
+                                               final Method method) {
         final StringBuilder builder = new StringBuilder();
 
         if (method.isAnnotationPresent(Usage.class)) {

@@ -21,10 +21,10 @@ public final class ScoreDatabase extends Database {
     }
 
     public @NotNull CompletableFuture<Void> insert(final @NotNull UUID uuid,
-            final @NotNull Score score) {
+                                                   final @NotNull Score score) {
         return DatabaseUtil.databaseExecute(
                 "INSERT OR IGNORE INTO scores (uid, island_slot, score) VALUES " +
-                "(?, ?, ?)", databaseQuery -> {
+                        "(?, ?, ?)", databaseQuery -> {
                     BridgeUtil.debug("player uid: " + uuid);
                     databaseQuery.setString(uuid.toString());
 
@@ -38,9 +38,9 @@ public final class ScoreDatabase extends Database {
     }
 
     public @NotNull CompletableFuture<Void> update(final @NotNull UUID uuid,
-            final @NotNull Score score) {
+                                                   final @NotNull Score score) {
         return DatabaseUtil.databaseExecute("UPDATE scores SET island_slot = ?, " +
-                                            "score = ? WHERE uid = ?", databaseQuery -> {
+                "score = ? WHERE uid = ?", databaseQuery -> {
             BridgeUtil.debug("player uid: " + uuid);
 
             BridgeUtil.debug("player score island: " + score.getScoredOn());
@@ -78,7 +78,7 @@ public final class ScoreDatabase extends Database {
     public CompletableFuture<Void> delete(final UUID uuid) {
         return PluginExecutor.runAsync(() -> {
             try (final DatabaseQuery query = DatabaseQuery.query("DELETE FROM scores " +
-                                                               "WHERE uid = ?")) {
+                    "WHERE uid = ?")) {
                 query.setString(uuid.toString());
                 query.execute();
             } catch (Exception e) {

@@ -26,10 +26,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public final class BlockMenuManager {
-    private static final int BLOCK_CHANGE_COOLDOWN = 30;
-
     public static final BlockMenuManager INSTANCE = new BlockMenuManager();
-
+    private static final int BLOCK_CHANGE_COOLDOWN = 30;
     private final Set<Material> materialSet = new HashSet<>();
     private final Cache<UUID, Long> cooldownMap;
 
@@ -104,8 +102,8 @@ public final class BlockMenuManager {
             return false;
         }
         return ConfigurationManager.INSTANCE.getBlockMenuCategory()
-                       .getDefaultBlock() == type || bridgePlayer.getPlayer()
-                       .hasPermission("speedbridge.block." + type.name());
+                .getDefaultBlock() == type || bridgePlayer.getPlayer()
+                .hasPermission("speedbridge.block." + type.name());
     }
 
     private void modifyItem(final ModifyItemType modifyItemType, final ItemStack itemStack) {

@@ -15,8 +15,8 @@ public final class IslandSetupFactory {
     }
 
     public static IslandSetup create(final IslandSetupFactoryType type,
-            final Umbrella umbrella,
-            final BridgePlayer player
+                                     final Umbrella umbrella,
+                                     final BridgePlayer player
             , final Island island, final IslandLand islandLand) {
         Preconditions.checkNotNull(islandService, "IslandService is not initialized");
         Preconditions.checkNotNull(umbrella, "Umbrella cannot be null");

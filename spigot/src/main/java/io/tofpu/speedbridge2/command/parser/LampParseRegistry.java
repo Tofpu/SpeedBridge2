@@ -5,4 +5,5 @@ import io.tofpu.speedbridge2.command.AbstractLampRegistry;
 
 @AutoRegister
 public final class LampParseRegistry extends AbstractLampRegistry<Class<?>,
-        AbstractLampParser<?>> {}
+        AbstractLampParser<?>> {
+}

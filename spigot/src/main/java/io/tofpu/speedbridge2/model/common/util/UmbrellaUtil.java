@@ -15,7 +15,7 @@ import java.util.Collections;
 
 public class UmbrellaUtil {
     public static ItemStack create(final XMaterial material, final String displayName,
-            final String lore) {
+                                   final String lore) {
         final ItemStack itemStack = material.parseItem();
         final ItemMeta meta = itemStack.getItemMeta();
 
