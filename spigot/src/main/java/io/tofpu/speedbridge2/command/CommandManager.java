@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2.command;
 import io.tofpu.dynamicclass.DynamicClass;
 import io.tofpu.speedbridge2.command.condition.AbstractCommandConditionWrapper;
 import io.tofpu.speedbridge2.command.condition.LampConditionRegistry;
+import io.tofpu.speedbridge2.command.condition.annotation.OptionalPermission;
 import io.tofpu.speedbridge2.command.context.AbstractLampContext;
 import io.tofpu.speedbridge2.command.context.LampContextRegistry;
 import io.tofpu.speedbridge2.command.parser.AbstractLampParser;
@@ -85,6 +86,9 @@ public final class CommandManager {
         constructTabCompleter(islandService);
         constructCommandConditions();
 
+        commandHandler.registerAnnotationReplacer(OptionalPermission.class, OptionalPermission.AnnotationReplacerImpl.INSTANCE);
+        commandHandler.registerPermissionReader(OptionalPermission.PermissionReaderImpl.INSTANCE);
+
         commandHandler.register(new SpeedBridgeCommand(playerService, islandService));
         commandHandler.register(new SpeedBridgeDebugCommand(arenaManager));
     }
@@ -95,7 +99,7 @@ public final class CommandManager {
         CommandCompletion commandCompletion = new CommandCompletion(islandService);
         commandHandler.getAutoCompleter().registerParameterSuggestions(Island.class, commandCompletion::islands);
         commandHandler.getAutoCompleter().registerParameterSuggestions(Material.class, commandCompletion::materials);
-        commandHandler.getAutoCompleter().registerSuggestion("players", commandCompletion::players);
+        commandHandler.getAutoCompleter().registerParameterSuggestions(BridgePlayer.class, commandCompletion::players);
     }
 
     private static void constructContext() {
