@@ -9,6 +9,8 @@ import io.tofpu.speedbridge2.model.support.worldedit.CuboidRegion;
 import io.tofpu.speedbridge2.model.support.worldedit.Vector;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
@@ -63,5 +65,16 @@ public final class IslandRegionListener extends GameListener {
         if (!isInRegion) {
             currentGame.resetGame();
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    private void onCraft(CraftItemEvent event) {
+        final BridgePlayer bridgePlayer = playerService.getIfPresent(event.getWhoClicked()
+                .getUniqueId());
+        if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
+            return;
+        }
+
+        event.setCancelled(true);
     }
 }
