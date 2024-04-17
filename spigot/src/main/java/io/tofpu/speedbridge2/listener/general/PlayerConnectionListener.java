@@ -51,7 +51,9 @@ public final class PlayerConnectionListener extends GameListener {
                 return;
             }
 
-            BridgeUtil.sendMessage(player, Message.INSTANCE.lobbyMissing);
+            if (player.isOp()) {
+                BridgeUtil.sendMessage(player, Message.INSTANCE.lobbyMissing);
+            }
         }
 
         if (location != null && player.getWorld().equals(location.getWorld())) {
