@@ -19,6 +19,7 @@ import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.CommonBridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.SenderBridgePlayer;
+import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.bukkit.BukkitCommandActor;
@@ -91,9 +92,9 @@ public final class CommandManager {
     private static void constructTabCompleter(final @NotNull IslandService islandService) {
         BridgeUtil.debug("Constructing tab completer...");
 
-        commandHandler.getAutoCompleter()
-                .registerParameterSuggestions(Island.class,
-                        new CommandCompletion(islandService)::islands);
+        CommandCompletion commandCompletion = new CommandCompletion(islandService);
+        commandHandler.getAutoCompleter().registerParameterSuggestions(Island.class, commandCompletion::islands);
+        commandHandler.getAutoCompleter().registerParameterSuggestions(Material.class, commandCompletion::materials);
     }
 
     private static void constructContext() {

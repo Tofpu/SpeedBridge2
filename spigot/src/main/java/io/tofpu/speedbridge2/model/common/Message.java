@@ -122,6 +122,7 @@ public final class Message {
     public final String mustBeOnline = error + "%s must be available to modify their data";
     public final String setChosenType = SUCCESS + "Changed %s's selected block type to %s";
     public final String blockTypeMustBeSolid = error + "%s must be a solid block to be selectable!";
+    public final String invalidMaterial = error + "Invalid material: %s";
 
     private static String runCommand(final String command) {
         return "<hover:show_text:'<yellow>Click to run " +
