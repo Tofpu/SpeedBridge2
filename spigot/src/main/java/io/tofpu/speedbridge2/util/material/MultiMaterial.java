@@ -54,49 +54,4 @@ public final class MultiMaterial {
                 throw new RuntimeException(String.format("Unknown material category: %s", category));
         }
     }
-
-//    final static class MaterialResolvers {
-//        static final MaterialResolver BUKKIT_MATERIAL_RESOLVER = new BukkitMaterialResolver();
-//        static final MaterialResolver XMATERIAL_MATERIAL_RESOLVER = new XMaterialResolver();
-//        static final MaterialResolver EMPTY_RESOLVER = new EmptyResolver();
-//    }
-//
-//    static class XMaterialResolver extends MaterialResolver {
-//        @Override
-//        Material resolve(String name) {
-//            return XMaterial.matchXMaterial(name).orElseThrow(() -> new IllegalArgumentException("Unknown material: %s")).parseMaterial();
-//        }
-//    }
-//
-//    static class BukkitMaterialResolver extends MaterialResolver {
-//        @Override
-//        Material resolve(String name) {
-//            Material material = Material.matchMaterial(name);
-//            if (material == null) {
-//                throwException(name);
-//            }
-//            return material;
-//        }
-//    }
-//
-//    static class EmptyResolver extends MaterialResolver {
-//
-//        @Override
-//        Material resolve(String name) {
-//            throwException(name);
-//            return null;
-//        }
-//    }
-//
-//    abstract static class MaterialResolver {
-//        abstract Material resolve(String name);
-//
-//        void throwException(String name) throws RuntimeException {
-//            throw getException(name);
-//        }
-//
-//        RuntimeException getException(String name) {
-//            return new IllegalArgumentException("Unknown material: %s");
-//        }
-//    }
 }

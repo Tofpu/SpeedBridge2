@@ -16,7 +16,6 @@ public class MaterialParser extends AbstractLampParser<Material> {
 
     @Override
     Material parse(ValueResolver.ValueResolverContext context) {
-        System.out.println("MaterialParser#parse called");
         String materialName = context.pop();
         try {
             return MultiMaterial.getOrThrow(materialName);

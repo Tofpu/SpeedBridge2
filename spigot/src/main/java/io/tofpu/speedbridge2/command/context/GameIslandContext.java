@@ -28,21 +28,6 @@ public final class GameIslandContext extends AbstractLampContext<GameIsland> {
         final BridgePlayer player = playerService.getIfPresent(context.actor().getUniqueId());
         Parameter javaParameter = context.parameter().getJavaParameter();
         boolean canBeNull = javaParameter.isAnnotationPresent(Nullable.class) || context.parameter().isOptional();
-        if (!canBeNull) {
-            System.out.println("list of annotations: " + Arrays.toString(javaParameter.getAnnotations()));
-            System.out.println("list of annotations types: " + javaParameter.getAnnotatedType());
-            System.out.println("list of declared annotations: " + Arrays.toString(javaParameter.getDeclaredAnnotations()));
-            System.out.println("alternative: " + context.command().hasAnnotation(Nullable.class));
-            System.out.println("alternative: " + context.command().getParameters().stream().anyMatch(commandParameter -> {
-                boolean result = commandParameter.hasAnnotation(Nullable.class);
-                if (result) {
-                    System.out.println(commandParameter + " has nullable annotation");
-                }
-                return result;
-            }));
-        }
-//        context.parameter().getJavaParameter().
-        System.out.println(String.format("GameIslandContext: %s can be null? %s", context.actor().getName(), canBeNull));
 
         if (player == null && canBeNull) {
             return null;
