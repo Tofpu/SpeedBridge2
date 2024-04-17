@@ -12,7 +12,8 @@ public final class BlockMenuHolder implements InventoryHolder {
     private final Inventory inventory = Bukkit.createInventory(this,
             InventoryType.CHEST, INVENTORY_TITLE);
 
-    private BlockMenuHolder() {}
+    private BlockMenuHolder() {
+    }
 
     @Override
     public Inventory getInventory() {

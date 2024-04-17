@@ -77,11 +77,11 @@ public final class PlayerHandler {
      * If the player is in the
      * database, update the name and refresh the player instance
      *
-     * @param name The name of the player.
+     * @param name     The name of the player.
      * @param uniqueId The unique ID of the player.
      */
     public void internalRefresh(final String name,
-            final UUID uniqueId) {
+                                final UUID uniqueId) {
         final BridgePlayer bridgePlayer = getIfPresent(uniqueId);
         if (bridgePlayer == null) {
             loadAsync(uniqueId);
@@ -99,11 +99,11 @@ public final class PlayerHandler {
      * If the player is online, update the name if it has changed and refresh the
      * player instance
      *
-     * @param player The live instance of the player.
+     * @param player       The live instance of the player.
      * @param bridgePlayer The bridge player instance that is being refreshed.
      */
     public void internalRefresh(final @NotNull Player player,
-            final @NotNull BridgePlayer bridgePlayer) {
+                                final @NotNull BridgePlayer bridgePlayer) {
         final String name = player.getName();
         if (!bridgePlayer.getName()
                 .equals(name)) {

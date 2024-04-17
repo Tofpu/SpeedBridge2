@@ -152,7 +152,7 @@ public class IslandSetup {
      * Returns true if the player is not removed and has a player spawn point
      *
      * @return A boolean value.
-    */
+     */
     public boolean isReady() {
         return !isRemoved() && playerSpawnPoint != null;
     }
@@ -195,7 +195,7 @@ public class IslandSetup {
      * Returns the UUID of the player that is currently editing the island
      *
      * @return The UUID of the player that is currently editing the island.
-    */
+     */
     public UUID getPlayerUid() {
         return player.getPlayerUid();
     }

@@ -19,12 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionScore, BlockChoice, SetupMeta {
@@ -44,39 +39,6 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
     private Material chosenBlock;
     private boolean inSetup;
 
-    /**
-     * Create a new BridgePlayer object that is a copy of the given BridgePlayer
-     *
-     * @param copy The BridgePlayer to copy.
-     * @return A new BridgePlayer object.
-     */
-    public static BridgePlayer of(final BridgePlayer copy) {
-        return new BridgePlayer(copy);
-    }
-
-    /**
-     * Create a new BridgePlayer object with the given UUID
-     *
-     * @param playerUid The UUID of the player.
-     * @return A new BridgePlayer object.
-     */
-    public static BridgePlayer of(final IslandService islandService,
-            final Leaderboard leaderboard, final UUID playerUid) {
-        return new BridgePlayer(islandService, leaderboard, playerUid);
-    }
-
-    /**
-     * Create a new BridgePlayer object with the given name and playerUid
-     *
-     * @param name The name of the player.
-     * @param playerUid The UUID of the player.
-     * @return A new BridgePlayer object.
-     */
-    public static BridgePlayer of(final IslandService islandService,
-            final Leaderboard leaderboard, final String name, final UUID playerUid) {
-        return new BridgePlayer(islandService, leaderboard, name, playerUid);
-    }
-
     protected BridgePlayer(final BridgePlayer copy) {
         this(copy.islandService, copy.leaderboard, copy.getName(), copy.playerUid);
         this.scoreMap.putAll(copy.scoreMap);
@@ -87,7 +49,7 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
     }
 
     protected BridgePlayer(final IslandService islandService,
-            final Leaderboard leaderboard, final UUID playerUid) {
+                           final Leaderboard leaderboard, final UUID playerUid) {
         this(islandService, leaderboard, "null", playerUid);
 
         if (player != null) {
@@ -115,9 +77,46 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
         this.inSetup = false;
     }
 
+    /**
+     * Create a new BridgePlayer object that is a copy of the given BridgePlayer
+     *
+     * @param copy The BridgePlayer to copy.
+     * @return A new BridgePlayer object.
+     */
+    public static BridgePlayer of(final BridgePlayer copy) {
+        return new BridgePlayer(copy);
+    }
+
+    /**
+     * Create a new BridgePlayer object with the given UUID
+     *
+     * @param playerUid The UUID of the player.
+     * @return A new BridgePlayer object.
+     */
+    public static BridgePlayer of(final IslandService islandService,
+                                  final Leaderboard leaderboard, final UUID playerUid) {
+        return new BridgePlayer(islandService, leaderboard, playerUid);
+    }
+
+    /**
+     * Create a new BridgePlayer object with the given name and playerUid
+     *
+     * @param name      The name of the player.
+     * @param playerUid The UUID of the player.
+     * @return A new BridgePlayer object.
+     */
+    public static BridgePlayer of(final IslandService islandService,
+                                  final Leaderboard leaderboard, final String name, final UUID playerUid) {
+        return new BridgePlayer(islandService, leaderboard, name, playerUid);
+    }
+
     @Override
     public String getName() {
         return this.name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
     }
 
     /**
@@ -125,7 +124,7 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
      * then update the scoreMap and sessionMap
      *
      * @param islandSlot The slot of the island that the player is currently on.
-     * @param score the score to be set
+     * @param score      the score to be set
      * @return The new score.
      */
     public Score setScoreIfLower(final int islandSlot, final double score) {
@@ -191,7 +190,7 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
      * It sets the score of the given island slot to the given new score.
      *
      * @param islandSlot The island slot that the score is being set for.
-     * @param newScore The new score to set.
+     * @param newScore   The new score to set.
      * @return the score
      */
     public Score setNewScore(final int islandSlot, final double newScore) {
@@ -276,10 +275,6 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
         return Databases.STATS_DATABASE.delete(getPlayerUid());
     }
 
-    public void setGamePlayer(final GamePlayer gamePlayer) {
-        this.gamePlayer = gamePlayer;
-    }
-
     public boolean isPlaying() {
         return gamePlayer != null;
     }
@@ -318,6 +313,10 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
         return gamePlayer;
     }
 
+    public void setGamePlayer(final GamePlayer gamePlayer) {
+        this.gamePlayer = gamePlayer;
+    }
+
     public void invalidatePlayer() {
         this.player = null;
 
@@ -330,10 +329,6 @@ public class BridgePlayer extends CommonBridgePlayer<Player> implements SessionS
 
         // resetting the session scores
         resetSessionScores();
-    }
-
-    public void setName(final String name) {
-        this.name = name;
     }
 
     public void internalRefresh(final UUID uniqueId) {

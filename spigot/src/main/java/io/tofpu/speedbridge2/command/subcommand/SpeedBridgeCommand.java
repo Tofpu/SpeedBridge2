@@ -44,17 +44,15 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static io.tofpu.speedbridge2.model.common.Message.INSTANCE;
-import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.ARROW_RIGHT;
-import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.CHECK_MARK;
-import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.CROSS;
+import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.*;
 
 @Command({"sb", "speedbridge"})
 public final class SpeedBridgeCommand {
     private static final String EMPTY_SCORE = "<red>You haven't scored anything yet";
     private static final String FORMATTED_SCORE =
             " <gold><bold>" + CROSS.getSymbol() + " " + "<reset><yellow>Island " +
-            "<gold>%s</gold>" + " " + ARROW_RIGHT.getSymbol() +
-            " <gold>%s</gold> seconds";
+                    "<gold>%s</gold>" + " " + ARROW_RIGHT.getSymbol() +
+                    " <gold>%s</gold> seconds";
 
     private final PlayerService playerService;
     private final IslandService islandService;
@@ -90,7 +88,7 @@ public final class SpeedBridgeCommand {
     @RestrictDummyModel
     @RestrictConsole
     public String onIslandCreate(final BridgePlayer player, final int slot, final String schematic,
-            @revxrsal.commands.annotation.Optional @Flag("c") String category) {
+                                 @revxrsal.commands.annotation.Optional @Flag("c") String category) {
         if (!isGeneralSetupComplete(player)) {
             return "";
         }
@@ -138,7 +136,7 @@ public final class SpeedBridgeCommand {
     @CommandPermission("speedbridge.player.reset")
     @AutoComplete("@players *")
     public void onPlayerReset(final CommonBridgePlayer<?> sender, final @PlayerUUID NameAndUUID target,
-            final ResetType type) {
+                              final ResetType type) {
         String targetName = target.playerName();
         UUID targetId = target.playerUUID();
 
@@ -166,8 +164,8 @@ public final class SpeedBridgeCommand {
     @CommandPermission("speedbridge.island.modify")
     public String onIslandSelect(final Island island, final @revxrsal.commands.annotation.Optional
     @Flag(value = "c") @Default("")
-            String category, final @revxrsal.commands.annotation.Optional
-    @Flag(value = "s") @Default("") String schematic) {
+    String category, final @revxrsal.commands.annotation.Optional
+                                 @Flag(value = "s") @Default("") String schematic) {
         final int slot = island.getSlot();
 
         if (!category.isEmpty()) {
@@ -211,7 +209,7 @@ public final class SpeedBridgeCommand {
         return false;
     }
 
-    @Command({"sb join", "speedbridge join" ,"join"})
+    @Command({"sb join", "speedbridge join", "join"})
     @Usage("join <island>")
     @Description("Join an island")
     @RestrictDummyModel
@@ -233,13 +231,13 @@ public final class SpeedBridgeCommand {
         return String.format(INSTANCE.joinedAnIsland, island.getSlot() + "");
     }
 
-    @Command({"sb leave", "speedbridge leave" ,"leave"})
+    @Command({"sb leave", "speedbridge leave", "leave"})
     @Description("Leave an island")
     public void onIslandLeave(final GameIsland gameIsland) {
         gameIsland.stopGame();
     }
 
-    @Command({"sb score", "speedbridge score" ,"score"})
+    @Command({"sb score", "speedbridge score", "score"})
     @Description("Shows a list of your scores")
     @RestrictConsole
     public String onScore(final BridgePlayer bridgePlayer) {
@@ -281,15 +279,15 @@ public final class SpeedBridgeCommand {
                 final String title = "<yellow><bold>Island Analysis<reset>\n";
 
                 final String schematicHover = title + "<yellow>Schematic: " +
-                                              (island.getSchematicClipboard() == null ?
-                                                      "<red>" + CROSS.getSymbol() :
-                                                      "<green>" + CHECK_MARK.getSymbol());
+                        (island.getSchematicClipboard() == null ?
+                                "<red>" + CROSS.getSymbol() :
+                                "<green>" + CHECK_MARK.getSymbol());
 
                 final String spawnPointHover = "<yellow>Spawnpoint: " +
-                                               (island.getAbsoluteLocation() == null ?
-                                                       "<red>" + CROSS.getSymbol() :
-                                                       "<green>" +
-                                                       CHECK_MARK.getSymbol());
+                        (island.getAbsoluteLocation() == null ?
+                                "<red>" + CROSS.getSymbol() :
+                                "<green>" +
+                                        CHECK_MARK.getSymbol());
 
                 builder.pair("<yellow>Island-" + island.getSlot(), hover(
                         schematicHover + "\n" + spawnPointHover, island.isReady() ?
@@ -328,7 +326,7 @@ public final class SpeedBridgeCommand {
         HelpCommandGenerator.showHelpMessage(player);
     }
 
-    @Command({"sb randomjoin", "speedbridge randomjoin" ,"randomjoin"})
+    @Command({"sb randomjoin", "speedbridge randomjoin", "randomjoin"})
     @Description("Chooses a random island for you")
     @RestrictSetup
     @RestrictDummyModel

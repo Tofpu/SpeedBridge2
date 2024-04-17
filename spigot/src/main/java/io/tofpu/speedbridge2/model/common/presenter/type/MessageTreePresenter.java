@@ -52,8 +52,8 @@ public class MessageTreePresenter extends MessagePresenterBase {
     }
 
     public static class Builder {
-        private String title;
         private final List<String> messages = new ArrayList<>();
+        private String title;
 
         public Builder title(final String title) {
             this.title = title;

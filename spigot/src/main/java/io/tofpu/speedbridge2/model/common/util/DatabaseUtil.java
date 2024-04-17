@@ -14,7 +14,7 @@ public class DatabaseUtil {
      * executes the query and returns a CompletableFuture that will be completed when the
      * query is done
      *
-     * @param sql The SQL statement to execute.
+     * @param sql                   The SQL statement to execute.
      * @param databaseQueryConsumer A Consumer that takes a DatabaseQuery.
      * @return Nothing.
      */
@@ -42,12 +42,12 @@ public class DatabaseUtil {
     /**
      * It takes a SQL query and a consumer that will be called for each row of the query
      *
-     * @param sql The SQL statement to execute.
+     * @param sql                   The SQL statement to execute.
      * @param databaseQueryConsumer A consumer that will be called for each row of the query.
      * @return Nothing.
      */
     public static CompletableFuture<Void> databaseQueryExecute(final String sql,
-            final Consumer<DatabaseSet> databaseQueryConsumer) {
+                                                               final Consumer<DatabaseSet> databaseQueryConsumer) {
         return runAsync(() -> {
             try (final DatabaseQuery query = DatabaseQuery.query(sql)) {
                 query.executeQuery(databaseQueryConsumer);

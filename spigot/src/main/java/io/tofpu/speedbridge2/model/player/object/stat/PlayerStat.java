@@ -16,6 +16,7 @@ public interface PlayerStat {
      * @return The key of the current node.
      */
     String getKey();
+
     /**
      * The function returns a string
      *

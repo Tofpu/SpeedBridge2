@@ -18,12 +18,11 @@ public final class IslandSetupHandler {
 
     private final Umbrella umbrella;
     private final Map<UUID, IslandSetup> islandSetupMap = new HashMap<>();
+    private World world;
 
     private IslandSetupHandler() {
         this.umbrella = new IslandSetupUmbrella().getUmbrella();
     }
-
-    private World world;
 
     /**
      * This function is called when the plugin is loaded
@@ -73,12 +72,12 @@ public final class IslandSetupHandler {
         return islandSetupMap.get(uuid);
     }
 
-     /**
-      * Remove the given island setup from the island setup map
-      *
-      * @param islandSetup The island setup that is being invalidated.
-      */
-     public void invalidate(final IslandSetup islandSetup) {
+    /**
+     * Remove the given island setup from the island setup map
+     *
+     * @param islandSetup The island setup that is being invalidated.
+     */
+    public void invalidate(final IslandSetup islandSetup) {
         islandSetupMap.remove(islandSetup.getPlayerUid());
     }
 

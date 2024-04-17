@@ -7,7 +7,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public final class GamePlayer {
     private final BridgePlayer player;
@@ -17,6 +20,11 @@ public final class GamePlayer {
     private GameIsland currentGame = null;
     private long timer = -1;
 
+    private GamePlayer(final BridgePlayer player) {
+        this.player = player;
+        this.blockLocations = new ArrayList<>();
+    }
+
     /**
      * It creates a new GamePlayer object for the given player.
      *
@@ -25,15 +33,6 @@ public final class GamePlayer {
      */
     public static GamePlayer of(final BridgePlayer player) {
         return new GamePlayer(player);
-    }
-
-    private GamePlayer(final BridgePlayer player) {
-        this.player = player;
-        this.blockLocations = new ArrayList<>();
-    }
-
-    public void setCurrentGame(final GameIsland gameIsland) {
-        this.currentGame = gameIsland;
     }
 
     /**
@@ -62,12 +61,12 @@ public final class GamePlayer {
         for (final Location blockLocation : this.blockLocations) {
             final Block block = blockLocation.getBlock();
             BridgeUtil.debug("GamePlayer(): Resetting " + block.getType() + " at " + block.getX() +
-                             ", " + block.getY() + ", " + block.getZ() + " location!");
+                    ", " + block.getY() + ", " + block.getZ() + " location!");
             block.setType(Material.AIR);
         }
         BridgeUtil.debug("GamePlayer(): Finished resetting the blocks! clearing the " +
-                         "block locations " +
-                         "immediately!");
+                "block locations " +
+                "immediately!");
         this.blockLocations.clear();
     }
 
@@ -98,12 +97,16 @@ public final class GamePlayer {
      * Returns the current game
      *
      * @return The current game that is being played.
-    */
+     */
     public GameIsland getCurrentGame() {
         return currentGame;
     }
 
-     /**
+    public void setCurrentGame(final GameIsland gameIsland) {
+        this.currentGame = gameIsland;
+    }
+
+    /**
      * Returns the player object associated with this bridge player
      *
      * @return The player object.

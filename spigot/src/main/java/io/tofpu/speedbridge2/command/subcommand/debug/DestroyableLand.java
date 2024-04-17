@@ -1,11 +1,9 @@
 package io.tofpu.speedbridge2.command.subcommand.debug;
 
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.WorldEditException;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import io.tofpu.multiworldedit.EditSessionWrapper;
@@ -26,7 +24,7 @@ public class DestroyableLand extends IslandLand {
     public void generatePlot() throws WorldEditException {
         // TODO: Make this generation operation async
         BridgeUtil.debug("Generating plot at " + getPlotLocation().toString() + " for " +
-                         "island " + getIsland().getSlot());
+                "island " + getIsland().getSlot());
 
         final BukkitWorld bukkitWorld = new BukkitWorld(getWorld());
 
@@ -50,7 +48,7 @@ public class DestroyableLand extends IslandLand {
     public void destroy() {
         // TODO: Make this generation operation async
         BridgeUtil.debug("Generating plot at " + getPlotLocation().toString() + " for " +
-                         "island " + getIsland().getSlot());
+                "island " + getIsland().getSlot());
 
         final BukkitWorld bukkitWorld = new BukkitWorld(getWorld());
 

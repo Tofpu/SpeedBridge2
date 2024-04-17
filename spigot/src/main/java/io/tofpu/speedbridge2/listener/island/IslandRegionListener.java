@@ -1,10 +1,10 @@
 package io.tofpu.speedbridge2.listener.island;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
+import io.tofpu.speedbridge2.listener.GameListener;
 import io.tofpu.speedbridge2.model.island.object.GameIsland;
 import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.listener.GameListener;
 import io.tofpu.speedbridge2.model.support.worldedit.CuboidRegion;
 import io.tofpu.speedbridge2.model.support.worldedit.Vector;
 import org.bukkit.Location;
@@ -25,7 +25,7 @@ public final class IslandRegionListener extends GameListener {
     private void onWorldChange(PlayerChangedWorldEvent event) {
         final BridgePlayer bridgePlayer = playerService.getIfPresent(event.getPlayer()
                 .getUniqueId());
-        if (bridgePlayer == null ||!bridgePlayer.isPlaying()) {
+        if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
             return;
         }
 
@@ -41,7 +41,7 @@ public final class IslandRegionListener extends GameListener {
     private void onPlayerMove(final @NotNull PlayerMoveEvent event) {
         final BridgePlayer bridgePlayer = playerService.getIfPresent(event.getPlayer()
                 .getUniqueId());
-        if (bridgePlayer == null ||!bridgePlayer.isPlaying()) {
+        if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
             return;
         }
 

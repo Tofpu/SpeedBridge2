@@ -71,11 +71,11 @@ public final class PlayerService {
      * If the player is online, update the name if it has changed and refresh the
      * player instance
      *
-     * @param player The live instance of the player.
+     * @param player       The live instance of the player.
      * @param bridgePlayer The bridge player instance that is being refreshed.
      */
     public void internalRefresh(final @NotNull Player player,
-            final @NotNull BridgePlayer bridgePlayer) {
+                                final @NotNull BridgePlayer bridgePlayer) {
         playerHandler.internalRefresh(player, bridgePlayer);
     }
 
@@ -118,7 +118,7 @@ public final class PlayerService {
     }
 
     public void loadIfAbsent(final Player player,
-            final Consumer<BridgePlayer> notAbsentConsumer) {
+                             final Consumer<BridgePlayer> notAbsentConsumer) {
         playerHandler.loadIfAbsent(player.getUniqueId(), notAbsentConsumer);
     }
 }

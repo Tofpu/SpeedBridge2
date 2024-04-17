@@ -1,9 +1,9 @@
 package io.tofpu.speedbridge2.command.parser;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
-import io.tofpu.speedbridge2.util.material.MultiMaterial;
 import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
+import io.tofpu.speedbridge2.util.material.MultiMaterial;
 import org.bukkit.Material;
 import revxrsal.commands.exception.CommandErrorException;
 import revxrsal.commands.process.ValueResolver;
