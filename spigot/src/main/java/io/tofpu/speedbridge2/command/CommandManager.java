@@ -95,6 +95,7 @@ public final class CommandManager {
         CommandCompletion commandCompletion = new CommandCompletion(islandService);
         commandHandler.getAutoCompleter().registerParameterSuggestions(Island.class, commandCompletion::islands);
         commandHandler.getAutoCompleter().registerParameterSuggestions(Material.class, commandCompletion::materials);
+        commandHandler.getAutoCompleter().registerSuggestion("players", commandCompletion::players);
     }
 
     private static void constructContext() {
