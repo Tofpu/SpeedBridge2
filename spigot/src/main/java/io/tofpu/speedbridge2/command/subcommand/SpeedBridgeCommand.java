@@ -363,7 +363,7 @@ public final class SpeedBridgeCommand {
         return Optional.ofNullable(filteredIslands.get(ThreadLocalRandom.current().nextInt(filteredIslands.size())));
     }
 
-    @Subcommand("setup")
+    @Subcommand("setup create")
     @Description("Create an island setup")
     @CommandPermission("speedbridge.setup.admin")
     @RestrictDummyModel
