@@ -403,7 +403,7 @@ public final class SpeedBridgeCommand {
         return java.util.Optional.ofNullable(filteredIslands.get(randomIndex));
     }
 
-    @Subcommand("setup")
+    @Subcommand("setup create")
     @Description("Create an island setup")
     @CommandPermission("speedbridge.setup.admin")
     @RestrictDummyModel
