@@ -296,6 +296,7 @@ public final class SpeedBridgeCommand {
     }
 
     @Command({"sb islands", "speedbridge islands", "islands"})
+    @CommandPermission("sb.islands")
     public String showIslands() {
         final MessagePresenterHolderImpl holder = new MessagePresenterHolderImpl(
                 "<yellow>List of Islands");
