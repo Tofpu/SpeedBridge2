@@ -360,6 +360,7 @@ public final class SpeedBridgeCommand {
     @RestrictDummyModel
     @RestrictConsole
     @AutoComplete("@players")
+    @CommandPermission("sb.randomjoin")
     public String onRandomJoin(
             final BridgePlayer sender,
             @OptionalPermission("sb.randomjoin.other") final BridgePlayer target) {
