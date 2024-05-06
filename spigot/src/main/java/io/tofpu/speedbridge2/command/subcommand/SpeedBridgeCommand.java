@@ -127,6 +127,24 @@ public final class SpeedBridgeCommand {
         return String.format(INSTANCE.deletedAnIsland, target.getSlot());
     }
 
+    @Subcommand("player set block")
+    @Description("Changes the selected block type for a specified player")
+    @CommandPermission("speedbridge.player.set.block")
+    @AutoComplete("* @players")
+    @Usage("<material> <target>")
+    public String setSelectedBlockType(final @MaterialType(category = MaterialCategory.BLOCK) Material material, final BridgePlayer target) {
+        if (!material.isSolid()) {
+            return String.format(INSTANCE.blockTypeMustBeSolid, material);
+        }
+
+        if (target.getChoseMaterial() == material) {
+            return String.format(INSTANCE.blockAlreadySelected, target.getName(), material);
+        }
+
+        target.setChosenMaterial(material);
+        return String.format(INSTANCE.setChosenType, target.getName(), material);
+    }
+
     @Subcommand("reset")
     @Usage("reset <target> <all|scores|stats>")
     @Description("Resets player properties")
@@ -475,23 +493,6 @@ public final class SpeedBridgeCommand {
 
         islandSetup.cancel();
         return INSTANCE.setupCancelled;
-    }
-
-    @Subcommand("admin set selectedBlockType")
-    @Description("Changes the selected block type for a specified player")
-    @CommandPermission("speedbridge.admin.set.selectedBlockType")
-    @AutoComplete("* @players")
-    public String setSelectedBlockType(final @MaterialType(category = MaterialCategory.BLOCK) Material material, final BridgePlayer target) {
-        if (!material.isSolid()) {
-            return String.format(INSTANCE.blockTypeMustBeSolid, material);
-        }
-
-        if (target.getChoseMaterial() == material) {
-            return String.format(INSTANCE.blockAlreadySelected, target.getName(), material);
-        }
-
-        target.setChosenMaterial(material);
-        return String.format(INSTANCE.setChosenType, target.getName(), material);
     }
 
     private String hover(final String hoverContent, final String content) {
