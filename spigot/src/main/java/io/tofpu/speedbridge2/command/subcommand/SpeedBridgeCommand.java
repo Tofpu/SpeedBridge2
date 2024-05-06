@@ -145,8 +145,8 @@ public final class SpeedBridgeCommand {
         return String.format(INSTANCE.setChosenType, target.getName(), material);
     }
 
-    @Subcommand("reset")
-    @Usage("reset <target> <all|scores|stats>")
+    @Subcommand("player reset")
+    @Usage("<target> <all|scores|stats>")
     @Description("Resets player properties")
     @CommandPermission("speedbridge.player.reset")
     @AutoComplete("@players *")
