@@ -6,6 +6,7 @@ import io.tofpu.speedbridge2.command.condition.LampConditionRegistry;
 import io.tofpu.speedbridge2.command.condition.annotation.OptionalPermission;
 import io.tofpu.speedbridge2.command.context.AbstractLampContext;
 import io.tofpu.speedbridge2.command.context.LampContextRegistry;
+import io.tofpu.speedbridge2.command.help.HelpGenerator;
 import io.tofpu.speedbridge2.command.parser.AbstractLampParser;
 import io.tofpu.speedbridge2.command.parser.LampParseRegistry;
 import io.tofpu.speedbridge2.command.subcommand.CommandCompletion;
@@ -31,7 +32,10 @@ import revxrsal.commands.process.SenderResolver;
 
 import java.util.UUID;
 
+import static io.tofpu.speedbridge2.model.common.util.BridgeUtil.log;
+
 public final class CommandManager {
+    private static final HelpGenerator helpGenerator = new HelpGenerator();
     private static BukkitCommandHandler commandHandler;
 
     public static void load(final @NotNull Plugin plugin,
@@ -89,8 +93,11 @@ public final class CommandManager {
         commandHandler.registerAnnotationReplacer(OptionalPermission.class, OptionalPermission.AnnotationReplacerImpl.INSTANCE);
         commandHandler.registerPermissionReader(OptionalPermission.PermissionReaderImpl.INSTANCE);
 
-        commandHandler.register(new SpeedBridgeCommand(playerService, islandService));
+        commandHandler.accept(new SpeedBridgeCommand(helpGenerator, playerService, islandService));
         commandHandler.register(new SpeedBridgeDebugCommand(arenaManager));
+
+        log("Generating `/sb help` message...");
+        helpGenerator.generate(plugin, commandHandler);
     }
 
     private static void constructTabCompleter(final @NotNull IslandService islandService) {

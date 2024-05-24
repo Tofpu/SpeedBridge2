@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.command.subcommand;
 
 import io.tofpu.speedbridge2.command.NameAndUUID;
 import io.tofpu.speedbridge2.command.condition.annotation.*;
+import io.tofpu.speedbridge2.command.help.HelpMessageProvider;
 import io.tofpu.speedbridge2.command.parser.annotation.PlayerUUID;
 import io.tofpu.speedbridge2.model.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.model.common.Message;
@@ -25,11 +26,14 @@ import io.tofpu.speedbridge2.util.material.MaterialCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import revxrsal.commands.CommandHandler;
+import revxrsal.commands.CommandHandlerVisitor;
 import revxrsal.commands.annotation.*;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
+import revxrsal.commands.command.CommandCategory;
+import revxrsal.commands.command.ExecutableCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,19 +48,27 @@ import static io.tofpu.speedbridge2.model.common.Message.INSTANCE;
 import static io.tofpu.speedbridge2.model.common.util.MessageUtil.Symbols.*;
 
 @Command({"sb", "speedbridge"})
-public final class SpeedBridgeCommand {
+public final class SpeedBridgeCommand implements CommandHandlerVisitor {
     private static final String EMPTY_SCORE = "<red>You haven't scored anything yet";
     private static final String FORMATTED_SCORE =
             " <gold><bold>" + CROSS.getSymbol() + " " + "<reset><yellow>Island " +
                     "<gold>%s</gold>" + " " + ARROW_RIGHT.getSymbol() +
                     " <gold>%s</gold> seconds";
 
+    private final HelpMessageProvider helpMessageProvider;
     private final PlayerService playerService;
     private final IslandService islandService;
 
-    public SpeedBridgeCommand(final PlayerService playerService, final IslandService islandService) {
+    public SpeedBridgeCommand(final HelpMessageProvider helpMessageProvider, final PlayerService playerService, final IslandService islandService) {
+        this.helpMessageProvider = helpMessageProvider;
         this.playerService = playerService;
         this.islandService = islandService;
+    }
+
+    @Override
+    public void visit(@NotNull CommandHandler handler) {
+        handler.register(this);
+        handler.register(new PlayerSubCommand());
     }
 
     @DefaultFor("~")
@@ -78,7 +90,7 @@ public final class SpeedBridgeCommand {
     }
 
     @Subcommand("create")
-    @Usage("create <slot> <schematic> [-c category]")
+    @Usage("<slot> <schematic> [-c category]")
     @Description("Create an island")
     @CommandPermission("speedbridge.island.create")
     @RestrictSetup
@@ -127,54 +139,8 @@ public final class SpeedBridgeCommand {
         return String.format(INSTANCE.deletedAnIsland, target.getSlot());
     }
 
-    @Subcommand("player set block")
-    @Description("Changes the selected block type for a specified player")
-    @CommandPermission("speedbridge.player.set.block")
-    @AutoComplete("* @players")
-    @Usage("<material> <target>")
-    public String setSelectedBlockType(final @MaterialType(category = MaterialCategory.BLOCK) Material material, final BridgePlayer target) {
-        if (!material.isSolid()) {
-            return String.format(INSTANCE.blockTypeMustBeSolid, material);
-        }
-
-        if (target.getChoseMaterial() == material) {
-            return String.format(INSTANCE.blockAlreadySelected, target.getName(), material);
-        }
-
-        target.setChosenMaterial(material);
-        return String.format(INSTANCE.setChosenType, target.getName(), material);
-    }
-
-    @Subcommand("player reset")
-    @Usage("<target> <all|scores|stats>")
-    @Description("Resets player properties")
-    @CommandPermission("speedbridge.player.reset")
-    @AutoComplete("@players *")
-    public void onPlayerReset(final CommonBridgePlayer<?> sender, final @PlayerUUID NameAndUUID target,
-                              final ResetType type) {
-        String targetName = target.playerName();
-        UUID targetId = target.playerUUID();
-
-        onCompletion(playerService.reset(targetId, type), unused -> {
-            String message = null;
-            switch (type) {
-                case ALL:
-                    message = String.format(INSTANCE.playerWiped, targetName);
-                    break;
-                case SCORES:
-                    message = String.format(INSTANCE.playerScoreReset, targetName);
-                    break;
-                case STATS:
-                    message = String.format(INSTANCE.playerStatsReset, targetName);
-                    break;
-            }
-            if (message == null) return;
-            BridgeUtil.sendMessage(sender, message);
-        });
-    }
-
     @Subcommand("modify")
-    @Usage("modify <slot> [-c category|-s schematic]")
+    @Usage("<slot> [-c category|-s schematic]")
     @Description("Modify an island properties")
     @CommandPermission("speedbridge.island.modify")
     public String onIslandSelect(final Island island,
@@ -223,8 +189,8 @@ public final class SpeedBridgeCommand {
         return false;
     }
 
-    @Command({"sb join", "speedbridge join", "join"})
-    @Usage("join <island>")
+    @Subcommand("join")
+    @Usage("<island>")
     @Description("Join an island")
     @RestrictDummyModel
     @RestrictConsole
@@ -252,7 +218,7 @@ public final class SpeedBridgeCommand {
         return String.format(INSTANCE.otherJoinedAnIsland, target.getName(), island.getSlot());
     }
 
-    @Command({"sb leave", "speedbridge leave", "leave"})
+    @Subcommand("leave")
     @Description("Leave an island")
     public String onIslandLeave(final BridgePlayer sender,
                                 final @Optional GameIsland senderGame,
@@ -277,7 +243,7 @@ public final class SpeedBridgeCommand {
         return String.format(INSTANCE.otherLeftTheIsland, target.getName(), slot);
     }
 
-    @Command({"sb score", "speedbridge score", "score"})
+    @Subcommand("score")
     @Description("Shows a list of your scores")
     @RestrictConsole
     public String onScore(final BridgePlayer sender,
@@ -305,7 +271,8 @@ public final class SpeedBridgeCommand {
         return String.join("\n", scoreList);
     }
 
-    @Command({"sb choose", "speedbridge choose", "choose"})
+    @Subcommand("choose")
+    @Command("choose")
     @Description("Lets you choose a block")
     @RestrictDummyModel
     @RestrictConsole
@@ -313,7 +280,7 @@ public final class SpeedBridgeCommand {
         BlockMenuManager.INSTANCE.showInventory(bridgePlayer);
     }
 
-    @Command({"sb islands", "speedbridge islands", "islands"})
+    @Subcommand("islands")
     @CommandPermission("sb.islands")
     public String showIslands() {
         final MessagePresenterHolderImpl holder = new MessagePresenterHolderImpl(
@@ -368,12 +335,15 @@ public final class SpeedBridgeCommand {
     @Subcommand("help")
     @CommandPermission("speedbridge.help")
     @Description("Shows a list of commands")
-    public void onHelpCommand(final CommonBridgePlayer<?> bridgePlayer) {
-        final CommandSender player = bridgePlayer.getPlayer();
-        HelpCommandGenerator.showHelpMessage(player);
+    public void onHelp(final CommonBridgePlayer<?> bridgePlayer, final ExecutableCommand command) {
+        CommandCategory parent = command.getParent();
+        if (parent == null) {
+            return;
+        }
+        helpMessageProvider.showHelpMessage(parent.getName(), bridgePlayer.getPlayer());
     }
 
-    @Command({"sb randomjoin", "speedbridge randomjoin", "randomjoin"})
+    @Subcommand("randomjoin")
     @Description("Chooses a random island for you")
     @RestrictSetup
     @RestrictDummyModel
@@ -507,5 +477,54 @@ public final class SpeedBridgeCommand {
             }
             consumer.accept(t);
         });
+    }
+
+    @Subcommand("player")
+    class PlayerSubCommand {
+        @Subcommand("set block")
+        @Description("Changes the selected block type for a specified player")
+        @CommandPermission("speedbridge.player.set.block")
+        @AutoComplete("* @players")
+        @Usage("<material> <target>")
+        public String setSelectedBlockType(final @MaterialType(category = MaterialCategory.BLOCK) Material material, final BridgePlayer target) {
+            if (!material.isSolid()) {
+                return String.format(INSTANCE.blockTypeMustBeSolid, material);
+            }
+
+            if (target.getChoseMaterial() == material) {
+                return String.format(INSTANCE.blockAlreadySelected, target.getName(), material);
+            }
+
+            target.setChosenMaterial(material);
+            return String.format(INSTANCE.setChosenType, target.getName(), material);
+        }
+
+        @Subcommand("reset")
+        @Usage("<target> <all|scores|stats>")
+        @Description("Resets player properties")
+        @CommandPermission("speedbridge.player.reset")
+        @AutoComplete("@players *")
+        public void onPlayerReset(final CommonBridgePlayer<?> sender, final @PlayerUUID NameAndUUID target,
+                                  final ResetType type) {
+            String targetName = target.playerName();
+            UUID targetId = target.playerUUID();
+
+            onCompletion(playerService.reset(targetId, type), unused -> {
+                String message = null;
+                switch (type) {
+                    case ALL:
+                        message = String.format(INSTANCE.playerWiped, targetName);
+                        break;
+                    case SCORES:
+                        message = String.format(INSTANCE.playerScoreReset, targetName);
+                        break;
+                    case STATS:
+                        message = String.format(INSTANCE.playerStatsReset, targetName);
+                        break;
+                }
+                if (message == null) return;
+                BridgeUtil.sendMessage(sender, message);
+            });
+        }
     }
 }

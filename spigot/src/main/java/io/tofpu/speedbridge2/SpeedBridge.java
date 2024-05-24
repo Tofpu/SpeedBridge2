@@ -3,7 +3,6 @@ package io.tofpu.speedbridge2;
 import io.tofpu.dynamicclass.DynamicClass;
 import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import io.tofpu.speedbridge2.command.CommandManager;
-import io.tofpu.speedbridge2.command.subcommand.HelpCommandGenerator;
 import io.tofpu.speedbridge2.model.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.PluginExecutor;
@@ -139,9 +138,6 @@ public final class SpeedBridge {
 
         log("Loading the messages...");
         Message.load(javaPlugin.getDataFolder());
-
-        log("Generating `/sb help` message...");
-        HelpCommandGenerator.generateHelpCommand(javaPlugin);
 
         log("Checking for an update...");
         UpdateChecker.init(javaPlugin, 100619)
