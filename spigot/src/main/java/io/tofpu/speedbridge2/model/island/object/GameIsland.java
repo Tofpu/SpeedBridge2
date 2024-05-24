@@ -154,8 +154,4 @@ public class GameIsland {
     public void abortGame() {
         getIsland().abortGame(getGamePlayer().getBridgePlayer());
     }
-
-    public void abortGame() {
-        getIsland().abortGame(getGamePlayer().getBridgePlayer());
-    }
 }
