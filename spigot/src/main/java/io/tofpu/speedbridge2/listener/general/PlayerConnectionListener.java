@@ -44,17 +44,19 @@ public final class PlayerConnectionListener extends GameListener {
                 ConfigurationManager.INSTANCE.getLobbyCategory();
         final Location location = lobbyCategory.getLobbyLocation();
 
-        // if teleport_on_join is set to true, teleport the player to the lobby location
-        if (lobbyCategory.isTeleportOnJoin()) {
-            if (location != null) {
-                player.teleport(location);
-                return;
+        // a lobby is required to utilize speedbridge2 features
+        if (location == null) {
+            if (player.isOp()) {
+                BridgeUtil.sendMessage(player, Message.INSTANCE.lobbyMissing);
             }
-
-            BridgeUtil.sendMessage(player, Message.INSTANCE.lobbyMissing);
+            return;
         }
 
-        if (location != null && player.getWorld().equals(location.getWorld())) {
+        if (lobbyCategory.isTeleportOnJoin()) {
+            player.teleport(location);
+        }
+
+        if (lobbyCategory.clearInventoryOnJoin() && player.getWorld().equals(location.getWorld())) {
             // clears the player's inventory. in-case the PlayerQuitEvent missed it.
             player.getInventory().clear();
         }
