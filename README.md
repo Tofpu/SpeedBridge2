@@ -10,3 +10,9 @@ The third iteration of SpeedBridge is currently underway.
 ## Links
 - Chat with us on our [discord server](https://discord.gg/8AHk2qkqxb)!
 - The latest development builds can be found [here](https://nightly.link/Tofpu/SpeedBridge2/workflows/commit-build/dev-v2/speedbridge2-v2.zip).
+
+## Huge thanks to
+- [JetBrains](https://www.jetbrains.com/community/opensource/)
+- [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html)
+
+For providing us with an open-source licence! <3
