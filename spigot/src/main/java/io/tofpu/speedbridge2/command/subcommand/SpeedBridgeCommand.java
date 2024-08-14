@@ -69,6 +69,7 @@ public final class SpeedBridgeCommand implements CommandHandlerVisitor {
     public void visit(@NotNull CommandHandler handler) {
         handler.register(this);
         handler.register(new PlayerSubCommand());
+        handler.register(new SetupCommand());
     }
 
     @DefaultFor("~")
@@ -393,76 +394,79 @@ public final class SpeedBridgeCommand implements CommandHandlerVisitor {
         return java.util.Optional.ofNullable(filteredIslands.get(randomIndex));
     }
 
-    @Subcommand("setup create")
-    @Description("Create an island setup")
-    @CommandPermission("speedbridge.setup.admin")
-    @RestrictDummyModel
-    @RestrictSetup
-    @RestrictConsole
-    public String onStartSetup(final BridgePlayer bridgePlayer, final Island island) {
-        if (!isGeneralSetupComplete(bridgePlayer)) {
-            return "";
-        }
-        final int slot = island.getSlot();
+    @Subcommand("setup")
+    class SetupCommand {
+        @Subcommand("create")
+        @Description("Create an island setup")
+        @CommandPermission("speedbridge.setup.admin")
+        @RestrictDummyModel
+        @RestrictSetup
+        @RestrictConsole
+        public String onStartSetup(final BridgePlayer bridgePlayer, final Island island) {
+            if (!isGeneralSetupComplete(bridgePlayer)) {
+                return "";
+            }
+            final int slot = island.getSlot();
 
-        if (bridgePlayer.isPlaying()) {
-            return INSTANCE.inAGame;
-        } else if (island == null) {
-            return String.format(INSTANCE.invalidIsland, slot);
-        }
+            if (bridgePlayer.isPlaying()) {
+                return INSTANCE.inAGame;
+            } else if (island == null) {
+                return String.format(INSTANCE.invalidIsland, slot);
+            }
 
-        IslandSetupHandler.INSTANCE.initiate(bridgePlayer, island);
-        return String.format(INSTANCE.startingSetupProcess, slot);
-    }
-
-    @Subcommand("setup setspawn")
-    @Description("Sets the island's spawnpoint")
-    @CommandPermission("speedbridge.setup.admin")
-    @RestrictSetup(opposite = true)
-    @RestrictConsole
-    public String setupSetSpawn(final BridgePlayer bridgePlayer) {
-        final IslandSetup islandSetup = IslandSetupHandler.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
-
-        final Location playerLocation = bridgePlayer.getPlayer()
-                .getLocation();
-
-        // if the location given was not valid
-        if (!islandSetup.isLocationValid(playerLocation)) {
-            return INSTANCE.invalidSpawnPoint;
+            IslandSetupHandler.INSTANCE.initiate(bridgePlayer, island);
+            return String.format(INSTANCE.startingSetupProcess, slot);
         }
 
-        // otherwise, set the location point
-        islandSetup.setPlayerSpawnPoint(playerLocation);
+        @Subcommand("setspawn")
+        @Description("Sets the island's spawnpoint")
+        @CommandPermission("speedbridge.setup.admin")
+        @RestrictSetup(opposite = true)
+        @RestrictConsole
+        public String setupSetSpawn(final BridgePlayer bridgePlayer) {
+            final IslandSetup islandSetup = IslandSetupHandler.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
-        return INSTANCE.setSpawnPoint + "\n" + INSTANCE.completeNotification;
-    }
+            final Location playerLocation = bridgePlayer.getPlayer()
+                    .getLocation();
 
-    @Subcommand("setup finish")
-    @Description("Completes the island's setup")
-    @CommandPermission("speedbridge.setup.admin")
-    @RestrictSetup(opposite = true)
-    @RestrictConsole
-    public String setupFinish(final BridgePlayer bridgePlayer) {
-        final IslandSetup islandSetup = IslandSetupHandler.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
+            // if the location given was not valid
+            if (!islandSetup.isLocationValid(playerLocation)) {
+                return INSTANCE.invalidSpawnPoint;
+            }
 
-        if (!islandSetup.isReady()) {
-            return INSTANCE.setupIncomplete;
+            // otherwise, set the location point
+            islandSetup.setPlayerSpawnPoint(playerLocation);
+
+            return INSTANCE.setSpawnPoint + "\n" + INSTANCE.completeNotification;
         }
 
-        islandSetup.finish();
-        return INSTANCE.setupComplete;
-    }
+        @Subcommand("finish")
+        @Description("Completes the island's setup")
+        @CommandPermission("speedbridge.setup.admin")
+        @RestrictSetup(opposite = true)
+        @RestrictConsole
+        public String setupFinish(final BridgePlayer bridgePlayer) {
+            final IslandSetup islandSetup = IslandSetupHandler.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
 
-    @Subcommand("setup cancel")
-    @Description("Cancels the island's setup")
-    @CommandPermission("speedbridge.setup.admin")
-    @RestrictSetup(opposite = true)
-    @RestrictConsole
-    public String cancelSetup(final BridgePlayer bridgePlayer) {
-        final IslandSetup islandSetup = IslandSetupHandler.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
+            if (!islandSetup.isReady()) {
+                return INSTANCE.setupIncomplete;
+            }
 
-        islandSetup.cancel();
-        return INSTANCE.setupCancelled;
+            islandSetup.finish();
+            return INSTANCE.setupComplete;
+        }
+
+        @Subcommand("cancel")
+        @Description("Cancels the island's setup")
+        @CommandPermission("speedbridge.setup.admin")
+        @RestrictSetup(opposite = true)
+        @RestrictConsole
+        public String cancelSetup(final BridgePlayer bridgePlayer) {
+            final IslandSetup islandSetup = IslandSetupHandler.INSTANCE.findSetupBy(bridgePlayer.getPlayerUid());
+
+            islandSetup.cancel();
+            return INSTANCE.setupCancelled;
+        }
     }
 
     private String hover(final String hoverContent, final String content) {
