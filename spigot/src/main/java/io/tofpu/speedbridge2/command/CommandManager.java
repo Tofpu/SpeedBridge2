@@ -98,6 +98,8 @@ public final class CommandManager {
 
         log("Generating `/sb help` message...");
         helpGenerator.generate(plugin, commandHandler);
+
+        commandHandler.registerBrigadier();
     }
 
     private static void constructTabCompleter(final @NotNull IslandService islandService) {
