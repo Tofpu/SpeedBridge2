@@ -49,7 +49,7 @@ dependencies {
         exclude("com.sk89q", "worldedit")
     }
 
-    implementation("com.github.tofpu:toolbar:v1-SNAPSHOT")
+    implementation("com.github.Tofpu:toolbar:v1-SNAPSHOT")
     implementation("com.github.Tofpu:dynamicclass:1.3") {
         exclude("com.google.guava", "guava")
     }
