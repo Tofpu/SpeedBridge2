@@ -190,7 +190,8 @@ public final class SpeedBridgeCommand implements CommandHandlerVisitor {
         return false;
     }
 
-    @Subcommand("join")
+    @Command({"sb join", "speedbridge join" ,"join"})
+//    @Subcommand("join")
     @Usage("<island>")
     @Description("Join an island")
     @RestrictDummyModel
@@ -219,7 +220,7 @@ public final class SpeedBridgeCommand implements CommandHandlerVisitor {
         return String.format(INSTANCE.otherJoinedAnIsland, target.getName(), island.getSlot());
     }
 
-    @Subcommand("leave")
+    @Command({"sb leave", "speedbridge leave", "leave"})
     @Description("Leave an island")
     public String onIslandLeave(final BridgePlayer sender,
                                 final @Optional GameIsland senderGame,
@@ -244,7 +245,7 @@ public final class SpeedBridgeCommand implements CommandHandlerVisitor {
         return String.format(INSTANCE.otherLeftTheIsland, target.getName(), slot);
     }
 
-    @Subcommand("score")
+    @Command({"sb score", "speedbridge score" ,"score"})
     @Description("Shows a list of your scores")
     @RestrictConsole
     public String onScore(final BridgePlayer sender,
@@ -272,8 +273,7 @@ public final class SpeedBridgeCommand implements CommandHandlerVisitor {
         return String.join("\n", scoreList);
     }
 
-    @Subcommand("choose")
-    @Command("choose")
+    @Command({"sb choose", "speedbridge choose", "choose"})
     @Description("Lets you choose a block")
     @RestrictDummyModel
     @RestrictConsole
@@ -281,7 +281,7 @@ public final class SpeedBridgeCommand implements CommandHandlerVisitor {
         BlockMenuManager.INSTANCE.showInventory(bridgePlayer);
     }
 
-    @Subcommand("islands")
+    @Command({"sb islands", "speedbridge islands", "islands"})
     @CommandPermission("sb.islands")
     public String showIslands() {
         final MessagePresenterHolderImpl holder = new MessagePresenterHolderImpl(
@@ -344,7 +344,7 @@ public final class SpeedBridgeCommand implements CommandHandlerVisitor {
         helpMessageProvider.showHelpMessage(parent.getName(), bridgePlayer.getPlayer());
     }
 
-    @Subcommand("randomjoin")
+    @Command({"sb randomjoin", "speedbridge randomjoin" ,"randomjoin"})
     @Description("Chooses a random island for you")
     @RestrictSetup
     @RestrictDummyModel
