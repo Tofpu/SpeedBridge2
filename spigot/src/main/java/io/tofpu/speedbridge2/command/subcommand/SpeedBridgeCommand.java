@@ -191,7 +191,6 @@ public final class SpeedBridgeCommand implements CommandHandlerVisitor {
     }
 
     @Command({"sb join", "speedbridge join" ,"join"})
-//    @Subcommand("join")
     @Usage("<island>")
     @Description("Join an island")
     @RestrictDummyModel

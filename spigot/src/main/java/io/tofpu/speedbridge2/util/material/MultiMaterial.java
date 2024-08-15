@@ -7,10 +7,6 @@ import org.bukkit.Material;
 import java.util.*;
 
 @AutoRegister
-// todo: refactor to add support for items to add red_wool support and among others
-// - player choice
-// - this one
-// - gui, perhaps? maybe not
 public final class MultiMaterial {
     private static final Map<String, Material> GENERAL_MATERIAL_LOOKUP_MAP = new HashMap<>();
     private static final Set<String> BLOCK_MATERIALS = new HashSet<>();
