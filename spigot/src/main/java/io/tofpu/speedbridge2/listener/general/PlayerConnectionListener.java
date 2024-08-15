@@ -32,8 +32,9 @@ public final class PlayerConnectionListener extends GameListener {
         playerService.loadIfAbsent(player, (bridgePlayer) -> playerService.internalRefresh(player, bridgePlayer));
 
         if (player.isOp()) {
-            UpdateChecker.get()
-                    .updateNotification(player);
+            if (UpdateChecker.isInitialized() && ConfigurationManager.INSTANCE.getGeneralCategory().shouldCheckForUpdates()) {
+                UpdateChecker.get().updateNotification(player);
+            }
         }
 
         teleportToLobby(player);
