@@ -17,6 +17,10 @@ public final class GeneralCategory {
     @Comment("The space gap between islands")
     private int islandSpaceGap = 10;
 
+    @Setting("check-for-updates")
+    @Comment("Checks for an available update on startup. (default: true)")
+    private boolean checkForUpdates = true;
+
     public boolean isDebugEnabled() {
         return showDebugMessage;
     }
@@ -27,5 +31,9 @@ public final class GeneralCategory {
 
     public int getIslandSpaceGap() {
         return islandSpaceGap;
+    }
+
+    public boolean shouldCheckForUpdates() {
+        return checkForUpdates;
     }
 }

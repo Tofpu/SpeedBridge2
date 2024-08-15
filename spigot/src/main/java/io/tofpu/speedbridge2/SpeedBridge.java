@@ -139,22 +139,26 @@ public final class SpeedBridge {
         log("Loading the messages...");
         Message.load(javaPlugin.getDataFolder());
 
-        log("Checking for an update...");
-        UpdateChecker.init(javaPlugin, 100619)
-                .requestUpdateCheck()
-                .whenComplete((updateResult, throwable) -> {
-                    if (throwable != null) {
-                        log("Couldn't check for an update...");
-                        return;
-                    }
+        if (ConfigurationManager.INSTANCE.getGeneralCategory().shouldCheckForUpdates()) {
+            log("Checking for an update...");
+            UpdateChecker.init(javaPlugin, 100619)
+                    .requestUpdateCheck()
+                    .whenComplete((updateResult, throwable) -> {
+                        if (throwable != null) {
+                            log("Couldn't check for an update...");
+                            return;
+                        }
 
-                    if (updateResult.requiresUpdate()) {
-                        log("You're using an outdated version of SpeedBridge!");
-                        log("You can download the latest version at https://www.spigotmc.org/resources/.100619/");
-                    } else {
-                        log("You're using the latest version!");
-                    }
-                });
+                        if (updateResult.requiresUpdate()) {
+                            log("You're using an outdated version of SpeedBridge!");
+                            log("You can download the latest version at https://www.spigotmc.org/resources/.100619/");
+                        } else {
+                            log("You're using the latest version!");
+                        }
+                    });
+        } else {
+            log("Not checking for an update as it was explicitly disabled in the config.");
+        }
     }
 
     public void shutdown() {
