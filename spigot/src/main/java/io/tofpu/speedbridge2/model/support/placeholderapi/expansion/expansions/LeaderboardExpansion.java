@@ -37,7 +37,7 @@ public final class LeaderboardExpansion extends AbstractExpansion {
     public boolean passedRequirement(final BridgePlayer bridgePlayer,
                                      final String[] args) {
         // this placeholder requires four arguments
-        return args.length == 3;
+        return args.length >= 3 && args.length <= 4;
     }
 
     @Override
@@ -82,11 +82,36 @@ public final class LeaderboardExpansion extends AbstractExpansion {
             return "";
         }
 
+        TextDisplayType textDisplayType = TextDisplayType.FULL;
+        if (args.length > 3) {
+            textDisplayType = TextDisplayType.fromString(args[3], TextDisplayType.FULL);
+        }
+
+        if (textDisplayType == TextDisplayType.NAME) {
+            return boardPlayer.getName();
+        } else if (textDisplayType == TextDisplayType.SCORE) {
+            return BridgeUtil.formatNumber(bestScore.getScore());
+        }
         return BridgeUtil.translate(ConfigurationManager.INSTANCE.getLeaderboardCategory()
                 .getLeaderboardFormat()
                 .replace("%position%", boardPlayer.getPosition() + "")
                 .replace("%name%", boardPlayer.getName())
                 .replace("%score%", BridgeUtil.formatNumber(bestScore.getScore())));
+    }
+
+    enum TextDisplayType {
+        NAME, SCORE, FULL;
+
+        private static final TextDisplayType[] CACHED_VALUES = values();
+
+        public static TextDisplayType fromString(final String string, final TextDisplayType defaultValue) {
+            for (final TextDisplayType textDisplayType : CACHED_VALUES) {
+                if (textDisplayType.name().equalsIgnoreCase(string)) {
+                    return textDisplayType;
+                }
+            }
+            return defaultValue;
+        }
     }
 
     public int parse(final String[] args, final int index) {
