@@ -109,9 +109,7 @@ public final class BridgeUtil {
         if (content.isEmpty()) {
             return null;
         }
-        final Component component = translateMiniMessage(content);
-        sendMessage(sender.getPlayer(), component);
-        return component;
+        return sendMessage(sender.getPlayer(), content);
     }
 
     /**
@@ -130,8 +128,9 @@ public final class BridgeUtil {
         if (sender instanceof Player) {
             content = replaceWithPAPI((Player) sender, content);
         }
-        
+
         final Component component = translateMiniMessage(content);
+
         sendMessage(sender, component);
         return component;
     }
