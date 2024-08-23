@@ -5,12 +5,9 @@ import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.island.object.GameIsland;
 import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
-import org.jetbrains.annotations.Nullable;
 import revxrsal.commands.exception.CommandErrorException;
 import revxrsal.commands.process.ContextResolver;
 
-import java.lang.reflect.Parameter;
-import java.util.Arrays;
 
 import static io.tofpu.speedbridge2.model.common.Message.INSTANCE;
 
@@ -26,8 +23,7 @@ public final class GameIslandContext extends AbstractLampContext<GameIsland> {
     @Override
     public GameIsland resolve(final ContextResolver.ContextResolverContext context) {
         final BridgePlayer player = playerService.getIfPresent(context.actor().getUniqueId());
-        Parameter javaParameter = context.parameter().getJavaParameter();
-        boolean canBeNull = javaParameter.isAnnotationPresent(Nullable.class) || context.parameter().isOptional();
+        boolean canBeNull = context.parameter().isOptional();
 
         if (player == null && canBeNull) {
             return null;
