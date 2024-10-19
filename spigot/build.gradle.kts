@@ -38,7 +38,7 @@ dependencies {
 
     implementation("org.bstats:bstats-bukkit:3.0.0")
 
-    compileOnly("me.clip:placeholderapi:2.10.10")
+    compileOnly("me.clip:placeholderapi:2.11.6")
 
     implementation("com.github.ben-manes.caffeine:caffeine:2.9.3")
 
