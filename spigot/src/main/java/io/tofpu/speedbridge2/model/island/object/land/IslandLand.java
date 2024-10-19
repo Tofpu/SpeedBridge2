@@ -6,14 +6,10 @@ import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
-import io.tofpu.multiworldedit.ClipboardWrapper;
-import io.tofpu.multiworldedit.EditSessionWrapper;
-import io.tofpu.multiworldedit.MultiWorldEditAPI;
-import io.tofpu.multiworldedit.RegionWrapper;
-import io.tofpu.multiworldedit.VectorWrapper;
+import io.tofpu.multiworldedit.*;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.GameIsland;
+import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.support.worldedit.CuboidRegion;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -70,7 +66,7 @@ public class IslandLand {
     public void generatePlot() throws WorldEditException {
         // TODO: Make this generation operation async
         BridgeUtil.debug("Generating plot at " + this.location.toString() + " for " +
-                         "island " + this.island.getSlot());
+                "island " + this.island.getSlot());
 
         final BukkitWorld bukkitWorld = new BukkitWorld(world);
 

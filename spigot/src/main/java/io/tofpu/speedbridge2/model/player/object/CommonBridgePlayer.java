@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 public class CommonBridgePlayer<T extends CommandSender> {
     public String getName() {
         throw new UnsupportedOperationException("getName have not been " +
-                                                "implemented.");
+                "implemented.");
     }
 
     public T getPlayer() {

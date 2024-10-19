@@ -13,7 +13,7 @@ public final class LeaderboardCategory {
 
     @Setting("session-update-interval")
     @Comment("A session leaderboard will update on every x interval. It's defined in " +
-             "seconds.")
+            "seconds.")
     private int sessionUpdateInterval = 10;
 
     @Setting("leaderboard-format")

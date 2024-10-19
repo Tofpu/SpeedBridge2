@@ -11,9 +11,9 @@ import io.tofpu.speedbridge2.model.common.util.DatabaseUtil;
 import io.tofpu.speedbridge2.model.player.exception.PlayerDeletionFailureException;
 import io.tofpu.speedbridge2.model.player.exception.PlayerLoadFailureException;
 import io.tofpu.speedbridge2.model.player.exception.PlayerUpdateNameFailureException;
+import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.model.player.object.stat.PlayerStat;
-import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +37,7 @@ public final class PlayerDatabase extends Database {
 
         completableFutures[0] = DatabaseUtil.databaseExecute(
                 "INSERT OR IGNORE " + "INTO players VALUES (?, " +
-                "?)", databaseQuery -> {
+                        "?)", databaseQuery -> {
                     databaseQuery.setString(player.getPlayerUid()
                             .toString());
                     databaseQuery.setString(player.getPlayer()

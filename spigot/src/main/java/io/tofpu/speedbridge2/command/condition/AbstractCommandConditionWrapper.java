@@ -14,7 +14,7 @@ public abstract class AbstractCommandConditionWrapper implements CommandConditio
     private final Class<? extends Annotation> type;
 
     public AbstractCommandConditionWrapper(final Class<? extends Annotation> type,
-            final LampConditionRegistry registry) {
+                                           final LampConditionRegistry registry) {
         this.type = type;
         registry.register(type, this);
     }
@@ -35,8 +35,8 @@ public abstract class AbstractCommandConditionWrapper implements CommandConditio
     }
 
     abstract void execute(@NotNull CommandActor actor,
-            @NotNull ExecutableCommand command,
-            @NotNull @Unmodifiable List<String> arguments);
+                          @NotNull ExecutableCommand command,
+                          @NotNull @Unmodifiable List<String> arguments);
 
     public Class<? extends Annotation> getType() {
         return type;

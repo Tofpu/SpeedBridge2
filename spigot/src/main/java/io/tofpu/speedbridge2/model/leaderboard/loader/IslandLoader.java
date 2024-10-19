@@ -36,7 +36,7 @@ public final class IslandLoader implements CacheLoader<UUID, IslandBoardPlayer>,
 
     @Override
     public @NotNull CompletableFuture<IslandBoardPlayer> retrieveAsync(final @NotNull UUID key,
-            final @NotNull Executor executor) {
+                                                                       final @NotNull Executor executor) {
         BridgeUtil.debug("IslandLoader#retrieveAsync: retrieving " + key);
         return CompletableFuture.supplyAsync(() -> retrieve(key), executor);
     }

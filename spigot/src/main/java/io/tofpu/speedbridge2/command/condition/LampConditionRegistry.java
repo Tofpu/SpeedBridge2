@@ -7,4 +7,5 @@ import java.lang.annotation.Annotation;
 
 @AutoRegister
 public final class LampConditionRegistry extends AbstractLampRegistry<Class<?
-        extends Annotation>, AbstractCommandConditionWrapper> {}
+        extends Annotation>, AbstractCommandConditionWrapper> {
+}

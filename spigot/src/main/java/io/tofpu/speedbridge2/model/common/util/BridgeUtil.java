@@ -6,9 +6,11 @@ import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseQuery;
 import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseSet;
 import io.tofpu.speedbridge2.model.leaderboard.object.BoardPlayer;
+import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.CommonBridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.plugin.SpeedBridgePlugin;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitComponentSerializer;
 import net.kyori.adventure.text.Component;
@@ -16,6 +18,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.UUID;
@@ -82,12 +85,12 @@ public final class BridgeUtil {
      * Send a message to a
      * command sender
      *
-     * @param sender The CommandSender who is sending the message.
+     * @param sender    The CommandSender who is sending the message.
      * @param component The component to send.
      * @return The component that was sent.
      */
     public static Component sendMessage(final CommandSender sender,
-            final Component component) {
+                                        final Component component) {
         final Audience audience = SpeedBridge.getAdventure()
                 .sender(sender);
         audience.sendMessage(component);
@@ -97,34 +100,37 @@ public final class BridgeUtil {
     /**
      * This function sends a message to a player
      *
-     * @param sender The player who sent the message.
+     * @param sender  The player who sent the message.
      * @param content The message to send.
      * @return Nothing.
      */
     public static Component sendMessage(final CommonBridgePlayer<?> sender,
-            final String content) {
+                                        final String content) {
         if (content.isEmpty()) {
             return null;
         }
-        final Component component = translateMiniMessage(content);
-        sendMessage(sender.getPlayer(), component);
-        return component;
+        return sendMessage(sender.getPlayer(), content);
     }
 
     /**
      * Send a message to a
      * command sender
      *
-     * @param sender The CommandSender who will receive the message.
+     * @param sender  The CommandSender who will receive the message.
      * @param content The content of the message.
      * @return Nothing.
      */
-    public static Component sendMessage(final CommandSender sender,
-            final String content) {
+    public static Component sendMessage(final CommandSender sender, String content) {
         if (content.isEmpty()) {
             return null;
         }
+        
+        if (sender instanceof Player) {
+            content = replaceWithPAPI((Player) sender, content);
+        }
+
         final Component component = translateMiniMessage(content);
+
         sendMessage(sender, component);
         return component;
     }
@@ -154,12 +160,21 @@ public final class BridgeUtil {
         return ChatColor.translateAlternateColorCodes('&', replace);
     }
 
+    public static String replaceWithPAPI(Player player, String text) {
+        if (player == null) {
+            return text;
+        }
+        if (!Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            return text;
+        }
+        return PlaceholderAPI.setBracketPlaceholders(player.getPlayer(), text);
+    }
+
     /**
      * Given a row or column, and a database set, return a BoardPlayer
      *
-     * @param row boolean
+     * @param row         boolean
      * @param databaseSet The database set that is being converted to a BoardPlayer.
-     *
      * @return A BoardPlayer object.
      */
     public static BoardPlayer toBoardPlayer(final boolean row, final DatabaseSet databaseSet) {
@@ -192,8 +207,8 @@ public final class BridgeUtil {
     public static UUID findUUIDBy(final String playerName) {
         final AtomicReference<UUID> uuid = new AtomicReference<>();
         try (final DatabaseQuery databaseQuery = DatabaseQuery.query("SELECT uid FROM " +
-                                                                   "players WHERE name " +
-                                                                   "= ?")) {
+                "players WHERE name " +
+                "= ?")) {
             databaseQuery.setString(playerName);
 
             databaseQuery.executeQuery(databaseSet -> {
@@ -224,22 +239,22 @@ public final class BridgeUtil {
      * This function will run a task asynchronously
      *
      * @param runnable The Runnable to run.
-     * @param delay The delay is the amount of time to wait before the first execution.
+     * @param delay    The delay is the amount of time to wait before the first execution.
      * @param interval How often the task should run.
      */
     public static void runBukkitAsync(final Runnable runnable, final long delay,
-            final long interval) {
+                                      final long interval) {
         Bukkit.getScheduler().runTaskTimerAsynchronously(JavaPlugin.getPlugin(SpeedBridgePlugin.class), runnable, delay, interval);
     }
 
     /**
      * It runs the given Runnable when the CompletableFuture is completed.
      *
-     * @param completableFuture The completable future to be completed.
+     * @param completableFuture    The completable future to be completed.
      * @param whenCompleteConsumer The consumer to be run when the completable future is completed.
      */
     public static <T> CompletableFuture<T> whenComplete(final CompletableFuture<T> completableFuture,
-            final Consumer<T> whenCompleteConsumer) {
+                                                        final Consumer<T> whenCompleteConsumer) {
         return completableFuture.whenComplete((o, throwable) -> {
             if (throwable != null) {
                 throw new IllegalStateException(throwable);
@@ -252,11 +267,11 @@ public final class BridgeUtil {
      * It runs the given Runnable when the CompletableFuture is completed.
      *
      * @param completableFuture The completable future to be completed.
-     * @param whenComplete The runnable to be run when the completable future is
-     * completed.
+     * @param whenComplete      The runnable to be run when the completable future is
+     *                          completed.
      */
     public static void whenComplete(final CompletableFuture<?> completableFuture,
-            final Runnable whenComplete) {
+                                    final Runnable whenComplete) {
         completableFuture.whenComplete((o, throwable) -> {
             if (throwable != null) {
                 throw new IllegalStateException(throwable);

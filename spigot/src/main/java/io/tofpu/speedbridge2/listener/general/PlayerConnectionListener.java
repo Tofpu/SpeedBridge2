@@ -32,8 +32,9 @@ public final class PlayerConnectionListener extends GameListener {
         playerService.loadIfAbsent(player, (bridgePlayer) -> playerService.internalRefresh(player, bridgePlayer));
 
         if (player.isOp()) {
-            UpdateChecker.get()
-                    .updateNotification(player);
+            if (UpdateChecker.isInitialized() && ConfigurationManager.INSTANCE.getGeneralCategory().shouldCheckForUpdates()) {
+                UpdateChecker.get().updateNotification(player);
+            }
         }
 
         teleportToLobby(player);
@@ -44,17 +45,21 @@ public final class PlayerConnectionListener extends GameListener {
                 ConfigurationManager.INSTANCE.getLobbyCategory();
         final Location location = lobbyCategory.getLobbyLocation();
 
-        // if teleport_on_join is set to true, teleport the player to the lobby location
-        if (lobbyCategory.isTeleportOnJoin()) {
-            if (location != null) {
-                player.teleport(location);
-                return;
+        // a lobby is required to utilize speedbridge2 features
+        if (location == null) {
+            if (player.isOp()) {
+                BridgeUtil.sendMessage(player, Message.INSTANCE.lobbyMissing);
             }
-
-            BridgeUtil.sendMessage(player, Message.INSTANCE.lobbyMissing);
+            return;
         }
 
-        if (location != null && player.getWorld().equals(location.getWorld())) {
+        if (!lobbyCategory.isTeleportOnJoin()) {
+            return;
+        }
+
+        player.teleport(location);
+
+        if (lobbyCategory.clearInventoryAfterTeleport() && player.getWorld().equals(location.getWorld())) {
             // clears the player's inventory. in-case the PlayerQuitEvent missed it.
             player.getInventory().clear();
         }

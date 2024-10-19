@@ -16,8 +16,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public final class IslandBoardPlayer {
     private static final String ISLAND_POSITION =
             "SELECT 1 + COUNT(*) AS position FROM scores WHERE island_slot = ? AND " +
-            "score" +
-            " < " + "(SELECT score " + "FROM scores WHERE uid = ?)";
+                    "score" +
+                    " < " + "(SELECT score " + "FROM scores WHERE uid = ?)";
 
     private final PlayerService playerService;
 
@@ -36,7 +36,7 @@ public final class IslandBoardPlayer {
 
     public @NotNull CompletableFuture<IslandBoard> retrieve(final int islandSlot) {
         BridgeUtil.debug("IslandBoardPlayer#retrieve(): Attempting to retrieve board " +
-                         "for " + owner + ", " + islandSlot);
+                "for " + owner + ", " + islandSlot);
 
         final IslandBoard cachedValue = boardMap.get(islandSlot);
         // if the cached value is not null
@@ -47,8 +47,8 @@ public final class IslandBoardPlayer {
         }
 
         BridgeUtil.debug("IslandBoardPlayer#retrieve(): Attempting to query to database" +
-                         " for position for " + owner +
-                         ", " + islandSlot);
+                " for position for " + owner +
+                ", " + islandSlot);
         try (final DatabaseQuery databaseQuery = DatabaseQuery.query(ISLAND_POSITION)) {
             databaseQuery.setInt(islandSlot);
             databaseQuery.setString(owner.toString());

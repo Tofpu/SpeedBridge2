@@ -10,6 +10,7 @@ public interface BlockChoice {
      * @return The material that was chosen by the user.
      */
     Material getChoseMaterial();
+
     /**
      * Set the material of the object to the given material
      *
