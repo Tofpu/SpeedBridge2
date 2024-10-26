@@ -40,6 +40,6 @@ public final class CuboidRegion {
         final double z = vector.getZ();
 
         return x >= minVector.getX() && x <= maxVector.getX() && y >= minVector.getY() &&
-               y <= maxVector.getY() && z >= minVector.getZ() && z <= maxVector.getZ();
+                y <= maxVector.getY() && z >= minVector.getZ() && z <= maxVector.getZ();
     }
 }

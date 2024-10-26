@@ -3,7 +3,6 @@ package io.tofpu.speedbridge2;
 import io.tofpu.dynamicclass.DynamicClass;
 import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import io.tofpu.speedbridge2.command.CommandManager;
-import io.tofpu.speedbridge2.command.subcommand.HelpCommandGenerator;
 import io.tofpu.speedbridge2.model.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.PluginExecutor;
@@ -50,6 +49,13 @@ public final class SpeedBridge {
         this.leaderboard = new Leaderboard(playerService);
     }
 
+    public static BukkitAudiences getAdventure() {
+        if (adventure == null) {
+            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
+        }
+        return adventure;
+    }
+
     public void load() {
         // reset the world, in-case it does exist
         arenaManager.resetWorld();
@@ -84,7 +90,7 @@ public final class SpeedBridge {
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             ExpansionHandler.INSTANCE.load();
-            
+
             log("Hooking into PlaceholderAPI...");
             new PluginExpansion(javaPlugin, playerService);
         }
@@ -133,25 +139,26 @@ public final class SpeedBridge {
         log("Loading the messages...");
         Message.load(javaPlugin.getDataFolder());
 
-        log("Generating `/sb help` message...");
-        HelpCommandGenerator.generateHelpCommand(javaPlugin);
+        if (ConfigurationManager.INSTANCE.getGeneralCategory().shouldCheckForUpdates()) {
+            log("Checking for an update...");
+            UpdateChecker.init(javaPlugin, 100619)
+                    .requestUpdateCheck()
+                    .whenComplete((updateResult, throwable) -> {
+                        if (throwable != null) {
+                            log("Couldn't check for an update...");
+                            return;
+                        }
 
-        log("Checking for an update...");
-        UpdateChecker.init(javaPlugin, 100619)
-                .requestUpdateCheck()
-                .whenComplete((updateResult, throwable) -> {
-                    if (throwable != null) {
-                        log("Couldn't check for an update...");
-                        return;
-                    }
-
-                    if (updateResult.requiresUpdate()) {
-                        log("You're using an outdated version of SpeedBridge!");
-                        log("You can download the latest version at https://www.spigotmc.org/resources/.100619/");
-                    } else {
-                        log("You're using the latest version!");
-                    }
-                });
+                        if (updateResult.requiresUpdate()) {
+                            log("You're using an outdated version of SpeedBridge!");
+                            log("You can download the latest version at https://www.spigotmc.org/resources/.100619/");
+                        } else {
+                            log("You're using the latest version!");
+                        }
+                    });
+        } else {
+            log("Not checking for an update as it was explicitly disabled in the config.");
+        }
     }
 
     public void shutdown() {
@@ -176,12 +183,5 @@ public final class SpeedBridge {
 
     private void log(final String content) {
         javaPlugin.getLogger().info(content);
-    }
-
-    public static BukkitAudiences getAdventure() {
-        if(adventure == null) {
-            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
-        }
-        return adventure;
     }
 }

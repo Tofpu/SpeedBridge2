@@ -2,11 +2,19 @@ package io.tofpu.speedbridge2.model.common;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 public final class PluginExecutor implements Executor {
     public static final @NotNull PluginExecutor INSTANCE = new PluginExecutor();
+    private final @NotNull ExecutorService executor;
+
+    public PluginExecutor() {
+        this.executor = Executors.newFixedThreadPool(4);
+    }
 
     public static @NotNull CompletableFuture<Void> runAsync(final Runnable runnable) {
         return (CompletableFuture<Void>) INSTANCE.submit(runnable);
@@ -14,12 +22,6 @@ public final class PluginExecutor implements Executor {
 
     public static <T> @NotNull CompletableFuture<T> supply(final Supplier<?> supplier) {
         return (CompletableFuture<T>) INSTANCE.supplyAsync(supplier);
-    }
-
-    private final @NotNull ExecutorService executor;
-
-    public PluginExecutor() {
-        this.executor = Executors.newFixedThreadPool(4);
     }
 
     @Override

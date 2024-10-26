@@ -73,7 +73,7 @@ public class ConfigurateFile<T> {
         } catch (ConfigurateException e) {
             plugin.getLogger()
                     .warning("An error occurred while loading this configuration:" + " " +
-                             e.getMessage());
+                            e.getMessage());
             if (e.getCause() != null) {
                 e.printStackTrace();
             }
@@ -85,7 +85,7 @@ public class ConfigurateFile<T> {
         } catch (SerializationException e) {
             plugin.getLogger()
                     .warning("An error occurred while converting MyConfiguration: " +
-                             e.getMessage());
+                            e.getMessage());
             if (e.getCause() != null) {
                 e.printStackTrace();
             }
@@ -103,7 +103,7 @@ public class ConfigurateFile<T> {
             } catch (ConfigurateException e) {
                 plugin.getLogger()
                         .warning("An error occurred while converting MyConfiguration: " +
-                                 e.getMessage());
+                                e.getMessage());
                 if (e.getCause() != null) {
                     e.printStackTrace();
                 }
@@ -115,7 +115,7 @@ public class ConfigurateFile<T> {
         if (this.node == null) {
             plugin.getLogger()
                     .warning("Configuration cannot be saved due to the node " +
-                             "being null");
+                            "being null");
             return;
         }
         try {
@@ -123,7 +123,7 @@ public class ConfigurateFile<T> {
         } catch (ConfigurateException e) {
             plugin.getLogger()
                     .warning("An error occurred while saving this configuration: " +
-                             e.getMessage());
+                            e.getMessage());
             if (e.getCause() != null) {
                 e.printStackTrace();
             }

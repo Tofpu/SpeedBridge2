@@ -8,6 +8,7 @@ import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import revxrsal.commands.exception.CommandErrorException;
 import revxrsal.commands.process.ContextResolver;
 
+
 import static io.tofpu.speedbridge2.model.common.Message.INSTANCE;
 
 @AutoRegister
@@ -22,14 +23,20 @@ public final class GameIslandContext extends AbstractLampContext<GameIsland> {
     @Override
     public GameIsland resolve(final ContextResolver.ContextResolverContext context) {
         final BridgePlayer player = playerService.getIfPresent(context.actor().getUniqueId());
-        if (player == null) {
+        boolean canBeNull = context.parameter().isOptional();
+
+        if (player == null && canBeNull) {
+            return null;
+        } else if (player == null) {
             throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(INSTANCE.notLoaded));
         }
+
         final GameIsland currentGame = player.getCurrentGame();
-        if (currentGame == null) {
+        if (currentGame == null && canBeNull) {
+            return null;
+        } else if (currentGame == null) {
             throw new CommandErrorException(BridgeUtil.miniMessageToLegacy(INSTANCE.notInAIsland));
         }
-
         return currentGame;
     }
 }

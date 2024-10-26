@@ -10,9 +10,9 @@ public final class FileUtil {
     /**
      * Write a collection of strings to a file
      *
-     * @param file The file to write to.
-     * @param append If true, the file will be appended to if it already exists. If false,
-     * the file will be overwritten if it already exists.
+     * @param file             The file to write to.
+     * @param append           If true, the file will be appended to if it already exists. If false,
+     *                         the file will be overwritten if it already exists.
      * @param stringCollection The collection of strings to write to the file.
      */
     public static void write(final File file, final boolean append, final Collection<String> stringCollection) {

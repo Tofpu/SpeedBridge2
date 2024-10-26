@@ -35,14 +35,13 @@ public class Island {
 
     private final int slot;
     private final Map<GamePlayer, GameIsland> islandMap;
-    private String category;
-
     private final LeaderboardMap leaderboardMap;
     private final IslandSchematic islandSchematic;
+    private String category;
     private Location absoluteLocation;
 
     public Island(final IslandService islandService, final ArenaManager arenaManager,
-            final int slot, final String category) {
+                  final int slot, final String category) {
         this.islandService = islandService;
         this.arenaManager = arenaManager;
         this.slot = slot;
@@ -55,8 +54,8 @@ public class Island {
     }
 
     public Island(final IslandService islandService, final ArenaManager arenaManager,
-            final int slot, final String category, final String schematic,
-            final Location absoluteLocation) {
+                  final int slot, final String category, final String schematic,
+                  final Location absoluteLocation) {
         this.islandService = islandService;
         this.arenaManager = arenaManager;
         this.slot = slot;
@@ -100,25 +99,29 @@ public class Island {
         return new AbstractMap.SimpleImmutableEntry<>(gamePlayer, gameIsland);
     }
 
+    public boolean leaveGame(final BridgePlayer bridgePlayer) {
+        return leaveGame(bridgePlayer, true);
+    }
+
     /**
      * When a player leaves the island, the island is removed from the island map and the
      * game player is removed from the game player map
      *
      * @param bridgePlayer The bridge player that is leaving the game island.
      */
-    public void leaveGame(final BridgePlayer bridgePlayer) {
+    public boolean leaveGame(final BridgePlayer bridgePlayer, final boolean clearInventory) {
         final GamePlayer gamePlayer = bridgePlayer.getGamePlayer();
         if (gamePlayer == null) {
-            return;
+            return false;
         }
 
         final GameIsland gameIsland = this.islandMap.remove(gamePlayer);
         if (gameIsland == null) {
-            return;
+            return false;
         }
 
         final Player player = bridgePlayer.getPlayer();
-        if (player != null) {
+        if (player != null && clearInventory) {
             player.getInventory()
                     .clear();
         }
@@ -128,6 +131,11 @@ public class Island {
 
         // reset the game island
         gameIsland.remove();
+        return true;
+    }
+
+    public void abortGame(BridgePlayer bridgePlayer) {
+        leaveGame(bridgePlayer, false);
     }
 
     /**
@@ -138,16 +146,6 @@ public class Island {
      */
     public GameIsland findGameByPlayer(final GamePlayer gamePlayer) {
         return this.islandMap.get(gamePlayer);
-    }
-
-    /**
-     * It sets the category of the question.
-     *
-     * @param anotherCategory The new category to set.
-     */
-    public void setCategory(final String anotherCategory) {
-        this.category = anotherCategory;
-        update();
     }
 
     /**
@@ -166,6 +164,15 @@ public class Island {
     }
 
     /**
+     * Returns the absolute location of the object
+     *
+     * @return The absolute location of the object.
+     */
+    public Location getAbsoluteLocation() {
+        return this.absoluteLocation;
+    }
+
+    /**
      * This function sets the absolute location of the object
      *
      * @param newAbsoluteLocation The new location to set the object to.
@@ -176,22 +183,13 @@ public class Island {
     }
 
     /**
-     * Returns the absolute location of the object
-     *
-     * @return The absolute location of the object.
-     */
-    public Location getAbsoluteLocation() {
-        return this.absoluteLocation;
-    }
-
-    /**
      * This function checks to see if the island schematic is ready to be used.
      *
      * @return A boolean value.
      */
     public boolean isReady() {
         return islandSchematic.getSchematicClipboard() != null &&
-               absoluteLocation != null;
+                absoluteLocation != null;
     }
 
     /**
@@ -216,6 +214,16 @@ public class Island {
     }
 
     /**
+     * It sets the category of the question.
+     *
+     * @param anotherCategory The new category to set.
+     */
+    public void setCategory(final String anotherCategory) {
+        this.category = anotherCategory;
+        update();
+    }
+
+    /**
      * Load the leaderboard map with the given map
      *
      * @param boardMap The map to load into the leaderboard map.
@@ -228,7 +236,7 @@ public class Island {
      * Add a score to the leaderboard for the given player
      *
      * @param bridgePlayer The bridge player to add the score to.
-     * @param score The score to add.
+     * @param score        The score to add.
      */
     public void addLeaderboardScore(final BridgePlayer bridgePlayer, final Score score) {
         leaderboardMap.append(bridgePlayer, score);
@@ -360,9 +368,9 @@ public class Island {
         public boolean selectSchematic(final @NotNull String schematicName) {
             BridgeUtil.debug(
                     "Loading schematic '" + schematicName + "' for " + island.getSlot() +
-                    "...");
+                            "...");
             BridgeUtil.debug("IslandSchematic#selectSchematic(): WorldEdit Directory: " +
-                             schematicDirectory);
+                    schematicDirectory);
 
             final File file = findSchematicFile(schematicDirectory, schematicName);
             if (file != null && file.exists()) {
@@ -371,7 +379,7 @@ public class Island {
 
                 BridgeUtil.debug(
                         "IslandSchematic#selectSchematic(): Successfully loaded schematic: " +
-                        schematicName);
+                                schematicName);
 
                 this.schematicName = schematicName;
                 return true;
@@ -379,7 +387,7 @@ public class Island {
 
             BridgeUtil.debug(
                     "IslandSchematic#selectSchematic(): Failed to load schematic: " +
-                    schematicName);
+                            schematicName);
             return false;
         }
 

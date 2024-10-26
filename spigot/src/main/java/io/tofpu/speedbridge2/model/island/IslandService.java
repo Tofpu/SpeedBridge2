@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public final class IslandService {
-//    public static final @NotNull IslandService INSTANCE = new IslandService();
+    //    public static final @NotNull IslandService INSTANCE = new IslandService();
     private final @NotNull IslandHandler islandHandler;
     private final @NotNull IslandRepository islandRepository;
 
@@ -34,14 +34,14 @@ public final class IslandService {
     /**
      * Creates an island
      *
-     * @param slot The island's slot.
-     * @param category The category of the island.
+     * @param slot      The island's slot.
+     * @param category  The category of the island.
      * @param schematic The name of the schematic to load. It cannot be null nor empty.
      * @return The {@link IslandHandler.IslandCreationResult} enum.
      */
     public @NotNull IslandHandler.IslandCreationResult createIsland(final int slot,
-            final @NotNull String category,
-            final @NotNull String schematic) {
+                                                                    final @NotNull String category,
+                                                                    final @NotNull String schematic) {
         return this.islandHandler.createIsland(slot, category, schematic);
     }
 

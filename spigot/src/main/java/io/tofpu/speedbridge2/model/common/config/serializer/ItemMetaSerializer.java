@@ -39,8 +39,7 @@ public final class ItemMetaSerializer implements TypeSerializer<ItemMeta> {
     }
 
     @Override
-    public void serialize(final Type type, @Nullable
-    final ItemMeta obj, final ConfigurationNode node) throws SerializationException {
+    public void serialize(final Type type, @Nullable final ItemMeta obj, final ConfigurationNode node) throws SerializationException {
         if (obj == null) {
             node.raw();
             return;

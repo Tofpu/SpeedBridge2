@@ -111,6 +111,7 @@ buildNumber.properties
 
 # Common working directory
 run/
+run-*/
 demo
 dep.txt
 memory

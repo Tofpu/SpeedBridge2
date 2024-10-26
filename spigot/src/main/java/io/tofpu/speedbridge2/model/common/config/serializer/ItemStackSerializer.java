@@ -26,8 +26,7 @@ public final class ItemStackSerializer implements TypeSerializer<ItemStack> {
     }
 
     @Override
-    public void serialize(final Type type, @Nullable
-    final ItemStack obj, final ConfigurationNode node) throws SerializationException {
+    public void serialize(final Type type, @Nullable final ItemStack obj, final ConfigurationNode node) throws SerializationException {
         node.node("material").set(obj.getType());
         node.node("durability").set(obj.getDurability());
         node.node("meta").set(obj.getItemMeta());

@@ -23,7 +23,7 @@ public enum PlayerStatType {
     }
 
     public static PlayerStatType match(final String statType) {
-        switch (statType.toUpperCase(Locale.ENGLISH)){
+        switch (statType.toUpperCase(Locale.ENGLISH)) {
             case "TOTAL_WINS":
                 return PlayerStatType.TOTAL_WINS;
             case "TOTAL_TRIES":

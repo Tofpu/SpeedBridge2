@@ -10,12 +10,12 @@ public class IslandBuilder {
     private String schematic;
     private Location absoluteLocation;
 
-    public static IslandBuilder of() {
-        return new IslandBuilder();
-    }
-
     private IslandBuilder() {
         // prevent instantiation
+    }
+
+    public static IslandBuilder of() {
+        return new IslandBuilder();
     }
 
     public IslandBuilder setSlot(final int slot) {

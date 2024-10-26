@@ -2,8 +2,8 @@ package io.tofpu.speedbridge2.model.leaderboard;
 
 import io.tofpu.speedbridge2.model.common.PlayerNameCache;
 import io.tofpu.speedbridge2.model.leaderboard.object.BoardPlayer;
-import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.score.Score;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -85,7 +85,7 @@ public final class LeaderboardMap extends LinkedHashMap<Integer, BoardPlayer> {
      * Otherwise, insert the player's best score to the temp board
      *
      * @param bridgePlayer The player who's score is being appended to the board.
-     * @param score the score that the player has achieved.
+     * @param score        the score that the player has achieved.
      */
     public void append(final BridgePlayer bridgePlayer, final Score score) {
         final Score previousScore = globalReference.get(bridgePlayer.getPlayerUid());

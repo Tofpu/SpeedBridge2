@@ -4,13 +4,13 @@ import io.tofpu.dynamicclass.meta.AutoRegister;
 import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.leaderboard.Leaderboard;
-import io.tofpu.speedbridge2.model.leaderboard.object.BoardPlayer;
 import io.tofpu.speedbridge2.model.island.IslandService;
 import io.tofpu.speedbridge2.model.island.object.Island;
-import io.tofpu.speedbridge2.model.player.object.score.Score;
+import io.tofpu.speedbridge2.model.leaderboard.Leaderboard;
+import io.tofpu.speedbridge2.model.leaderboard.object.BoardPlayer;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.GamePlayer;
+import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.model.support.placeholderapi.expansion.AbstractExpansion;
 
 @AutoRegister
@@ -35,14 +35,14 @@ public final class LeaderboardExpansion extends AbstractExpansion {
 
     @Override
     public boolean passedRequirement(final BridgePlayer bridgePlayer,
-            final String[] args) {
+                                     final String[] args) {
         // this placeholder requires four arguments
-        return args.length == 3;
+        return args.length >= 3 && args.length <= 4;
     }
 
     @Override
     public String runAction(final BridgePlayer bridgePlayer,
-            final GamePlayer gamePlayer, final String[] args) {
+                            final GamePlayer gamePlayer, final String[] args) {
         final int position = parse(args, 2);
         if (position == -1) {
             return "Invalid Placeholder";
@@ -82,11 +82,36 @@ public final class LeaderboardExpansion extends AbstractExpansion {
             return "";
         }
 
+        TextDisplayType textDisplayType = TextDisplayType.FULL;
+        if (args.length > 3) {
+            textDisplayType = TextDisplayType.fromString(args[3], TextDisplayType.FULL);
+        }
+
+        if (textDisplayType == TextDisplayType.NAME) {
+            return boardPlayer.getName();
+        } else if (textDisplayType == TextDisplayType.SCORE) {
+            return BridgeUtil.formatNumber(bestScore.getScore());
+        }
         return BridgeUtil.translate(ConfigurationManager.INSTANCE.getLeaderboardCategory()
                 .getLeaderboardFormat()
                 .replace("%position%", boardPlayer.getPosition() + "")
                 .replace("%name%", boardPlayer.getName())
                 .replace("%score%", BridgeUtil.formatNumber(bestScore.getScore())));
+    }
+
+    enum TextDisplayType {
+        NAME, SCORE, FULL;
+
+        private static final TextDisplayType[] CACHED_VALUES = values();
+
+        public static TextDisplayType fromString(final String string, final TextDisplayType defaultValue) {
+            for (final TextDisplayType textDisplayType : CACHED_VALUES) {
+                if (textDisplayType.name().equalsIgnoreCase(string)) {
+                    return textDisplayType;
+                }
+            }
+            return defaultValue;
+        }
     }
 
     public int parse(final String[] args, final int index) {

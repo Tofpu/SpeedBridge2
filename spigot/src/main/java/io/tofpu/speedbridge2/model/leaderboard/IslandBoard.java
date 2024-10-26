@@ -8,7 +8,10 @@ import io.tofpu.speedbridge2.model.leaderboard.object.BoardPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -32,17 +35,17 @@ public final class IslandBoard {
         Bukkit.getScheduler()
                 .runTaskAsynchronously(javaPlugin, () -> {
                     BridgeUtil.debug("IslandBoard#load(): loading the island's " +
-                                     "leaderboard");
+                            "leaderboard");
 
                     for (final Island island : ISLAND_QUEUE) {
                         BridgeUtil.debug("IslandBoard#load(): Loading " + island.getSlot() + " leaderboard " +
-                                         "now!");
+                                "now!");
                         final Map<Integer, BoardPlayer> boardMap = new HashMap<>();
 
                         try (final DatabaseQuery databaseQuery = DatabaseQuery.query(
                                 "SELECT * FROM scores WHERE island_slot = ? ORDER BY" +
-                                " " +
-                                "score " + "LIMIT 10 OFFSET 0")) {
+                                        " " +
+                                        "score " + "LIMIT 10 OFFSET 0")) {
                             databaseQuery.setInt(island.getSlot());
 
                             final Map<UUID, BoardPlayer> boardPlayerMap =
@@ -66,7 +69,7 @@ public final class IslandBoard {
                             });
 
                             BridgeUtil.debug("IslandBoard#load(): Successfully loaded " + island.getSlot() +
-                                             " island leaderboard!");
+                                    " island leaderboard!");
                             BridgeUtil.debug(String.valueOf(boardMap));
                             island.loadBoard(boardMap);
                         } catch (Exception e) {
@@ -79,7 +82,7 @@ public final class IslandBoard {
         Bukkit.getScheduler()
                 .runTaskTimerAsynchronously(javaPlugin, () -> {
                     BridgeUtil.debug("IslandBoard#load(): Starting the leaderboard " +
-                                     "update process!");
+                            "update process!");
 
                     for (final Island island : ISLAND_QUEUE) {
                         BridgeUtil.debug("IslandBoard#load(): Updating " + island.getSlot() + " now!");

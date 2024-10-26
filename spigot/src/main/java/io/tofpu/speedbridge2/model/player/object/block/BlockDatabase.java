@@ -28,7 +28,7 @@ public final class BlockDatabase extends Database {
 
     public CompletableFuture<Void> update(final @NotNull BridgePlayer player) {
         return DatabaseUtil.databaseExecute("UPDATE blocks SET chosen_block = ? " +
-                                            "WHERE uid = ?", databaseQuery -> {
+                "WHERE uid = ?", databaseQuery -> {
             databaseQuery.setString(player.getChoseMaterial()
                     .name());
             databaseQuery.setString(player.getPlayerUid()

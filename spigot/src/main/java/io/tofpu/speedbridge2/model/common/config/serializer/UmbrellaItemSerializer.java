@@ -31,8 +31,7 @@ public final class UmbrellaItemSerializer implements TypeSerializer<Serializable
     }
 
     @Override
-    public void serialize(final Type type, @Nullable
-    final SerializableUmbrellaItem obj, final ConfigurationNode node) throws SerializationException {
+    public void serialize(final Type type, @Nullable final SerializableUmbrellaItem obj, final ConfigurationNode node) throws SerializationException {
         final ItemStack itemStack = obj.getItemStack();
 
         node.node("index").set(obj.getIndex());

@@ -6,20 +6,20 @@ public final class Score implements Comparable<Score> {
     private final int scoredOn;
     private final double score;
 
+    private Score(final int scoredOn, final double score) {
+        this.scoredOn = scoredOn;
+        this.score = score;
+    }
+
     /**
      * Create a new Score object with the given island slot and score
      *
      * @param islandSlot The island slot that the score is for.
-     * @param score The score of the island.
+     * @param score      The score of the island.
      * @return A new instance of Score.
      */
     public static Score of(final int islandSlot, final double score) {
         return new Score(islandSlot, score);
-    }
-
-    private Score(final int scoredOn, final double score) {
-        this.scoredOn = scoredOn;
-        this.score = score;
     }
 
     /**

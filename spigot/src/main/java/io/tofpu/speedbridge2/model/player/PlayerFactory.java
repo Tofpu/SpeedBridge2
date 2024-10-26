@@ -35,7 +35,7 @@ public final class PlayerFactory {
     }
 
     public static BridgePlayer create(final PlayerFactoryType type, final String name,
-            final UUID uuid) {
+                                      final UUID uuid) {
         Preconditions.checkNotNull(name, "name cannot be null");
         Preconditions.checkNotNull(uuid, "uuid cannot be null");
 
@@ -50,7 +50,7 @@ public final class PlayerFactory {
     }
 
     public static BridgePlayer create(final PlayerFactoryType type,
-            final UUID uuid) {
+                                      final UUID uuid) {
         Preconditions.checkNotNull(uuid, "uuid cannot be null");
 
         switch (type) {

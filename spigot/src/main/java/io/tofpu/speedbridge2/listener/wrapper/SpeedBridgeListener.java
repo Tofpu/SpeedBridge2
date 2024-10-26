@@ -55,7 +55,7 @@ public final class SpeedBridgeListener extends GameListener {
         final EventWrapper<PlayerInteractEvent> eventWrapper = PlayerInteractEventWrapper.wrap(playerService, event);
 
         if (event.getAction() != Action.PHYSICAL || !eventWrapper.isPlaying() ||
-            !eventWrapper.hasTimerStarted()) {
+                !eventWrapper.hasTimerStarted()) {
             return;
         }
 

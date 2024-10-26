@@ -50,7 +50,7 @@ public final class PluginExpansion extends PlaceholderExpansion {
 
     @Override
     public String onPlaceholderRequest(final Player player,
-            @NotNull final String params) {
+                                       @NotNull final String params) {
         if (player == null) {
             return "";
         }

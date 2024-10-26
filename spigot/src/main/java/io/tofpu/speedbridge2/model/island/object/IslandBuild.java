@@ -5,8 +5,8 @@ import io.tofpu.speedbridge2.model.island.arena.ArenaManager;
 
 public class IslandBuild extends Island {
     public IslandBuild(final IslandService islandService,
-            final ArenaManager arenaManager, final int slot,
-            final String category) {
+                       final ArenaManager arenaManager, final int slot,
+                       final String category) {
         super(islandService, arenaManager, slot, category);
     }
 
@@ -33,7 +33,7 @@ public class IslandBuild extends Island {
 
     public Island toRegularIsland() {
         final Island island = new Island(islandService, super.arenaManager, this.getSlot(),
-                        this.getCategory());
+                this.getCategory());
         island.selectSchematic(getSchematicName());
         island.setAbsoluteLocation(getAbsoluteLocation());
         return island;

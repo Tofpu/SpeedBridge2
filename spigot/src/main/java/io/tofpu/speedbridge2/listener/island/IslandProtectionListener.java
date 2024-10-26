@@ -1,11 +1,11 @@
 package io.tofpu.speedbridge2.listener.island;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
-import io.tofpu.speedbridge2.model.island.object.GameIsland;
-import io.tofpu.speedbridge2.model.player.object.GamePlayer;
 import io.tofpu.speedbridge2.listener.GameListener;
 import io.tofpu.speedbridge2.listener.wrapper.wrappers.BlockBreakEventWrapper;
 import io.tofpu.speedbridge2.listener.wrapper.wrappers.BlockPlaceEventWrapper;
+import io.tofpu.speedbridge2.model.island.object.GameIsland;
+import io.tofpu.speedbridge2.model.player.object.GamePlayer;
 import io.tofpu.speedbridge2.model.support.worldedit.CuboidRegion;
 import io.tofpu.speedbridge2.model.support.worldedit.Vector;
 import org.bukkit.Location;

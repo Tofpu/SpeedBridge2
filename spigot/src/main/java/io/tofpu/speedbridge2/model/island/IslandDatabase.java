@@ -25,7 +25,7 @@ public final class IslandDatabase extends Database {
 
     public @NotNull CompletableFuture<Void> insert(final Island island) {
         return DatabaseUtil.databaseExecute("INSERT OR IGNORE INTO islands VALUES " +
-                                            "(?, ?, ?, ?)", databaseQuery -> {
+                "(?, ?, ?, ?)", databaseQuery -> {
             databaseQuery.setInt(island.getSlot());
             databaseQuery.setString(island.getCategory());
             databaseQuery.setString(island.getSchematicName());
@@ -36,7 +36,7 @@ public final class IslandDatabase extends Database {
     public @NotNull CompletableFuture<Void> update(final Island island) {
         return DatabaseUtil.databaseExecute(
                 "UPDATE islands SET category = ?, schematic_name = " +
-                "?, spawn_point = ? WHERE slot = ?", databaseQuery -> {
+                        "?, spawn_point = ? WHERE slot = ?", databaseQuery -> {
                     BridgeUtil.debug("island category: " + island.getCategory());
                     databaseQuery.setString(island.getCategory());
 
@@ -78,7 +78,8 @@ public final class IslandDatabase extends Database {
                         }
 
                         islands.add(builder.build());
-                    }}).get();
+                    }
+                }).get();
             } catch (InterruptedException | ExecutionException e) {
                 throw new IslandLoadFailureException(e);
             }
@@ -93,7 +94,7 @@ public final class IslandDatabase extends Database {
         }
 
         return location.getX() + ":" + location.getY() + ":" +
-               location.getZ() + ":" + location.getYaw() + ":" + location.getPitch();
+                location.getZ() + ":" + location.getYaw() + ":" + location.getPitch();
     }
 
     private Location deserialize(final String input) {

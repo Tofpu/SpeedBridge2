@@ -4,8 +4,8 @@ import io.tofpu.speedbridge2.model.common.database.Databases;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.island.arena.ArenaManager;
 import io.tofpu.speedbridge2.model.island.object.Island;
-import io.tofpu.speedbridge2.model.leaderboard.IslandBoard;
 import io.tofpu.speedbridge2.model.island.object.IslandBuild;
+import io.tofpu.speedbridge2.model.leaderboard.IslandBoard;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,13 +37,13 @@ public final class IslandHandler {
     /**
      * Creates an island
      *
-     * @param slot The island's slot.
-     * @param category The category of the island.
+     * @param slot      The island's slot.
+     * @param category  The category of the island.
      * @param schematic The name of the schematic to load. It cannot be null nor empty.
      * @return The {@link IslandHandler.IslandCreationResult} enum.
      */
     public @NotNull IslandHandler.IslandCreationResult createIsland(final int slot,
-            final @NotNull String category, final @NotNull String schematic) {
+                                                                    final @NotNull String category, final @NotNull String schematic) {
         // if the island does exist, return ALREADY_EXISTS!
         if (islandMap.containsKey(slot)) {
             return IslandCreationResultType.ISLAND_ALREADY_EXISTS.empty();
@@ -133,7 +133,6 @@ public final class IslandHandler {
 
     /**
      * @param island The island to register.
-     *
      * @return The registration result.
      */
     public IslandRegistrationResultType registerIsland(Island island) {
@@ -179,7 +178,7 @@ public final class IslandHandler {
         }
 
         public IslandCreationResult create(final Island
-                island) {
+                                                   island) {
             return new IslandCreationResult(this, island);
         }
     }

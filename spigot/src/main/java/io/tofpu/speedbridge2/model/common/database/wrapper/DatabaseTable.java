@@ -9,17 +9,17 @@ public class DatabaseTable {
     private final String[] columns;
     private final String sql;
 
-    public static DatabaseTable of(final @NotNull String table,
-            final @NotNull String... columns) {
-        return new DatabaseTable(table, columns);
-    }
-
     private DatabaseTable(final @NotNull String table, final @NotNull String... columns) {
         this.table = table;
         this.columns = columns;
         this.sql = String.format(CREATE_TABLE, table, formatColumns(columns));
 
         BridgeUtil.debug(sql);
+    }
+
+    public static DatabaseTable of(final @NotNull String table,
+                                   final @NotNull String... columns) {
+        return new DatabaseTable(table, columns);
     }
 
     public @NotNull String formatColumns(final String[] columns) {

@@ -11,12 +11,12 @@ public class GameIsland2 extends GameIsland {
         super(arenaManager, gameIsland.getIsland(), gameIsland.getGamePlayer());
     }
 
-    public void setIslandPlot(final IslandLand islandLand) {
-        this.islandLand = islandLand;
-    }
-
     @Override
     public IslandLand getIslandPlot() {
         return this.islandLand;
+    }
+
+    public void setIslandPlot(final IslandLand islandLand) {
+        this.islandLand = islandLand;
     }
 }

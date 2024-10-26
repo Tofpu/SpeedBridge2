@@ -20,8 +20,7 @@ public final class AbstractItemActionSerializer implements TypeSerializer<Abstra
     }
 
     @Override
-    public void serialize(final Type type, @Nullable
-    final AbstractItemAction obj, final ConfigurationNode node) throws SerializationException {
+    public void serialize(final Type type, @Nullable final AbstractItemAction obj, final ConfigurationNode node) throws SerializationException {
         if (!(obj instanceof RunCommandItemAction)) {
             return;
         }
