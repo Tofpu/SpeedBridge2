@@ -9,7 +9,7 @@ import io.tofpu.speedbridge2.game.GamePlayer;
 import io.tofpu.speedbridge2.game.state.AbstractGameState;
 import io.tofpu.speedbridge2.game.state.GameStateType;
 import io.tofpu.speedbridge2.game.toolbar.GameEquipmentHandler;
-import io.tofpu.speedbridge2.util.Position;
+import io.tofpu.speedbridge2.util.PositionOrientation;
 import io.tofpu.speedbridge2.util.listener.ListenerRegistration;
 import java.util.UUID;
 import org.bukkit.entity.Player;
@@ -46,7 +46,7 @@ public class GameStartState extends AbstractGameState implements Listener {
     public void handle() {
         Arena arena = game.arena();
 
-        Position gamePosition = arena.getPosition().add(game.island().location());
+        PositionOrientation gamePosition = game.island().positionOrientation().add(arena.getPosition());
 
         Player player = game.gamePlayer().player();
         player.teleport(gamePosition.toLocation(arena.world()));

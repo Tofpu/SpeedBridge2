@@ -38,7 +38,7 @@ public class Position {
         return new Location(world, x, y, z);
     }
 
-    public Location subtract(Location other) {
-        return new Location(other.getWorld(), x - other.getX(), y - other.getY(), z - other.getZ());
+    public PositionOrientation subtract(PositionOrientation other) {
+        return new PositionOrientation(x - other.getX(), y - other.getY(), z - other.getZ(), other.getYaw(), other.getPitch());
     }
 }

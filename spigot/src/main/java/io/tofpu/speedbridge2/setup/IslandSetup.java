@@ -2,7 +2,7 @@ package io.tofpu.speedbridge2.setup;
 
 import io.tofpu.speedbridge2.arena.Arena;
 import io.tofpu.speedbridge2.schematic.Schematic;
-import org.bukkit.Location;
+import io.tofpu.speedbridge2.util.PositionOrientation;
 import org.bukkit.entity.Player;
 
 // todo:
@@ -14,7 +14,7 @@ public class IslandSetup {
     private final Schematic schematic;
     private final Arena arena;
 
-    private Location spawnPoint = null;
+    private PositionOrientation spawnPoint = null;
 
     public IslandSetup(SetupService setupService, Player player, int slot, Schematic schematic, Arena arena) {
         this.setupService = setupService;
@@ -36,10 +36,7 @@ public class IslandSetup {
         if (spawnPoint != null) {
             // todo: need to use a location here as we need to
             //  keep track of the yaw & pitch
-            Location absoluteSpawnPoint = arena.getPosition().subtract(spawnPoint);
-            absoluteSpawnPoint.setYaw(spawnPoint.getYaw());
-            absoluteSpawnPoint.setPitch(spawnPoint.getPitch());
-            this.spawnPoint = absoluteSpawnPoint;
+            this.spawnPoint = arena.getPosition().subtract(spawnPoint);
         }
 
         setupService.finishSetup(this);
@@ -63,7 +60,7 @@ public class IslandSetup {
         return schematic;
     }
 
-    public Location spawnPoint() {
+    public PositionOrientation spawnPoint() {
         return spawnPoint;
     }
 }
