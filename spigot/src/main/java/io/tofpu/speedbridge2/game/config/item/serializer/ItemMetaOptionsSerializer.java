@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.game.config.item.serializer;
 
 import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,16 +24,27 @@ public class ItemMetaOptionsSerializer implements ValueSerialiser<ItemMetaOption
     public ItemMetaOptions deserialise(FlexibleType flexibleType) throws BadValueException {
         Map<String, Object> map = flexibleType.getMap((flexibleKey, flexibleValue) ->
                 new AbstractMap.SimpleEntry<>(flexibleKey.getString(), flexibleKey.getObject(Object.class)));
-        String displayName = map.get(DISPLAY_NAME).toString();
-        List<String> lore = (List<String>) map.get(LORE);
+        String displayName = "";
+        if (map.containsKey(DISPLAY_NAME)) {
+            displayName = map.get(DISPLAY_NAME).toString();
+        }
+        List<String> lore = Collections.emptyList();
+        if (map.containsKey(LORE)) {
+            lore = (List<String>) map.get(LORE);
+        }
         return new ItemMetaOptions(displayName, lore);
     }
 
     @Override
     public Object serialise(ItemMetaOptions value, Decomposer decomposer) {
         Map<String, Object> map = new HashMap<>();
-        map.put(DISPLAY_NAME, value.displayName());
-        map.put(LORE, decomposer.decompose(List.class, value.lore()));
+        if (!value.displayName().isBlank()) {
+            map.put(DISPLAY_NAME, value.displayName());
+        }
+        List<String> lore = value.lore();
+        if (lore != null) {
+            map.put(LORE, decomposer.decomposeCollection(String.class, lore));
+        }
         return map;
     }
 }
