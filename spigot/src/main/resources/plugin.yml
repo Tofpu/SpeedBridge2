@@ -1,0 +1,3 @@
+main: io.tofpu.speedbridge2.SpeedbridgePlugin
+name: Speedbridge2
+version: '${project.version}'
