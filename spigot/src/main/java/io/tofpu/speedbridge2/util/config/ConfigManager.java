@@ -3,6 +3,9 @@ package io.tofpu.speedbridge2.util.config;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
+
+import io.tofpu.speedbridge2.game.config.item.serializer.ItemMetaOptionsSerializer;
+import io.tofpu.speedbridge2.game.config.item.serializer.ItemStackSerializer;
 import space.arim.dazzleconf.ConfigurationFactory;
 import space.arim.dazzleconf.ConfigurationOptions;
 import space.arim.dazzleconf.error.ConfigFormatSyntaxException;
@@ -26,9 +29,15 @@ public final class ConfigManager<C> {
         SnakeYamlOptions yamlOptions = new SnakeYamlOptions.Builder()
                 .commentMode(CommentMode.alternativeWriter()) // Enables writing YAML comments
                 .build();
+
+        ConfigurationOptions options = new ConfigurationOptions.Builder()
+                .addSerialiser(new ItemMetaOptionsSerializer())
+                .addSerialiser(new ItemStackSerializer())
+                .build();
+
         ConfigurationFactory<C> configFactory = SnakeYamlConfigurationFactory.create(
                 configClass,
-                ConfigurationOptions.defaults(), // change this if desired
+                options, // change this if desired
                 yamlOptions);
         return new ConfigManager<>(new ConfigurationHelper<>(configFolder, fileName, configFactory));
     }
