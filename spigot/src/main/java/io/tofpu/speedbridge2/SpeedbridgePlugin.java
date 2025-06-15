@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2;
 
+import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.database.system.DatabaseSystem;
 import io.tofpu.speedbridge2.environment.EnvironmentService;

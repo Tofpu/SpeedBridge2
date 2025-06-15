@@ -18,7 +18,7 @@ public class SetupCommand extends ChildrenCommand {
     @Subcommand("create")
     public void createSetup(BukkitCommandActor actor, int slot, Schematic schematic) {
         if (setupService.createSetup(actor.requirePlayer(), new SetupInfo(slot, schematic))) {
-            actor.reply(String.format("&eCreated setup for slot %d with schematic %s", slot, schematic));
+            actor.reply(String.format("&eCreated setup for slot %d with schematic %s", slot, schematic.name()));
         } else {
             actor.reply("&cYou already have a setup in progress!");
         }
