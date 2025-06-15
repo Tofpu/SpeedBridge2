@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("com.diffplug.spotless") version "7.0.0.BETA4"
+    id("org.jooq.jooq-codegen-gradle") version "3.19.24"
 }
 
 group = "io.tofpu.speedbridge2"
@@ -46,6 +47,46 @@ dependencies {
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+}
+
+jooq {
+    configuration {
+        generator {
+            database {
+                name = "org.jooq.meta.extensions.ddl.DDLDatabase"
+                properties {
+                    property {
+                        key = "scripts"
+                        value = "src/main/resources/schema.sql"
+                    }
+                    property {
+                        key = "sort"
+                        value = "semantic"
+                    }
+                    property {
+                        key = "unqualifiedSchema"
+                        value = "none"
+                    }
+                    property {
+                        key = "defaultCaseName"
+                        value = "as_is"
+                    }
+                    property {
+                        key = "logExecutedQueries"
+                        value = "true"
+                    }
+                    property {
+                        key = "logExecutionResults"
+                        value = "true"
+                    }
+                }
+            }
+        }
+    }
+}
+
+tasks.named("compileJava") {
+    dependsOn("jooqCodegen")
 }
 
 spotless {
