@@ -3,7 +3,7 @@ package io.tofpu.speedbridge2.setup.command;
 import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.schematic.Schematic;
 import io.tofpu.speedbridge2.schematic.SchematicService;
-import io.tofpu.speedbridge2.setup.SetupService;
+import io.tofpu.speedbridge2.setup.service.SetupService;
 
 public class SetupCommandHandler {
     private final CommandHandler commandHandler;

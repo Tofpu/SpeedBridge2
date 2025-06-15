@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.setup;
+package io.tofpu.speedbridge2.setup.service;
 
 import io.tofpu.speedbridge2.Constants;
 import io.tofpu.speedbridge2.arena.Arena;
@@ -10,6 +10,8 @@ import io.tofpu.speedbridge2.schematic.Schematic;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import io.tofpu.speedbridge2.setup.domain.SetupInfo;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

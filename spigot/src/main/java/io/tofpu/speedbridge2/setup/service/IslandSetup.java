@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.setup;
+package io.tofpu.speedbridge2.setup.service;
 
 import io.tofpu.speedbridge2.arena.Arena;
 import io.tofpu.speedbridge2.schematic.Schematic;

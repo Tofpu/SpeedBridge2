@@ -5,7 +5,7 @@ import io.tofpu.speedbridge2.island.service.IslandService;
 import io.tofpu.speedbridge2.lobby.LobbyTeleporter;
 import io.tofpu.speedbridge2.schematic.Schematic;
 import io.tofpu.speedbridge2.schematic.SchematicService;
-import io.tofpu.speedbridge2.setup.SetupService;
+import io.tofpu.speedbridge2.setup.service.SetupService;
 import io.tofpu.speedbridge2.setup.command.SetupCommand;
 import org.bukkit.World;
 import revxrsal.commands.exception.CommandErrorException;
