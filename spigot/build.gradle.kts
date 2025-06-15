@@ -34,6 +34,7 @@ dependencies {
 //    implementation("net.kyori:adventure-text-minimessage:4.10.1")
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
 
+    implementation("com.h2database:h2:2.3.232")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
