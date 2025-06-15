@@ -3,29 +3,7 @@ package io.tofpu.speedbridge2.util;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-public class Position {
-    private final int x;
-    private final int y;
-    private final int z;
-
-    public Position(int x, int y, int z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getZ() {
-        return z;
-    }
-
+public record Position(int x, int y, int z) {
     public Position add(Position other) {
         return new Position(x + other.x, y + other.y, z + other.z);
     }
