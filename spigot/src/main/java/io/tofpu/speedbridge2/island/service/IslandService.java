@@ -1,14 +1,28 @@
 package io.tofpu.speedbridge2.island.service;
 
 import io.tofpu.speedbridge2.island.domain.Island;
+import io.tofpu.speedbridge2.island.domain.IslandRepository;
 
 import java.util.*;
 
 public class IslandService {
     private final Map<Integer, Island> islandMap = new HashMap<>();
+    private final IslandRepository repository;
+
+    public IslandService(IslandRepository repository) {
+        this.repository = repository;
+    }
+
+    public void load() {
+        Collection<Island> islands = repository.findAll();
+        for (Island island : islands) {
+            islandMap.put(island.slot(), island);
+        }
+    }
 
     public void registerIsland(Island island) {
         islandMap.put(island.slot(), island);
+        repository.save(island);
     }
 
     public Island getIsland(int slot) {
@@ -17,6 +31,7 @@ public class IslandService {
 
     public void removeIsland(int slot) {
         islandMap.remove(slot);
+        repository.deleteBySlot(slot);
     }
 
     public Collection<Island> islands() {
