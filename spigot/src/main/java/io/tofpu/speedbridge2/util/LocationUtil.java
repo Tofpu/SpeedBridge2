@@ -1,6 +1,6 @@
 package io.tofpu.speedbridge2.util;
 
-import com.sk89q.worldedit.Vector;
+import io.tofpu.speedbridge2.arena.Vector;
 import org.bukkit.Location;
 
 public class LocationUtil {

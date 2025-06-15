@@ -24,7 +24,7 @@ public class ArenaManager<K> {
     }
 
     private Arena createArena(K key, Schematic schematic) {
-        Clipboard clipboard = schematic.clipboard();
+        Clipboard clipboard = schematic.clipboard().to();
         Region region = clipboard.getRegion();
         Position position = positionCalculator.reserve(key, region.getWidth());
 

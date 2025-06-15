@@ -2,8 +2,8 @@ package io.tofpu.speedbridge2.game.state.type;
 
 import static io.tofpu.speedbridge2.util.LocationUtil.asVector;
 
-import com.sk89q.worldedit.regions.CuboidRegion;
 import io.tofpu.speedbridge2.arena.Arena;
+import io.tofpu.speedbridge2.arena.CuboidRegion;
 import io.tofpu.speedbridge2.game.Game;
 import io.tofpu.speedbridge2.game.GamePlayer;
 import io.tofpu.speedbridge2.game.state.AbstractGameState;

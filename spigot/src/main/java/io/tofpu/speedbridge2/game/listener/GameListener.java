@@ -2,7 +2,7 @@ package io.tofpu.speedbridge2.game.listener;
 
 import static io.tofpu.speedbridge2.util.LocationUtil.asVector;
 
-import com.sk89q.worldedit.regions.CuboidRegion;
+import io.tofpu.speedbridge2.arena.CuboidRegion;
 import io.tofpu.speedbridge2.game.Game;
 import io.tofpu.speedbridge2.game.GameService;
 import java.util.UUID;

@@ -11,16 +11,17 @@ import io.tofpu.multiworldedit.EditSessionWrapper;
 import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import io.tofpu.multiworldedit.VectorWrapper;
 import io.tofpu.speedbridge2.util.Position;
-import java.io.IOException;
 import org.bukkit.Material;
 import org.bukkit.World;
 
+import java.io.IOException;
+
 public class ArenaGeneration {
     private final World world;
-    private final Clipboard clipboard;
+    private final ClipboardWrapper clipboard;
     private final Position position;
 
-    public ArenaGeneration(World world, Clipboard clipboard, Position position) {
+    public ArenaGeneration(World world, ClipboardWrapper clipboard, Position position) {
         this.world = world;
         this.clipboard = clipboard;
         this.position = position;
@@ -37,8 +38,8 @@ public class ArenaGeneration {
             final EditSession editSession = editSessionWrapper.to();
 
             final Operation operation = MultiWorldEditAPI.getMultiWorldEdit()
-                    .create(clipboard, editSession, bukkitWorld)
-                    .to(position.getX(), position.getY(), position.getZ())
+                    .create(clipboard.to(), editSession, bukkitWorld)
+                    .to(position.x(), position.y(), position.z())
                     .ignoreAirBlocks(true)
                     .build();
 
@@ -55,16 +56,16 @@ public class ArenaGeneration {
      */
     public void destroy() {
         final ClipboardWrapper clipboardWrapper =
-                MultiWorldEditAPI.getMultiWorldEdit().create(clipboard);
+                MultiWorldEditAPI.getMultiWorldEdit().create(clipboard.to());
 
         final VectorWrapper minimumPoint = clipboardWrapper.getMinimumPoint();
         final VectorWrapper maximumPoint = clipboardWrapper.getMaximumPoint();
 
         final int offset = 2;
 
-        final int plotX = position.getX() - offset;
-        final int plotY = position.getY() - offset;
-        final int plotZ = position.getZ() - offset;
+        final int plotX = position.x() - offset;
+        final int plotY = position.y() - offset;
+        final int plotZ = position.z() - offset;
 
         // resetting the blocks
         for (int x = 0; x < maximumPoint.getX() - minimumPoint.getX() + offset; x++) {

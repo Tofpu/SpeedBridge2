@@ -20,7 +20,7 @@ public class PositionOrientation {
     }
 
     public PositionOrientation add(Position other) {
-        return new PositionOrientation(x + other.getX(), y + other.getY(), z + other.getZ(), yaw, pitch);
+        return new PositionOrientation(x + other.x(), y + other.y(), z + other.z(), yaw, pitch);
     }
 
     public Location toLocation(World world) {

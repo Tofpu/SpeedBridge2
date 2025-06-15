@@ -26,7 +26,9 @@ dependencies {
     compileOnly("org.jetbrains:annotations:24.0.1")
     annotationProcessor("org.immutables:value:2.10.1")
 
-    implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:8930fd3caa")
+    implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:8930fd3caa") {
+        exclude("com.sk89q", "worldedit")
+    }
     implementation("commons-io:commons-io:2.11.0")
     implementation("com.github.tofpu.toolbar:toolbar-api:3793d5f149")
     implementation("space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.3.0-M2")

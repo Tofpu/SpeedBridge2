@@ -23,7 +23,7 @@ public class Schematic {
         return file;
     }
 
-    public Clipboard clipboard() {
-        return clipboardWrapper.to();
+    public ClipboardWrapper clipboard() {
+        return clipboardWrapper;
     }
 }

@@ -1,9 +1,9 @@
 package io.tofpu.speedbridge2.arena;
 
 import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.Region;
+import io.tofpu.multiworldedit.ClipboardWrapper;
+import io.tofpu.multiworldedit.RegionWrapper;
+import io.tofpu.multiworldedit.VectorWrapper;
 import io.tofpu.speedbridge2.schematic.Schematic;
 import io.tofpu.speedbridge2.util.Position;
 import org.bukkit.Location;
@@ -15,8 +15,8 @@ public class Arena {
     private final Position position;
     private final Schematic schematic;
 
-    private final Vector minPoint;
-    private final Vector maxPoint;
+    private final VectorWrapper minPoint;
+    private final VectorWrapper maxPoint;
 
     private final ArenaGeneration generation;
     private OccupationState occupationState = OccupationState.FREE;
@@ -27,17 +27,17 @@ public class Arena {
         this.position = position;
         this.schematic = schematic;
 
-        Clipboard clipboard = schematic.clipboard();
-        Vector origin = clipboard.getOrigin();
-        Region region = clipboard.getRegion();
+        ClipboardWrapper clipboard = schematic.clipboard();
+        VectorWrapper origin = clipboard.getOrigin();
+        RegionWrapper region = clipboard.region();
         this.minPoint = relative(region.getMinimumPoint(), position, origin);
         this.maxPoint = relative(region.getMaximumPoint(), position, origin);
 
         this.generation = new ArenaGeneration(world, clipboard, position);
     }
 
-    private static Vector relative(Vector minimumPoint, Position position, Vector clipboardOrigin) {
-        return minimumPoint.subtract(clipboardOrigin).add(position.getX(), position.getY(), position.getZ());
+    private static VectorWrapper relative(VectorWrapper minimumPoint, Position position, VectorWrapper clipboardOrigin) {
+        return minimumPoint.subtract(clipboardOrigin).add(position.x(), position.y(), position.z());
     }
 
     public void generate() {
@@ -61,7 +61,7 @@ public class Arena {
     }
 
     public void teleport(Player player) {
-        player.teleport(new Location(world, position.getX(), position.getY(), position.getZ()));
+        player.teleport(new Location(world, position.x(), position.y(), position.z()));
     }
 
     public CuboidRegion getRegion() {
