@@ -34,7 +34,16 @@ dependencies {
 //    implementation("net.kyori:adventure-text-minimessage:4.10.1")
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
 
+    implementation("org.jooq:jooq:3.19.24")
+    implementation("org.jooq:jooq-meta:3.19.24")
+    implementation("org.jooq:jooq-codegen:3.19.24")
+
+    // Code generation specific dependencies, like JDBC drivers, codegen extensions, etc.
+    jooqCodegen("org.jooq:jooq-meta-extensions:3.19.24")
+
+    // h2 driver
     implementation("com.h2database:h2:2.3.232")
+
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
