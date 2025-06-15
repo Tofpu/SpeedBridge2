@@ -34,6 +34,8 @@ public class SpeedbridgePlugin extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        MultiWorldEditAPI.load(this);
+
         databaseSystem = new DatabaseSystem(
                 new File(getDataFolder(), "database-settings.yml"),
                 getDataFolder()
