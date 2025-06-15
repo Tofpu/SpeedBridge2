@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 
 public interface Constants {
     interface ArenaPositioning {
-        PositionCalculator<Integer> SETUP = new DefaultPositionCalculator<>(100_000, 0, 100_000, () -> 0);
+        PositionCalculator<Integer> SETUP = new DefaultPositionCalculator<>(100_000, 0, 100, () -> 0);
         Function<Supplier<Integer>, PositionCalculator<Integer>> GAME =
                 xAxisGapSupplier -> new DefaultPositionCalculator<>(0, 0, 0, xAxisGapSupplier);
     }
