@@ -1,16 +1,19 @@
 package io.tofpu.speedbridge2.game.config.experience;
 
-import static org.immutables.value.Value.Immutable;
-
 import io.tofpu.speedbridge2.game.config.experience.meta.Sound;
 import io.tofpu.speedbridge2.game.config.experience.meta.Title;
 import io.tofpu.speedbridge2.util.ColorUtil;
-import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
-import space.arim.dazzleconf.annote.ConfComments;
+import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.SubSection;
+
+import java.util.List;
+import java.util.Map;
+
+import static io.tofpu.speedbridge2.game.config.GameConfigDefaults.Experience.*;
+import static org.immutables.value.Value.Immutable;
 
 /**
  * This class is responsible for customizing the player experience. Like, when the game is reset, scored, or a new personal best score is achieved.
@@ -21,17 +24,34 @@ public interface GamePlayerExperienceConfiguration {
         return ImmutableGamePlayerExperienceConfiguration.builder();
     }
 
-    @SubSection
-    @ConfComments("Options to customize the player experience when the game is reset")
-    GameOptions reset();
+    enum Type {
+        RESET,
+        SCORE,
+        BEATEN_SCORE
+    }
 
-    @SubSection
-    @ConfComments("Options to customize the player experience when they score")
-    GameOptions score();
+    @ConfDefault.DefaultObject("defaultOptions")
+    Map<Type, @SubSection GameOptions> options();
 
-    @SubSection
-    @ConfComments("Options to customize the player experience when they surpass their personal best score")
-    GameOptions beatenScore();
+    static Map<Type, GameOptions> defaultOptions() {
+        return Map.of(
+                Type.RESET, resetOptions(),
+                Type.SCORE, scoreOptions(),
+                Type.BEATEN_SCORE, beatenScoreOptions()
+        );
+    }
+
+    default GameOptions reset() {
+        return options().get(Type.RESET);
+    }
+
+    default GameOptions score() {
+        return options().get(Type.SCORE);
+    }
+
+    default GameOptions beatenScore() {
+        return options().get(Type.BEATEN_SCORE);
+    }
 
     @Immutable
     interface GameOptions {
@@ -46,8 +66,10 @@ public interface GamePlayerExperienceConfiguration {
         @SubSection
         Title title();
 
+        @ConfDefault.DefaultStrings({})
         List<String> commands();
 
+        @ConfDefault.DefaultStrings({})
         List<String> messages();
 
         default void apply(Player player) {

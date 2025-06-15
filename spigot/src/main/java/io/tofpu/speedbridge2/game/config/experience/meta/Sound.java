@@ -4,6 +4,7 @@ import static org.immutables.value.Value.Immutable;
 
 import com.cryptomorin.xseries.XSound;
 import org.bukkit.entity.Player;
+import space.arim.dazzleconf.annote.ConfDefault;
 
 @Immutable
 public interface Sound {
@@ -15,10 +16,13 @@ public interface Sound {
         return ImmutableSound.of(type, volume, pitch);
     }
 
+    @ConfDefault.DefaultString("UI_BUTTON_CLICK")
     XSound type();
 
+    @ConfDefault.DefaultDouble(1.0f)
     float volume();
 
+    @ConfDefault.DefaultDouble(1.0f)
     float pitch();
 
     default void play(Player player) {
