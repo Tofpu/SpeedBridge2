@@ -40,6 +40,9 @@ public class CommandHandler {
     }
 
     public void enable() {
+        if (enabled) {
+            throw new IllegalStateException("CommandHandler has already been enabled.");
+        }
         lamp = builder.build();
         registerChildrenCommandsUnderParentCommand();
         enabled = true;
