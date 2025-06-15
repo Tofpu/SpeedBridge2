@@ -1,13 +1,13 @@
-package io.tofpu.speedbridge2.environment;
+package io.tofpu.speedbridge2.environment.infra;
 
-import io.tofpu.speedbridge2.environment.generator.EmptyChunkGenerator;
+import io.tofpu.speedbridge2.environment.infra.generator.EmptyChunkGenerator;
 import java.io.File;
 import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 
-public class EnvironmentService {
+public class EnvironmentHandler {
     protected static final String WORLD_NAME = "speedbridge2";
     /**
      * The directory where the worlds are stored.
@@ -23,7 +23,7 @@ public class EnvironmentService {
 
     private boolean isSetup = false;
 
-    public EnvironmentService(File worldContainer) {
+    public EnvironmentHandler(File worldContainer) {
         this.worldContainer = worldContainer;
     }
 

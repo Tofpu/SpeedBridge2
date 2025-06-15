@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.environment.generator;
+package io.tofpu.speedbridge2.environment.infra.generator;
 
 import java.util.Random;
 import org.bukkit.World;

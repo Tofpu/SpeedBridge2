@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2.game;
 
 import io.tofpu.speedbridge2.command.CommandHandler;
-import io.tofpu.speedbridge2.environment.EnvironmentService;
+import io.tofpu.speedbridge2.environment.infra.EnvironmentHandler;
 import io.tofpu.speedbridge2.game.command.GameCommand;
 import io.tofpu.speedbridge2.game.config.GameConfigManager;
 import io.tofpu.speedbridge2.lobby.LobbyTeleporter;
@@ -14,10 +14,10 @@ public class GameSystem {
     private final GameService gameService;
     private final GameConfigManager gameConfigManager;
 
-    public GameSystem(EnvironmentService environmentService, File dataDirectory, ListenerRegistration listenerRegistration, LobbyTeleporter lobbyTeleporter, ToolbarAPI toolbarAPI) {
+    public GameSystem(EnvironmentHandler environmentHandler, File dataDirectory, ListenerRegistration listenerRegistration, LobbyTeleporter lobbyTeleporter, ToolbarAPI toolbarAPI) {
         gameConfigManager = new GameConfigManager(dataDirectory);
         this.gameService = new GameService(
-                environmentService.getWorld(),
+                environmentHandler.getWorld(),
                 gameConfigManager,
                 listenerRegistration,
                 lobbyTeleporter,

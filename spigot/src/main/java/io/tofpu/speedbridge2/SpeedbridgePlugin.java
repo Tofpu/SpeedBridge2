@@ -3,7 +3,7 @@ package io.tofpu.speedbridge2;
 import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.database.system.DatabaseSystem;
-import io.tofpu.speedbridge2.environment.EnvironmentService;
+import io.tofpu.speedbridge2.environment.infra.EnvironmentHandler;
 import io.tofpu.speedbridge2.game.GameSystem;
 import io.tofpu.speedbridge2.island.system.IslandSystem;
 import io.tofpu.speedbridge2.lobby.LobbyService;
@@ -93,12 +93,12 @@ public class SpeedbridgePlugin extends JavaPlugin {
 
         toolbarHandler.enable();
 
-        EnvironmentService environmentService = new EnvironmentService(Bukkit.getWorldContainer());
-        environmentService.setupEnvironment();
+        EnvironmentHandler environmentHandler = new EnvironmentHandler(Bukkit.getWorldContainer());
+        environmentHandler.setupEnvironment();
 
         ListenerRegistration listenerRegistration = ListenerRegistration.create(this);
         gameSystem = new GameSystem(
-                environmentService, getDataFolder(), listenerRegistration,
+                environmentHandler, getDataFolder(), listenerRegistration,
                 lobbyService, toolbarHandler.toolbarAPI()
         );
         gameSystem.enable();
@@ -107,7 +107,7 @@ public class SpeedbridgePlugin extends JavaPlugin {
         SetupSystem setupSystem = new SetupSystem(
                 islandSystem.islandService(),
                 lobbyService,
-                environmentService.getWorld()
+                environmentHandler.getWorld()
         );
         setupSystem.registerCommand(commandHandler, schematicHandler);
 
