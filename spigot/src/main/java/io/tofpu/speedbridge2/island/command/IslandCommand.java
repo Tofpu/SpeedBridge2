@@ -4,11 +4,10 @@ import io.tofpu.speedbridge2.command.ChildrenCommand;
 import io.tofpu.speedbridge2.island.Island;
 import io.tofpu.speedbridge2.island.IslandService;
 import java.util.Collection;
-import revxrsal.commands.annotation.Command;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.command.CommandActor;
 
-@Command("island")
+@Subcommand("island")
 public class IslandCommand extends ChildrenCommand {
     private final IslandService islandService;
 
@@ -28,7 +27,7 @@ public class IslandCommand extends ChildrenCommand {
         actor.reply("&eRemoved island &f" + island.slot());
     }
 
-    @Command("list")
+    @Subcommand("list")
     public void listIslands(CommandActor actor) {
         Collection<Island> islands = islandService.islands();
         if (islands.isEmpty()) {
