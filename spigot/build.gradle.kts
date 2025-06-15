@@ -2,6 +2,8 @@ plugins {
     id("java")
     id("com.diffplug.spotless") version "7.0.0.BETA4"
     id("org.jooq.jooq-codegen-gradle") version "3.19.24"
+    id("xyz.jpenilla.run-paper") version "2.3.1"
+    id("com.gradleup.shadow") version "9.0.0-beta16"
 }
 
 group = "io.tofpu.speedbridge2"
@@ -114,5 +116,26 @@ tasks {
 
     test {
         useJUnitPlatform()
+    }
+
+    processResources {
+        expand(project.properties)
+    }
+
+    runServer {
+        val minecraftVersion = "1.19.4"
+        minecraftVersion(minecraftVersion)
+        runDirectory.set(project.layout.projectDirectory.dir("run/${minecraftVersion}"))
+
+        downloadPlugins {
+            url("https://dev.bukkit.org/projects/worldedit/files/5145924/download")
+        }
+    }
+
+    shadowJar {
+        archiveFileName.set("${project.name}-${project.version}.jar")
+
+        mergeServiceFiles()
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 }
