@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2.island.command.parameter;
 
-import io.tofpu.speedbridge2.island.IslandService;
 import io.tofpu.speedbridge2.island.domain.Island;
+import io.tofpu.speedbridge2.island.service.IslandService;
 import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;

@@ -1,8 +1,8 @@
 package io.tofpu.speedbridge2.island.command;
 
 import io.tofpu.speedbridge2.command.ChildrenCommand;
-import io.tofpu.speedbridge2.island.IslandService;
 import io.tofpu.speedbridge2.island.domain.Island;
+import io.tofpu.speedbridge2.island.service.IslandService;
 import java.util.Collection;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.command.CommandActor;

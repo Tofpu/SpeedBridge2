@@ -1,4 +1,6 @@
-package io.tofpu.speedbridge2.island;
+package io.tofpu.speedbridge2.island.service;
+
+import io.tofpu.speedbridge2.island.domain.Island;
 
 import java.util.*;
 
