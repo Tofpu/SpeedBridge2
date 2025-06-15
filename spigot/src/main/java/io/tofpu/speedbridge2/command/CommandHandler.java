@@ -2,13 +2,12 @@ package io.tofpu.speedbridge2.command;
 
 import io.tofpu.speedbridge2.util.ColorUtil;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.function.Consumer;
 import org.bukkit.plugin.java.JavaPlugin;
 import revxrsal.commands.Lamp;
 import revxrsal.commands.bukkit.BukkitLamp;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
-import revxrsal.commands.orphan.OrphanCommand;
 import revxrsal.commands.orphan.Orphans;
 
 public class CommandHandler {
@@ -16,7 +15,7 @@ public class CommandHandler {
     private final Lamp.Builder<BukkitCommandActor> builder;
     private Lamp<BukkitCommandActor> lamp;
 
-    private final List<OrphanCommand> childrenCommands = new ArrayList<>();
+    private final Collection<ChildrenCommand> childrenCommands = new ArrayList<>();
     private boolean enabled = false;
 
     public CommandHandler(JavaPlugin plugin) {
@@ -47,7 +46,7 @@ public class CommandHandler {
     }
 
     private void registerChildrenCommandsUnderParentCommand() {
-        for (OrphanCommand command : childrenCommands) {
+        for (ChildrenCommand command : childrenCommands) {
             lamp.register(PARENT_ORPHAN_PATH.handler(command));
         }
         childrenCommands.clear();
