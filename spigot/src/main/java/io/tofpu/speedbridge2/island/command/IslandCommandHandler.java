@@ -1,8 +1,8 @@
 package io.tofpu.speedbridge2.island.command;
 
 import io.tofpu.speedbridge2.command.CommandHandler;
-import io.tofpu.speedbridge2.island.Island;
 import io.tofpu.speedbridge2.island.IslandService;
+import io.tofpu.speedbridge2.island.domain.Island;
 import io.tofpu.speedbridge2.island.command.parameter.IslandParameterType;
 
 public class IslandCommandHandler {

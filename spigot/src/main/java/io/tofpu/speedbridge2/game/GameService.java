@@ -8,7 +8,7 @@ import io.tofpu.speedbridge2.game.listener.GameListener;
 import io.tofpu.speedbridge2.game.state.GameStateProvider;
 import io.tofpu.speedbridge2.game.state.GameStateType;
 import io.tofpu.speedbridge2.game.toolbar.GameEquipmentHandler;
-import io.tofpu.speedbridge2.island.Island;
+import io.tofpu.speedbridge2.island.domain.Island;
 import io.tofpu.speedbridge2.lobby.LobbyTeleporter;
 import io.tofpu.speedbridge2.util.listener.ListenerRegistration;
 import io.tofpu.toolbar.ToolbarAPI;

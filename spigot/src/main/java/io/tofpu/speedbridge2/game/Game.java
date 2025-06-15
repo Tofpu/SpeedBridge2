@@ -5,7 +5,7 @@ import io.tofpu.speedbridge2.game.config.experience.GamePlayerExperienceConfigur
 import io.tofpu.speedbridge2.game.state.AbstractGameState;
 import io.tofpu.speedbridge2.game.state.GameStateProvider;
 import io.tofpu.speedbridge2.game.state.GameStateType;
-import io.tofpu.speedbridge2.island.Island;
+import io.tofpu.speedbridge2.island.domain.Island;
 import org.bukkit.entity.Player;
 
 // todo: handle game logic here

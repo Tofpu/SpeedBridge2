@@ -2,7 +2,7 @@ package io.tofpu.speedbridge2.game.command;
 
 import io.tofpu.speedbridge2.command.ChildrenCommand;
 import io.tofpu.speedbridge2.game.GameService;
-import io.tofpu.speedbridge2.island.Island;
+import io.tofpu.speedbridge2.island.domain.Island;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 

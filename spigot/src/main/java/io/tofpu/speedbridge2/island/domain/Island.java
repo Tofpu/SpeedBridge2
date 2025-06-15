@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.island;
+package io.tofpu.speedbridge2.island.domain;
 
 import io.tofpu.speedbridge2.schematic.Schematic;
 import io.tofpu.speedbridge2.util.PositionOrientation;
