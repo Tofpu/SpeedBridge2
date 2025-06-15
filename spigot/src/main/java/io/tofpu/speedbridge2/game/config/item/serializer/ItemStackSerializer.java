@@ -3,6 +3,8 @@ package io.tofpu.speedbridge2.game.config.item.serializer;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.cryptomorin.xseries.XMaterial;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import space.arim.dazzleconf.error.BadValueException;
@@ -25,10 +27,28 @@ public class ItemStackSerializer implements ValueSerialiser<ItemStack> {
     @Override
     public ItemStack deserialise(FlexibleType flexibleType) throws BadValueException {
         Map<String, Object> map = flexibleType.getMap((flexibleKey, flexibleValue) ->
-                new AbstractMap.SimpleEntry<>(flexibleKey.getString(), flexibleKey.getObject(Object.class)));
-        Material material = Material.valueOf(map.get(MATERIAL).toString());
-        int amount = Integer.parseInt(map.get(AMOUNT).toString());
-        short durability = Short.parseShort(map.get(DURABILITY).toString());
+                new AbstractMap.SimpleEntry<>(flexibleKey.getString(), flexibleValue.getObject(Object.class)));
+        String serializedMaterialName = map.get(MATERIAL).toString();
+        Material material;
+        try {
+            material = Material.valueOf(serializedMaterialName);
+        } catch (IllegalArgumentException e) {
+            try {
+                material = XMaterial.matchXMaterial(serializedMaterialName).orElseThrow().parseMaterial();
+            } catch (Exception ex) {
+                IllegalArgumentException exception = new IllegalArgumentException("Invalid material " + serializedMaterialName, ex);
+                exception.addSuppressed(e);
+                throw exception;
+            }
+        }
+        int amount = 1;
+        if (map.containsKey(AMOUNT)) {
+            amount = Integer.parseInt(map.get(AMOUNT).toString());
+        }
+        short durability = 0;
+        if (map.containsKey(DURABILITY)) {
+            durability = Short.parseShort(map.get(DURABILITY).toString());
+        }
         ItemStack itemStack = new ItemStack(material, amount, durability);
         if (map.containsKey(META)) {
             ItemMetaOptions itemMetaOptions = flexibleType.getObject(ItemMetaOptions.class);
@@ -41,8 +61,12 @@ public class ItemStackSerializer implements ValueSerialiser<ItemStack> {
     public Object serialise(ItemStack value, Decomposer decomposer) {
         Map<String, Object> map = new HashMap<>();
         map.put(MATERIAL, value.getType().name());
-        map.put(AMOUNT, value.getAmount());
-        map.put(DURABILITY, value.getDurability());
+        if (value.getAmount() != 1) {
+            map.put(AMOUNT, value.getAmount());
+        }
+        if (value.getDurability() != 0) {
+            map.put(DURABILITY, value.getDurability());
+        }
         if (value.hasItemMeta()) {
             map.put(META, decomposer.decompose(ItemMetaOptions.class, new ItemMetaOptions(value.getItemMeta())));
         }

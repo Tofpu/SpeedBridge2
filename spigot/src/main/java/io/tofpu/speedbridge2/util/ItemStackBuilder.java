@@ -57,14 +57,14 @@ public class ItemStackBuilder {
     }
 
     public ItemStack apply(ItemStack itemStack) {
-        if (!itemStack.hasItemMeta()) {
-            return itemStack;
-        }
         return applyMeta(itemStack);
     }
 
     private ItemStack applyMeta(ItemStack itemStack) {
         ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) {
+            return itemStack;
+        }
         if (displayName != null) {
             meta.setDisplayName(displayName);
         }
