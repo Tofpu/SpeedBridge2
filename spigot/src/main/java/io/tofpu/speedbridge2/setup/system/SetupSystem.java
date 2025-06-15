@@ -3,8 +3,8 @@ package io.tofpu.speedbridge2.setup.system;
 import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.island.service.IslandService;
 import io.tofpu.speedbridge2.lobby.LobbyTeleporter;
-import io.tofpu.speedbridge2.schematic.Schematic;
-import io.tofpu.speedbridge2.schematic.SchematicService;
+import io.tofpu.speedbridge2.schematic.domain.Schematic;
+import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 import io.tofpu.speedbridge2.setup.service.SetupService;
 import io.tofpu.speedbridge2.setup.command.SetupCommand;
 import org.bukkit.World;
@@ -19,11 +19,11 @@ public class SetupSystem {
         );
     }
 
-    public void registerCommand(CommandHandler handler, SchematicService schematicService) {
+    public void registerCommand(CommandHandler handler, SchematicHandler schematicHandler) {
         handler.modifyBuilder(builder -> builder.parameterTypes(paramBuilder -> {
             paramBuilder.addParameterType(Schematic.class, (stream, executionContext) -> {
                 String schematicName = stream.readString();
-                Schematic schematic = schematicService.resolveSchematic(schematicName);
+                Schematic schematic = schematicHandler.resolveSchematic(schematicName);
                 if (schematic == null) {
                     throw new CommandErrorException("Schematic not found: " + schematicName);
                 }

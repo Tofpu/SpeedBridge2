@@ -1,21 +1,22 @@
-package io.tofpu.speedbridge2.schematic;
+package io.tofpu.speedbridge2.schematic.infra;
 
 import io.tofpu.multiworldedit.ClipboardWrapper;
-import io.tofpu.speedbridge2.schematic.clipboard.ClipboardResolver;
+import io.tofpu.speedbridge2.schematic.domain.Schematic;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SchematicService {
+public class SchematicHandler {
     private final File schematicDirectory;
     private final SchematicFileResolver fileResolver;
     private final ClipboardResolver clipboardResolver;
 
     private final Map<String, Schematic> schematics = new HashMap<>();
 
-    public SchematicService(File schematicDirectory) {
+    public SchematicHandler(File schematicDirectory) {
         this.schematicDirectory = schematicDirectory;
         this.fileResolver = new SchematicFileResolver();
         this.clipboardResolver = new ClipboardResolver();

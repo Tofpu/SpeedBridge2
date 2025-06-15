@@ -2,8 +2,8 @@ package io.tofpu.speedbridge2.island.persistence;
 
 import io.tofpu.speedbridge2.island.domain.Island;
 import io.tofpu.speedbridge2.island.domain.IslandRepository;
-import io.tofpu.speedbridge2.schematic.Schematic;
-import io.tofpu.speedbridge2.schematic.SchematicService;
+import io.tofpu.speedbridge2.schematic.domain.Schematic;
+import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,12 +11,12 @@ import java.util.List;
 public class IslandRepositoryImpl implements IslandRepository {
     private final IslandDao islandDao;
     private final IslandMapper islandMapper;
-    private final SchematicService schematicService;
+    private final SchematicHandler schematicHandler;
 
-    public IslandRepositoryImpl(IslandDao islandDao, IslandMapper islandMapper, SchematicService schematicService) {
+    public IslandRepositoryImpl(IslandDao islandDao, IslandMapper islandMapper, SchematicHandler schematicHandler) {
         this.islandDao = islandDao;
         this.islandMapper = islandMapper;
-        this.schematicService = schematicService;
+        this.schematicHandler = schematicHandler;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class IslandRepositoryImpl implements IslandRepository {
     @Override
     public Island findBySlot(int slot) {
         IslandEntity entity = islandDao.findBySlot(slot);
-        Schematic schematic = schematicService.resolveSchematic(entity.schematicName());
+        Schematic schematic = schematicHandler.resolveSchematic(entity.schematicName());
         return islandMapper.toDomain(entity, schematic);
     }
 
@@ -37,7 +37,7 @@ public class IslandRepositoryImpl implements IslandRepository {
         List<IslandEntity> entities = islandDao.findAll();
         return entities.stream()
                 .map(entity -> {
-                    Schematic schematic = schematicService.resolveSchematic(entity.schematicName());
+                    Schematic schematic = schematicHandler.resolveSchematic(entity.schematicName());
                     return islandMapper.toDomain(entity, schematic);
                 })
                 .toList();

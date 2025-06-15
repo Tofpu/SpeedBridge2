@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2.setup.command;
 
-import io.tofpu.speedbridge2.schematic.Schematic;
-import io.tofpu.speedbridge2.schematic.SchematicService;
+import io.tofpu.speedbridge2.schematic.domain.Schematic;
+import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.autocomplete.SuggestionProvider;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
@@ -11,17 +11,17 @@ import revxrsal.commands.parameter.ParameterType;
 import revxrsal.commands.stream.MutableStringStream;
 
 public class SchematicParameterType implements ParameterType<BukkitCommandActor, Schematic> {
-    private final SchematicService schematicService;
+    private final SchematicHandler schematicHandler;
 
-    public SchematicParameterType(SchematicService schematicService) {
-        this.schematicService = schematicService;
+    public SchematicParameterType(SchematicHandler schematicHandler) {
+        this.schematicHandler = schematicHandler;
     }
 
     @Override
     public Schematic parse(
             @NotNull MutableStringStream input, @NotNull ExecutionContext<@NotNull BukkitCommandActor> context) {
         String schematicName = input.readString();
-        Schematic schematic = schematicService.resolveSchematic(schematicName);
+        Schematic schematic = schematicHandler.resolveSchematic(schematicName);
         if (schematic == null) {
             throw new CommandErrorException("&cCould not find schematic with name " + schematicName);
         }
@@ -30,6 +30,6 @@ public class SchematicParameterType implements ParameterType<BukkitCommandActor,
 
     @Override
     public @NotNull SuggestionProvider<@NotNull BukkitCommandActor> defaultSuggestions() {
-        return context -> schematicService.schematicNames();
+        return context -> schematicHandler.schematicNames();
     }
 }

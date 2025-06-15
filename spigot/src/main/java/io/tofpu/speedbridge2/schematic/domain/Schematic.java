@@ -1,6 +1,5 @@
-package io.tofpu.speedbridge2.schematic;
+package io.tofpu.speedbridge2.schematic.domain;
 
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import io.tofpu.multiworldedit.ClipboardWrapper;
 import java.io.File;
 

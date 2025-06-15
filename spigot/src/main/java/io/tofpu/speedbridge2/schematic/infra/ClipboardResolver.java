@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.schematic.clipboard;
+package io.tofpu.speedbridge2.schematic.infra;
 
 import io.tofpu.multiworldedit.ClipboardWrapper;
 import io.tofpu.multiworldedit.MultiWorldEditAPI;

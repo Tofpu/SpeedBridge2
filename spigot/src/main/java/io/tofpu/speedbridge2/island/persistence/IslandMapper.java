@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2.island.persistence;
 
 import io.tofpu.speedbridge2.island.domain.Island;
-import io.tofpu.speedbridge2.schematic.Schematic;
+import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.util.PositionOrientation;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,10 +1,9 @@
 package io.tofpu.speedbridge2.arena;
 
-import com.sk89q.worldedit.Vector;
 import io.tofpu.multiworldedit.ClipboardWrapper;
 import io.tofpu.multiworldedit.RegionWrapper;
 import io.tofpu.multiworldedit.VectorWrapper;
-import io.tofpu.speedbridge2.schematic.Schematic;
+import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.util.Position;
 import org.bukkit.Location;
 import org.bukkit.World;

@@ -8,16 +8,16 @@ import io.tofpu.speedbridge2.island.persistence.IslandDao;
 import io.tofpu.speedbridge2.island.persistence.IslandMapper;
 import io.tofpu.speedbridge2.island.persistence.IslandRepositoryImpl;
 import io.tofpu.speedbridge2.island.service.IslandService;
-import io.tofpu.speedbridge2.schematic.SchematicService;
+import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 
 public class IslandSystem {
     private IslandService islandService;
 
-    public void load(Database database, SchematicService schematicService) {
+    public void load(Database database, SchematicHandler schematicHandler) {
         IslandRepository repository = new IslandRepositoryImpl(
                 new IslandDao(database),
                 new IslandMapper(),
-                schematicService
+                schematicHandler
         );
         islandService = new IslandService(repository);
         islandService.load();

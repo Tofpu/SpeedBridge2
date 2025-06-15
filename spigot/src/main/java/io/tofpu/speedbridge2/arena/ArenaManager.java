@@ -2,7 +2,7 @@ package io.tofpu.speedbridge2.arena;
 
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.regions.Region;
-import io.tofpu.speedbridge2.schematic.Schematic;
+import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.util.Position;
 import java.util.HashMap;
 import java.util.Map;

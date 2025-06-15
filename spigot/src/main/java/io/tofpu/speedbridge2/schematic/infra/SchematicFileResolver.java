@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.schematic;
+package io.tofpu.speedbridge2.schematic.infra;
 
 import java.io.File;
 

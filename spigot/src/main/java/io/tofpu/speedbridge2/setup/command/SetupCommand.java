@@ -1,7 +1,7 @@
 package io.tofpu.speedbridge2.setup.command;
 
 import io.tofpu.speedbridge2.command.ChildrenCommand;
-import io.tofpu.speedbridge2.schematic.Schematic;
+import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.setup.domain.SetupInfo;
 import io.tofpu.speedbridge2.setup.service.SetupService;
 import revxrsal.commands.annotation.Subcommand;

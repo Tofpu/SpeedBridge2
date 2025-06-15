@@ -6,7 +6,7 @@ import io.tofpu.speedbridge2.arena.ArenaManager;
 import io.tofpu.speedbridge2.island.domain.Island;
 import io.tofpu.speedbridge2.island.service.IslandService;
 import io.tofpu.speedbridge2.lobby.LobbyTeleporter;
-import io.tofpu.speedbridge2.schematic.Schematic;
+import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

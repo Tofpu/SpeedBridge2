@@ -7,7 +7,7 @@ import io.tofpu.speedbridge2.environment.EnvironmentService;
 import io.tofpu.speedbridge2.game.GameSystem;
 import io.tofpu.speedbridge2.island.system.IslandSystem;
 import io.tofpu.speedbridge2.lobby.LobbyService;
-import io.tofpu.speedbridge2.schematic.SchematicService;
+import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 import io.tofpu.speedbridge2.setup.system.SetupSystem;
 import io.tofpu.speedbridge2.toolbar.ToolbarHandler;
 import io.tofpu.speedbridge2.util.listener.ListenerRegistration;
@@ -31,7 +31,7 @@ public class SpeedbridgePlugin extends JavaPlugin {
     private ToolbarHandler toolbarHandler;
     private LobbyService lobbyService;
     private IslandSystem islandSystem;
-    private SchematicService schematicService;
+    private SchematicHandler schematicHandler;
 
     @Override
     public void onLoad() {
@@ -50,10 +50,10 @@ public class SpeedbridgePlugin extends JavaPlugin {
         lobbyService = new LobbyService();
         toolbarHandler = new ToolbarHandler(this);
 
-        schematicService = new SchematicService(schematicDirectory());
+        schematicHandler = new SchematicHandler(schematicDirectory());
 
         islandSystem = new IslandSystem();
-        islandSystem.load(databaseSystem.database(), schematicService);
+        islandSystem.load(databaseSystem.database(), schematicHandler);
     }
 
     public String loadSchemaSQL(JavaPlugin javaPlugin) {
@@ -81,7 +81,8 @@ public class SpeedbridgePlugin extends JavaPlugin {
 
     private @NotNull File schematicDirectory() {
         File pluginsDirectory = getDataFolder().getParentFile();
-        File worldEditDirectory = new File(pluginsDirectory, "worldedit");
+//        WorldEdit.getInstance().getConfiguration().saveDir
+        File worldEditDirectory = new File(pluginsDirectory, "WorldEdit");
         return new File(worldEditDirectory, "schematics");
     }
 
@@ -108,7 +109,7 @@ public class SpeedbridgePlugin extends JavaPlugin {
                 lobbyService,
                 environmentService.getWorld()
         );
-        setupSystem.registerCommand(commandHandler, schematicService);
+        setupSystem.registerCommand(commandHandler, schematicHandler);
 
         commandHandler.enable();
     }
