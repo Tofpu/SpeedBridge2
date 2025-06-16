@@ -1,5 +1,7 @@
 package io.tofpu.speedbridge2;
 
+import io.github.revxrsal.eventbus.EventBus;
+import io.github.revxrsal.eventbus.EventBusBuilder;
 import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.database.system.DatabaseSystem;
@@ -25,6 +27,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class SpeedbridgePlugin extends JavaPlugin {
+    private final EventBus eventBus = EventBusBuilder.asm()
+            .build();
+
     private CommandHandler commandHandler;
     private DatabaseSystem databaseSystem;
     private GameSystem gameSystem;

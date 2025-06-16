@@ -49,6 +49,8 @@ dependencies {
     // h2 driver
     implementation("com.h2database:h2:2.3.232")
 
+    implementation("com.github.Revxrsal:EventBus:1.3")
+
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
