@@ -50,7 +50,7 @@ public class SetupService {
             throw new IllegalStateException("Could not create arena!");
         }
 
-        IslandSetup setup = new IslandSetup(player, setupInfo.slot(), schematic);
+        IslandSetup setup = new IslandSetup(player, setupInfo.slot(), schematic, arena);
         this.playerSetups.put(playerId, setup);
 
         arena.teleport(player);

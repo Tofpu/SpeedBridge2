@@ -1,6 +1,6 @@
 package io.tofpu.speedbridge2.setup.service;
 
-import io.tofpu.multiworldedit.VectorWrapper;
+import io.tofpu.speedbridge2.arena.Arena;
 import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.util.PositionOrientation;
 import org.bukkit.ChatColor;
@@ -11,31 +11,37 @@ public class IslandSetup {
     private final Player player;
     private final int slot;
     private final Schematic schematic;
+    private final Arena arena;
 
     private PositionOrientation spawnPoint = null;
 
-    public IslandSetup(Player player, int slot, Schematic schematic) {
+    public IslandSetup(Player player, int slot, Schematic schematic, Arena arena) {
         this.player = player;
         this.slot = slot;
         this.schematic = schematic;
+        this.arena = arena;
     }
 
     public void handleSetSpawnPoint() {
         Location playerLocation = player.getLocation();
-        VectorWrapper absolute = schematic.clipboard().getOrigin().subtract(
-                playerLocation.getX(),
-                playerLocation.getY(),
-                playerLocation.getZ()
-        );
+        Location playerLocationMinusArena = arena.getPosition()
+                .subtract(new PositionOrientation(
+                                playerLocation.getBlockX(),
+                                playerLocation.getBlockY(),
+                                playerLocation.getBlockZ(),
+                                playerLocation.getYaw(),
+                                playerLocation.getPitch()
+                        )
+                ).toLocation(arena.world());
         this.spawnPoint = new PositionOrientation(
-                absolute.getX(),
-                absolute.getY(),
-                absolute.getZ(),
+                playerLocationMinusArena.getX(),
+                playerLocationMinusArena.getY(),
+                playerLocationMinusArena.getZ(),
                 playerLocation.getYaw(),
                 playerLocation.getPitch()
         );
         player.sendMessage(ChatColor.YELLOW + "Spawn point set: [%s, %s, %s]".formatted(
-                absolute.getX(), absolute.getY(), absolute.getZ()
+                spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ()
         ));
     }
 

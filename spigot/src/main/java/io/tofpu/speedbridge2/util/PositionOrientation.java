@@ -7,6 +7,14 @@ public class PositionOrientation {
     private final double x, y, z;
     private final float yaw, pitch;
 
+    public PositionOrientation(Position position) {
+        this(position, 0, 0);
+    }
+
+    public PositionOrientation(Position position, float yaw, float pitch) {
+        this(position.x(), position.y(), position.z(), yaw, pitch);
+    }
+
     public PositionOrientation(double x, double y, double z) {
         this(x, y, z, 0, 0);
     }
