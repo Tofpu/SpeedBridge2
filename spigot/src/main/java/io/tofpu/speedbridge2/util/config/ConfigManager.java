@@ -33,6 +33,7 @@ public final class ConfigManager<C> {
         ConfigurationOptions options = new ConfigurationOptions.Builder()
                 .addSerialiser(new ItemMetaOptionsSerializer())
                 .addSerialiser(new ItemStackSerializer())
+                .addSerialiser(new XSoundSerializer())
                 .build();
 
         ConfigurationFactory<C> configFactory = SnakeYamlConfigurationFactory.create(
