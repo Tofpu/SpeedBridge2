@@ -2,6 +2,8 @@ package io.tofpu.speedbridge2.util;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -31,18 +33,17 @@ public class ItemStackBuilder {
     }
 
     public ItemStackBuilder displayName(String displayName) {
-        this.displayName = displayName;
+        this.displayName = ColorUtil.colorize(displayName);
         return this;
     }
 
     public ItemStackBuilder lore(List<String> lore) {
-        this.lore = lore;
+        this.lore = lore.stream().map(ColorUtil::colorize).collect(Collectors.toList());
         return this;
     }
 
     public ItemStackBuilder lore(String... lore) {
-        this.lore = Arrays.asList(lore);
-        return this;
+        return lore(Arrays.asList(lore));
     }
 
     public ItemStack build(Material material) {
