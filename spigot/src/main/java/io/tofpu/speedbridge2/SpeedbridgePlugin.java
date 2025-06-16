@@ -96,6 +96,7 @@ public class SpeedbridgePlugin extends JavaPlugin {
         commandHandler = new CommandHandler(this);
         islandSystem.registerCommands(commandHandler);
 
+        lobbySystem.registerCommands(commandHandler);
         toolbarHandler.enable();
 
         EnvironmentHandler environmentHandler = new EnvironmentHandler(Bukkit.getWorldContainer());
