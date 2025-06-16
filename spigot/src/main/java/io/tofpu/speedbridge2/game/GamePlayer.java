@@ -49,6 +49,7 @@ public class GamePlayer {
         return placedBlocks.remove(location);
     }
 
+    // todo: add forEach, contains method instead
     public List<Location> placedBlocks() {
         return placedBlocks;
     }
