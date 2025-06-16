@@ -60,8 +60,7 @@ public class GameService implements GameSupplier {
                 arena
         );
 
-//        player.teleport(game.location());
-        arena.teleport(player);
+        game.teleport(player);
         gameMap.put(playerId, game);
 
         game.setState(GameStateType.START);
@@ -123,8 +122,8 @@ public class GameService implements GameSupplier {
         Player bukkitPlayer = game.gamePlayer().player();
         gameExperience().reset().apply(bukkitPlayer);
 
+        game.teleport(bukkitPlayer);
         game.setState(GameStateType.START);
-        bukkitPlayer.teleport(game.location());
         eventBus.post(GameStartEvent.class, game);
     }
 
@@ -138,11 +137,11 @@ public class GameService implements GameSupplier {
         game.gamePlayer().clearTimer();
         // todo: format the score, register it, increment the total wins, etc.
 
-        Player player = game.gamePlayer().player();
-        gameExperience().score().apply(player);
+        Player bukkitPlayer = game.gamePlayer().player();
+        gameExperience().score().apply(bukkitPlayer);
         eventBus.post(GameScoreEvent.class, game);
 
-        player.teleport(game.location());
+        game.teleport(bukkitPlayer);
         game.setState(GameStateType.START);
         eventBus.post(GameStartEvent.class, game);
     }

@@ -26,9 +26,8 @@ public class GameStateListener implements Listener {
     public void resetGameWhenPlayerGoesOutsideIslandBorders(PlayerMoveEvent event) {
         UUID playerId = event.getPlayer().getUniqueId();
         gameService.game(playerId).ifPresent(game -> {
-            CuboidRegion region = game.arena().getRegion();
+            CuboidRegion region = game.region();
             if (!region.contains(asVector(event.getTo()))) {
-//                game.setState(GameStateType.RESET);
                 gameService.resetGame(game);
             }
         });
@@ -61,7 +60,6 @@ public class GameStateListener implements Listener {
                 return;
             }
             gamePlayer.endTimer();
-//            game.setState(GameStateType.SCORE);
             gameService.addScore(game);
         });
     }

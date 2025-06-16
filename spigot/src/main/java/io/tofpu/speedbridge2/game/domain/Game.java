@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.game.domain;
 
 import io.tofpu.multiworldedit.VectorWrapper;
 import io.tofpu.speedbridge2.arena.Arena;
+import io.tofpu.speedbridge2.arena.CuboidRegion;
 import io.tofpu.speedbridge2.game.GamePlayer;
 import io.tofpu.speedbridge2.island.domain.Island;
 import io.tofpu.speedbridge2.util.PositionOrientation;
@@ -27,6 +28,10 @@ public class Game {
         this.arena = arena;
     }
 
+    public void teleport(Player player) {
+        player.teleport(location());
+    }
+
     public void setState(GameStateType state) {
         this.state = state;
     }
@@ -48,11 +53,11 @@ public class Game {
         return island;
     }
 
-    public Arena arena() {
-        return arena;
-    }
-
     public GamePlayer gamePlayer() {
         return gamePlayer;
+    }
+
+    public CuboidRegion region() {
+        return arena.getRegion();
     }
 }

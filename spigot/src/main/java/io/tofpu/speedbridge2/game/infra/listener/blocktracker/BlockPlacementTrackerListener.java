@@ -63,7 +63,7 @@ public class BlockPlacementTrackerListener implements Listener {
             return;
         }
 
-        CuboidRegion region = game.arena().getRegion();
+        CuboidRegion region = game.region();
         if (!region.contains(asVector(event.getBlock().getLocation()))) {
             event.setCancelled(true);
             return;
