@@ -23,6 +23,7 @@ public class IslandDao {
             DSLContext create = DSL.using(connection, SQLDialect.H2);
             create.insertInto(Islands.ISLANDS)
                     .values(
+                            0, // ID is auto-incremented, so we can use 0 or null
                             entity.slot(),
                             entity.schematicName(),
                             entity.location().x(),
