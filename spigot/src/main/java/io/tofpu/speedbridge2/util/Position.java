@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.util;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 
 public record Position(int x, int y, int z) {
     public Position add(Position other) {
@@ -18,5 +19,10 @@ public record Position(int x, int y, int z) {
 
     public PositionOrientation subtract(PositionOrientation other) {
         return new PositionOrientation(x - other.getX(), y - other.getY(), z - other.getZ(), other.getYaw(), other.getPitch());
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return "[x=%d, y=%d, z=%d]".formatted(x, y, z);
     }
 }

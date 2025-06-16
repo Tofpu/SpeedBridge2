@@ -54,4 +54,9 @@ public class PositionOrientation {
     public float getPitch() {
         return pitch;
     }
+
+    @Override
+    public String toString() {
+        return "[x=%.2f, y=%.2f, z=%.2f, yaw=%.2f, pitch=%.2f]".formatted(x, y, z, yaw, pitch);
+    }
 }
