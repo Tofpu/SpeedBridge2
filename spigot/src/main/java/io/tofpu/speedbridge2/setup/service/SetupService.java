@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.setup.service;
 
+import io.github.revxrsal.eventbus.EventBus;
 import io.tofpu.speedbridge2.Constants;
 import io.tofpu.speedbridge2.arena.Arena;
 import io.tofpu.speedbridge2.arena.ArenaManager;
@@ -9,21 +10,27 @@ import io.tofpu.speedbridge2.lobby.LobbyTeleporter;
 import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import io.tofpu.speedbridge2.setup.domain.SetupInfo;
+import io.tofpu.speedbridge2.setup.domain.event.SetupStartEvent;
+import io.tofpu.speedbridge2.setup.domain.event.SetupStopEvent;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class SetupService {
+    private final EventBus eventBus;
     private final IslandService islandService;
     private final LobbyTeleporter lobbyTeleporter;
     private final ArenaManager<Integer> arenaManager;
 
     private final Map<UUID, IslandSetup> playerSetups = new HashMap<>();
 
-    public SetupService(IslandService islandService, LobbyTeleporter lobbyTeleporter, World world) {
+    public SetupService(EventBus eventBus, IslandService islandService, LobbyTeleporter lobbyTeleporter, World world) {
+        this.eventBus = eventBus;
         this.islandService = islandService;
         this.lobbyTeleporter = lobbyTeleporter;
         this.arenaManager = new ArenaManager<>(world, Constants.ArenaPositioning.SETUP);
@@ -43,9 +50,12 @@ public class SetupService {
             throw new IllegalStateException("Could not create arena!");
         }
 
-        IslandSetup setup = new IslandSetup(this, player, setupInfo.slot(), schematic, arena);
+        IslandSetup setup = new IslandSetup(player, setupInfo.slot(), schematic);
         this.playerSetups.put(playerId, setup);
-        setup.start();
+
+        arena.teleport(player);
+        eventBus.post(SetupStartEvent.class, setup);
+
         return true;
     }
 
@@ -54,6 +64,9 @@ public class SetupService {
         if (setup == null) {
             return false;
         }
+
+        eventBus.post(SetupStopEvent.class, setup, SetupStopEvent.Type.CANCELLED);
+        lobbyTeleporter.teleportToLobby(player);
 
         cleanUp(setup.slot(), player);
         return true;
@@ -64,11 +77,17 @@ public class SetupService {
 
         if (!setup.canBeFinished()) {
             // todo: throw exception here? as it's unexpected
+            setup.player().sendMessage(ChatColor.RED + "You need to set a spawn point before finishing the setup!");
+            setup.player().sendMessage(ChatColor.RED + "Or you can cancel the setup by using the setup tools.");
             return;
         }
 
+        eventBus.post(SetupStopEvent.class, setup, SetupStopEvent.Type.SUCCESS);
+
         Island island = new Island(setup.slot(), setup.schematic(), setup.spawnPoint());
         islandService.registerIsland(island);
+
+        setup.player().sendMessage(ChatColor.GREEN + "Setup for slot " + setup.slot() + " finished successfully!");
     }
 
     public void cleanUp(int slot, Player player) {
@@ -78,5 +97,13 @@ public class SetupService {
 
     private void teleportPlayerToLobby(Player player) {
         lobbyTeleporter.teleportToLobby(player);
+    }
+
+    public Optional<IslandSetup> islandSetup(Player player) {
+        return Optional.ofNullable(playerSetups.get(player.getUniqueId()));
+    }
+
+    public void finishSetup(Player player) {
+        islandSetup(player).ifPresent(this::finishSetup);
     }
 }

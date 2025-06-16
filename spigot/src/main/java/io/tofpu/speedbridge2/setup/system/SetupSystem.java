@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.setup.system;
 
+import io.github.revxrsal.eventbus.EventBus;
 import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.island.service.IslandService;
 import io.tofpu.speedbridge2.lobby.LobbyTeleporter;
@@ -11,11 +12,14 @@ import org.bukkit.World;
 import revxrsal.commands.exception.CommandErrorException;
 
 public class SetupSystem {
+    private final EventBus eventBus;
     private final SetupService service;
 
-    public SetupSystem(IslandService islandService, LobbyTeleporter lobbyTeleporter, World arenaWorld) {
+    public SetupSystem(EventBus eventBus, IslandService islandService, LobbyTeleporter lobbyTeleporter, World arenaWorld) {
+        this.eventBus = eventBus;
         this.service = new SetupService(
-                islandService, lobbyTeleporter, arenaWorld
+                eventBus, islandService,
+                lobbyTeleporter, arenaWorld
         );
     }
 

@@ -110,6 +110,7 @@ public class SpeedbridgePlugin extends JavaPlugin {
         gameSystem.registerCommand(commandHandler);
 
         SetupSystem setupSystem = new SetupSystem(
+                eventBus,
                 islandSystem.islandService(),
                 lobbyService,
                 environmentHandler.getWorld()
