@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
 import java.util.UUID;
 
@@ -63,7 +64,7 @@ public class BlockPlacementTrackerListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
-    public void onBlockPlace(BlockBreakEvent event) {
+    public void onBlockPlace(BlockPlaceEvent event) {
         UUID playerId = event.getPlayer().getUniqueId();
         Game game = gameService.getGame(playerId);
         if (game == null) {
