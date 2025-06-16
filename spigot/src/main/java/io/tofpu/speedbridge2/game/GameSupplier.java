@@ -1,5 +1,7 @@
 package io.tofpu.speedbridge2.game;
 
+import io.tofpu.speedbridge2.game.domain.Game;
+
 import java.util.UUID;
 import java.util.function.Consumer;
 

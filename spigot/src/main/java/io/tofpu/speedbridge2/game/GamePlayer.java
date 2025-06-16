@@ -2,6 +2,8 @@ package io.tofpu.speedbridge2.game;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.tofpu.speedbridge2.game.domain.Game;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 

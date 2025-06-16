@@ -6,7 +6,7 @@ import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.database.system.DatabaseSystem;
 import io.tofpu.speedbridge2.environment.infra.EnvironmentHandler;
-import io.tofpu.speedbridge2.game.GameSystem;
+import io.tofpu.speedbridge2.game.system.GameSystem;
 import io.tofpu.speedbridge2.island.system.IslandSystem;
 import io.tofpu.speedbridge2.lobby.system.LobbySystem;
 import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
@@ -58,7 +58,6 @@ public class SpeedbridgePlugin extends JavaPlugin {
         schematicHandler = new SchematicHandler(schematicDirectory());
 
         islandSystem = new IslandSystem();
-        islandSystem.load(databaseSystem.database(), schematicHandler);
     }
 
     public String loadSchemaSQL(JavaPlugin javaPlugin) {
@@ -94,6 +93,8 @@ public class SpeedbridgePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         commandHandler = new CommandHandler(this);
+
+        islandSystem.loadData(databaseSystem.database(), schematicHandler);
         islandSystem.registerCommands(commandHandler);
 
         lobbySystem.registerCommands(commandHandler);
@@ -104,10 +105,12 @@ public class SpeedbridgePlugin extends JavaPlugin {
 
         ListenerRegistration listenerRegistration = ListenerRegistration.create(this);
         gameSystem = new GameSystem(
-                environmentHandler, getDataFolder(), listenerRegistration,
-                lobbySystem.lobbyService(), toolbarHandler.toolbarAPI()
+                eventBus, getDataFolder(),
+                lobbySystem.lobbyService(),
+                environmentHandler.getWorld()
         );
         gameSystem.enable();
+        gameSystem.registerListeners(listenerRegistration, toolbarHandler.toolbarAPI());
         gameSystem.registerCommand(commandHandler);
 
         SetupSystem setupSystem = new SetupSystem(
@@ -116,9 +119,9 @@ public class SpeedbridgePlugin extends JavaPlugin {
                 lobbySystem.lobbyService(),
                 environmentHandler.getWorld()
         );
-
         setupSystem.registerListeners(toolbarHandler.toolbarAPI());
         setupSystem.registerCommand(commandHandler, schematicHandler);
+
         commandHandler.enable();
     }
 

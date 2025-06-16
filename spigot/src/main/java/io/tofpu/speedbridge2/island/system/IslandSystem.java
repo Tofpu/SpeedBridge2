@@ -13,7 +13,7 @@ import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 public class IslandSystem {
     private IslandService islandService;
 
-    public void load(Database database, SchematicHandler schematicHandler) {
+    public void loadData(Database database, SchematicHandler schematicHandler) {
         IslandRepository repository = new IslandRepositoryImpl(
                 new IslandDao(database),
                 new IslandMapper(),

@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
 
-import io.tofpu.speedbridge2.game.config.item.serializer.ItemMetaOptionsSerializer;
-import io.tofpu.speedbridge2.game.config.item.serializer.ItemStackSerializer;
+import io.tofpu.speedbridge2.game.infra.config.item.serializer.ItemMetaOptionsSerializer;
+import io.tofpu.speedbridge2.game.infra.config.item.serializer.ItemStackSerializer;
 import space.arim.dazzleconf.ConfigurationFactory;
 import space.arim.dazzleconf.ConfigurationOptions;
 import space.arim.dazzleconf.error.ConfigFormatSyntaxException;
