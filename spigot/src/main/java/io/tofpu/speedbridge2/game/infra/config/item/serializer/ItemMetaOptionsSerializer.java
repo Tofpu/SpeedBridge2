@@ -22,15 +22,15 @@ public class ItemMetaOptionsSerializer implements ValueSerialiser<ItemMetaOption
 
     @Override
     public ItemMetaOptions deserialise(FlexibleType flexibleType) throws BadValueException {
-        Map<String, Object> map = flexibleType.getMap((flexibleKey, flexibleValue) ->
-                new AbstractMap.SimpleEntry<>(flexibleKey.getString(), flexibleKey.getObject(Object.class)));
+        Map<String, FlexibleType> map = flexibleType.getMap((flexibleKey, flexibleValue) ->
+                new AbstractMap.SimpleEntry<>(flexibleKey.getString(), flexibleKey));
         String displayName = "";
         if (map.containsKey(DISPLAY_NAME)) {
-            displayName = map.get(DISPLAY_NAME).toString();
+            displayName = map.get(DISPLAY_NAME).getString();
         }
         List<String> lore = Collections.emptyList();
         if (map.containsKey(LORE)) {
-            lore = (List<String>) map.get(LORE);
+            lore = map.get(LORE).getList(FlexibleType::getString);
         }
         return new ItemMetaOptions(displayName, lore);
     }
