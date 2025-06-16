@@ -11,6 +11,7 @@ import io.tofpu.speedbridge2.game.service.GameService;
 import io.tofpu.speedbridge2.util.listener.ListenerRegistration;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -78,5 +79,22 @@ public class BlockPlacementTrackerListener implements Listener {
         }
 
         game.gamePlayer().addPlacedBlock(event.getBlock().getLocation());
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+    public void onBlockBreak(BlockBreakEvent event) {
+        UUID playerId = event.getPlayer().getUniqueId();
+        Game game = gameService.getGame(playerId);
+        if (game == null) {
+            return;
+        }
+
+        Block block = event.getBlock();
+        GamePlayer gamePlayer = game.gamePlayer();
+        if (gamePlayer.placedBlocks().contains(block.getLocation())) {
+            gamePlayer.removePlacedBlock(block.getLocation());
+        } else {
+            event.setCancelled(true);
+        }
     }
 }
