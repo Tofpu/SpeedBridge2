@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.game.infra.listener.equipment;
 
+import io.github.revxrsal.eventbus.EventBus;
 import io.github.revxrsal.eventbus.SubscribeEvent;
 import io.tofpu.speedbridge2.game.event.GameStartEvent;
 import io.tofpu.speedbridge2.game.event.GameStopEvent;
@@ -10,6 +11,10 @@ public class GameEquipmentLifecycle {
 
     public GameEquipmentLifecycle(GameEquipmentHandler equipmentHandler) {
         this.equipmentHandler = equipmentHandler;
+    }
+
+    public void register(EventBus eventBus) {
+        eventBus.register(this);
     }
 
     @SubscribeEvent

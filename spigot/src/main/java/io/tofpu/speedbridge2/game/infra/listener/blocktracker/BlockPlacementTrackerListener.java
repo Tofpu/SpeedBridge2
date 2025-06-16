@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.game.infra.listener.blocktracker;
 
+import io.github.revxrsal.eventbus.EventBus;
 import io.github.revxrsal.eventbus.SubscribeEvent;
 import io.tofpu.speedbridge2.arena.CuboidRegion;
 import io.tofpu.speedbridge2.game.GamePlayer;
@@ -7,6 +8,7 @@ import io.tofpu.speedbridge2.game.event.GameResetEvent;
 import io.tofpu.speedbridge2.game.domain.Game;
 import io.tofpu.speedbridge2.game.event.GameScoreEvent;
 import io.tofpu.speedbridge2.game.service.GameService;
+import io.tofpu.speedbridge2.util.listener.ListenerRegistration;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -23,6 +25,11 @@ public class BlockPlacementTrackerListener implements Listener {
 
     public BlockPlacementTrackerListener(GameService gameService) {
         this.gameService = gameService;
+    }
+
+    public void register(ListenerRegistration listenerRegistration, EventBus eventBus) {
+        listenerRegistration.register(this);
+        eventBus.register(this);
     }
 
     @SubscribeEvent

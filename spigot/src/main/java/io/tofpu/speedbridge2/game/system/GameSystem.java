@@ -5,6 +5,7 @@ import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.game.infra.command.GameCommandHandler;
 import io.tofpu.speedbridge2.game.infra.config.GameConfigManager;
 import io.tofpu.speedbridge2.game.infra.listener.GameListener;
+import io.tofpu.speedbridge2.game.infra.listener.GameStateListener;
 import io.tofpu.speedbridge2.game.infra.listener.blocktracker.BlockPlacementTrackerListener;
 import io.tofpu.speedbridge2.game.infra.listener.equipment.GameEquipmentLifecycle;
 import io.tofpu.speedbridge2.game.infra.listener.equipment.toolbar.GameEquipmentHandler;
@@ -34,11 +35,13 @@ public class GameSystem {
 
     public void registerListeners(ListenerRegistration listenerRegistration, ToolbarAPI toolbarAPI) {
         listenerRegistration.register(new GameListener(gameService));
+        listenerRegistration.register(new GameStateListener(gameService));
 
-        eventBus.register(new BlockPlacementTrackerListener(gameService));
-        GameEquipmentHandler equipmentHandler = new GameEquipmentHandler(gameService, gameConfigManager, toolbarAPI);
-        equipmentHandler.register();
-        eventBus.register(new GameEquipmentLifecycle(equipmentHandler));
+        GameEquipmentHandler equipmentHandler = new GameEquipmentHandler(gameConfigManager, toolbarAPI);
+        equipmentHandler.register(gameService);
+
+        new BlockPlacementTrackerListener(gameService).register(listenerRegistration, eventBus);
+        new GameEquipmentLifecycle(equipmentHandler).register(eventBus);
     }
 
     public void enable() {
