@@ -1,0 +1,23 @@
+package io.tofpu.speedbridge2.setup.infra.listener.tools;
+
+import io.tofpu.speedbridge2.setup.service.SetupService;
+import io.tofpu.toolbar.toolbar.tool.action.ToolAction;
+import io.tofpu.toolbar.toolbar.tool.action.ToolActionUtil;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+public class SetSpawnpointTool extends SetupTool {
+    public SetSpawnpointTool(SetupService setupService, String id, ItemStack item) {
+        super(id, item, ToolActionUtil.listenFor(PlayerInteractEvent.class, eventHandler(setupService)));
+    }
+
+    private static @NotNull ToolAction<PlayerInteractEvent> eventHandler(SetupService setupService) {
+        return (genericToolbar, event) -> {
+            setupService.islandSetup(event.getPlayer()).ifPresent(setup -> {
+                setup.handleSetSpawnPoint();
+                event.getPlayer().sendMessage("§aSpawnpoint set successfully!");
+            });
+        };
+    }
+}

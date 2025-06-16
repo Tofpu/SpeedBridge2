@@ -115,8 +115,9 @@ public class SpeedbridgePlugin extends JavaPlugin {
                 lobbyService,
                 environmentHandler.getWorld()
         );
-        setupSystem.registerCommand(commandHandler, schematicHandler);
 
+        setupSystem.registerListeners(toolbarHandler.toolbarAPI());
+        setupSystem.registerCommand(commandHandler, schematicHandler);
         commandHandler.enable();
     }
 

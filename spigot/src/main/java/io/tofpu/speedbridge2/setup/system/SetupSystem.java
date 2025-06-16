@@ -8,6 +8,8 @@ import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 import io.tofpu.speedbridge2.setup.service.SetupService;
 import io.tofpu.speedbridge2.setup.command.SetupCommand;
+import io.tofpu.speedbridge2.setup.infra.listener.SetupToolsHandler;
+import io.tofpu.toolbar.ToolbarAPI;
 import org.bukkit.World;
 import revxrsal.commands.exception.CommandErrorException;
 
@@ -21,6 +23,12 @@ public class SetupSystem {
                 eventBus, islandService,
                 lobbyTeleporter, arenaWorld
         );
+    }
+
+    public void registerListeners(ToolbarAPI toolbarAPI) {
+        SetupToolsHandler setupToolsHandler = new SetupToolsHandler(toolbarAPI, service);
+        setupToolsHandler.registerToolbar();
+        eventBus.register(setupToolsHandler);
     }
 
     public void registerCommand(CommandHandler handler, SchematicHandler schematicHandler) {
