@@ -8,7 +8,7 @@ import io.tofpu.speedbridge2.database.system.DatabaseSystem;
 import io.tofpu.speedbridge2.environment.infra.EnvironmentHandler;
 import io.tofpu.speedbridge2.game.GameSystem;
 import io.tofpu.speedbridge2.island.system.IslandSystem;
-import io.tofpu.speedbridge2.lobby.LobbyService;
+import io.tofpu.speedbridge2.lobby.system.LobbySystem;
 import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 import io.tofpu.speedbridge2.setup.system.SetupSystem;
 import io.tofpu.speedbridge2.toolbar.ToolbarHandler;
@@ -34,7 +34,7 @@ public class SpeedbridgePlugin extends JavaPlugin {
     private DatabaseSystem databaseSystem;
     private GameSystem gameSystem;
     private ToolbarHandler toolbarHandler;
-    private LobbyService lobbyService;
+    private LobbySystem lobbySystem;
     private IslandSystem islandSystem;
     private SchematicHandler schematicHandler;
 
@@ -52,7 +52,7 @@ public class SpeedbridgePlugin extends JavaPlugin {
             executeSchema(connection, schema);
         });
 
-        lobbyService = new LobbyService();
+        lobbySystem = new LobbySystem();
         toolbarHandler = new ToolbarHandler(this);
 
         schematicHandler = new SchematicHandler(schematicDirectory());
@@ -104,7 +104,7 @@ public class SpeedbridgePlugin extends JavaPlugin {
         ListenerRegistration listenerRegistration = ListenerRegistration.create(this);
         gameSystem = new GameSystem(
                 environmentHandler, getDataFolder(), listenerRegistration,
-                lobbyService, toolbarHandler.toolbarAPI()
+                lobbySystem.lobbyService(), toolbarHandler.toolbarAPI()
         );
         gameSystem.enable();
         gameSystem.registerCommand(commandHandler);
@@ -112,7 +112,7 @@ public class SpeedbridgePlugin extends JavaPlugin {
         SetupSystem setupSystem = new SetupSystem(
                 eventBus,
                 islandSystem.islandService(),
-                lobbyService,
+                lobbySystem.lobbyService(),
                 environmentHandler.getWorld()
         );
 
