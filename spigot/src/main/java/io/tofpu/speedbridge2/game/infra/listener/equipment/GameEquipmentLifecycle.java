@@ -2,8 +2,8 @@ package io.tofpu.speedbridge2.game.infra.listener.equipment;
 
 import io.github.revxrsal.eventbus.EventBus;
 import io.github.revxrsal.eventbus.SubscribeEvent;
-import io.tofpu.speedbridge2.game.event.GameStartEvent;
-import io.tofpu.speedbridge2.game.event.GameStopEvent;
+import io.tofpu.speedbridge2.game.domain.event.GameStartEvent;
+import io.tofpu.speedbridge2.game.domain.event.GameStopEvent;
 import io.tofpu.speedbridge2.game.infra.listener.equipment.toolbar.GameEquipmentHandler;
 
 public class GameEquipmentLifecycle {

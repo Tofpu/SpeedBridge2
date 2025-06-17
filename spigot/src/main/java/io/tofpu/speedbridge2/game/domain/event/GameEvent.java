@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.game.event;
+package io.tofpu.speedbridge2.game.domain.event;
 
 import io.github.revxrsal.eventbus.gen.Index;
 import io.tofpu.speedbridge2.game.domain.Game;
