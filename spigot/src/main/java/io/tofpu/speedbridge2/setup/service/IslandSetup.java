@@ -26,6 +26,10 @@ public class IslandSetup {
 
     public void handleSetSpawnPoint() {
         Location playerLocation = player.getLocation();
+        if (!region().contains(playerLocation.toVector())) {
+            player.sendMessage(ChatColor.RED + "You cannot set the spawn point outside the island region!");
+            return;
+        }
         Location playerLocationMinusArena = arena.getPosition()
                 .subtract(new PositionOrientation(
                                 playerLocation.getBlockX(),
