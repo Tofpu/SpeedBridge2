@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.setup.infra.listener.tools;
+package io.tofpu.speedbridge2.setup.infra.listener.equipment.tools;
 
 import io.tofpu.toolbar.toolbar.tool.Tool;
 import io.tofpu.toolbar.toolbar.tool.action.ToolAction;

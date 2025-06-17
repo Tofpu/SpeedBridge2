@@ -8,7 +8,7 @@ import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 import io.tofpu.speedbridge2.setup.service.SetupService;
 import io.tofpu.speedbridge2.setup.command.SetupCommand;
-import io.tofpu.speedbridge2.setup.infra.listener.SetupToolsHandler;
+import io.tofpu.speedbridge2.setup.infra.listener.equipment.SetupToolsHandler;
 import io.tofpu.toolbar.ToolbarAPI;
 import org.bukkit.World;
 import revxrsal.commands.exception.CommandErrorException;

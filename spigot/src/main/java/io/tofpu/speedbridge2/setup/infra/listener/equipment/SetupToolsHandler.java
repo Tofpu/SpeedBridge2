@@ -1,4 +1,4 @@
-package io.tofpu.speedbridge2.setup.infra.listener;
+package io.tofpu.speedbridge2.setup.infra.listener.equipment;
 
 import com.cryptomorin.xseries.XMaterial;
 import io.github.revxrsal.eventbus.SubscribeEvent;
@@ -6,10 +6,10 @@ import io.tofpu.speedbridge2.setup.service.IslandSetup;
 import io.tofpu.speedbridge2.setup.service.SetupService;
 import io.tofpu.speedbridge2.setup.domain.event.SetupStartEvent;
 import io.tofpu.speedbridge2.setup.domain.event.SetupStopEvent;
-import io.tofpu.speedbridge2.setup.infra.listener.tools.CancelTool;
-import io.tofpu.speedbridge2.setup.infra.listener.tools.FinishTool;
-import io.tofpu.speedbridge2.setup.infra.listener.tools.SetSpawnpointTool;
-import io.tofpu.speedbridge2.setup.infra.listener.tools.SetupTool;
+import io.tofpu.speedbridge2.setup.infra.listener.equipment.tools.CancelTool;
+import io.tofpu.speedbridge2.setup.infra.listener.equipment.tools.FinishTool;
+import io.tofpu.speedbridge2.setup.infra.listener.equipment.tools.SetSpawnpointTool;
+import io.tofpu.speedbridge2.setup.infra.listener.equipment.tools.SetupTool;
 import io.tofpu.speedbridge2.util.ItemStackBuilder;
 import io.tofpu.toolbar.ToolbarAPI;
 import io.tofpu.toolbar.toolbar.GenericToolbar;
