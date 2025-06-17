@@ -66,15 +66,13 @@ public class SetupService {
         }
 
         eventBus.post(SetupStopEvent.class, setup, SetupStopEvent.Type.CANCELLED);
-        lobbyTeleporter.teleportToLobby(player);
+        teleportPlayerToLobby(setup.player());
 
         cleanUp(setup.slot(), player);
         return true;
     }
 
     public void finishSetup(IslandSetup setup) {
-        cleanUp(setup.slot(), setup.player());
-
         if (!setup.canBeFinished()) {
             // todo: throw exception here? as it's unexpected
             setup.player().sendMessage(ChatColor.RED + "You need to set a spawn point before finishing the setup!");
@@ -87,12 +85,15 @@ public class SetupService {
         Island island = new Island(setup.slot(), setup.schematic(), setup.spawnPoint());
         islandService.registerIsland(island);
 
+        teleportPlayerToLobby(setup.player());
         setup.player().sendMessage(ChatColor.GREEN + "Setup for slot " + setup.slot() + " finished successfully!");
+
+        cleanUp(setup.slot(), setup.player());
     }
 
     public void cleanUp(int slot, Player player) {
-        this.playerSetups.remove(player.getUniqueId());
-        arenaManager.destroyArena(slot, () -> teleportPlayerToLobby(player));
+        playerSetups.remove(player.getUniqueId());
+        arenaManager.destroyArena(slot, () -> {});
     }
 
     private void teleportPlayerToLobby(Player player) {
