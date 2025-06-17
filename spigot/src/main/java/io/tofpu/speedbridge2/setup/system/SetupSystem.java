@@ -7,6 +7,7 @@ import io.tofpu.speedbridge2.lobby.LobbyTeleporter;
 import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 import io.tofpu.speedbridge2.setup.command.SetupCommandHandler;
 import io.tofpu.speedbridge2.setup.infra.listener.equipment.SetupToolsHandler;
+import io.tofpu.speedbridge2.setup.infra.listener.indication.VirtualSetupBorder;
 import io.tofpu.speedbridge2.setup.service.SetupService;
 import io.tofpu.toolbar.ToolbarAPI;
 import org.bukkit.World;
@@ -27,6 +28,8 @@ public class SetupSystem {
         SetupToolsHandler setupToolsHandler = new SetupToolsHandler(toolbarAPI, service);
         setupToolsHandler.registerToolbar();
         eventBus.register(setupToolsHandler);
+
+        eventBus.register(new VirtualSetupBorder());
     }
 
     public void registerCommand(CommandHandler handler, SchematicHandler schematicHandler) {

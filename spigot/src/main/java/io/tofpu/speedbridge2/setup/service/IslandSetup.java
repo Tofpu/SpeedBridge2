@@ -1,10 +1,12 @@
 package io.tofpu.speedbridge2.setup.service;
 
 import io.tofpu.speedbridge2.arena.Arena;
+import io.tofpu.speedbridge2.arena.CuboidRegion;
 import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.util.PositionOrientation;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class IslandSetup {
@@ -62,7 +64,15 @@ public class IslandSetup {
         return schematic;
     }
 
+    public CuboidRegion region() {
+        return arena.getRegion();
+    }
+
     public PositionOrientation spawnPoint() {
         return spawnPoint;
+    }
+
+    public World world() {
+        return arena.world();
     }
 }
