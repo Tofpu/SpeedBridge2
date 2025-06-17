@@ -31,6 +31,13 @@ public class CommandHandler {
         builderConsumer.accept(builder);
     }
 
+    public void accept(CommandHandlerVisitor visitor) {
+        if (enabled) {
+            throw new IllegalStateException("CommandHandler has already been enabled. Cannot visit after enabling.");
+        }
+        visitor.visit(this);
+    }
+
     public void addChildCommand(ChildrenCommand command) {
         if (enabled) {
             throw new IllegalStateException(
