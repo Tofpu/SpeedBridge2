@@ -26,32 +26,26 @@ public class ItemStackSerializer implements ValueSerialiser<ItemStack> {
 
     @Override
     public ItemStack deserialise(FlexibleType flexibleType) throws BadValueException {
-        Map<String, Object> map = flexibleType.getMap((flexibleKey, flexibleValue) ->
-                new AbstractMap.SimpleEntry<>(flexibleKey.getString(), flexibleValue.getObject(Object.class)));
-        String serializedMaterialName = map.get(MATERIAL).toString();
+        Map<String, FlexibleType> map = flexibleType.getMap((flexibleKey, flexibleValue) ->
+                new AbstractMap.SimpleEntry<>(flexibleKey.getString(), flexibleValue));
+        String serializedMaterialName = map.get(MATERIAL).getString();
         Material material;
         try {
-            material = Material.valueOf(serializedMaterialName);
+            material = XMaterial.matchXMaterial(serializedMaterialName).orElseThrow().get();
         } catch (IllegalArgumentException e) {
-            try {
-                material = XMaterial.matchXMaterial(serializedMaterialName).orElseThrow().parseMaterial();
-            } catch (Exception ex) {
-                IllegalArgumentException exception = new IllegalArgumentException("Invalid material " + serializedMaterialName, ex);
-                exception.addSuppressed(e);
-                throw exception;
-            }
+            throw new IllegalArgumentException("Invalid material " + serializedMaterialName, e);
         }
         int amount = 1;
         if (map.containsKey(AMOUNT)) {
-            amount = Integer.parseInt(map.get(AMOUNT).toString());
+            amount = map.get(AMOUNT).getInteger();
         }
         short durability = 0;
         if (map.containsKey(DURABILITY)) {
-            durability = Short.parseShort(map.get(DURABILITY).toString());
+            durability = map.get(DURABILITY).getShort();
         }
         ItemStack itemStack = new ItemStack(material, amount, durability);
         if (map.containsKey(META)) {
-            ItemMetaOptions itemMetaOptions = flexibleType.getObject(ItemMetaOptions.class);
+            ItemMetaOptions itemMetaOptions = map.get(META).getObject(ItemMetaOptions.class);
             itemStack = itemMetaOptions.apply(itemStack);
         }
         return itemStack;
