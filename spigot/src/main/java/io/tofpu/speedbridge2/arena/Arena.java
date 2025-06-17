@@ -54,7 +54,7 @@ public class Arena {
         if (!has(GenerationState.GENERATED)) {
             return;
         }
-        generation.destroy();
+        generation.destroy(this.getRegion());
         // mark the arena as destroyed to avoid destroying it again
         set(GenerationState.DESTROYED);
     }

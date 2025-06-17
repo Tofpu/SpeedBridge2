@@ -54,28 +54,20 @@ public class ArenaGeneration {
     /**
      * Destroys the arena in the world using the provided {@link Clipboard} and {@link Position} data.
      */
-    public void destroy() {
+    public void destroy(CuboidRegion arenaRegion) {
         final ClipboardWrapper clipboardWrapper =
                 MultiWorldEditAPI.getMultiWorldEdit().create(clipboard.to());
 
-        final VectorWrapper minimumPoint = clipboardWrapper.getMinimumPoint();
-        final VectorWrapper maximumPoint = clipboardWrapper.getMaximumPoint();
+        final VectorWrapper minimumPoint = arenaRegion.minVector();
+        final VectorWrapper maximumPoint = arenaRegion.maxVector();
 
-        final int offset = 2;
-
-        final int plotX = position.x() - offset;
-        final int plotY = position.y() - offset;
-        final int plotZ = position.z() - offset;
+        final int offset = 1;
 
         // resetting the blocks
-        for (int x = 0; x < maximumPoint.getX() - minimumPoint.getX() + offset; x++) {
-            for (int y = 0; y < maximumPoint.getY() - minimumPoint.getY() + offset; y++) {
-                for (int z = 0; z < maximumPoint.getZ() - minimumPoint.getZ() + offset; z++) {
-                    final int blockX = plotX + x;
-                    final int blockY = plotY + y;
-                    final int blockZ = plotZ + z;
-
-                    world.getBlockAt(blockX, blockY, blockZ).setType(Material.AIR);
+        for (int x = (int) minimumPoint.getX() - offset; x < maximumPoint.getX() + offset; x++) {
+            for (int y = (int) minimumPoint.getY() - offset; y < maximumPoint.getY() + offset; y++) {
+                for (int z = (int) minimumPoint.getZ() - offset; z < maximumPoint.getZ() + offset; z++) {
+                    world.getBlockAt(x, y, z).setType(Material.AIR);
                 }
             }
         }
