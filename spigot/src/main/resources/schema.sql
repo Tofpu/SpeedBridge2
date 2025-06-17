@@ -3,9 +3,9 @@ CREATE TABLE IF NOT EXISTS islands
     id             BIGINT       NOT NULL AUTO_INCREMENT,
     slot           INT          NOT NULL,
     schematic_name VARCHAR(255) NOT NULL,
-    x              INT          NOT NULL,
-    y              INT          NOT NULL,
-    z              INT          NOT NULL,
+    x              DOUBLE          NOT NULL,
+    y              DOUBLE          NOT NULL,
+    z              DOUBLE          NOT NULL,
     yaw            FLOAT        NOT NULL,
     pitch          FLOAT        NOT NULL,
     PRIMARY KEY (id)

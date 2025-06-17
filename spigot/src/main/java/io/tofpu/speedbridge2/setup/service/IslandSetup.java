@@ -44,9 +44,9 @@ public class IslandSetup {
         }
         Location playerLocationMinusArena = arena.getPosition()
                 .subtract(new PositionOrientation(
-                                playerLocation.getBlockX(),
-                                playerLocation.getBlockY(),
-                                playerLocation.getBlockZ(),
+                                playerLocation.getX(),
+                                playerLocation.getY(),
+                                playerLocation.getZ(),
                                 playerLocation.getYaw(),
                                 playerLocation.getPitch()
                         )

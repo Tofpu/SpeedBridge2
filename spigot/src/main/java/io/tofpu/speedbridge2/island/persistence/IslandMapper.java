@@ -16,9 +16,9 @@ public class IslandMapper {
 
     private static IslandEntity.@NotNull LocationEntity toEntity(PositionOrientation position) {
         return new IslandEntity.LocationEntity(
-                (int) position.getX(),
-                (int) position.getY(),
-                (int) position.getZ(),
+                position.getX(),
+                position.getY(),
+                position.getZ(),
                 position.getYaw(),
                 position.getPitch()
         );
