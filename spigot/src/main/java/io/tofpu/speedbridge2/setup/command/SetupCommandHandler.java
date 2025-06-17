@@ -4,6 +4,7 @@ import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 import io.tofpu.speedbridge2.setup.service.SetupService;
+import org.bukkit.Color;
 
 public class SetupCommandHandler {
     private final CommandHandler commandHandler;
@@ -25,8 +26,9 @@ public class SetupCommandHandler {
 
     public void register() {
         commandHandler.modifyBuilder(lampBuilder -> lampBuilder.parameterTypes(builder -> {
-            builder.addParameterType(Schematic.class, new SchematicParameterType(schematicHandler));
+            builder.addParameterType(Schematic.class, new SchematicParameterType(schematicHandler))
+                    .addParameterType(Color.class, new BukkitColorParameterType());
         }));
-        commandHandler.addChildCommand(new SetupCommand(setupService));
+        commandHandler.accept(new SetupCommand(setupService));
     }
 }
