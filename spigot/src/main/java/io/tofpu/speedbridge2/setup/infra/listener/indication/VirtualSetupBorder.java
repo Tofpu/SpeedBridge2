@@ -36,7 +36,10 @@ public class VirtualSetupBorder {
 
     @SubscribeEvent
     public void on(SetupStopEvent event) {
-        this.borderTasks.remove(event.getSetup().player().getUniqueId());
+        BukkitTask bukkitTask = this.borderTasks.remove(event.getSetup().player().getUniqueId());
+        if (bukkitTask != null) {
+            bukkitTask.cancel();
+        }
     }
 
     private static @NotNull JavaPlugin getPlugin() {
