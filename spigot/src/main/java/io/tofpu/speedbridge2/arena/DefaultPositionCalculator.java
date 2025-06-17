@@ -53,7 +53,7 @@ public class DefaultPositionCalculator<K> implements PositionCalculator<K> {
 
     @Override
     public Position reserve(K key, int width) {
-        return tryToUsePreviouslyReservedPosition(width).orElseGet(() -> createNewReservedPosition(key, width));
+        return tryToUsePreviouslyReservedPosition(key, width).orElseGet(() -> createNewReservedPosition(key, width));
     }
 
     private Position createNewReservedPosition(K key, int width) {
@@ -70,7 +70,7 @@ public class DefaultPositionCalculator<K> implements PositionCalculator<K> {
         return new Entry<>(Width.of(width), position);
     }
 
-    private Optional<Position> tryToUsePreviouslyReservedPosition(int width) {
+    private Optional<Position> tryToUsePreviouslyReservedPosition(K key, int width) {
         if (freeWidthList.isEmpty()) {
             return Optional.empty();
         }
@@ -89,10 +89,12 @@ public class DefaultPositionCalculator<K> implements PositionCalculator<K> {
 
         // remove the first position from the list of freed positions
         Position freedPosition = freedPositions.remove(0);
-        // might as well I just save some memory if there are no more positions left
+        // frees some memory in-case if there are no more positions left
         if (freedPositions.isEmpty()) {
             freeWidthToPositionsMap.remove(closestWidth);
+            freeWidthList.remove(closestWidth);
         }
+        reservedWidths.put(key, entry(closestWidth, freedPosition));
         return Optional.of(freedPosition);
     }
 
@@ -105,6 +107,7 @@ public class DefaultPositionCalculator<K> implements PositionCalculator<K> {
         freeWidthToPositionsMap
                 .computeIfAbsent(entry.key.value, k -> new ArrayList<>())
                 .add(entry.value);
+        freeWidthList.add(entry.key.value);
     }
 
     static class Width {
