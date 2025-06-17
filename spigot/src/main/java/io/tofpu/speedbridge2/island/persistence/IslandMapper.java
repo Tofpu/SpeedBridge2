@@ -10,7 +10,7 @@ public class IslandMapper {
         return new IslandEntity(
                 island.slot(),
                 island.schematic().name(),
-                toEntity(island.spawnPoint())
+                toEntity(island.positionOffset().offset())
         );
     }
 
