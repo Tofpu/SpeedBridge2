@@ -1,4 +1,4 @@
-CREATE TABLE islands
+CREATE TABLE IF NOT EXISTS islands
 (
     id             BIGINT       NOT NULL AUTO_INCREMENT,
     slot           INT          NOT NULL,
