@@ -10,6 +10,12 @@ public class SetupCommandHandler {
     private final SchematicHandler schematicHandler;
     private final SetupService setupService;
 
+    public static void init(
+            CommandHandler commandHandler, SchematicHandler schematicHandler, SetupService setupService) {
+        SetupCommandHandler handler = new SetupCommandHandler(commandHandler, schematicHandler, setupService);
+        handler.register();
+    }
+
     public SetupCommandHandler(
             CommandHandler commandHandler, SchematicHandler schematicHandler, SetupService setupService) {
         this.commandHandler = commandHandler;

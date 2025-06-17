@@ -4,14 +4,12 @@ import io.github.revxrsal.eventbus.EventBus;
 import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.island.service.IslandService;
 import io.tofpu.speedbridge2.lobby.LobbyTeleporter;
-import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
-import io.tofpu.speedbridge2.setup.service.SetupService;
-import io.tofpu.speedbridge2.setup.command.SetupCommand;
+import io.tofpu.speedbridge2.setup.command.SetupCommandHandler;
 import io.tofpu.speedbridge2.setup.infra.listener.equipment.SetupToolsHandler;
+import io.tofpu.speedbridge2.setup.service.SetupService;
 import io.tofpu.toolbar.ToolbarAPI;
 import org.bukkit.World;
-import revxrsal.commands.exception.CommandErrorException;
 
 public class SetupSystem {
     private final EventBus eventBus;
@@ -32,16 +30,6 @@ public class SetupSystem {
     }
 
     public void registerCommand(CommandHandler handler, SchematicHandler schematicHandler) {
-        handler.modifyBuilder(builder -> builder.parameterTypes(paramBuilder -> {
-            paramBuilder.addParameterType(Schematic.class, (stream, executionContext) -> {
-                String schematicName = stream.readString();
-                Schematic schematic = schematicHandler.resolveSchematic(schematicName);
-                if (schematic == null) {
-                    throw new CommandErrorException("Schematic not found: " + schematicName);
-                }
-                return schematic;
-            });
-        }));
-        handler.addChildCommand(new SetupCommand(service));
+        SetupCommandHandler.init(handler, schematicHandler, service);
     }
 }
