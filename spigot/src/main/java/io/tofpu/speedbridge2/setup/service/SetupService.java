@@ -7,6 +7,7 @@ import io.tofpu.speedbridge2.arena.ArenaManager;
 import io.tofpu.speedbridge2.island.domain.Island;
 import io.tofpu.speedbridge2.island.service.IslandService;
 import io.tofpu.speedbridge2.lobby.LobbyTeleporter;
+import io.tofpu.speedbridge2.positioning.PositionOffset;
 import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,10 +51,13 @@ public class SetupService {
             throw new IllegalStateException("Could not create arena!");
         }
 
-        IslandSetup setup = new IslandSetup(player, setupInfo.slot(), schematic, arena);
+        Island island = islandService.getIsland(setupInfo.slot());
+        PositionOffset spawnPoint = island != null ? island.positionOffset() : null;
+
+        IslandSetup setup = new IslandSetup(player, setupInfo.slot(), schematic, arena, spawnPoint);
         this.playerSetups.put(playerId, setup);
 
-        arena.teleport(player);
+        setup.teleport(player);
         eventBus.post(SetupStartEvent.class, setup);
 
         return true;

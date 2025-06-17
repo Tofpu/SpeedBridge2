@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.setup.service;
 
 import io.tofpu.speedbridge2.arena.Arena;
 import io.tofpu.speedbridge2.arena.CuboidRegion;
+import io.tofpu.speedbridge2.positioning.PositionOffset;
 import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.util.PositionOrientation;
 import org.bukkit.ChatColor;
@@ -15,13 +16,24 @@ public class IslandSetup {
     private final Schematic schematic;
     private final Arena arena;
 
-    private PositionOrientation spawnPoint = null;
+    private PositionOffset spawnPoint;
 
-    public IslandSetup(Player player, int slot, Schematic schematic, Arena arena) {
+    public IslandSetup(Player player, int slot, Schematic schematic, Arena arena, PositionOffset spawnPoint) {
         this.player = player;
         this.slot = slot;
         this.schematic = schematic;
         this.arena = arena;
+        this.spawnPoint = spawnPoint;
+    }
+
+    public void teleport(Player player) {
+        Location location;
+        if (spawnPoint != null) {
+            location = spawnPoint.applyTo(arena.getPosition()).toLocation(arena.world());
+        } else {
+            location = arena.getPosition().toLocation(arena.world());
+        }
+        player.teleport(location);
     }
 
     public void handleSetSpawnPoint() {
@@ -39,15 +51,18 @@ public class IslandSetup {
                                 playerLocation.getPitch()
                         )
                 ).toLocation(arena.world());
-        this.spawnPoint = new PositionOrientation(
-                playerLocationMinusArena.getX(),
-                playerLocationMinusArena.getY(),
-                playerLocationMinusArena.getZ(),
-                playerLocation.getYaw(),
-                playerLocation.getPitch()
+        this.spawnPoint = new PositionOffset(
+                new PositionOrientation(
+                        playerLocationMinusArena.getX(),
+                        playerLocationMinusArena.getY(),
+                        playerLocationMinusArena.getZ(),
+                        playerLocation.getYaw(),
+                        playerLocation.getPitch()
+                )
         );
+        PositionOrientation offset = spawnPoint.offset();
         player.sendMessage(ChatColor.YELLOW + "Spawn point set: [%s, %s, %s]".formatted(
-                spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ()
+                offset.getX(), offset.getY(), offset.getZ()
         ));
     }
 
@@ -72,7 +87,7 @@ public class IslandSetup {
         return arena.getRegion();
     }
 
-    public PositionOrientation spawnPoint() {
+    public PositionOffset spawnPoint() {
         return spawnPoint;
     }
 
