@@ -18,7 +18,7 @@ public class IslandDao {
         this.database = database;
     }
 
-    public void save(IslandEntity entity) {
+    public void saveOrUpdate(IslandEntity entity) {
         database.handle(connection -> {
             DSLContext create = DSL.using(connection, SQLDialect.H2);
             create.insertInto(Islands.ISLANDS)
@@ -32,6 +32,13 @@ public class IslandDao {
                             entity.location().yaw(),
                             entity.location().pitch()
                     )
+                    .onDuplicateKeyUpdate()
+                    .set(Islands.ISLANDS.SCHEMATIC_NAME, entity.schematicName())
+                    .set(Islands.ISLANDS.X, entity.location().x())
+                    .set(Islands.ISLANDS.Y, entity.location().y())
+                    .set(Islands.ISLANDS.Z, entity.location().z())
+                    .set(Islands.ISLANDS.YAW, (double) entity.location().yaw())
+                    .set(Islands.ISLANDS.PITCH, (double) entity.location().pitch())
                     .execute();
         });
     }

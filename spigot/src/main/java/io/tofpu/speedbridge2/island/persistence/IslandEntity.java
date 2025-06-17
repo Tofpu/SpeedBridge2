@@ -5,7 +5,7 @@ public record IslandEntity(
         LocationEntity location
 ) {
     public record LocationEntity(
-            double x, double y, double z,
+            int x, int y, int z,
             float yaw, float pitch
     ) {
     }

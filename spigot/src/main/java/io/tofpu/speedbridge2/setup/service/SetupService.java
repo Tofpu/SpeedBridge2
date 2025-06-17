@@ -82,8 +82,8 @@ public class SetupService {
 
         eventBus.post(SetupStopEvent.class, setup, SetupStopEvent.Type.SUCCESS);
 
-        Island island = new Island(setup.slot(), setup.schematic(), setup.spawnPoint());
-        islandService.registerIsland(island);
+        Island newIsland = new Island(setup.slot(), setup.schematic(), setup.spawnPoint());
+        islandService.registerIsland(newIsland);
 
         teleportPlayerToLobby(setup.player());
         setup.player().sendMessage(ChatColor.GREEN + "Setup for slot " + setup.slot() + " finished successfully!");

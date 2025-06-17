@@ -3,7 +3,11 @@ package io.tofpu.speedbridge2.island.service;
 import io.tofpu.speedbridge2.island.domain.Island;
 import io.tofpu.speedbridge2.island.domain.IslandRepository;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public class IslandService {
     private final Map<Integer, Island> islandMap = new HashMap<>();
@@ -22,7 +26,11 @@ public class IslandService {
 
     public void registerIsland(Island island) {
         islandMap.put(island.slot(), island);
-        repository.save(island);
+        repository.saveOrUpdate(island);
+    }
+
+    public Optional<Island> island(int slot) {
+        return Optional.ofNullable(islandMap.get(slot));
     }
 
     public Island getIsland(int slot) {

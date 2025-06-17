@@ -20,9 +20,9 @@ public class IslandRepositoryImpl implements IslandRepository {
     }
 
     @Override
-    public void save(Island island) {
+    public void saveOrUpdate(Island island) {
         IslandEntity entity = islandMapper.toEntity(island);
-        islandDao.save(entity);
+        islandDao.saveOrUpdate(entity);
     }
 
     @Override
