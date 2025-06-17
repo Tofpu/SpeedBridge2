@@ -11,6 +11,9 @@ public class H2ConnectionProvider implements ConnectionProvider {
     private static final String BASE_URL = "jdbc:h2";
 
     private static String baseUrl(String restOfUrl) {
+        if (restOfUrl.startsWith(":")) {
+            restOfUrl = restOfUrl.substring(1);
+        }
         return BASE_URL + ":" + restOfUrl + ";DB_CLOSE_DELAY=-1";
     }
 
@@ -27,7 +30,7 @@ public class H2ConnectionProvider implements ConnectionProvider {
             throw new IllegalArgumentException("File must not be a directory: " + file.getAbsolutePath());
         }
         return new H2ConnectionProvider(
-                baseUrl(":" + file.getAbsolutePath())
+                baseUrl(file.getAbsolutePath())
         );
     }
 
