@@ -10,6 +10,7 @@ import io.tofpu.speedbridge2.game.system.GameSystem;
 import io.tofpu.speedbridge2.island.system.IslandSystem;
 import io.tofpu.speedbridge2.lobby.system.LobbySystem;
 import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
+import io.tofpu.speedbridge2.score.system.ScoreSystem;
 import io.tofpu.speedbridge2.setup.system.SetupSystem;
 import io.tofpu.speedbridge2.toolbar.ToolbarHandler;
 import io.tofpu.speedbridge2.util.listener.ListenerRegistration;
@@ -32,6 +33,7 @@ public class SpeedbridgePlugin extends JavaPlugin {
 
     private CommandHandler commandHandler;
     private DatabaseSystem databaseSystem;
+    private ScoreSystem scoreSystem;
     private GameSystem gameSystem;
     private ToolbarHandler toolbarHandler;
     private LobbySystem lobbySystem;
@@ -54,10 +56,9 @@ public class SpeedbridgePlugin extends JavaPlugin {
 
         lobbySystem = new LobbySystem();
         toolbarHandler = new ToolbarHandler(this);
-
         schematicHandler = new SchematicHandler(schematicDirectory());
-
         islandSystem = new IslandSystem();
+        scoreSystem = new ScoreSystem();
     }
 
     public String loadSchemaSQL(JavaPlugin javaPlugin) {
@@ -99,6 +100,9 @@ public class SpeedbridgePlugin extends JavaPlugin {
 
         lobbySystem.registerCommands(commandHandler);
         toolbarHandler.enable();
+
+        scoreSystem.load(getDataFolder(), databaseSystem.database(), eventBus);
+        scoreSystem.registerCommands(commandHandler);
 
         EnvironmentHandler environmentHandler = new EnvironmentHandler(Bukkit.getWorldContainer());
         environmentHandler.setupEnvironment();
