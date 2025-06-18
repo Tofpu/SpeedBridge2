@@ -139,7 +139,7 @@ public class GameService implements GameSupplier {
 
         Player bukkitPlayer = game.gamePlayer().player();
         gameExperience().score().apply(bukkitPlayer);
-        eventBus.post(GameScoreEvent.class, game);
+        eventBus.post(GameScoreEvent.class, game, elapsedTimerInMillis);
 
         game.teleport(bukkitPlayer);
         game.setState(GameStateType.START);
