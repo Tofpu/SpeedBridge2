@@ -10,3 +10,10 @@ CREATE TABLE IF NOT EXISTS islands
     pitch          FLOAT        NOT NULL,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE IF NOT EXISTS scores (
+    player_id UUID NOT NULL,
+    slot INT NOT NULL,
+    time DOUBLE NOT NULL,
+    created_at TIMESTAMP NOT NULL
+);
