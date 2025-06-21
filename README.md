@@ -1,0 +1,17 @@
+# SpeedBridge2
+The third iteration of SpeedBridge is currently underway.
+
+> [!NOTE]
+> Are you looking for the stable/spigot version? It can be found at this [branch](https://github.com/Tofpu/SpeedBridge2/tree/v1.1.0).
+
+> [!WARNING]
+> You are advised to **not** use this build in production.
+
+## Links
+- Chat with us on our [discord server](https://discord.gg/8AHk2qkqxb)!
+
+## Huge thanks to
+- [JetBrains](https://www.jetbrains.com/community/opensource/)
+- [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html)
+
+For providing us with an open-source licence! <3
