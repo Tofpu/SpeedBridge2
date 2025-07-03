@@ -17,10 +17,11 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Build with Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          arguments: shadowJar
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      
+      - name: Build the plugin
+        run: ./gradlew build
 
       - name: Uploading
         uses: actions/upload-artifact@v4
