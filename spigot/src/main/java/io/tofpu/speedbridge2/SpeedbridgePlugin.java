@@ -101,9 +101,6 @@ public class SpeedbridgePlugin extends JavaPlugin {
         lobbySystem.registerCommands(commandHandler);
         toolbarHandler.enable();
 
-        scoreSystem.load(getDataFolder(), databaseSystem.database(), eventBus);
-        scoreSystem.registerCommands(commandHandler);
-
         EnvironmentHandler environmentHandler = new EnvironmentHandler(Bukkit.getWorldContainer());
         environmentHandler.setupEnvironment();
 
@@ -116,6 +113,9 @@ public class SpeedbridgePlugin extends JavaPlugin {
         gameSystem.enable();
         gameSystem.registerListeners(listenerRegistration, toolbarHandler.toolbarAPI());
         gameSystem.registerCommand(commandHandler);
+
+        scoreSystem.load(getDataFolder(), databaseSystem.database(), gameSystem.feedbackRegistry(), eventBus);
+        scoreSystem.registerCommands(commandHandler);
 
         SetupSystem setupSystem = new SetupSystem(
                 eventBus,

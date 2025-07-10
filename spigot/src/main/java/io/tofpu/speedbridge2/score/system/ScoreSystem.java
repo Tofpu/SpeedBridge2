@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2.score.system;
 import io.github.revxrsal.eventbus.EventBus;
 import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.database.infra.db.Database;
+import io.tofpu.speedbridge2.game.domain.GameFeedbackRegistry;
 import io.tofpu.speedbridge2.score.infra.command.ScoreCommandHandler;
 import io.tofpu.speedbridge2.score.format.ScoreFormatter;
 import io.tofpu.speedbridge2.score.format.rounding.ScoreRoundingHandler;
@@ -20,7 +21,7 @@ public class ScoreSystem {
     private ScoreService service;
     private ScoreFormatter formatter;
 
-    public void load(File dataDirectory, Database database, EventBus eventBus) {
+    public void load(File dataDirectory, Database database, GameFeedbackRegistry gameFeedbackRegistry, EventBus eventBus) {
         ScoreConfigurationLoader loader = new ScoreConfigurationLoader(dataDirectory);
         loader.load();
 
@@ -30,11 +31,11 @@ public class ScoreSystem {
                 loader.registrySettings()
         );
         this.service.loadData();
-        eventBus.register(new PlayerScoreListener(service));
 
         this.formatter = new ScoreFormatter(new ScoreRoundingHandler(
                 loader.formatSettings()
         ));
+        eventBus.register(new PlayerScoreListener(service, gameFeedbackRegistry, formatter));
     }
 
     public void registerCommands(CommandHandler handler) {
