@@ -11,6 +11,9 @@ import io.tofpu.speedbridge2.util.placeholder.Placeholder;
 import org.bukkit.entity.Player;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.UUID;
 
 public class PlayerScoreListener {
     private final ScoreService scoreService;
@@ -28,17 +31,32 @@ public class PlayerScoreListener {
         Game game = event.getGame();
         double timeInSeconds = event.timeInSeconds();
 
+        UUID playerId = game.gamePlayer().player().getUniqueId();
+        int slot = game.island().slot();
+
         Score score = new Score(
-                game.gamePlayer().player().getUniqueId(),
-                game.island().slot(),
+                playerId,
+                slot,
                 timeInSeconds,
                 Instant.now()
         );
+
+        GameFeedbackRegistry.Type type = GameFeedbackRegistry.Type.SCORE;
+        Collection<Placeholder> placeholders = new ArrayList<>();
+        placeholders.add(Placeholder.of("%time%", scoreFormatter.format(score)));
+        if (scoreService.beatenPersonalScore(playerId, slot, timeInSeconds)) {
+            type = GameFeedbackRegistry.Type.BEATEN_SCORE;
+            placeholders.add(Placeholder.of("%previous_time%", scoreFormatter.format(
+                    scoreService.bestScore(playerId, slot)
+            )));
+        }
+
         scoreService.register(score);
 
         Player player = event.getGame().gamePlayer().player();
-        feedbackRegistry.get(GameFeedbackRegistry.Type.SCORE).apply(player,
-                Placeholder.of("%time%", scoreFormatter.format(score))
+        feedbackRegistry.get(type).apply(
+                player,
+                placeholders.toArray(new Placeholder[0])
         );
     }
 }

@@ -33,7 +33,7 @@ public interface GameConfigDefaults {
                     .sound(XSound.UI_BUTTON_CLICK, 1, 1)
                     .title("Game Beaten", "Game has been beaten")
                     .addMessages(
-                            "You broke your personal best score of %time%",
+                            "You broke your personal best score of %previous_time%",
                             "Your new personal best score is %time%")
                     .build();
         }

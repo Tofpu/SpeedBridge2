@@ -23,6 +23,24 @@ public class ScoreService {
         repository.findAll().forEach(playerScoreRegistry::register);
     }
 
+    public Score bestScore(UUID playerId, int slot) {
+        Scores playerScores = playerScoreRegistry.scores(playerId);
+        if (playerScores.isEmpty()) {
+            return null;
+        }
+        return playerScores.bestScore(slot).orElse(null);
+    }
+
+    public boolean beatenPersonalScore(UUID playerId, int slot, double time) {
+        Scores playerScores = playerScoreRegistry.scores(playerId);
+        if (playerScores.isEmpty()) {
+            return false;
+        }
+        return playerScores.bestScore(slot)
+                .map(score -> score.time() > time)
+                .orElse(true);
+    }
+
     public void register(Score score) {
         Scores playerScores = playerScoreRegistry.scores(score.playerId());
         Collection<Score> islandScores = playerScores.filterByIsland(score.slot());
