@@ -16,13 +16,13 @@ import static org.immutables.value.Value.Immutable;
 
 @ConfSerialisers(value = {ItemStackSerializer.class, ItemMetaOptionsSerializer.class})
 @Immutable
-public interface GameItemConfiguration {
+public interface GameHotbarConfiguration {
     static Builder builder() {
         return new Builder();
     }
 
-    static GameItemConfiguration of(Item leaveGame, Item resetGame) {
-        return ImmutableGameItemConfiguration.of(
+    static GameHotbarConfiguration of(Item leaveGame, Item resetGame) {
+        return ImmutableGameHotbarConfiguration.of(
                 Map.of(
                         ItemType.LEAVE_GAME, leaveGame,
                         ItemType.RESET_GAME, resetGame
@@ -46,7 +46,7 @@ public interface GameItemConfiguration {
     @ConfDefault.DefaultObject("defaultItems")
     Map<ItemType, @SubSection Item> items();
 
-    static Map<ItemType, GameItemConfiguration.Item> defaultItems() {
+    static Map<ItemType, GameHotbarConfiguration.Item> defaultItems() {
         return Map.of(
                 ItemType.LEAVE_GAME, leaveGameItem(),
                 ItemType.RESET_GAME, resetGameItem()
@@ -76,5 +76,5 @@ public interface GameItemConfiguration {
         class Builder extends ImmutableItem.Builder {}
     }
 
-    class Builder extends ImmutableGameItemConfiguration.Builder {}
+    class Builder extends ImmutableGameHotbarConfiguration.Builder {}
 }

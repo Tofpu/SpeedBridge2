@@ -3,7 +3,7 @@ package io.tofpu.speedbridge2.game.infra.config;
 import com.cryptomorin.xseries.XMaterial;
 import com.cryptomorin.xseries.XSound;
 import io.tofpu.speedbridge2.game.infra.config.experience.GamePlayerExperienceConfiguration;
-import io.tofpu.speedbridge2.game.infra.config.item.GameItemConfiguration;
+import io.tofpu.speedbridge2.game.infra.config.item.GameHotbarConfiguration;
 import io.tofpu.speedbridge2.util.ColorUtil;
 import io.tofpu.speedbridge2.util.ItemStackBuilder;
 
@@ -40,16 +40,16 @@ public interface GameConfigDefaults {
     }
 
     interface Items {
-        static GameItemConfiguration.Item leaveGameItem() {
-            return GameItemConfiguration.Item.of(
+        static GameHotbarConfiguration.Item leaveGameItem() {
+            return GameHotbarConfiguration.Item.of(
                     ItemStackBuilder.newBuilder()
                             .displayName(ColorUtil.colorize("&eLeave"))
                             .lore(ColorUtil.colorize("&7Click to leave the game"))
                             .apply(XMaterial.RED_BED.parseItem()),
                     8);
         }
-        static GameItemConfiguration.Item resetGameItem() {
-            return GameItemConfiguration.Item.of(
+        static GameHotbarConfiguration.Item resetGameItem() {
+            return GameHotbarConfiguration.Item.of(
                     ItemStackBuilder.newBuilder()
                             .displayName(ColorUtil.colorize("&cReset"))
                             .lore(ColorUtil.colorize("&7Click to reset the game"))

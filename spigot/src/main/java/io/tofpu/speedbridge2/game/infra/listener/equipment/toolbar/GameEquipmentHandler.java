@@ -2,7 +2,7 @@ package io.tofpu.speedbridge2.game.infra.listener.equipment.toolbar;
 
 import io.tofpu.speedbridge2.game.infra.config.GameConfigManager;
 import io.tofpu.speedbridge2.game.infra.config.GameConfiguration;
-import io.tofpu.speedbridge2.game.infra.config.item.GameItemConfiguration;
+import io.tofpu.speedbridge2.game.infra.config.item.GameHotbarConfiguration;
 import io.tofpu.speedbridge2.game.infra.listener.equipment.toolbar.item.GameItem;
 import io.tofpu.speedbridge2.game.infra.listener.equipment.toolbar.item.LeaveGameItem;
 import io.tofpu.speedbridge2.game.infra.listener.equipment.toolbar.item.ResetGameItem;
@@ -26,7 +26,7 @@ public class GameEquipmentHandler {
 
     public void register(GameService gameService) {
         GameConfiguration configData = gameConfigManager.getConfigData();
-        GameItemConfiguration itemConfig = configData.item();
+        GameHotbarConfiguration itemConfig = configData.hotbar();
         //noinspection unchecked
         ToolWithSlot<GameItem>[] gameItems = new ToolWithSlot[] {
             toolItemMapper(itemConfig.resetGame(), item -> new ResetGameItem(item.item(), gameService)),
