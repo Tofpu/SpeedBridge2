@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("com.diffplug.spotless") version "7.0.0.BETA4"
+//    id("com.diffplug.spotless") version "7.0.0.BETA4"
     id("org.jooq.jooq-codegen-gradle") version "3.19.24"
     id("xyz.jpenilla.run-paper") version "2.3.1"
     id("com.gradleup.shadow") version "9.0.0-beta16"
@@ -11,12 +11,14 @@ version = "3.0.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://repo.codemc.org/repository/maven-public/")
     uri("https://repo.papermc.io/repository/maven-public/")
 
     maven("https://jitpack.io")
     maven("https://maven.enginehub.org/repo/")
+
 }
 
 dependencies {
@@ -30,7 +32,7 @@ dependencies {
         exclude("com.sk89q", "worldedit")
     }
     implementation("commons-io:commons-io:2.11.0")
-    implementation("com.github.tofpu.toolbar:toolbar-api:3793d5f149")
+    implementation("com.github.tofpu.toolbar:toolbar-api:19704131e9")
     implementation("space.arim.dazzleconf:dazzleconf-ext-snakeyaml:1.3.0-M2")
     implementation("com.github.cryptomorin:XSeries:13.3.1")
     implementation("io.github.revxrsal:lamp.common:4.0.0-rc.12")
@@ -95,23 +97,23 @@ tasks.named("compileJava") {
     dependsOn("jooqCodegen")
 }
 
-spotless {
-//    ratchetFrom("origin/main")
-
-    format("misc") {
-        target("*.gradle", "*.md", ".gitignore")
-
-        trimTrailingWhitespace()
-        indentWithSpaces()
-        endWithNewline()
-    }
-
-    java {
-        formatAnnotations()
-        removeUnusedImports()
-        palantirJavaFormat()
-    }
-}
+//spotless {
+////    ratchetFrom("origin/main")
+//
+//    format("misc") {
+//        target("*.gradle", "*.md", ".gitignore")
+//
+//        trimTrailingWhitespace()
+//        indentWithSpaces()
+//        endWithNewline()
+//    }
+//
+//    java {
+//        formatAnnotations()
+//        removeUnusedImports()
+//        palantirJavaFormat()
+//    }
+//}
 
 tasks {
     compileJava {
