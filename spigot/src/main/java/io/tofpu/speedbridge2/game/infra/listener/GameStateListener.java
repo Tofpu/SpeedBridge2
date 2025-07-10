@@ -1,8 +1,13 @@
 package io.tofpu.speedbridge2.game.infra.listener;
 
+import io.github.revxrsal.eventbus.EventBus;
+import io.github.revxrsal.eventbus.SubscribeEvent;
 import io.tofpu.speedbridge2.arena.CuboidRegion;
 import io.tofpu.speedbridge2.game.GamePlayer;
+import io.tofpu.speedbridge2.game.domain.Game;
+import io.tofpu.speedbridge2.game.domain.event.GameResetEvent;
 import io.tofpu.speedbridge2.game.service.GameService;
+import io.tofpu.speedbridge2.util.listener.ListenerRegistration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -20,6 +25,12 @@ public class GameStateListener implements Listener {
 
     public GameStateListener(GameService gameService) {
         this.gameService = gameService;
+    }
+
+    public static void register(GameService gameService, ListenerRegistration listenerRegistration, EventBus eventBus) {
+        GameStateListener listener = new GameStateListener(gameService);
+        listenerRegistration.register(listener);
+        eventBus.register(listener);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
@@ -43,6 +54,11 @@ public class GameStateListener implements Listener {
             }
             gamePlayer.startTimer();
         });
+    }
+
+    @SubscribeEvent
+    public void onGameReset(GameResetEvent event) {
+        event.getGame().gamePlayer().clearTimer();
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)

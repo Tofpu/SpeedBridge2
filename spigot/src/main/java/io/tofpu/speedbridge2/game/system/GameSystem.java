@@ -43,7 +43,7 @@ public class GameSystem {
 
     public void registerListeners(ListenerRegistration listenerRegistration, ToolbarAPI toolbarAPI) {
         listenerRegistration.register(new GameListener(gameService));
-        listenerRegistration.register(new GameStateListener(gameService));
+        GameStateListener.register(gameService, listenerRegistration, eventBus);
 
         GameEquipmentHandler equipmentHandler = new GameEquipmentHandler(gameConfigManager, toolbarAPI);
         equipmentHandler.register(gameService);
