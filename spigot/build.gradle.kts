@@ -41,6 +41,8 @@ dependencies {
 //    implementation("net.kyori:adventure-text-minimessage:4.10.1")
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
 
+    implementation("org.ipvp:canvas:1.7.0-SNAPSHOT")
+
     implementation("org.jooq:jooq:3.19.24")
     implementation("org.jooq:jooq-meta:3.19.24")
     implementation("org.jooq:jooq-codegen:3.19.24")
@@ -135,6 +137,7 @@ tasks {
 
         downloadPlugins {
             url("https://dev.bukkit.org/projects/worldedit/files/5145924/download")
+            url("https://download.luckperms.net/1594/bukkit/loader/LuckPerms-Bukkit-5.5.9.jar")
         }
     }
 

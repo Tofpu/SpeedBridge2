@@ -17,3 +17,8 @@ CREATE TABLE IF NOT EXISTS scores (
     time DOUBLE NOT NULL,
     created_at TIMESTAMP NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS blocks (
+    player_id UUID NOT NULL,
+    block_id VARCHAR(255) NOT NULL
+)

@@ -3,6 +3,7 @@ package io.tofpu.speedbridge2;
 import io.github.revxrsal.eventbus.EventBus;
 import io.github.revxrsal.eventbus.EventBusBuilder;
 import io.tofpu.multiworldedit.MultiWorldEditAPI;
+import io.tofpu.speedbridge2.block.system.BlockSystem;
 import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.database.system.DatabaseSystem;
 import io.tofpu.speedbridge2.environment.infra.EnvironmentHandler;
@@ -125,6 +126,11 @@ public class SpeedbridgePlugin extends JavaPlugin {
         );
         setupSystem.registerListeners(toolbarHandler.toolbarAPI());
         setupSystem.registerCommand(commandHandler, schematicHandler);
+
+        BlockSystem blockSystem = new BlockSystem();
+        blockSystem.load(databaseSystem.database(), getDataFolder());
+        blockSystem.registerListeners(listenerRegistration, eventBus);
+        blockSystem.registerCommands(commandHandler);
 
         commandHandler.enable();
     }
