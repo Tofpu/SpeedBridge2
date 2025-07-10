@@ -1,7 +1,10 @@
 package io.tofpu.speedbridge2.game.system;
 
 import io.github.revxrsal.eventbus.EventBus;
+import io.tofpu.speedbridge2.Constants;
+import io.tofpu.speedbridge2.arena.ArenaManager;
 import io.tofpu.speedbridge2.command.CommandHandler;
+import io.tofpu.speedbridge2.game.domain.GameFeedbackRegistry;
 import io.tofpu.speedbridge2.game.infra.command.GameCommandHandler;
 import io.tofpu.speedbridge2.game.infra.config.GameConfigManager;
 import io.tofpu.speedbridge2.game.infra.listener.GameListener;
@@ -21,14 +24,19 @@ public class GameSystem {
     private final EventBus eventBus;
     private final GameService gameService;
     private final GameConfigManager gameConfigManager;
+    private final GameFeedbackRegistry feedbackRegistry;
 
     public GameSystem(EventBus eventBus, File dataDirectory, LobbyTeleporter lobbyTeleporter, World arenaWorld) {
         this.eventBus = eventBus;
         this.gameConfigManager = new GameConfigManager(dataDirectory);
+        this.feedbackRegistry = gameConfigManager.loadFeedbackRegistry();
         this.gameService = new GameService(
                 eventBus,
-                arenaWorld,
-                gameConfigManager,
+                new ArenaManager<>(
+                        arenaWorld,
+                        Constants.ArenaPositioning.GAME.apply(
+                                () -> gameConfigManager.getConfigData().arena().gap())),
+                feedbackRegistry,
                 lobbyTeleporter
         );
     }
@@ -54,5 +62,9 @@ public class GameSystem {
 
     public GameService getGameService() {
         return gameService;
+    }
+
+    public GameFeedbackRegistry feedbackRegistry() {
+        return feedbackRegistry;
     }
 }

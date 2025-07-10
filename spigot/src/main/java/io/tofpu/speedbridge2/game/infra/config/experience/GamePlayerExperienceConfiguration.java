@@ -2,17 +2,15 @@ package io.tofpu.speedbridge2.game.infra.config.experience;
 
 import io.tofpu.speedbridge2.game.infra.config.experience.meta.Sound;
 import io.tofpu.speedbridge2.game.infra.config.experience.meta.Title;
-import io.tofpu.speedbridge2.util.ColorUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.Server;
-import org.bukkit.entity.Player;
 import space.arim.dazzleconf.annote.ConfDefault;
 import space.arim.dazzleconf.annote.SubSection;
 
 import java.util.List;
 import java.util.Map;
 
-import static io.tofpu.speedbridge2.game.infra.config.GameConfigDefaults.Experience.*;
+import static io.tofpu.speedbridge2.game.infra.config.GameConfigDefaults.Experience.beatenScoreOptions;
+import static io.tofpu.speedbridge2.game.infra.config.GameConfigDefaults.Experience.resetOptions;
+import static io.tofpu.speedbridge2.game.infra.config.GameConfigDefaults.Experience.scoreOptions;
 import static org.immutables.value.Value.Immutable;
 
 /**
@@ -71,27 +69,5 @@ public interface GamePlayerExperienceConfiguration {
 
         @ConfDefault.DefaultStrings({})
         List<String> messages();
-
-        default void apply(Player player) {
-            sound().play(player);
-            title().show(player);
-            sendMessages(player);
-            performCommands(player);
-        }
-
-        default void sendMessages(Player player) {
-            // apply placeholders to the commands before sending
-            for (String message : messages()) {
-                player.sendMessage(ColorUtil.colorize(message));
-            }
-        }
-
-        default void performCommands(Player player) {
-            // apply placeholders to the commands before dispatching
-            for (String command : commands()) {
-                Server server = Bukkit.getServer();
-                server.dispatchCommand(server.getConsoleSender(), command);
-            }
-        }
     }
 }

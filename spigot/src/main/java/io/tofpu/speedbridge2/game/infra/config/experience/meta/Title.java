@@ -1,9 +1,9 @@
 package io.tofpu.speedbridge2.game.infra.config.experience.meta;
 
-import static org.immutables.value.Value.Immutable;
-
-import org.bukkit.entity.Player;
 import space.arim.dazzleconf.annote.ConfDefault;
+
+import static net.kyori.adventure.text.Component.text;
+import static org.immutables.value.Value.Immutable;
 
 // todo: add support for specifying a fade in and fade out time
 @Immutable
@@ -22,8 +22,8 @@ public interface Title {
     @ConfDefault.DefaultString("")
     String subtitle();
 
-    default void show(Player player) {
-        player.sendTitle(title(), subtitle());
+    default net.kyori.adventure.title.Title toTitle() {
+        return net.kyori.adventure.title.Title.title(text(title()), text(subtitle()));
     }
 
     class Builder extends ImmutableTitle.Builder {}

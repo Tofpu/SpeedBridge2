@@ -1,21 +1,18 @@
 package io.tofpu.speedbridge2.game.service;
 
 import io.github.revxrsal.eventbus.EventBus;
-import io.tofpu.speedbridge2.Constants;
 import io.tofpu.speedbridge2.arena.Arena;
 import io.tofpu.speedbridge2.arena.ArenaManager;
 import io.tofpu.speedbridge2.game.GameSupplier;
 import io.tofpu.speedbridge2.game.domain.Game;
+import io.tofpu.speedbridge2.game.domain.GameFeedbackRegistry;
 import io.tofpu.speedbridge2.game.domain.GameStateType;
 import io.tofpu.speedbridge2.game.domain.event.GameResetEvent;
 import io.tofpu.speedbridge2.game.domain.event.GameScoreEvent;
 import io.tofpu.speedbridge2.game.domain.event.GameStartEvent;
 import io.tofpu.speedbridge2.game.domain.event.GameStopEvent;
-import io.tofpu.speedbridge2.game.infra.config.GameConfigManager;
-import io.tofpu.speedbridge2.game.infra.config.experience.GamePlayerExperienceConfiguration;
 import io.tofpu.speedbridge2.island.domain.Island;
 import io.tofpu.speedbridge2.lobby.LobbyTeleporter;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -27,23 +24,21 @@ import java.util.function.Consumer;
 public class GameService implements GameSupplier {
     private final EventBus eventBus;
     private final ArenaManager<Integer> arenaManager;
-    private final GameConfigManager gameConfigManager;
+    private final GameFeedbackRegistry feedbackRegistry;
     private final LobbyTeleporter lobbyTeleporter;
 
     private final Map<UUID, Game> gameMap = new HashMap<>();
 
     public GameService(
-            EventBus eventBus, World world,
-            GameConfigManager gameConfigManager,
+            EventBus eventBus,
+            ArenaManager<Integer> arenaManager,
+            GameFeedbackRegistry feedbackRegistry,
             LobbyTeleporter lobbyTeleporter
     ) {
         this.eventBus = eventBus;
         this.lobbyTeleporter = lobbyTeleporter;
-        this.arenaManager = new ArenaManager<>(
-                world,
-                Constants.ArenaPositioning.GAME.apply(
-                        () -> gameConfigManager.getConfigData().arena().gap()));
-        this.gameConfigManager = gameConfigManager;
+        this.arenaManager = arenaManager;
+        this.feedbackRegistry = feedbackRegistry;
     }
 
     public boolean startGame(Player player, Island island) {
@@ -120,25 +115,20 @@ public class GameService implements GameSupplier {
         game.setState(GameStateType.RESET);
         eventBus.post(GameResetEvent.class, game);
         Player bukkitPlayer = game.gamePlayer().player();
-        gameExperience().reset().apply(bukkitPlayer);
+        feedbackRegistry.get(GameFeedbackRegistry.Type.RESET).apply(bukkitPlayer);
 
         game.teleport(bukkitPlayer);
         game.setState(GameStateType.START);
         eventBus.post(GameStartEvent.class, game);
     }
 
-    private GamePlayerExperienceConfiguration gameExperience() {
-        return gameConfigManager.getConfigData().experience();
-    }
-
     public void addScore(Game game) {
         game.setState(GameStateType.SCORE);
         long elapsedTimerInMillis = game.gamePlayer().elapsedTimerInMillis();
         game.gamePlayer().clearTimer();
-        // todo: format the score, register it, increment the total wins, etc.
+        // todo: increment the total wins, etc.
 
         Player bukkitPlayer = game.gamePlayer().player();
-        gameExperience().score().apply(bukkitPlayer);
         eventBus.post(GameScoreEvent.class, game, elapsedTimerInMillis);
 
         game.teleport(bukkitPlayer);

@@ -1,10 +1,9 @@
 package io.tofpu.speedbridge2.game.infra.config.experience.meta;
 
-import static org.immutables.value.Value.Immutable;
-
 import com.cryptomorin.xseries.XSound;
-import org.bukkit.entity.Player;
 import space.arim.dazzleconf.annote.ConfDefault;
+
+import static org.immutables.value.Value.Immutable;
 
 @Immutable
 public interface Sound {
@@ -25,8 +24,8 @@ public interface Sound {
     @ConfDefault.DefaultDouble(1.0f)
     float pitch();
 
-    default void play(Player player) {
-        type().play(player, volume(), pitch());
+    default net.kyori.adventure.sound.Sound toSound() {
+        return net.kyori.adventure.sound.Sound.sound(type().get().key(), net.kyori.adventure.sound.Sound.Source.AMBIENT, volume(), pitch());
     }
 
     class Builder extends ImmutableSound.Builder {}
