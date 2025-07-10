@@ -134,5 +134,8 @@ public class SpeedbridgePlugin extends JavaPlugin {
         if (toolbarHandler != null) {
             toolbarHandler.disable();
         }
+        if (databaseSystem != null) {
+            databaseSystem.close();
+        }
     }
 }
