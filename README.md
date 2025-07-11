@@ -1,5 +1,23 @@
 # SpeedBridge2
-The third iteration of SpeedBridge is currently underway.
+The upcoming version of SpeedBridge is under development.
+
+Supported features:
+- [x] Revamped Block System
+  - [x] Blocks are now based on ItemStack, allowing full customization of display names, lore, and more.
+- [x] Comphrehensive Menu System
+  - [x] Supports multiple layout patterns (e.g: binary, recipe)
+  - [x] Blocks can be conditionally shown based on player's permission.
+  - [ ] Block-per-group
+  - [ ] Menu shops? (undecided)
+- [x] Customizable Global Score Rounding (visual only)
+  - [x] The precision, decimal places, and rounding mode can all be customized.
+- [x] Multiple Database Drivers Support (h2)
+  - [ ] MySQL driver (soon)  
+- [ ] Built-in Scoreboard
+- [ ] PlaceholderAPI
+- [ ] Island NPCs
+- [ ] Custom Items (ItemAdder, MythicCrucible, etc)
+- [ ] Island groups (need suggestions)
 
 > [!NOTE]
 > Are you looking for the stable/spigot version? It can be found at this [branch](https://github.com/Tofpu/SpeedBridge2/tree/v1.1.0).
