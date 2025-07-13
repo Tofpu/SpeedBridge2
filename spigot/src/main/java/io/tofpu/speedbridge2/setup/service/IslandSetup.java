@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.setup.service;
 
 import io.tofpu.speedbridge2.arena.Arena;
 import io.tofpu.speedbridge2.arena.CuboidRegion;
+import io.tofpu.speedbridge2.group.domain.Group;
 import io.tofpu.speedbridge2.positioning.PositionOffset;
 import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.util.PositionOrientation;
@@ -10,18 +11,23 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nullable;
+
 public class IslandSetup {
     private final Player player;
     private final int slot;
     private final Schematic schematic;
+    @Nullable
+    private final Group group;
     private final Arena arena;
 
     private PositionOffset spawnPoint;
 
-    public IslandSetup(Player player, int slot, Schematic schematic, Arena arena, PositionOffset spawnPoint) {
+    public IslandSetup(Player player, int slot, Schematic schematic, @Nullable Group group, Arena arena, PositionOffset spawnPoint) {
         this.player = player;
         this.slot = slot;
         this.schematic = schematic;
+        this.group = group;
         this.arena = arena;
         this.spawnPoint = spawnPoint;
     }
@@ -77,6 +83,11 @@ public class IslandSetup {
 
     public int slot() {
         return slot;
+    }
+
+    @Nullable
+    public Group group() {
+        return group;
     }
 
     public Schematic schematic() {

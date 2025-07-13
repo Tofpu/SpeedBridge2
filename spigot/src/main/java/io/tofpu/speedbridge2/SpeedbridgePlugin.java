@@ -8,6 +8,7 @@ import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.database.system.DatabaseSystem;
 import io.tofpu.speedbridge2.environment.infra.EnvironmentHandler;
 import io.tofpu.speedbridge2.game.system.GameSystem;
+import io.tofpu.speedbridge2.group.GroupSystem;
 import io.tofpu.speedbridge2.island.system.IslandSystem;
 import io.tofpu.speedbridge2.lobby.system.LobbySystem;
 import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
@@ -38,6 +39,7 @@ public class SpeedbridgePlugin extends JavaPlugin {
     private GameSystem gameSystem;
     private ToolbarHandler toolbarHandler;
     private LobbySystem lobbySystem;
+    private GroupSystem groupSystem;
     private IslandSystem islandSystem;
     private SchematicHandler schematicHandler;
 
@@ -96,7 +98,11 @@ public class SpeedbridgePlugin extends JavaPlugin {
     public void onEnable() {
         commandHandler = new CommandHandler(this);
 
-        islandSystem.loadData(databaseSystem.database(), schematicHandler);
+        groupSystem = new GroupSystem();
+        groupSystem.initialize(databaseSystem.database());
+        groupSystem.registerCommands(commandHandler);
+
+        islandSystem.loadData(databaseSystem.database(), schematicHandler, groupSystem.groupService());
         islandSystem.registerCommands(commandHandler);
 
         lobbySystem.registerCommands(commandHandler);

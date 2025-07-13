@@ -17,8 +17,12 @@ public class IslandCommand extends ChildrenCommand {
 
     private static String islandInfo(Island island) {
         return String.format(
-                "&7Island: &f%s\n" + "&8-> &7Schematic = &f%s\n",
-                island.slot(), island.schematic().name());
+                """
+                        &7Island: &f%s
+                        &8-> &7Schematic = &f%s
+                        &8-> &7Group = &f%s (id %s)
+                        """,
+                island.slot(), island.schematic().name(), island.group().name(), island.group().id());
     }
 
     @Subcommand("remove")

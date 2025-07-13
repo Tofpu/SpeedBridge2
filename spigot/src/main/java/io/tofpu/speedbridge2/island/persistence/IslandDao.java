@@ -25,6 +25,7 @@ public class IslandDao {
                     .values(
                             0, // ID is auto-incremented, so we can use 0 or null
                             entity.slot(),
+                            entity.groupId(),
                             entity.schematicName(),
                             entity.location().x(),
                             entity.location().y(),
@@ -33,6 +34,7 @@ public class IslandDao {
                             entity.location().pitch()
                     )
                     .onDuplicateKeyUpdate()
+                    .set(Islands.ISLANDS.GROUP_ID, entity.groupId())
                     .set(Islands.ISLANDS.SCHEMATIC_NAME, entity.schematicName())
                     .set(Islands.ISLANDS.X, entity.location().x())
                     .set(Islands.ISLANDS.Y, entity.location().y())
@@ -51,6 +53,7 @@ public class IslandDao {
             //noinspection DataFlowIssue
             return new IslandEntity(
                     island.getSlot(),
+                    island.getGroupId(),
                     island.getSchematicName(),
                     mapToLocationEntity(island)
             );
@@ -74,6 +77,7 @@ public class IslandDao {
                     .fetch()
                     .map(record -> new IslandEntity(
                             record.getSlot(),
+                            record.getGroupId(),
                             record.getSchematicName(),
                             mapToLocationEntity(record)
                     ));

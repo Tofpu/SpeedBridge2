@@ -4,6 +4,7 @@ import com.cryptomorin.xseries.XMaterial;
 import io.tofpu.speedbridge2.command.ChildrenCommand;
 import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.command.CommandHandlerVisitor;
+import io.tofpu.speedbridge2.group.domain.Group;
 import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.setup.domain.SetupInfo;
 import io.tofpu.speedbridge2.setup.infra.listener.indication.VirtualBorder;
@@ -13,6 +14,8 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.data.BlockData;
+import revxrsal.commands.annotation.Flag;
+import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 import revxrsal.commands.exception.CommandErrorException;
@@ -32,8 +35,8 @@ public class SetupCommand extends ChildrenCommand implements CommandHandlerVisit
     }
 
     @Subcommand("create")
-    public void createSetup(BukkitCommandActor actor, int slot, Schematic schematic) {
-        if (setupService.createSetup(actor.requirePlayer(), new SetupInfo(slot, schematic))) {
+    public void createSetup(BukkitCommandActor actor, int slot, Schematic schematic, @Flag("g") @Optional Group group) {
+        if (setupService.createSetup(actor.requirePlayer(), new SetupInfo(slot, group, schematic))) {
             actor.reply(String.format("&eCreated setup for slot %d with schematic %s", slot, schematic.name()));
         } else {
             actor.reply("&cYou already have a setup in progress!");

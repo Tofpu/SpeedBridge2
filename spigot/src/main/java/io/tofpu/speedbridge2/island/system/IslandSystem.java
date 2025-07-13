@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.island.system;
 
 import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.database.infra.db.Database;
+import io.tofpu.speedbridge2.group.service.GroupService;
 import io.tofpu.speedbridge2.island.command.IslandCommandHandler;
 import io.tofpu.speedbridge2.island.domain.IslandRepository;
 import io.tofpu.speedbridge2.island.persistence.IslandDao;
@@ -13,11 +14,12 @@ import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 public class IslandSystem {
     private IslandService islandService;
 
-    public void loadData(Database database, SchematicHandler schematicHandler) {
+    public void loadData(Database database, SchematicHandler schematicHandler, GroupService groupService) {
         IslandRepository repository = new IslandRepositoryImpl(
                 new IslandDao(database),
                 new IslandMapper(),
-                schematicHandler
+                schematicHandler,
+                groupService
         );
         islandService = new IslandService(repository);
         islandService.load();

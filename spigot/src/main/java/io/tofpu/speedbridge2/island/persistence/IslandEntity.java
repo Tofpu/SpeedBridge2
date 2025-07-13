@@ -1,7 +1,11 @@
 package io.tofpu.speedbridge2.island.persistence;
 
+import java.util.UUID;
+
 public record IslandEntity(
-        int slot, String schematicName,
+        int slot,
+        UUID groupId,
+        String schematicName,
         LocationEntity location
 ) {
     public record LocationEntity(

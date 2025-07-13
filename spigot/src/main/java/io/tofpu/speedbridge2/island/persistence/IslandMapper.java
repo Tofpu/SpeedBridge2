@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.island.persistence;
 
+import io.tofpu.speedbridge2.group.domain.Group;
 import io.tofpu.speedbridge2.island.domain.Island;
 import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.util.PositionOrientation;
@@ -9,6 +10,7 @@ public class IslandMapper {
     public IslandEntity toEntity(Island island) {
         return new IslandEntity(
                 island.slot(),
+                island.group().id(),
                 island.schematic().name(),
                 toEntity(island.positionOffset().offset())
         );
@@ -24,10 +26,11 @@ public class IslandMapper {
         );
     }
 
-    public Island toDomain(IslandEntity entity, Schematic schematic) {
+    public Island toDomain(IslandEntity entity, Group group, Schematic schematic) {
         PositionOrientation positionOrientation = toDomain(entity.location());
         return new Island(
                 entity.slot(),
+                group,
                 schematic,
                 positionOrientation
         );

@@ -9,11 +9,6 @@ import io.tofpu.speedbridge2.island.service.IslandService;
 import io.tofpu.speedbridge2.lobby.LobbyTeleporter;
 import io.tofpu.speedbridge2.positioning.PositionOffset;
 import io.tofpu.speedbridge2.schematic.domain.Schematic;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-
 import io.tofpu.speedbridge2.setup.domain.SetupInfo;
 import io.tofpu.speedbridge2.setup.domain.event.SetupStartEvent;
 import io.tofpu.speedbridge2.setup.domain.event.SetupStopEvent;
@@ -21,6 +16,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class SetupService {
     private final EventBus eventBus;
@@ -54,7 +54,7 @@ public class SetupService {
         Island island = islandService.getIsland(setupInfo.slot());
         PositionOffset spawnPoint = island != null ? island.positionOffset() : null;
 
-        IslandSetup setup = new IslandSetup(player, setupInfo.slot(), schematic, arena, spawnPoint);
+        IslandSetup setup = new IslandSetup(player, setupInfo.slot(), schematic, setupInfo.group(), arena, spawnPoint);
         this.playerSetups.put(playerId, setup);
 
         setup.teleport(player);
@@ -86,7 +86,7 @@ public class SetupService {
 
         eventBus.post(SetupStopEvent.class, setup, SetupStopEvent.Type.SUCCESS);
 
-        Island newIsland = new Island(setup.slot(), setup.schematic(), setup.spawnPoint());
+        Island newIsland = new Island(setup.slot(), setup.group(), setup.schematic(), setup.spawnPoint());
         islandService.registerIsland(newIsland);
 
         teleportPlayerToLobby(setup.player());
