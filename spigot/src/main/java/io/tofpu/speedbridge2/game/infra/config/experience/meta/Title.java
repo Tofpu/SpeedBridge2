@@ -1,8 +1,9 @@
 package io.tofpu.speedbridge2.game.infra.config.experience.meta;
 
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import space.arim.dazzleconf.annote.ConfDefault;
 
-import static net.kyori.adventure.text.Component.text;
 import static org.immutables.value.Value.Immutable;
 
 // todo: add support for specifying a fade in and fade out time
@@ -23,7 +24,9 @@ public interface Title {
     String subtitle();
 
     default net.kyori.adventure.title.Title toTitle() {
-        return net.kyori.adventure.title.Title.title(text(title()), text(subtitle()));
+        TextComponent title = LegacyComponentSerializer.legacyAmpersand().deserialize(title());
+        TextComponent subtitle = LegacyComponentSerializer.legacyAmpersand().deserialize(subtitle());
+        return net.kyori.adventure.title.Title.title(title, subtitle);
     }
 
     class Builder extends ImmutableTitle.Builder {}
