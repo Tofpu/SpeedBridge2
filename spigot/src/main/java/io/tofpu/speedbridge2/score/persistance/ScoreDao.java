@@ -12,6 +12,7 @@ import java.time.ZoneOffset;
 import java.util.Collection;
 
 public class ScoreDao {
+    private static final ZoneId ZONE_ID = ZoneId.of("UTC");
     private final Database database;
 
     public ScoreDao(Database database) {
@@ -26,7 +27,7 @@ public class ScoreDao {
                             entity.playerId(),
                             entity.slot(),
                             entity.time(),
-                            LocalDateTime.ofInstant(entity.timestamp(), ZoneId.systemDefault())
+                            LocalDateTime.ofInstant(entity.timestamp(), ZONE_ID)
                     )
                     .execute();
         });
@@ -40,7 +41,7 @@ public class ScoreDao {
                             Scores.SCORES.PLAYER_ID.eq(entity.playerId()),
                             Scores.SCORES.SLOT.eq(entity.slot()),
                             Scores.SCORES.TIME.eq(entity.time()),
-                            Scores.SCORES.CREATED_AT.eq(LocalDateTime.ofInstant(entity.timestamp(), ZoneId.of("UTC")))
+                            Scores.SCORES.CREATED_AT.eq(LocalDateTime.ofInstant(entity.timestamp(), ZONE_ID))
                     ).execute() > 0;
         });
     }
