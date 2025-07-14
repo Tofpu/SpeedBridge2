@@ -20,7 +20,10 @@ public class ScoreRoundingHandler {
     }
 
     public BigDecimal formatDuration(double number) {
+        RoundingMode mode = settings.mode() == io.tofpu.speedbridge2.score.format.rounding.domain.RoundingMode.NEAREST
+                ? RoundingMode.HALF_UP
+                : RoundingMode.DOWN;
         return new BigDecimal(number)
-                .setScale(settings.decimalPoints(), RoundingMode.DOWN);
+                .setScale(settings.decimalPoints(), mode);
     }
 }
