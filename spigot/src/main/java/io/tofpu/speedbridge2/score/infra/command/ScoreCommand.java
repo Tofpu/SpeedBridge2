@@ -15,6 +15,8 @@ import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -66,18 +68,50 @@ public class ScoreCommand extends ChildrenCommand {
         ScoreRegistry scores = scoreService.scores(target.getUniqueId());
         if (scores.remove(score)) {
             actor.sender().sendMessage(EasyMessageBuilder.create()
-                            .addText("Removed score {1} ({2}) successfully.", NamedTextColor.GREEN)
-                            .addReplacement("{1}", scoreFormatter.format(score), NamedTextColor.WHITE)
-                            .addReplacement("{2}", score.slot()+"", NamedTextColor.WHITE)
+                    .addText("Removed score {1} ({2}) successfully.", NamedTextColor.GREEN)
+                    .addReplacement("{1}", scoreFormatter.format(score), NamedTextColor.WHITE)
+                    .addReplacement("{2}", score.slot() + "", NamedTextColor.WHITE)
                     .build()
             );
         } else {
             actor.sender().sendMessage(EasyMessageBuilder.create()
                     .addText("Failed to remove score {1} ({2}).", NamedTextColor.RED)
                     .addReplacement("{1}", scoreFormatter.format(score), NamedTextColor.WHITE)
-                    .addReplacement("{2}", score.slot()+"", NamedTextColor.WHITE)
+                    .addReplacement("{2}", score.slot() + "", NamedTextColor.WHITE)
                     .build()
             );
         }
+    }
+
+    @Subcommand("clear")
+    public void clear(BukkitCommandActor actor, Player target, @Optional Island island) {
+        ScoreRegistry registry = scoreService.scores(target.getUniqueId());
+        Collection<Score> scores = island == null ? registry.all() : registry.filterByIsland(island.slot());
+        // because #all or #filterbyIsland only wraps the original collection
+        // so we must copy it to avoid concurrent modification exception
+        scores = new ArrayList<>(scores);
+        if (scores.isEmpty()) {
+            String pronoun = target.equals(actor.sender()) ? "You do" : "The player {1} does";
+            if (island == null) {
+                actor.sender().sendMessage(EasyMessageBuilder.create()
+                        .addText("{0} not have any scores to clear.", NamedTextColor.RED)
+                        .addReplacement("{0}", pronoun)
+                        .addReplacement("{1}", target.getName(), NamedTextColor.WHITE)
+                        .build());
+            } else {
+                actor.sender().sendMessage(EasyMessageBuilder.create()
+                        .addText("{0} not have any scores for island {2} to clear.", NamedTextColor.RED)
+                        .addReplacement("{0}", pronoun)
+                        .addReplacement("{1}", target.getName(), NamedTextColor.WHITE)
+                        .addReplacement("{2}", island.slot() + "", NamedTextColor.WHITE)
+                        .build());
+            }
+            return;
+        }
+        scores.forEach(registry::remove);
+        actor.sender().sendMessage(EasyMessageBuilder.create()
+                .addText("Removed {1} registry successfully.", NamedTextColor.GREEN)
+                .addReplacement("{1}", scores.size() + "", NamedTextColor.WHITE)
+                .build());
     }
 }
