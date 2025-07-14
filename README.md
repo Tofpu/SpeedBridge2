@@ -14,7 +14,7 @@ Supported features:
 - [x] Multiple Database Drivers Support (h2)
   - [ ] MySQL driver (soon)  
 - [x] Built-in Scoreboard
-- [ ] PlaceholderAPI
+- [x] PlaceholderAPI
 - [ ] Island NPCs
 - [ ] Custom Items (ItemAdder, MythicCrucible, etc)
 - [x] Advanced grouping mechanism
