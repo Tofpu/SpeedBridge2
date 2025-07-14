@@ -46,6 +46,14 @@ public class ScoreRegistryImpl implements ScoreRegistry {
     }
 
     @Override
+    public Optional<Score> bestScore() {
+        if (scores.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(scores.first());
+    }
+
+    @Override
     public boolean remove(Score score) {
         if (scores.remove(score)) {
             eventBus.post(ScoreUnregisteredEvent.class, score);

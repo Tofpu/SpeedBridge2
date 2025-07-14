@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 
 public interface ScoreRegistry {
     void addScore(Score score);
+    Optional<Score> bestScore();
     Optional<Score> bestScore(int slot);
 
     boolean remove(Score score);
