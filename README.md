@@ -17,7 +17,8 @@ Supported features:
 - [ ] PlaceholderAPI
 - [ ] Island NPCs
 - [ ] Custom Items (ItemAdder, MythicCrucible, etc)
-- [ ] Island groups (need suggestions)
+- [x] Advanced grouping mechanism
+  - [x] Islands now can be optionally associated with a group.
 
 > [!NOTE]
 > Are you looking for the stable/spigot version? It can be found at this [branch](https://github.com/Tofpu/SpeedBridge2/tree/v1.1.0).
