@@ -40,7 +40,9 @@ public class ScoreboardSystem {
         ScoreboardConfiguration scoreboardConfiguration = configManager.loadConfiguration(new File(plugin.getDataFolder(), "scoreboard.yml"));
 
         scoreboardService = new ScoreboardService(player -> createDynamicSidebar(service, player, scoreboardConfiguration));
-        updateTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> scoreboardService.updateAll(), 0L, 1L); // Update every second
+
+        int updateInterval = scoreboardConfiguration.tickInterval();
+        updateTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> scoreboardService.updateAll(), 0L, updateInterval); // Update every second
     }
 
     private @NotNull Scoreboard createDynamicSidebar(PlaceholderService service, Player player, ScoreboardConfiguration scoreboardConfiguration) {
