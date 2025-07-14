@@ -40,7 +40,7 @@ public class ScoreDao {
                             Scores.SCORES.PLAYER_ID.eq(entity.playerId()),
                             Scores.SCORES.SLOT.eq(entity.slot()),
                             Scores.SCORES.TIME.eq(entity.time()),
-                            Scores.SCORES.CREATED_AT.eq(LocalDateTime.ofInstant(entity.timestamp(), ZoneId.systemDefault()))
+                            Scores.SCORES.CREATED_AT.eq(LocalDateTime.ofInstant(entity.timestamp(), ZoneId.of("UTC")))
                     ).execute() > 0;
         });
     }
