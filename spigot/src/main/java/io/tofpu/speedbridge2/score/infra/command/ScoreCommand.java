@@ -1,6 +1,7 @@
 package io.tofpu.speedbridge2.score.infra.command;
 
 import io.tofpu.speedbridge2.command.ChildrenCommand;
+import io.tofpu.speedbridge2.island.domain.Island;
 import io.tofpu.speedbridge2.score.domain.Score;
 import io.tofpu.speedbridge2.score.domain.ScoreRegistry;
 import io.tofpu.speedbridge2.score.format.ScoreFormatter;
@@ -11,6 +12,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
 import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.Subcommand;
+import revxrsal.commands.bukkit.actor.BukkitCommandActor;
 import revxrsal.commands.bukkit.annotation.CommandPermission;
 
 import java.util.UUID;
@@ -57,5 +59,25 @@ public class ScoreCommand extends ChildrenCommand {
                         .addReplacement("{2}", scoreFormatter.format(score), NamedTextColor.WHITE)
                         .addReplacement("{3}", score.slot() + "")
                         .build()));
+    }
+
+    @Subcommand("remove")
+    public void remove(BukkitCommandActor actor, Player target, Island ignoredIsland, Score score) {
+        ScoreRegistry scores = scoreService.scores(target.getUniqueId());
+        if (scores.remove(score)) {
+            actor.sender().sendMessage(EasyMessageBuilder.create()
+                            .addText("Removed score {1} ({2}) successfully.", NamedTextColor.GREEN)
+                            .addReplacement("{1}", scoreFormatter.format(score), NamedTextColor.WHITE)
+                            .addReplacement("{2}", score.slot()+"", NamedTextColor.WHITE)
+                    .build()
+            );
+        } else {
+            actor.sender().sendMessage(EasyMessageBuilder.create()
+                    .addText("Failed to remove score {1} ({2}).", NamedTextColor.RED)
+                    .addReplacement("{1}", scoreFormatter.format(score), NamedTextColor.WHITE)
+                    .addReplacement("{2}", score.slot()+"", NamedTextColor.WHITE)
+                    .build()
+            );
+        }
     }
 }
