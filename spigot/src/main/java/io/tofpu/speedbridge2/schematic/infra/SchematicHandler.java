@@ -42,7 +42,7 @@ public class SchematicHandler {
     }
 
     public Collection<String> schematicNames() {
-        return Collections.unmodifiableCollection(schematics.keySet());
+        return fileResolver.schematicNames(schematicDirectory);
     }
 
     public boolean contains(String schematicName) {
