@@ -16,7 +16,7 @@ public interface ScoreboardConfiguration {
                 "&a» &fYour goal: ",
                 " &eBridge as fast as possible",
                 "",
-                "&a» &fPersonal Best: &b%personal_best%",
+                "&a» &fPersonal Best: &b%sb_personal_best%",
                 "&a» &fCurrent Time: &e%sb_current_time%",
                 "",
                 "&7Stay sharp. Stay fast."

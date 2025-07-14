@@ -14,7 +14,11 @@ public class ScoreFormatter {
     }
 
     public String format(Score score) {
-        double roundedTime = roundingHandler.round(score.time());
+        return format(score.time());
+    }
+
+    public String format(double time) {
+        double roundedTime = roundingHandler.round(time);
         return formatDuration(roundingHandler.formatDuration(roundedTime));
     }
 
