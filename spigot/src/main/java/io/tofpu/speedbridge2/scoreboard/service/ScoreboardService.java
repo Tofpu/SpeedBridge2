@@ -1,20 +1,40 @@
 package io.tofpu.speedbridge2.scoreboard.service;
 
-import net.megavex.scoreboardlibrary.api.sidebar.Sidebar;
+import io.tofpu.speedbridge2.scoreboard.domain.Scoreboard;
 import org.bukkit.entity.Player;
 
-public class ScoreboardService {
-    private final Sidebar sidebar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Function;
 
-    public ScoreboardService(Sidebar sidebar) {
-        this.sidebar = sidebar;
+public class ScoreboardService {
+    private final Map<UUID, Scoreboard> sidebars = new HashMap<>();
+    private final Function<Player, Scoreboard> sidebarFactory;
+
+    public ScoreboardService(Function<Player, Scoreboard> sidebarFactory) {
+        this.sidebarFactory = sidebarFactory;
+    }
+
+    public void updateAll() {
+        for (Scoreboard scoreboard : sidebars.values()) {
+            scoreboard.update();
+        }
     }
 
     public void addPlayer(Player player) {
+        Scoreboard sidebar = sidebars.get(player.getUniqueId());
+        if (sidebar != null) return;
+        sidebar = sidebarFactory.apply(player);
+        sidebars.put(player.getUniqueId(), sidebar);
         sidebar.addPlayer(player);
     }
 
     public void removePlayer(Player player) {
-        sidebar.removePlayer(player);
+        Scoreboard sidebar = sidebars.remove(player.getUniqueId());
+        if (sidebar != null) {
+            sidebar.removePlayer(player);
+            sidebar.close();
+        }
     }
 }

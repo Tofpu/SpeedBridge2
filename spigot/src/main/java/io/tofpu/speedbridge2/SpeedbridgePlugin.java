@@ -44,6 +44,7 @@ public class SpeedbridgePlugin extends JavaPlugin {
     private GroupSystem groupSystem;
     private IslandSystem islandSystem;
     private SchematicHandler schematicHandler;
+    private ScoreboardSystem scoreboardSystem;
 
     @Override
     public void onLoad() {
@@ -144,8 +145,8 @@ public class SpeedbridgePlugin extends JavaPlugin {
         blockSystem.registerListeners(listenerRegistration, eventBus);
         blockSystem.registerCommands(commandHandler);
 
-        ScoreboardSystem scoreboardSystem = new ScoreboardSystem();
-        scoreboardSystem.initialize(this);
+        scoreboardSystem = new ScoreboardSystem();
+        scoreboardSystem.initialize(this, placeholderSystem.service());
         scoreboardSystem.registerListeners(eventBus);
 
         commandHandler.enable();
@@ -155,6 +156,9 @@ public class SpeedbridgePlugin extends JavaPlugin {
     public void onDisable() {
         if (toolbarHandler != null) {
             toolbarHandler.disable();
+        }
+        if (scoreboardSystem != null) {
+            scoreboardSystem.disable();
         }
         if (databaseSystem != null) {
             databaseSystem.close();
