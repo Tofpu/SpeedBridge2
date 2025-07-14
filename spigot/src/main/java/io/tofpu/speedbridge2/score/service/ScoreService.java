@@ -2,8 +2,8 @@ package io.tofpu.speedbridge2.score.service;
 
 import io.tofpu.speedbridge2.score.domain.RegistrySettings;
 import io.tofpu.speedbridge2.score.domain.Score;
+import io.tofpu.speedbridge2.score.domain.ScoreRegistry;
 import io.tofpu.speedbridge2.score.domain.ScoreRepository;
-import io.tofpu.speedbridge2.score.domain.Scores;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -13,10 +13,10 @@ public class ScoreService {
     private final PlayerScoreRegistry playerScoreRegistry;
     private final RegistrySettings registrySettings;
 
-    public ScoreService(ScoreRepository repository, RegistrySettings registrySettings) {
+    public ScoreService(ScoreRepository repository, RegistrySettings registrySettings, PlayerScoreRegistry playerScoreRegistry) {
         this.repository = repository;
         this.registrySettings = registrySettings;
-        this.playerScoreRegistry = new PlayerScoreRegistry();
+        this.playerScoreRegistry = playerScoreRegistry;
     }
 
     public void loadData() {
@@ -24,7 +24,7 @@ public class ScoreService {
     }
 
     public Score bestScore(UUID playerId, int slot) {
-        Scores playerScores = playerScoreRegistry.scores(playerId);
+        ScoreRegistry playerScores = playerScoreRegistry.scores(playerId);
         if (playerScores.isEmpty()) {
             return null;
         }
@@ -32,7 +32,7 @@ public class ScoreService {
     }
 
     public boolean beatenPersonalScore(UUID playerId, int slot, double time) {
-        Scores playerScores = playerScoreRegistry.scores(playerId);
+        ScoreRegistry playerScores = playerScoreRegistry.scores(playerId);
         if (playerScores.isEmpty()) {
             return false;
         }
@@ -42,21 +42,19 @@ public class ScoreService {
     }
 
     public void register(Score score) {
-        Scores playerScores = playerScoreRegistry.scores(score.playerId());
+        ScoreRegistry playerScores = playerScoreRegistry.scores(score.playerId());
         Collection<Score> islandScores = playerScores.filterByIsland(score.slot());
         int size = islandScores.size();
 
-        repository.save(score);
         playerScoreRegistry.register(score);
 
         // reaches the score size limit per island per player
         if (registrySettings.entriesLimit() <= size) {
-            Score removed = playerScores.removeLastScore();
-            repository.delete(removed);
+            playerScores.removeLastScore();
         }
     }
 
-    public Scores scores(UUID playerId) {
+    public ScoreRegistry scores(UUID playerId) {
         return playerScoreRegistry.scores(playerId);
     }
 }

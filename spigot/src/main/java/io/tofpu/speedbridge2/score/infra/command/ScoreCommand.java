@@ -1,7 +1,8 @@
 package io.tofpu.speedbridge2.score.infra.command;
 
 import io.tofpu.speedbridge2.command.ChildrenCommand;
-import io.tofpu.speedbridge2.score.domain.Scores;
+import io.tofpu.speedbridge2.score.domain.Score;
+import io.tofpu.speedbridge2.score.domain.ScoreRegistry;
 import io.tofpu.speedbridge2.score.format.ScoreFormatter;
 import io.tofpu.speedbridge2.score.service.ScoreService;
 import io.tofpu.speedbridge2.util.component.EasyMessageBuilder;
@@ -32,7 +33,7 @@ public class ScoreCommand extends ChildrenCommand {
         boolean self = target == null || target.equals(sender);
         UUID targetId = self ? sender.getUniqueId() : target.getUniqueId();
 
-        Scores scores = scoreService.scores(targetId);
+        ScoreRegistry scores = scoreService.scores(targetId);
         if (scores.isEmpty()) {
             sender.sendMessage(
                     text(
@@ -48,7 +49,7 @@ public class ScoreCommand extends ChildrenCommand {
                 .build());
 
         AtomicInteger counter = new AtomicInteger(1);
-        scores.scores().stream()
+        scores.all().stream()
                 .sorted()
                 .forEach(score -> sender.sendMessage(EasyMessageBuilder.create()
                         .addText("{1}. {2} (island {3})", NamedTextColor.GRAY).addEmptySpace()
