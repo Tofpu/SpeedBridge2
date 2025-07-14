@@ -15,7 +15,7 @@ public class GameCommand extends ChildrenCommand {
         this.gameService = gameService;
     }
 
-    @Subcommand("join")
+    @Subcommand("play")
     public void joinGame(BukkitCommandActor actor, Island island) {
         if (gameService.startGame(actor.requirePlayer(), island)) {
             GameMessage.GAME_JOINED.of(island.slot())
