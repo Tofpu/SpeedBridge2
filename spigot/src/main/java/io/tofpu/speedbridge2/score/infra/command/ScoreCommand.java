@@ -10,6 +10,7 @@ import io.tofpu.speedbridge2.util.component.EasyMessageBuilder;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.entity.Player;
+import revxrsal.commands.annotation.Default;
 import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.bukkit.actor.BukkitCommandActor;
@@ -33,7 +34,7 @@ public class ScoreCommand extends ChildrenCommand {
     }
 
     @Subcommand("list")
-    public void list(Player sender, @Optional @CommandPermission("sb.command.score.list.target") Player target) {
+    public void list(Player sender, @Default("@p") @CommandPermission("sb.command.score.list.target") Player target) {
         boolean self = target == null || target.equals(sender);
         UUID targetId = self ? sender.getUniqueId() : target.getUniqueId();
 
