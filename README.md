@@ -19,6 +19,7 @@ Supported features:
 - [ ] Custom Items (ItemAdder, MythicCrucible, etc)
 - [x] Advanced grouping mechanism
   - [x] Islands now can be optionally associated with a group.
+- [ ] Comprehensive Statistics (player, island, group)
 
 > [!NOTE]
 > Are you looking for the stable/spigot version? It can be found at this [branch](https://github.com/Tofpu/SpeedBridge2/tree/v1.1.0).
