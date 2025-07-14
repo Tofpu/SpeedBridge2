@@ -18,7 +18,7 @@ public class ScoreFormatter {
         return formatDuration(roundingHandler.formatDuration(roundedTime));
     }
 
-    public String formatDuration(BigDecimal decimal) {
+    String formatDuration(BigDecimal decimal) {
         double value = decimal.doubleValue();
         if (value < 60) {
             return value + "s";
