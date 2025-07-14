@@ -5,10 +5,12 @@ import io.tofpu.speedbridge2.command.CommandHandler;
 import io.tofpu.speedbridge2.command.CommandHandlerVisitor;
 import io.tofpu.speedbridge2.group.domain.Group;
 import io.tofpu.speedbridge2.group.service.GroupService;
+import revxrsal.commands.annotation.Optional;
 import revxrsal.commands.annotation.Subcommand;
 import revxrsal.commands.command.CommandActor;
 
 import java.util.Collection;
+import java.util.UUID;
 
 @Subcommand("group")
 public class GroupCommand extends ChildrenCommand implements CommandHandlerVisitor {
@@ -19,13 +21,18 @@ public class GroupCommand extends ChildrenCommand implements CommandHandlerVisit
     }
 
     @Subcommand("create")
-    public void addGroup(CommandActor sender, String groupName) {
+    public void addGroup(CommandActor sender, String groupName, @Optional UUID groupId) {
         if (service.contains(groupName)) {
-            sender.reply("There's already a group with name %s!".formatted(groupName));
+            sender.reply("There's already a group with name '%s'!".formatted(groupName));
             return;
         }
+        if (groupId != null && service.contains(groupId)) {
+            sender.reply("There's already a group with id '%s': '%s'".formatted(groupId, service.getById(groupId).name()));
+            return;
+        }
+
         sender.reply("&eCreating group named '%s' now...".formatted(groupName));
-        service.createGroup(groupName)
+        service.createGroup(groupName, groupId)
                 .thenAccept(group -> {
                     if (group != null) {
                         sender.reply("&aCreated group '%s' successfully.".formatted(group.name()));

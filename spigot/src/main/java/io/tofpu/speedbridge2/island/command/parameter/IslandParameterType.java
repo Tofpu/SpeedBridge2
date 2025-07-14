@@ -1,5 +1,6 @@
 package io.tofpu.speedbridge2.island.command.parameter;
 
+import io.tofpu.speedbridge2.island.domain.IslandDescriptor;
 import io.tofpu.speedbridge2.island.domain.Island;
 import io.tofpu.speedbridge2.island.service.IslandService;
 import java.util.stream.Collectors;
@@ -31,8 +32,8 @@ public class IslandParameterType implements ParameterType<BukkitCommandActor, Is
 
     @Override
     public @NotNull SuggestionProvider<@NotNull BukkitCommandActor> defaultSuggestions() {
-        return context -> islandService.islands().stream()
-                .map(Island::slot)
+        return context -> islandService.islands(true).stream()
+                .map(IslandDescriptor::slot)
                 .map(String::valueOf)
                 .collect(Collectors.toList());
     }

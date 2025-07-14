@@ -98,12 +98,13 @@ public class SpeedbridgePlugin extends JavaPlugin {
     public void onEnable() {
         commandHandler = new CommandHandler(this);
 
-        groupSystem = new GroupSystem();
+        groupSystem = new GroupSystem(eventBus);
         groupSystem.initialize(databaseSystem.database());
         groupSystem.registerCommands(commandHandler);
 
         islandSystem.loadData(databaseSystem.database(), schematicHandler, groupSystem.groupService());
         islandSystem.registerCommands(commandHandler);
+        islandSystem.registerListeners(eventBus);
 
         lobbySystem.registerCommands(commandHandler);
         toolbarHandler.enable();

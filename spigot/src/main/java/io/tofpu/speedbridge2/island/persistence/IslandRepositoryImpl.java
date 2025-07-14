@@ -4,6 +4,7 @@ import io.tofpu.speedbridge2.group.domain.Group;
 import io.tofpu.speedbridge2.group.service.GroupService;
 import io.tofpu.speedbridge2.island.domain.Island;
 import io.tofpu.speedbridge2.island.domain.IslandRepository;
+import io.tofpu.speedbridge2.island.domain.ValidatableIsland;
 import io.tofpu.speedbridge2.schematic.domain.Schematic;
 import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 import org.slf4j.Logger;
@@ -36,21 +37,21 @@ public class IslandRepositoryImpl implements IslandRepository {
     @Override
     public Island findBySlot(int slot) {
         IslandEntity entity = islandDao.findBySlot(slot);
-        return islandToDomain(entity);
+        ValidatableIsland islandDescriptor = islandToDomain(entity);
+        if (!islandDescriptor.isValid()) {
+            return null; // we must only return valid islands
+        }
+        return (Island) islandDescriptor;
     }
 
-    private Island islandToDomain(IslandEntity entity) {
+    private ValidatableIsland islandToDomain(IslandEntity entity) {
         Schematic schematic = schematicHandler.resolveSchematic(entity.schematicName());
         Group group = groupService.getOrLoad(entity.groupId()).join();
-        if (group == null) {
-            System.out.printf("Cannot load island %s because group %s couldn't be found.%n", entity.slot(), entity.groupId());
-            return null;
-        }
         return islandMapper.toDomain(entity, group, schematic);
     }
 
     @Override
-    public Collection<Island> findAll() {
+    public Collection<ValidatableIsland> findAll() {
         List<IslandEntity> entities = islandDao.findAll();
         return entities.stream()
                 .map(this::islandToDomain)

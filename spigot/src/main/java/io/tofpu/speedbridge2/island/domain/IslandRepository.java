@@ -5,6 +5,6 @@ import java.util.Collection;
 public interface IslandRepository {
     void saveOrUpdate(Island island);
     Island findBySlot(int slot);
-    Collection<Island> findAll();
+    Collection<ValidatableIsland> findAll();
     boolean deleteBySlot(int slot);
 }

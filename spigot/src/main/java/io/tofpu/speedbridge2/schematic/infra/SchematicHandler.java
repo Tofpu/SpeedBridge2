@@ -44,4 +44,8 @@ public class SchematicHandler {
     public Collection<String> schematicNames() {
         return Collections.unmodifiableCollection(schematics.keySet());
     }
+
+    public boolean contains(String schematicName) {
+        return schematics.containsKey(schematicName);
+    }
 }
