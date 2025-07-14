@@ -18,7 +18,7 @@ repositories {
 
     maven("https://jitpack.io")
     maven("https://maven.enginehub.org/repo/")
-
+    maven("https://repo.extendedclip.com/releases")
 }
 
 dependencies {
@@ -60,6 +60,8 @@ dependencies {
     runtimeOnly("net.megavex:scoreboard-library-implementation:${scoreboardLibraryVersion}")
     // adapters
     runtimeOnly("net.megavex:scoreboard-library-modern:${scoreboardLibraryVersion}")
+
+    compileOnly("me.clip:placeholderapi:2.11.6")
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -144,6 +146,7 @@ tasks {
         downloadPlugins {
             url("https://dev.bukkit.org/projects/worldedit/files/5145924/download")
             url("https://download.luckperms.net/1594/bukkit/loader/LuckPerms-Bukkit-5.5.9.jar")
+            url("https://www.spigotmc.org/resources/placeholderapi.6245/download?version=541946")
         }
     }
 

@@ -11,4 +11,8 @@ public interface Constants {
         Function<Supplier<Integer>, PositionCalculator<Integer>> GAME =
                 xAxisGapSupplier -> new DefaultPositionCalculator<>(0, 0, 0, xAxisGapSupplier);
     }
+
+    interface Placeholder {
+        String PLACEHOLDER_PREFIX = "sb";
+    }
 }

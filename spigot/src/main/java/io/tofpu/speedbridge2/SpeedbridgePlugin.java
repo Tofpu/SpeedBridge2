@@ -11,6 +11,7 @@ import io.tofpu.speedbridge2.game.system.GameSystem;
 import io.tofpu.speedbridge2.group.GroupSystem;
 import io.tofpu.speedbridge2.island.system.IslandSystem;
 import io.tofpu.speedbridge2.lobby.system.LobbySystem;
+import io.tofpu.speedbridge2.placeholder.system.PlaceholderSystem;
 import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 import io.tofpu.speedbridge2.score.system.ScoreSystem;
 import io.tofpu.speedbridge2.scoreboard.ScoreboardSystem;
@@ -112,6 +113,9 @@ public class SpeedbridgePlugin extends JavaPlugin {
 
         EnvironmentHandler environmentHandler = new EnvironmentHandler(Bukkit.getWorldContainer());
         environmentHandler.setupEnvironment();
+
+        PlaceholderSystem placeholderSystem = new PlaceholderSystem();
+        placeholderSystem.initialize(this);
 
         ListenerRegistration listenerRegistration = ListenerRegistration.create(this);
         gameSystem = new GameSystem(
