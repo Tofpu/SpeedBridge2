@@ -93,7 +93,7 @@ public class ScoreRegistryImpl implements ScoreRegistry {
         return scores.stream()
                 .filter(score -> score.slot() == slot)
                 .sorted()
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

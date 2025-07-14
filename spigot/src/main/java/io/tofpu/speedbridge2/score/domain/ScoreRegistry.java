@@ -15,8 +15,9 @@ public interface ScoreRegistry {
     Score removeLastScore();
 
     boolean isEmpty();
-    Collection<Score> filterByIsland(int slot);
 
+    @Unmodifiable
+    Collection<Score> filterByIsland(int slot);
     @Unmodifiable
     Collection<Score> all();
 }
