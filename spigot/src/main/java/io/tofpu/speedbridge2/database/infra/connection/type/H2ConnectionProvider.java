@@ -38,13 +38,15 @@ public class H2ConnectionProvider implements ConnectionProvider {
         this.url = url;
     }
 
-    private Connection connection;
+    private final ThreadLocal<Connection> threadLocalConnection = ThreadLocal.withInitial(this::createConnection);
 
     @Override
     public Connection provideConnection() {
+        Connection connection = threadLocalConnection.get();
         try {
-            if (connection == null || connection.isClosed()) {
+            if (connection.isClosed()) {
                 connection = createConnection();
+                threadLocalConnection.set(connection);
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to provide H2 connection", e);

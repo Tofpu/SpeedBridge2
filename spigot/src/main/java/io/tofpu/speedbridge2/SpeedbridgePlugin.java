@@ -13,6 +13,7 @@ import io.tofpu.speedbridge2.island.system.IslandSystem;
 import io.tofpu.speedbridge2.lobby.system.LobbySystem;
 import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 import io.tofpu.speedbridge2.score.system.ScoreSystem;
+import io.tofpu.speedbridge2.scoreboard.ScoreboardSystem;
 import io.tofpu.speedbridge2.setup.system.SetupSystem;
 import io.tofpu.speedbridge2.toolbar.ToolbarHandler;
 import io.tofpu.speedbridge2.util.listener.ListenerRegistration;
@@ -138,6 +139,10 @@ public class SpeedbridgePlugin extends JavaPlugin {
         blockSystem.load(databaseSystem.database(), getDataFolder());
         blockSystem.registerListeners(listenerRegistration, eventBus);
         blockSystem.registerCommands(commandHandler);
+
+        ScoreboardSystem scoreboardSystem = new ScoreboardSystem();
+        scoreboardSystem.initialize(this);
+        scoreboardSystem.registerListeners(eventBus);
 
         commandHandler.enable();
     }

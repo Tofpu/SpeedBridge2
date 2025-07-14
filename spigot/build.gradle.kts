@@ -55,6 +55,12 @@ dependencies {
 
     implementation("com.github.Revxrsal:EventBus:1.3")
 
+    val scoreboardLibraryVersion = "2.4.0"
+    implementation("net.megavex:scoreboard-library-api:${scoreboardLibraryVersion}")
+    runtimeOnly("net.megavex:scoreboard-library-implementation:${scoreboardLibraryVersion}")
+    // adapters
+    runtimeOnly("net.megavex:scoreboard-library-modern:${scoreboardLibraryVersion}")
+
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
