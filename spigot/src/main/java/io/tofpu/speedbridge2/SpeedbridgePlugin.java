@@ -131,6 +131,8 @@ public class SpeedbridgePlugin extends JavaPlugin {
         scoreSystem.load(getDataFolder(), databaseSystem.database(), gameSystem.feedbackRegistry(), eventBus);
         scoreSystem.registerCommands(commandHandler);
 
+        gameSystem.registerPlaceholders(placeholderSystem.service(), scoreSystem.scoreFormatter());
+
         SetupSystem setupSystem = new SetupSystem(
                 eventBus,
                 islandSystem.islandService(),

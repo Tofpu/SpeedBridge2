@@ -22,6 +22,7 @@ public record GameFeedback(
                         command = Placeholder.replaceAll(command, placeholders);
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
                 });
+                // todo: we need to parse the placeholders in the messages
                 messages.forEach(message -> {
                         message = Placeholder.replaceAll(message, placeholders);
                         player.sendMessage(ColorUtil.colorize(message));

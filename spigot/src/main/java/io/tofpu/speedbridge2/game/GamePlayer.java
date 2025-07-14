@@ -32,7 +32,17 @@ public class GamePlayer {
         endTimer = System.currentTimeMillis();
     }
 
+    public long currentTimerInMillis() {
+        if (startTimer == -1) {
+            throw new IllegalStateException("Timer has not been started.");
+        }
+        return System.currentTimeMillis() - startTimer;
+    }
+
     public long elapsedTimerInMillis() {
+        if (startTimer == -1 || endTimer == -1) {
+            throw new IllegalStateException("Timer has not been started or ended.");
+        }
         return endTimer - startTimer;
     }
 

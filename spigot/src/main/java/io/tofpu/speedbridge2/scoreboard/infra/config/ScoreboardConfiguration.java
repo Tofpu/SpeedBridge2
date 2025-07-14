@@ -17,7 +17,7 @@ public interface ScoreboardConfiguration {
                 " &eBridge as fast as possible",
                 "",
                 "&a» &fPersonal Best: &b%personal_best%",
-                "&a» &fCurrent Time: &e%current_time%",
+                "&a» &fCurrent Time: &e%sb_current_time%",
                 "",
                 "&7Stay sharp. Stay fast."
         );

@@ -12,8 +12,11 @@ import io.tofpu.speedbridge2.game.infra.listener.GameStateListener;
 import io.tofpu.speedbridge2.game.infra.listener.blocktracker.BlockPlacementTrackerListener;
 import io.tofpu.speedbridge2.game.infra.listener.equipment.GameEquipmentLifecycle;
 import io.tofpu.speedbridge2.game.infra.listener.equipment.toolbar.GameEquipmentHandler;
+import io.tofpu.speedbridge2.game.infra.placeholder.GamePlaceholderHandler;
 import io.tofpu.speedbridge2.game.service.GameService;
 import io.tofpu.speedbridge2.lobby.LobbyTeleporter;
+import io.tofpu.speedbridge2.placeholder.service.PlaceholderService;
+import io.tofpu.speedbridge2.score.format.ScoreFormatter;
 import io.tofpu.speedbridge2.util.listener.ListenerRegistration;
 import io.tofpu.toolbar.ToolbarAPI;
 import org.bukkit.World;
@@ -50,6 +53,10 @@ public class GameSystem {
 
         new BlockPlacementTrackerListener(gameService).register(listenerRegistration, eventBus);
         new GameEquipmentLifecycle(equipmentHandler).register(eventBus);
+    }
+
+    public void registerPlaceholders(PlaceholderService placeholderService, ScoreFormatter scoreFormatter) {
+        placeholderService.accept(new GamePlaceholderHandler(gameService, scoreFormatter));
     }
 
     public void enable() {
