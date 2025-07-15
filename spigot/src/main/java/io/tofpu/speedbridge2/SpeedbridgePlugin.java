@@ -12,6 +12,7 @@ import io.tofpu.speedbridge2.group.GroupSystem;
 import io.tofpu.speedbridge2.island.system.IslandSystem;
 import io.tofpu.speedbridge2.lobby.system.LobbySystem;
 import io.tofpu.speedbridge2.placeholder.system.PlaceholderSystem;
+import io.tofpu.speedbridge2.reload.ReloadSystem;
 import io.tofpu.speedbridge2.schematic.infra.SchematicHandler;
 import io.tofpu.speedbridge2.score.system.ScoreSystem;
 import io.tofpu.speedbridge2.scoreboard.ScoreboardSystem;
@@ -35,6 +36,7 @@ public class SpeedbridgePlugin extends JavaPlugin {
     private final EventBus eventBus = EventBusBuilder.asm()
             .build();
 
+    private ReloadSystem reloadSystem = new ReloadSystem();
     private CommandHandler commandHandler;
     private DatabaseSystem databaseSystem;
     private ScoreSystem scoreSystem;
@@ -100,6 +102,7 @@ public class SpeedbridgePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         commandHandler = new CommandHandler(this);
+        reloadSystem.registerCommands(commandHandler);
 
         groupSystem = new GroupSystem(eventBus);
         groupSystem.initialize(databaseSystem.database());
