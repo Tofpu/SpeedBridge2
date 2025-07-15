@@ -3,6 +3,8 @@ package io.tofpu.speedbridge2.scoreboard.service;
 import io.tofpu.speedbridge2.scoreboard.domain.Scoreboard;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -36,5 +38,14 @@ public class ScoreboardService {
             sidebar.removePlayer(player);
             sidebar.close();
         }
+    }
+
+    public Collection<UUID> players() {
+        return Collections.unmodifiableCollection(sidebars.keySet());
+    }
+
+    public void clearAll() {
+        sidebars.values().forEach(Scoreboard::close);
+        sidebars.clear();
     }
 }

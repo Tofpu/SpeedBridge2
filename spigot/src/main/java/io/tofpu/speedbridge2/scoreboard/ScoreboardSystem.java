@@ -2,6 +2,7 @@ package io.tofpu.speedbridge2.scoreboard;
 
 import io.github.revxrsal.eventbus.EventBus;
 import io.tofpu.speedbridge2.placeholder.service.PlaceholderService;
+import io.tofpu.speedbridge2.reload.domain.ReloadRegistry;
 import io.tofpu.speedbridge2.scoreboard.domain.Scoreboard;
 import io.tofpu.speedbridge2.scoreboard.infra.config.ScoreboardConfigManager;
 import io.tofpu.speedbridge2.scoreboard.infra.config.ScoreboardConfiguration;
@@ -14,18 +15,30 @@ import net.megavex.scoreboardlibrary.api.noop.NoopScoreboardLibrary;
 import net.megavex.scoreboardlibrary.api.sidebar.Sidebar;
 import net.megavex.scoreboardlibrary.api.sidebar.component.ComponentSidebarLayout;
 import net.megavex.scoreboardlibrary.api.sidebar.component.SidebarComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.UUID;
 
 public class ScoreboardSystem {
+    private final File dataFolder;
+    private final ScoreboardConfigManager configManager = new ScoreboardConfigManager();
+
     private ScoreboardLibrary scoreboardLibrary;
     private ScoreboardService scoreboardService;
 
     private BukkitTask updateTask;
+    private ScoreboardConfiguration scoreboardConfiguration;
+
+    public ScoreboardSystem(File dataFolder) {
+        this.dataFolder = dataFolder;
+    }
 
     public void initialize(Plugin plugin, PlaceholderService service) {
         try {
@@ -36,16 +49,18 @@ public class ScoreboardSystem {
             plugin.getLogger().warning("No scoreboard adapter found.");
         }
 
-        ScoreboardConfigManager configManager = new ScoreboardConfigManager();
-        ScoreboardConfiguration scoreboardConfiguration = configManager.loadConfiguration(new File(plugin.getDataFolder(), "scoreboard.yml"));
-
-        scoreboardService = new ScoreboardService(player -> createDynamicSidebar(service, player, scoreboardConfiguration));
+        loadScoreboardConfiguration();
+        scoreboardService = new ScoreboardService(player -> createDynamicSidebar(service, player));
 
         int updateInterval = scoreboardConfiguration.tickInterval();
         updateTask = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> scoreboardService.updateAll(), 0L, updateInterval); // Update every second
     }
 
-    private @NotNull Scoreboard createDynamicSidebar(PlaceholderService service, Player player, ScoreboardConfiguration scoreboardConfiguration) {
+    private void loadScoreboardConfiguration() {
+        scoreboardConfiguration = configManager.loadConfiguration(new File(dataFolder, "scoreboard.yml"));
+    }
+
+    private @NotNull Scoreboard createDynamicSidebar(PlaceholderService service, Player player) {
         Sidebar sidebar = scoreboardLibrary.createSidebar();
 
         int lineNumber = 0;
@@ -82,9 +97,35 @@ public class ScoreboardSystem {
     }
 
     public void registerListeners(EventBus eventBus) {
+        ensureScoreboardServiceIsPresent();
+        eventBus.register(new PlayerGameStateListener(scoreboardService));
+    }
+
+    public void registerReloadable(ReloadRegistry reloadRegistry) {
+        ensureScoreboardServiceIsPresent();
+        reloadRegistry.register(new ReloadableScoreboard(this));
+    }
+
+    public void reloadScoreboards() {
+        ensureScoreboardServiceIsPresent();
+        loadScoreboardConfiguration();
+
+        // reconstruct the sidebars for all players for the new lines
+        // to take effect immediately
+        Collection<UUID> copy = new ArrayList<>(scoreboardService.players());
+        scoreboardService.clearAll();
+
+        for (UUID playerId : copy) {
+            Player player = Bukkit.getPlayer(playerId);
+            if (player != null && player.isOnline()) {
+                scoreboardService.addPlayer(player);
+            }
+        }
+    }
+
+    private void ensureScoreboardServiceIsPresent() {
         if (scoreboardService == null) {
             throw new IllegalStateException("ScoreboardService is not initialized. Call initialize() first.");
         }
-        eventBus.register(new PlayerGameStateListener(scoreboardService));
     }
 }

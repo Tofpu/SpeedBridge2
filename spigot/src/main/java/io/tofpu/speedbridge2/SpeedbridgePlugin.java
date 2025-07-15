@@ -151,9 +151,10 @@ public class SpeedbridgePlugin extends JavaPlugin {
         blockSystem.registerListeners(listenerRegistration, eventBus);
         blockSystem.registerCommands(commandHandler);
 
-        scoreboardSystem = new ScoreboardSystem();
+        scoreboardSystem = new ScoreboardSystem(getDataFolder());
         scoreboardSystem.initialize(this, placeholderSystem.service());
         scoreboardSystem.registerListeners(eventBus);
+        scoreboardSystem.registerReloadable(reloadSystem.reloadRegistry());
 
         commandHandler.enable();
     }
