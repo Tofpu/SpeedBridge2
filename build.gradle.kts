@@ -1,14 +1,14 @@
 plugins {
     java
     `maven-publish`
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.gradleup.shadow") version "9.4.3"
 }
 
 allprojects {
     apply {
         plugin("java")
         plugin("maven-publish")
-        plugin("com.github.johnrengelman.shadow")
+        plugin("com.gradleup.shadow")
     }
 
     group = "io.tofpu.speedbridge2"
