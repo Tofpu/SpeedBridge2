@@ -60,19 +60,17 @@ tasks {
         archiveFileName.set("Speedbridge2-${version}-all.jar")
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-        dependencies {
-            relocate("org.xerial", "io.tofpu.speedbridge2.lib.sqlite")
-            relocate("javax.persistence", "io.tofpu.speedbridge2.lib.javax")
-            relocate("io.tofpu.dynamicclass", "io.tofpu.speedbridge2.lib.dynamicclass")
-            relocate("org.spongepowered", "io.tofpu.speedbridge2.lib.configurate")
-            relocate("net.kyori.adventure", "io.tofpu.speedbridge2.lib.adventure")
-            relocate("com.zaxxer.HikariCP", "io.tofpu.speedbridge2.lib.hikaricp")
-            relocate("org.bstats", "io.tofpu.speedbridge2.lib.bstats")
-            relocate("com.github.benmanes.caffeine", "io.tofpu.speedbridge2.lib.caffeine")
-            relocate("org.apache.commons", "io.tofpu.speedbridge2.lib.commons")
-            relocate("org.yaml.snakeyaml", "io.tofpu.speedbridge2.lib.snakeyml")
-            relocate("revxrsal", "io.tofpu.speedbridge2.lib.lamp")
-        }
+        relocate("org.xerial", "io.tofpu.speedbridge2.lib.sqlite")
+        relocate("javax.persistence", "io.tofpu.speedbridge2.lib.javax")
+        relocate("io.tofpu.dynamicclass", "io.tofpu.speedbridge2.lib.dynamicclass")
+        relocate("org.spongepowered", "io.tofpu.speedbridge2.lib.configurate")
+        relocate("net.kyori.adventure", "io.tofpu.speedbridge2.lib.adventure")
+        relocate("com.zaxxer.HikariCP", "io.tofpu.speedbridge2.lib.hikaricp")
+        relocate("org.bstats", "io.tofpu.speedbridge2.lib.bstats")
+        relocate("com.github.benmanes.caffeine", "io.tofpu.speedbridge2.lib.caffeine")
+        relocate("org.apache.commons", "io.tofpu.speedbridge2.lib.commons")
+        relocate("org.yaml.snakeyaml", "io.tofpu.speedbridge2.lib.snakeyml")
+        relocate("revxrsal", "io.tofpu.speedbridge2.lib.lamp")
 
         exclude("META-INF/**")
     }
