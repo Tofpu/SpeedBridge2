@@ -58,6 +58,7 @@ dependencies {
 tasks {
     shadowJar {
         archiveName = "Speedbridge2-${version}-all.jar"
+        archiveFileName.set("Speedbridge2-${version}-all.jar")
 
         dependencies {
             relocate("org.xerial", "io.tofpu.speedbridge2.lib.sqlite")
