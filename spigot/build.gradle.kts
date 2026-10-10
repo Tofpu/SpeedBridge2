@@ -42,8 +42,8 @@ dependencies {
 
     implementation("com.github.ben-manes.caffeine:caffeine:2.9.3")
 
-    implementation("com.github.cryptomorin:XSeries:8.7.1")
-    implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:8930fd3caa") {
+    implementation("com.github.cryptomorin:XSeries:14.0.0")
+    implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:b4b6444c20") {
         exclude("de.schlichtherle", "truezip")
         exclude("rhino", "js")
         exclude("com.sk89q", "worldedit")
@@ -57,8 +57,8 @@ dependencies {
 
 tasks {
     shadowJar {
-        archiveName = "Speedbridge2-${version}-all.jar"
         archiveFileName.set("Speedbridge2-${version}-all.jar")
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
         dependencies {
             relocate("org.xerial", "io.tofpu.speedbridge2.lib.sqlite")
