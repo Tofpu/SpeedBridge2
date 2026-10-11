@@ -17,11 +17,21 @@ public final class PluginExecutor implements Executor {
     }
 
     public static @NotNull CompletableFuture<Void> runAsync(final Runnable runnable) {
-        return (CompletableFuture<Void>) INSTANCE.submit(runnable);
+        return (CompletableFuture<Void>) INSTANCE.submit(runnable)
+                .whenComplete((unused, throwable) -> {
+                    if (throwable != null) {
+                        throwable.printStackTrace();
+                    }
+                });
     }
 
     public static <T> @NotNull CompletableFuture<T> supply(final Supplier<?> supplier) {
-        return (CompletableFuture<T>) INSTANCE.supplyAsync(supplier);
+        return (CompletableFuture<T>) INSTANCE.supplyAsync(supplier)
+                .whenComplete((unused, throwable) -> {
+                    if (throwable != null) {
+                        throwable.printStackTrace();
+                    }
+                });
     }
 
     @Override
