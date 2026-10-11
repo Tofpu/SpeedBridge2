@@ -1,3 +1,5 @@
+import xyz.jpenilla.runpaper.task.RunServer
+
 plugins {
     id("xyz.jpenilla.run-paper") version "2.0.1"
 }
@@ -75,11 +77,34 @@ tasks {
         exclude("META-INF/**")
     }
 
-    runServer {
-//        minecraftVersion("1.8.8")
-//        pluginJars(project.file("libs/worldedit-bukkit-6.1.jar"))
-//        minecraftVersion("1.20.4")
-        minecraftVersion("1.19.4")
-        pluginJars(project.file("libs/worldedit-bukkit-7.3.0.jar"))
+    val projectJarTask = named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar")
+
+    val minecraftVersions = listOf("1.12.2", "1.19.4", "26.2")
+    val useDirectJars = listOf("1.12.2")
+    minecraftVersions.forEach { mcVersion ->
+        val capitalizedVersion = mcVersion.replace(".", "_")
+
+        register<RunServer>("runServer_$capitalizedVersion") {
+            // Ensure the plugin builds before the server starts
+            dependsOn(projectJarTask)
+
+            group = "run paper"
+            description = "Runs a Paper test server for Minecraft $mcVersion"
+
+            runDirectory.set(project.layout.projectDirectory.dir("run/$mcVersion"))
+            minecraftVersion(mcVersion)
+            if (useDirectJars.contains(mcVersion)) {
+                serverJar(file(project.file("libs/$mcVersion/paper.jar")))
+            }
+
+            // Add your own project's built plugin JAR
+            pluginJars(projectJarTask.flatMap { it.archiveFile })
+
+            val externalJars = project.file("libs/$mcVersion/plugins").listFiles { file -> file.extension == "jar" } ?: emptyArray()
+            // Spread operator (*) passes them as individual arguments
+            pluginJars(
+                *externalJars
+            )
+        }
     }
 }
