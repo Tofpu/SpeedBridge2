@@ -21,7 +21,7 @@ import io.tofpu.speedbridge2.model.player.PlayerFactory;
 import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.model.support.placeholderapi.PluginExpansion;
 import io.tofpu.speedbridge2.model.support.placeholderapi.expansion.ExpansionHandler;
-import io.tofpu.umbrella.UmbrellaAPI;
+import io.tofpu.toolbar.ToolbarAPI;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -64,8 +64,7 @@ public final class SpeedBridge {
     public void enable() {
         adventure = BukkitAudiences.create(javaPlugin);
 
-        new UmbrellaAPI(javaPlugin)
-                .enable();
+        new ToolbarAPI(javaPlugin).enable();
 
         new Metrics(javaPlugin, 14597);
 
@@ -173,9 +172,9 @@ public final class SpeedBridge {
         arenaManager.unloadWorld();
         arenaManager.resetWorld();
 
-        final UmbrellaAPI umbrellaAPI = UmbrellaAPI.getInstance();
-        if (umbrellaAPI != null) {
-            umbrellaAPI.disable();
+        ToolbarAPI toolbarAPI = ToolbarAPI.getInstance();
+        if (toolbarAPI != null) {
+            toolbarAPI.disable();
         }
 
         log("Complete.");

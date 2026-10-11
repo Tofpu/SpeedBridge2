@@ -5,7 +5,7 @@ import io.tofpu.speedbridge2.model.island.IslandService;
 import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
-import io.tofpu.umbrella.domain.Umbrella;
+import io.tofpu.toolbar.toolbar.SimpleToolbar;
 
 public final class IslandSetupFactory {
     private static IslandService islandService;
@@ -15,20 +15,20 @@ public final class IslandSetupFactory {
     }
 
     public static IslandSetup create(final IslandSetupFactoryType type,
-                                     final Umbrella umbrella,
+                                     final SimpleToolbar toolbar,
                                      final BridgePlayer player
             , final Island island, final IslandLand islandLand) {
         Preconditions.checkNotNull(islandService, "IslandService is not initialized");
-        Preconditions.checkNotNull(umbrella, "Umbrella cannot be null");
+        Preconditions.checkNotNull(toolbar, "toolbar cannot be null");
         Preconditions.checkNotNull(player, "BridgePlayer cannot be null");
         Preconditions.checkNotNull(island, "Island cannot be null");
         Preconditions.checkNotNull(islandLand, "IslandLand cannot be null");
 
         switch (type) {
             case BUILD:
-                return new IslandBuildSetup(umbrella, player, island, islandLand, islandService);
+                return new IslandBuildSetup(toolbar, player, island, islandLand, islandService);
             case SETUP:
-                return new IslandSetup(umbrella, player, island, islandLand);
+                return new IslandSetup(toolbar, player, island, islandLand);
             default:
                 throw new IllegalArgumentException("Unknown IslandSetupFactoryType: " + type);
         }

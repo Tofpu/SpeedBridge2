@@ -1,11 +1,11 @@
-package io.tofpu.speedbridge2.model.common.umbrella;
+package io.tofpu.speedbridge2.model.common.toolbar;
 
 import io.tofpu.speedbridge2.model.island.object.GameIsland;
-import io.tofpu.umbrella.domain.Umbrella;
-import io.tofpu.umbrella.domain.item.action.AbstractItemAction;
+import io.tofpu.toolbar.toolbar.GenericToolbar;
+import io.tofpu.toolbar.toolbar.tool.action.ToolAction;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class RunCommandItemAction extends AbstractItemAction {
+public class RunCommandItemAction implements ToolAction<PlayerInteractEvent> {
     private final String command;
     private final GameIsland gameIsland;
 
@@ -15,7 +15,7 @@ public class RunCommandItemAction extends AbstractItemAction {
     }
 
     @Override
-    public void trigger(final Umbrella umbrella, final PlayerInteractEvent event) {
+    public void handle(GenericToolbar<?> genericToolbar, PlayerInteractEvent event) {
         if (!command.equalsIgnoreCase("RESET_ISLAND")) {
             event.getPlayer().performCommand(command);
             return;
@@ -29,5 +29,10 @@ public class RunCommandItemAction extends AbstractItemAction {
 
     public String getCommand() {
         return command;
+    }
+
+    @Override
+    public Class<PlayerInteractEvent> type() {
+        return PlayerInteractEvent.class;
     }
 }

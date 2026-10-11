@@ -3,9 +3,9 @@ package io.tofpu.speedbridge2.model.island.object.setup;
 import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.IslandBuild;
 import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
-import io.tofpu.speedbridge2.model.island.object.setup.umbrella.IslandSetupUmbrella;
+import io.tofpu.speedbridge2.model.island.object.setup.toolbar.IslandSetupToolbarFactory;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
-import io.tofpu.umbrella.domain.Umbrella;
+import io.tofpu.toolbar.toolbar.SimpleToolbar;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -16,12 +16,12 @@ import java.util.UUID;
 public final class IslandSetupHandler {
     public static final IslandSetupHandler INSTANCE = new IslandSetupHandler();
 
-    private final Umbrella umbrella;
+    private final SimpleToolbar toolbar;
     private final Map<UUID, IslandSetup> islandSetupMap = new HashMap<>();
     private World world;
 
     private IslandSetupHandler() {
-        this.umbrella = new IslandSetupUmbrella().getUmbrella();
+        this.toolbar = new IslandSetupToolbarFactory().createAndRegisterToolbar();
     }
 
     /**
@@ -53,9 +53,9 @@ public final class IslandSetupHandler {
 
         final IslandLand islandLand = new IslandLand(target, world, positions);
         if (target instanceof IslandBuild) {
-            islandSetup = IslandSetupFactory.create(IslandSetupFactory.IslandSetupFactoryType.BUILD, umbrella, player, target, islandLand);
+            islandSetup = IslandSetupFactory.create(IslandSetupFactory.IslandSetupFactoryType.BUILD, toolbar, player, target, islandLand);
         } else {
-            islandSetup = IslandSetupFactory.create(IslandSetupFactory.IslandSetupFactoryType.SETUP, umbrella, player, target, islandLand);
+            islandSetup = IslandSetupFactory.create(IslandSetupFactory.IslandSetupFactoryType.SETUP, toolbar, player, target, islandLand);
         }
 
         islandSetupMap.put(player.getPlayerUid(), islandSetup);

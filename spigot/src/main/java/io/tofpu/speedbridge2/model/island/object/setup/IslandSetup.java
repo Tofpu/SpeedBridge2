@@ -9,7 +9,8 @@ import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.support.worldedit.CuboidRegion;
-import io.tofpu.umbrella.domain.Umbrella;
+import io.tofpu.toolbar.ToolbarAPI;
+import io.tofpu.toolbar.toolbar.SimpleToolbar;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,7 +19,7 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class IslandSetup {
-    private final Umbrella umbrella;
+    private final SimpleToolbar toolbar;
     private final BridgePlayer player;
     private final Island island;
     private final IslandLand islandLand;
@@ -27,8 +28,8 @@ public class IslandSetup {
 
     private boolean removed = false;
 
-    public IslandSetup(final Umbrella umbrella, final BridgePlayer player, final Island island, final IslandLand islandLand) {
-        this.umbrella = umbrella;
+    public IslandSetup(final SimpleToolbar toolbar, final BridgePlayer player, final Island island, final IslandLand islandLand) {
+        this.toolbar = toolbar;
         this.player = player;
         this.island = island;
         this.islandLand = islandLand;
@@ -54,7 +55,8 @@ public class IslandSetup {
                 .teleport(islandLand.getPlotLocation());
 
         // activate the player umbrella
-        umbrella.activate(player.getPlayer());
+        ToolbarAPI.getInstance()
+                .equip(toolbar.getIdentifier(), player.getPlayer());
     }
 
     /**
@@ -184,7 +186,7 @@ public class IslandSetup {
 
         // inactivate the setup umbrella
         Player bukkitPlayer = player.getPlayer();
-        umbrella.inactivate(bukkitPlayer);
+        ToolbarAPI.getInstance().unequip(bukkitPlayer);
         if (bukkitPlayer != null && bukkitPlayer.isOnline()) {
             // setting the player's gamemode back to survival
             bukkitPlayer.setGameMode(GameMode.SURVIVAL);

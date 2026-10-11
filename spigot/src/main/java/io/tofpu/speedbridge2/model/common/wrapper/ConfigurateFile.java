@@ -2,8 +2,6 @@ package io.tofpu.speedbridge2.model.common.wrapper;
 
 import io.tofpu.speedbridge2.model.common.PluginExecutor;
 import io.tofpu.speedbridge2.model.common.config.serializer.*;
-import io.tofpu.speedbridge2.model.common.umbrella.SerializableUmbrellaItem;
-import io.tofpu.umbrella.domain.item.action.AbstractItemAction;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -46,11 +44,8 @@ public class ConfigurateFile<T> {
         final UnaryOperator<ConfigurationOptions> configurationOptions = options -> options.shouldCopyDefaults(true)
                 .serializers(builder -> builder.register(Location.class, LocationSerializer.INSTANCE)
                         .register(Material.class, MaterialSerializer.INSTANCE)
-                        .register(SerializableUmbrellaItem.class, UmbrellaItemSerializer.INSTANCE)
                         .register(ItemStack.class, ItemStackSerializer.INSTANCE)
-                        .register(ItemMeta.class, ItemMetaSerializer.INSTANCE)
-                        .register(AbstractItemAction.class,
-                                AbstractItemActionSerializer.INSTANCE));
+                        .register(ItemMeta.class, ItemMetaSerializer.INSTANCE));
 
         switch (type) {
             case YAML:
