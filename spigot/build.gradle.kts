@@ -51,7 +51,7 @@ dependencies {
         exclude("com.sk89q", "worldedit")
     }
 
-    implementation("com.github.Tofpu:toolbar:638bd7821a")
+    implementation("com.tofpu.toolbar:toolbar-core:3.0.0")
     implementation("com.github.Tofpu:dynamicclass:1.3") {
         exclude("com.google.guava", "guava")
     }
@@ -105,6 +105,13 @@ tasks {
             pluginJars(
                 *externalJars
             )
+        }
+    }
+
+    withType<JavaCompile> {
+        options.apply {
+            compilerArgs.add("-AlistenerPackage=io.tofpu.speedbridge2.generated")
+            compilerArgs.addAll(listOf("-processor", "com.tofpu.toolbar.processor.ListenerProcessor"))
         }
     }
 }

@@ -5,7 +5,7 @@ import io.tofpu.speedbridge2.model.island.IslandService;
 import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
-import io.tofpu.toolbar.toolbar.SimpleToolbar;
+import com.tofpu.toolbar.api.toolbar.Toolbar;
 
 public final class IslandSetupFactory {
     private static IslandService islandService;
@@ -15,7 +15,7 @@ public final class IslandSetupFactory {
     }
 
     public static IslandSetup create(final IslandSetupFactoryType type,
-                                     final SimpleToolbar toolbar,
+                                     final Toolbar toolbar,
                                      final BridgePlayer player
             , final Island island, final IslandLand islandLand) {
         Preconditions.checkNotNull(islandService, "IslandService is not initialized");

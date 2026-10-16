@@ -1,8 +1,8 @@
 package io.tofpu.speedbridge2.model.common.toolbar;
 
 import io.tofpu.speedbridge2.model.island.object.GameIsland;
-import io.tofpu.toolbar.toolbar.GenericToolbar;
-import io.tofpu.toolbar.toolbar.tool.action.ToolAction;
+import com.tofpu.toolbar.api.toolbar.Toolbar;
+import com.tofpu.toolbar.api.toolbar.tool.action.ToolAction;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class RunCommandItemAction implements ToolAction<PlayerInteractEvent> {
@@ -15,7 +15,7 @@ public class RunCommandItemAction implements ToolAction<PlayerInteractEvent> {
     }
 
     @Override
-    public void handle(GenericToolbar<?> genericToolbar, PlayerInteractEvent event) {
+    public void handle(Toolbar toolbar, PlayerInteractEvent event) {
         if (!command.equalsIgnoreCase("RESET_ISLAND")) {
             event.getPlayer().performCommand(command);
             return;

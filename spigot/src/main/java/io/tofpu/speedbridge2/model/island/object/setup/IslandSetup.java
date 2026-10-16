@@ -9,8 +9,8 @@ import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.support.worldedit.CuboidRegion;
-import io.tofpu.toolbar.ToolbarAPI;
-import io.tofpu.toolbar.toolbar.SimpleToolbar;
+import com.tofpu.toolbar.api.ToolbarAPI;
+import com.tofpu.toolbar.api.toolbar.Toolbar;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class IslandSetup {
-    private final SimpleToolbar toolbar;
+    private final Toolbar toolbar;
     private final BridgePlayer player;
     private final Island island;
     private final IslandLand islandLand;
@@ -28,7 +28,7 @@ public class IslandSetup {
 
     private boolean removed = false;
 
-    public IslandSetup(final SimpleToolbar toolbar, final BridgePlayer player, final Island island, final IslandLand islandLand) {
+    public IslandSetup(final Toolbar toolbar, final BridgePlayer player, final Island island, final IslandLand islandLand) {
         this.toolbar = toolbar;
         this.player = player;
         this.island = island;
@@ -55,8 +55,7 @@ public class IslandSetup {
                 .teleport(islandLand.getPlotLocation());
 
         // activate the player umbrella
-        ToolbarAPI.getInstance()
-                .equip(toolbar.getIdentifier(), player.getPlayer());
+        ToolbarAPI.getInstance().equipService().equip(player.getPlayer(), toolbar);
     }
 
     /**
@@ -186,7 +185,7 @@ public class IslandSetup {
 
         // inactivate the setup umbrella
         Player bukkitPlayer = player.getPlayer();
-        ToolbarAPI.getInstance().unequip(bukkitPlayer);
+        ToolbarAPI.getInstance().equipService().unequip(bukkitPlayer);
         if (bukkitPlayer != null && bukkitPlayer.isOnline()) {
             // setting the player's gamemode back to survival
             bukkitPlayer.setGameMode(GameMode.SURVIVAL);

@@ -5,7 +5,7 @@ import io.tofpu.speedbridge2.model.island.object.IslandBuild;
 import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
 import io.tofpu.speedbridge2.model.island.object.setup.toolbar.IslandSetupToolbarFactory;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
-import io.tofpu.toolbar.toolbar.SimpleToolbar;
+import com.tofpu.toolbar.api.toolbar.Toolbar;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -16,7 +16,7 @@ import java.util.UUID;
 public final class IslandSetupHandler {
     public static final IslandSetupHandler INSTANCE = new IslandSetupHandler();
 
-    private final SimpleToolbar toolbar;
+    private final Toolbar toolbar;
     private final Map<UUID, IslandSetup> islandSetupMap = new HashMap<>();
     private World world;
 

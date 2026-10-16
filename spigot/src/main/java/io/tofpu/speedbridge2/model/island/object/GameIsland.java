@@ -10,8 +10,8 @@ import io.tofpu.speedbridge2.model.island.object.toolbar.GameIslandToolbarFactor
 import io.tofpu.speedbridge2.model.player.object.GamePlayer;
 import io.tofpu.speedbridge2.model.player.object.stat.PlayerStatType;
 import io.tofpu.speedbridge2.model.support.worldedit.CuboidRegion;
-import io.tofpu.toolbar.ToolbarAPI;
-import io.tofpu.toolbar.toolbar.SimpleToolbar;
+import com.tofpu.toolbar.api.ToolbarAPI;
+import com.tofpu.toolbar.api.toolbar.Toolbar;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -19,7 +19,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class GameIsland {
     private final ArenaManager arenaManager;
-    private final SimpleToolbar toolbar;
+    private final Toolbar toolbar;
     private final Island island;
     private final GamePlayer gamePlayer;
 
@@ -63,7 +63,7 @@ public class GameIsland {
         player.getInventory().clear();
 
         // active the game umbrella
-        ToolbarAPI.getInstance().equip(toolbar.getIdentifier(), player);
+        ToolbarAPI.getInstance().equipService().equip(player, toolbar);
 
         // add the block
         player.getInventory()
@@ -110,7 +110,7 @@ public class GameIsland {
             final LobbyCategory lobbyCategory = ConfigurationManager.INSTANCE.getLobbyCategory();
 
 //            toolbar.inactivate(player);
-            ToolbarAPI.getInstance().unequip(player);
+            ToolbarAPI.getInstance().equipService().unequip(player);
 
             // teleport the player to the lobby location
             final Location location = lobbyCategory.getLobbyLocation();

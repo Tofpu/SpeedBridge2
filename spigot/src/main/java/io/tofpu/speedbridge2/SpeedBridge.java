@@ -1,5 +1,7 @@
 package io.tofpu.speedbridge2;
 
+import com.tofpu.toolbar.core.ToolbarAPIImpl;
+import com.tofpu.toolbar.core.settings.Settings;
 import io.tofpu.dynamicclass.DynamicClass;
 import io.tofpu.multiworldedit.MultiWorldEditAPI;
 import io.tofpu.speedbridge2.command.CommandManager;
@@ -21,7 +23,7 @@ import io.tofpu.speedbridge2.model.player.PlayerFactory;
 import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.model.support.placeholderapi.PluginExpansion;
 import io.tofpu.speedbridge2.model.support.placeholderapi.expansion.ExpansionHandler;
-import io.tofpu.toolbar.ToolbarAPI;
+import com.tofpu.toolbar.api.ToolbarAPI;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -64,7 +66,9 @@ public final class SpeedBridge {
     public void enable() {
         adventure = BukkitAudiences.create(javaPlugin);
 
-        new ToolbarAPI(javaPlugin).enable();
+        Settings settings = Settings.newBuilder().addPackage("io.tofpu.speedbridge2").build();
+        ToolbarAPI.setInstance(new ToolbarAPIImpl(javaPlugin, settings));
+        ToolbarAPI.getInstance().load();
 
         new Metrics(javaPlugin, 14597);
 

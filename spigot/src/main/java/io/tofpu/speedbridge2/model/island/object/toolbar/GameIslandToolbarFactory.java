@@ -4,25 +4,24 @@ import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.toolbar.SerializableToolbarItem;
 import io.tofpu.speedbridge2.model.common.util.ToolbarUtil;
 import io.tofpu.speedbridge2.model.island.object.GameIsland;
-import io.tofpu.toolbar.ToolbarAPI;
-import io.tofpu.toolbar.toolbar.SimpleToolbar;
+import com.tofpu.toolbar.api.ToolbarAPI;
+import com.tofpu.toolbar.api.toolbar.Toolbar;
+import com.tofpu.toolbar.api.toolbar.ToolbarSchema;
 
 import java.util.UUID;
 
 public final class GameIslandToolbarFactory {
 
-    public SimpleToolbar createAndRegisterToolbar(GameIsland gameIsland) {
-        SimpleToolbar toolbar = new SimpleToolbar(
-                "game_island_toolbar_" + UUID.randomUUID()
-        );
-        ToolbarAPI.getInstance().registerToolbar(toolbar);
+    public Toolbar createAndRegisterToolbar(GameIsland gameIsland) {
+        ToolbarSchema.Builder toolbarSchemaBuilder = ToolbarSchema.newBuilder("game_island_toolbar_" + UUID.randomUUID());
 
         for (final SerializableToolbarItem serializableToolbarItem : ConfigurationManager
                 .INSTANCE.getGameCategory().getToolbarItems()) {
-            toolbar.addItem(
+            toolbarSchemaBuilder.addItems(
                     ToolbarUtil.toTool(gameIsland, serializableToolbarItem)
             );
         }
-        return toolbar;
+        ToolbarSchema toolbarSchema = toolbarSchemaBuilder.build();
+        return ToolbarAPI.getInstance().toolbarService().register(toolbarSchema);
     }
 }
