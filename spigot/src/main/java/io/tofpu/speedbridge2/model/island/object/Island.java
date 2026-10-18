@@ -2,7 +2,7 @@ package io.tofpu.speedbridge2.model.island.object;
 
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import io.tofpu.multiworldedit.ClipboardWrapper;
-import io.tofpu.multiworldedit.MultiWorldEditAPI;
+import io.tofpu.multiworldedit.MultiWorldEdit;
 import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.database.Databases;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
@@ -374,7 +374,7 @@ public class Island {
 
             final File file = findSchematicFile(schematicDirectory, schematicName);
             if (file != null && file.exists()) {
-                this.schematicClipboard = MultiWorldEditAPI.getMultiWorldEdit()
+                this.schematicClipboard = MultiWorldEdit.getInstance()
                         .read(file);
 
                 BridgeUtil.debug(

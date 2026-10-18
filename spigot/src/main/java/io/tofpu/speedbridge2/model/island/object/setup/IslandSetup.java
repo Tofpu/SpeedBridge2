@@ -2,7 +2,7 @@ package io.tofpu.speedbridge2.model.island.object.setup;
 
 import com.sk89q.worldedit.WorldEditException;
 import io.tofpu.multiworldedit.ClipboardWrapper;
-import io.tofpu.multiworldedit.MultiWorldEditAPI;
+import io.tofpu.multiworldedit.MultiWorldEdit;
 import io.tofpu.multiworldedit.VectorWrapper;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.island.object.Island;
@@ -120,7 +120,7 @@ public class IslandSetup {
      * It resets the plot to air
      */
     private void resetPlot() {
-        final ClipboardWrapper clipboardWrapper = MultiWorldEditAPI.getMultiWorldEdit()
+        final ClipboardWrapper clipboardWrapper = MultiWorldEdit.getInstance()
                 .create(island.getSchematicClipboard());
 
         final VectorWrapper minimumPoint = clipboardWrapper.getMinimumPoint();

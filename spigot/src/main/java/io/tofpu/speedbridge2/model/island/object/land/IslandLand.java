@@ -70,12 +70,12 @@ public class IslandLand {
 
         final BukkitWorld bukkitWorld = new BukkitWorld(world);
 
-        try (final EditSessionWrapper editSessionWrapper = MultiWorldEditAPI.getMultiWorldEdit()
+        try (final EditSessionWrapper editSessionWrapper = MultiWorldEdit.getInstance()
                 .create(bukkitWorld, -1)) {
             final Clipboard schematicClipboard = getIsland().getSchematicClipboard();
             final EditSession editSession = editSessionWrapper.to();
 
-            final Operation operation = MultiWorldEditAPI.getMultiWorldEdit()
+            final Operation operation = MultiWorldEdit.getInstance()
                     .create(schematicClipboard, editSession, bukkitWorld)
                     .to((int) x, (int) y, (int) z)
                     .ignoreAirBlocks(true)

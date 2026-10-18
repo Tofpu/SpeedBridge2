@@ -3,7 +3,7 @@ package io.tofpu.speedbridge2;
 import com.tofpu.toolbar.core.ToolbarAPIImpl;
 import com.tofpu.toolbar.core.settings.Settings;
 import io.tofpu.dynamicclass.DynamicClass;
-import io.tofpu.multiworldedit.MultiWorldEditAPI;
+import io.tofpu.multiworldedit.MultiWorldEditLoader;
 import io.tofpu.speedbridge2.command.CommandManager;
 import io.tofpu.speedbridge2.model.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.model.common.Message;
@@ -72,7 +72,7 @@ public final class SpeedBridge {
 
         new Metrics(javaPlugin, 14597);
 
-        MultiWorldEditAPI.load(javaPlugin);
+        MultiWorldEditLoader.load(javaPlugin);
 
         log("Loading the `config.conf` & 'items.yml'...");
         ConfigurationManager.INSTANCE.load(javaPlugin);

@@ -7,7 +7,7 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
 import io.tofpu.multiworldedit.EditSessionWrapper;
-import io.tofpu.multiworldedit.MultiWorldEditAPI;
+import io.tofpu.multiworldedit.MultiWorldEdit;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
 
@@ -28,12 +28,12 @@ public class DestroyableLand extends IslandLand {
 
         final BukkitWorld bukkitWorld = new BukkitWorld(getWorld());
 
-        try (final EditSessionWrapper editSessionWrapper = MultiWorldEditAPI.getMultiWorldEdit()
+        try (final EditSessionWrapper editSessionWrapper = MultiWorldEdit.getInstance()
                 .create(bukkitWorld, -1)) {
             final Clipboard schematicClipboard = getIsland().getSchematicClipboard();
             this.editSession = editSessionWrapper.to();
 
-            final Operation operation = MultiWorldEditAPI.getMultiWorldEdit()
+            final Operation operation = MultiWorldEdit.getInstance()
                     .create(schematicClipboard, editSession, bukkitWorld)
                     .to((int) getX(), (int) getY(), (int) getZ())
                     .ignoreAirBlocks(true)
@@ -52,7 +52,7 @@ public class DestroyableLand extends IslandLand {
 
         final BukkitWorld bukkitWorld = new BukkitWorld(getWorld());
 
-        try (final EditSessionWrapper editSessionWrapper = MultiWorldEditAPI.getMultiWorldEdit()
+        try (final EditSessionWrapper editSessionWrapper = MultiWorldEdit.getInstance()
                 .create(bukkitWorld, -1)) {
             EditSession session = editSessionWrapper.to();
             this.editSession.undo(session);

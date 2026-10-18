@@ -45,11 +45,12 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:2.9.3")
 
     implementation("com.github.cryptomorin:XSeries:14.0.0")
-    implementation("com.github.tofpu.MultiWorldEdit:multiworldedit-api:b4b6444c20") {
+    implementation("com.tofpu.multiworldedit:multiworldedit-api:1.2.0") {
         exclude("de.schlichtherle", "truezip")
         exclude("rhino", "js")
         exclude("com.sk89q", "worldedit")
     }
+    implementation("com.tofpu.multiworldedit:multiworldedit-loader:1.2.0")
 
     implementation("com.tofpu.toolbar:toolbar-core:3.0.0")
     implementation("com.github.Tofpu:dynamicclass:1.3") {
@@ -105,13 +106,6 @@ tasks {
             pluginJars(
                 *externalJars
             )
-        }
-    }
-
-    withType<JavaCompile> {
-        options.apply {
-            compilerArgs.add("-AlistenerPackage=io.tofpu.speedbridge2.generated")
-            compilerArgs.addAll(listOf("-processor", "com.tofpu.toolbar.processor.ListenerProcessor"))
         }
     }
 }
