@@ -25,7 +25,7 @@ public final class StatsDatabase extends Database {
     public @NotNull CompletableFuture<Void> insert(final @NotNull PlayerStat playerStat) {
         return DatabaseUtil.databaseExecute(
                 "INSERT OR IGNORE INTO stats (uid, key, value) VALUES " +
-                "(?, ?, ?)", databaseQuery -> {
+                        "(?, ?, ?)", databaseQuery -> {
                     databaseQuery.setString(playerStat.getOwner()
                             .toString());
                     databaseQuery.setString(playerStat.getKey());
@@ -35,7 +35,7 @@ public final class StatsDatabase extends Database {
 
     public @NotNull CompletableFuture<Void> update(final @NotNull PlayerStat playerStat) {
         return DatabaseUtil.databaseExecute("UPDATE stats SET value = ? WHERE " +
-                                            "uid = ? AND key = ?", databaseQuery -> {
+                "uid = ? AND key = ?", databaseQuery -> {
             databaseQuery.setString(playerStat.getValue());
 
             databaseQuery.setString(playerStat.getOwner()
@@ -50,21 +50,21 @@ public final class StatsDatabase extends Database {
 
             try {
                 DatabaseUtil.databaseExecute("SELECT * FROM stats WHERE uid = ?", databaseQuery -> {
-                    databaseQuery.setString(owner.toString());
+                            databaseQuery.setString(owner.toString());
 
-                    databaseQuery.executeQuery(resultSet -> {
-                        while (resultSet.next()) {
-                            final PlayerStatType playerStatType = PlayerStatType.match(resultSet.getString("key"));
+                            databaseQuery.executeQuery(resultSet -> {
+                                while (resultSet.next()) {
+                                    final PlayerStatType playerStatType = PlayerStatType.match(resultSet.getString("key"));
 
-                            if (playerStatType == null) {
-                                continue;
-                            }
-                            final PlayerStat playerStat = PlayerStatType.create(owner, playerStatType, resultSet.getString("value"));
-                            BridgeUtil.debug("found stat: " + playerStat);
+                                    if (playerStatType == null) {
+                                        continue;
+                                    }
+                                    final PlayerStat playerStat = PlayerStatType.create(owner, playerStatType, resultSet.getString("value"));
+                                    BridgeUtil.debug("found stat: " + playerStat);
 
-                            playerStats.add(playerStat);
-                        }
-                    });
+                                    playerStats.add(playerStat);
+                                }
+                            });
                         })
                         .get();
             } catch (InterruptedException | ExecutionException e) {

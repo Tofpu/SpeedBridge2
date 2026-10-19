@@ -1,6 +1,9 @@
 package io.tofpu.speedbridge2.model.common.config;
 
-import io.tofpu.speedbridge2.model.common.config.category.*;
+import io.tofpu.speedbridge2.model.common.config.category.BlockMenuCategory;
+import io.tofpu.speedbridge2.model.common.config.category.GeneralCategory;
+import io.tofpu.speedbridge2.model.common.config.category.LeaderboardCategory;
+import io.tofpu.speedbridge2.model.common.config.category.LobbyCategory;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 

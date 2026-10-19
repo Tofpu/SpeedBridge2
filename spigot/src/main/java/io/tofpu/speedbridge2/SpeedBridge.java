@@ -1,9 +1,10 @@
 package io.tofpu.speedbridge2;
 
+import com.tofpu.toolbar.core.ToolbarAPIImpl;
+import com.tofpu.toolbar.core.settings.Settings;
 import io.tofpu.dynamicclass.DynamicClass;
-import io.tofpu.multiworldedit.MultiWorldEditAPI;
+import io.tofpu.multiworldedit.MultiWorldEditLoader;
 import io.tofpu.speedbridge2.command.CommandManager;
-import io.tofpu.speedbridge2.command.subcommand.HelpCommandGenerator;
 import io.tofpu.speedbridge2.model.blockmenu.BlockMenuManager;
 import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.PluginExecutor;
@@ -22,7 +23,7 @@ import io.tofpu.speedbridge2.model.player.PlayerFactory;
 import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.model.support.placeholderapi.PluginExpansion;
 import io.tofpu.speedbridge2.model.support.placeholderapi.expansion.ExpansionHandler;
-import io.tofpu.umbrella.UmbrellaAPI;
+import com.tofpu.toolbar.api.ToolbarAPI;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -50,6 +51,13 @@ public final class SpeedBridge {
         this.leaderboard = new Leaderboard(playerService);
     }
 
+    public static BukkitAudiences getAdventure() {
+        if (adventure == null) {
+            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
+        }
+        return adventure;
+    }
+
     public void load() {
         // reset the world, in-case it does exist
         arenaManager.resetWorld();
@@ -58,12 +66,13 @@ public final class SpeedBridge {
     public void enable() {
         adventure = BukkitAudiences.create(javaPlugin);
 
-        new UmbrellaAPI(javaPlugin)
-                .enable();
+        Settings settings = Settings.newBuilder().addPackage("io.tofpu.speedbridge2").build();
+        ToolbarAPI.setInstance(new ToolbarAPIImpl(javaPlugin, settings));
+        ToolbarAPI.getInstance().load();
 
         new Metrics(javaPlugin, 14597);
 
-        MultiWorldEditAPI.load(javaPlugin);
+        MultiWorldEditLoader.load(javaPlugin);
 
         log("Loading the `config.conf` & 'items.yml'...");
         ConfigurationManager.INSTANCE.load(javaPlugin);
@@ -84,7 +93,7 @@ public final class SpeedBridge {
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             ExpansionHandler.INSTANCE.load();
-            
+
             log("Hooking into PlaceholderAPI...");
             new PluginExpansion(javaPlugin, playerService);
         }
@@ -133,25 +142,26 @@ public final class SpeedBridge {
         log("Loading the messages...");
         Message.load(javaPlugin.getDataFolder());
 
-        log("Generating `/sb help` message...");
-        HelpCommandGenerator.generateHelpCommand(javaPlugin);
+        if (ConfigurationManager.INSTANCE.getGeneralCategory().shouldCheckForUpdates()) {
+            log("Checking for an update...");
+            UpdateChecker.init(javaPlugin, 100619)
+                    .requestUpdateCheck()
+                    .whenComplete((updateResult, throwable) -> {
+                        if (throwable != null) {
+                            log("Couldn't check for an update...");
+                            return;
+                        }
 
-        log("Checking for an update...");
-        UpdateChecker.init(javaPlugin, 100619)
-                .requestUpdateCheck()
-                .whenComplete((updateResult, throwable) -> {
-                    if (throwable != null) {
-                        log("Couldn't check for an update...");
-                        return;
-                    }
-
-                    if (updateResult.requiresUpdate()) {
-                        log("You're using an outdated version of SpeedBridge!");
-                        log("You can download the latest version at https://www.spigotmc.org/resources/.100619/");
-                    } else {
-                        log("You're using the latest version!");
-                    }
-                });
+                        if (updateResult.requiresUpdate()) {
+                            log("You're using an outdated version of SpeedBridge!");
+                            log("You can download the latest version at https://www.spigotmc.org/resources/.100619/");
+                        } else {
+                            log("You're using the latest version!");
+                        }
+                    });
+        } else {
+            log("Not checking for an update as it was explicitly disabled in the config.");
+        }
     }
 
     public void shutdown() {
@@ -166,9 +176,9 @@ public final class SpeedBridge {
         arenaManager.unloadWorld();
         arenaManager.resetWorld();
 
-        final UmbrellaAPI umbrellaAPI = UmbrellaAPI.getInstance();
-        if (umbrellaAPI != null) {
-            umbrellaAPI.disable();
+        ToolbarAPI toolbarAPI = ToolbarAPI.getInstance();
+        if (toolbarAPI != null) {
+            toolbarAPI.disable();
         }
 
         log("Complete.");
@@ -176,12 +186,5 @@ public final class SpeedBridge {
 
     private void log(final String content) {
         javaPlugin.getLogger().info(content);
-    }
-
-    public static BukkitAudiences getAdventure() {
-        if(adventure == null) {
-            throw new IllegalStateException("Tried to access Adventure when the plugin was disabled!");
-        }
-        return adventure;
     }
 }

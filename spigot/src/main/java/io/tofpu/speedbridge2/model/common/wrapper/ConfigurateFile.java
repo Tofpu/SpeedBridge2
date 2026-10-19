@@ -2,8 +2,6 @@ package io.tofpu.speedbridge2.model.common.wrapper;
 
 import io.tofpu.speedbridge2.model.common.PluginExecutor;
 import io.tofpu.speedbridge2.model.common.config.serializer.*;
-import io.tofpu.speedbridge2.model.common.umbrella.SerializableUmbrellaItem;
-import io.tofpu.umbrella.domain.item.action.AbstractItemAction;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -46,11 +44,8 @@ public class ConfigurateFile<T> {
         final UnaryOperator<ConfigurationOptions> configurationOptions = options -> options.shouldCopyDefaults(true)
                 .serializers(builder -> builder.register(Location.class, LocationSerializer.INSTANCE)
                         .register(Material.class, MaterialSerializer.INSTANCE)
-                        .register(SerializableUmbrellaItem.class, UmbrellaItemSerializer.INSTANCE)
                         .register(ItemStack.class, ItemStackSerializer.INSTANCE)
-                        .register(ItemMeta.class, ItemMetaSerializer.INSTANCE)
-                        .register(AbstractItemAction.class,
-                                AbstractItemActionSerializer.INSTANCE));
+                        .register(ItemMeta.class, ItemMetaSerializer.INSTANCE));
 
         switch (type) {
             case YAML:
@@ -73,7 +68,7 @@ public class ConfigurateFile<T> {
         } catch (ConfigurateException e) {
             plugin.getLogger()
                     .warning("An error occurred while loading this configuration:" + " " +
-                             e.getMessage());
+                            e.getMessage());
             if (e.getCause() != null) {
                 e.printStackTrace();
             }
@@ -85,7 +80,7 @@ public class ConfigurateFile<T> {
         } catch (SerializationException e) {
             plugin.getLogger()
                     .warning("An error occurred while converting MyConfiguration: " +
-                             e.getMessage());
+                            e.getMessage());
             if (e.getCause() != null) {
                 e.printStackTrace();
             }
@@ -103,7 +98,7 @@ public class ConfigurateFile<T> {
             } catch (ConfigurateException e) {
                 plugin.getLogger()
                         .warning("An error occurred while converting MyConfiguration: " +
-                                 e.getMessage());
+                                e.getMessage());
                 if (e.getCause() != null) {
                     e.printStackTrace();
                 }
@@ -115,7 +110,7 @@ public class ConfigurateFile<T> {
         if (this.node == null) {
             plugin.getLogger()
                     .warning("Configuration cannot be saved due to the node " +
-                             "being null");
+                            "being null");
             return;
         }
         try {
@@ -123,7 +118,7 @@ public class ConfigurateFile<T> {
         } catch (ConfigurateException e) {
             plugin.getLogger()
                     .warning("An error occurred while saving this configuration: " +
-                             e.getMessage());
+                            e.getMessage());
             if (e.getCause() != null) {
                 e.printStackTrace();
             }

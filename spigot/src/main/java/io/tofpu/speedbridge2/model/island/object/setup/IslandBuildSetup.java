@@ -6,13 +6,13 @@ import io.tofpu.speedbridge2.model.island.IslandService;
 import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
-import io.tofpu.umbrella.domain.Umbrella;
+import com.tofpu.toolbar.api.toolbar.Toolbar;
 
 public final class IslandBuildSetup extends IslandSetup {
     private final IslandService islandService;
 
-    public IslandBuildSetup(final Umbrella umbrella, final BridgePlayer player, final Island island, final IslandLand islandLand, final IslandService islandService) {
-        super(umbrella, player, island, islandLand);
+    public IslandBuildSetup(final Toolbar toolbar, final BridgePlayer player, final Island island, final IslandLand islandLand, final IslandService islandService) {
+        super(toolbar, player, island, islandLand);
         this.islandService = islandService;
     }
 

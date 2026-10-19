@@ -27,7 +27,7 @@ public final class TimerExpansion extends AbstractExpansion {
 
     @Override
     public String runAction(final BridgePlayer bridgePlayer,
-            final GamePlayer gamePlayer, final String[] args) {
+                            final GamePlayer gamePlayer, final String[] args) {
         return BridgeUtil.formatNumber(BridgeUtil.nanoToSeconds(gamePlayer.getTimer()));
     }
 }

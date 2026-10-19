@@ -3,9 +3,9 @@ package io.tofpu.speedbridge2.model.island.object.setup;
 import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.IslandBuild;
 import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
-import io.tofpu.speedbridge2.model.island.object.setup.umbrella.IslandSetupUmbrella;
+import io.tofpu.speedbridge2.model.island.object.setup.toolbar.IslandSetupToolbarFactory;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
-import io.tofpu.umbrella.domain.Umbrella;
+import com.tofpu.toolbar.api.toolbar.Toolbar;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -16,14 +16,13 @@ import java.util.UUID;
 public final class IslandSetupHandler {
     public static final IslandSetupHandler INSTANCE = new IslandSetupHandler();
 
-    private final Umbrella umbrella;
+    private final Toolbar toolbar;
     private final Map<UUID, IslandSetup> islandSetupMap = new HashMap<>();
+    private World world;
 
     private IslandSetupHandler() {
-        this.umbrella = new IslandSetupUmbrella().getUmbrella();
+        this.toolbar = new IslandSetupToolbarFactory().createAndRegisterToolbar();
     }
-
-    private World world;
 
     /**
      * This function is called when the plugin is loaded
@@ -54,9 +53,9 @@ public final class IslandSetupHandler {
 
         final IslandLand islandLand = new IslandLand(target, world, positions);
         if (target instanceof IslandBuild) {
-            islandSetup = IslandSetupFactory.create(IslandSetupFactory.IslandSetupFactoryType.BUILD, umbrella, player, target, islandLand);
+            islandSetup = IslandSetupFactory.create(IslandSetupFactory.IslandSetupFactoryType.BUILD, toolbar, player, target, islandLand);
         } else {
-            islandSetup = IslandSetupFactory.create(IslandSetupFactory.IslandSetupFactoryType.SETUP, umbrella, player, target, islandLand);
+            islandSetup = IslandSetupFactory.create(IslandSetupFactory.IslandSetupFactoryType.SETUP, toolbar, player, target, islandLand);
         }
 
         islandSetupMap.put(player.getPlayerUid(), islandSetup);
@@ -73,12 +72,12 @@ public final class IslandSetupHandler {
         return islandSetupMap.get(uuid);
     }
 
-     /**
-      * Remove the given island setup from the island setup map
-      *
-      * @param islandSetup The island setup that is being invalidated.
-      */
-     public void invalidate(final IslandSetup islandSetup) {
+    /**
+     * Remove the given island setup from the island setup map
+     *
+     * @param islandSetup The island setup that is being invalidated.
+     */
+    public void invalidate(final IslandSetup islandSetup) {
         islandSetupMap.remove(islandSetup.getPlayerUid());
     }
 

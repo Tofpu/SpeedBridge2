@@ -1,14 +1,17 @@
 package io.tofpu.speedbridge2.listener.island;
 
 import io.tofpu.dynamicclass.meta.AutoRegister;
+import io.tofpu.speedbridge2.listener.GameListener;
 import io.tofpu.speedbridge2.model.island.object.GameIsland;
 import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
-import io.tofpu.speedbridge2.listener.GameListener;
 import io.tofpu.speedbridge2.model.support.worldedit.CuboidRegion;
 import io.tofpu.speedbridge2.model.support.worldedit.Vector;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,11 +23,27 @@ public final class IslandRegionListener extends GameListener {
         this.playerService = playerService;
     }
 
+    @EventHandler
+    private void onWorldChange(PlayerChangedWorldEvent event) {
+        final BridgePlayer bridgePlayer = playerService.getIfPresent(event.getPlayer()
+                .getUniqueId());
+        if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
+            return;
+        }
+
+        final GameIsland currentGame = bridgePlayer.getCurrentGame();
+        if (currentGame == null) {
+            return;
+        }
+
+        currentGame.abortGame();
+    }
+
     @EventHandler(ignoreCancelled = true) // skipcq: JAVA-W0324
     private void onPlayerMove(final @NotNull PlayerMoveEvent event) {
         final BridgePlayer bridgePlayer = playerService.getIfPresent(event.getPlayer()
                 .getUniqueId());
-        if (bridgePlayer == null ||!bridgePlayer.isPlaying()) {
+        if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
             return;
         }
 
@@ -46,5 +65,16 @@ public final class IslandRegionListener extends GameListener {
         if (!isInRegion) {
             currentGame.resetGame();
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    private void onCraft(CraftItemEvent event) {
+        final BridgePlayer bridgePlayer = playerService.getIfPresent(event.getWhoClicked()
+                .getUniqueId());
+        if (bridgePlayer == null || !bridgePlayer.isPlaying()) {
+            return;
+        }
+
+        event.setCancelled(true);
     }
 }

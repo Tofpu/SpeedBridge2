@@ -11,6 +11,7 @@ public interface SessionScore {
      * @return A collection of Score objects.
      */
     Collection<Score> getSessionScores();
+
     /**
      * Reset the session scores for all users
      */

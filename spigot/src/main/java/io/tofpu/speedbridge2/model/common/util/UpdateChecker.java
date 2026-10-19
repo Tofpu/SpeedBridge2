@@ -33,7 +33,12 @@ import java.util.regex.Pattern;
  */
 public final class UpdateChecker {
 
-    /** The default version scheme for this update checker */
+    private static final String USER_AGENT = "CHOCO-update-checker";
+    private static final String UPDATE_URL = "https://api.spigotmc.org/simple/0.1/index.php?action=getResource&id=%d";
+    private static final Pattern DECIMAL_SCHEME_PATTERN = Pattern.compile("\\d+(?:\\.\\d+)*");
+    /**
+     * The default version scheme for this update checker
+     */
     public static final VersionScheme VERSION_SCHEME_DECIMAL = (first, second) -> {
         String[] firstSplit = splitVersionInfo(first), secondSplit = splitVersionInfo(second);
         if (firstSplit == null || secondSplit == null) {
@@ -52,28 +57,85 @@ public final class UpdateChecker {
 
         return (secondSplit.length > firstSplit.length) ? second : first;
     };
-
-    private static final String USER_AGENT = "CHOCO-update-checker";
-    private static final String UPDATE_URL = "https://api.spigotmc.org/simple/0.1/index.php?action=getResource&id=%d";
-    private static final Pattern DECIMAL_SCHEME_PATTERN = Pattern.compile("\\d+(?:\\.\\d+)*");
-
     private static final String[] UPDATE_MESSAGE = {
             "<red>You're using an outdated version of SpeedBridge!",
             "<red>You can download the latest version at https://www.spigotmc.org/resources/.100619/"
     };
 
     private static UpdateChecker instance;
-
-    private UpdateResult lastResult = null;
-
     private final JavaPlugin plugin;
     private final int pluginID;
     private final VersionScheme versionScheme;
+    private UpdateResult lastResult = null;
 
     private UpdateChecker(@NotNull JavaPlugin plugin, int pluginID, @NotNull VersionScheme versionScheme) {
         this.plugin = plugin;
         this.pluginID = pluginID;
         this.versionScheme = versionScheme;
+    }
+
+    private static String[] splitVersionInfo(String version) {
+        Matcher matcher = DECIMAL_SCHEME_PATTERN.matcher(version);
+        return matcher.find() ? matcher.group().split("\\.") : null;
+    }
+
+    /**
+     * Initialize this update checker with the specified values and return its instance.
+     * If an instance of UpdateChecker has already been initialized, this method will act
+     * similarly to {@link #get()} (which is recommended after initialization).
+     *
+     * @param plugin        the plugin for which to check updates. Cannot be null
+     * @param pluginID      the ID of the plugin as identified in the SpigotMC resource link.
+     *                      For example, "https://www.spigotmc.org/resources/veinminer.<b>12038</b>/" would
+     *                      expect "12038" as a value. The value must be greater than 0
+     * @param versionScheme a custom version scheme parser. Cannot be null
+     * @return the UpdateChecker instance
+     */
+    @NotNull
+    public static UpdateChecker init(@NotNull JavaPlugin plugin, int pluginID, @NotNull VersionScheme versionScheme) {
+        Preconditions.checkArgument(plugin != null, "Plugin cannot be null");
+        Preconditions.checkArgument(pluginID > 0, "Plugin ID must be greater than 0");
+        Preconditions.checkArgument(versionScheme != null, "null version schemes are unsupported");
+
+        return (instance == null) ? instance = new UpdateChecker(plugin, pluginID, versionScheme) : instance;
+    }
+
+    /**
+     * Initialize this update checker with the specified values and return its instance.
+     * If an instance of UpdateChecker has already been initialized, this method will act
+     * similarly to {@link #get()} (which is recommended after initialization).
+     *
+     * @param plugin   the plugin for which to check updates. Cannot be null
+     * @param pluginID the ID of the plugin as identified in the SpigotMC resource link.
+     *                 For example, "https://www.spigotmc.org/resources/veinminer.<b>12038</b>/" would
+     *                 expect "12038" as a value. The value must be greater than 0
+     * @return the UpdateChecker instance
+     */
+    @NotNull
+    public static UpdateChecker init(@NotNull JavaPlugin plugin, int pluginID) {
+        return init(plugin, pluginID, VERSION_SCHEME_DECIMAL);
+    }
+
+    /**
+     * Get the initialized instance of UpdateChecker. If {@link #init(JavaPlugin, int)}
+     * has not yet been invoked, this method will throw an exception.
+     *
+     * @return the UpdateChecker instance
+     */
+    @NotNull
+    public static UpdateChecker get() {
+        Preconditions.checkState(instance != null, "Instance has not yet been initialized. Be sure #init() has been invoked");
+        return instance;
+    }
+
+    /**
+     * Check whether the UpdateChecker has been initialized or not (if
+     * {@link #init(JavaPlugin, int)} has been invoked) and {@link #get()} is safe to use.
+     *
+     * @return true if initialized, false otherwise
+     */
+    public static boolean isInitialized() {
+        return instance != null;
     }
 
     public void updateNotification(final Player player) {
@@ -124,11 +186,9 @@ public final class UpdateChecker {
 
                 if (latest == null) {
                     return new UpdateResult(UpdateReason.UNSUPPORTED_VERSION_SCHEME);
-                }
-                else if (latest.equals(pluginVersion)) {
+                } else if (latest.equals(pluginVersion)) {
                     return new UpdateResult(pluginVersion.equals(currentVersion) ? UpdateReason.UP_TO_DATE : UpdateReason.UNRELEASED_VERSION);
-                }
-                else if (latest.equals(currentVersion)) {
+                } else if (latest.equals(currentVersion)) {
                     return new UpdateResult(UpdateReason.NEW_UPDATE, latest);
                 }
             } catch (IOException e) {
@@ -151,93 +211,6 @@ public final class UpdateChecker {
         return lastResult;
     }
 
-    private static String[] splitVersionInfo(String version) {
-        Matcher matcher = DECIMAL_SCHEME_PATTERN.matcher(version);
-        return matcher.find() ? matcher.group().split("\\.") : null;
-    }
-
-    /**
-     * Initialize this update checker with the specified values and return its instance.
-     * If an instance of UpdateChecker has already been initialized, this method will act
-     * similarly to {@link #get()} (which is recommended after initialization).
-     *
-     * @param plugin the plugin for which to check updates. Cannot be null
-     * @param pluginID the ID of the plugin as identified in the SpigotMC resource link.
-     * For example, "https://www.spigotmc.org/resources/veinminer.<b>12038</b>/" would
-     * expect "12038" as a value. The value must be greater than 0
-     * @param versionScheme a custom version scheme parser. Cannot be null
-     *
-     * @return the UpdateChecker instance
-     */
-    @NotNull
-    public static UpdateChecker init(@NotNull JavaPlugin plugin, int pluginID, @NotNull VersionScheme versionScheme) {
-        Preconditions.checkArgument(plugin != null, "Plugin cannot be null");
-        Preconditions.checkArgument(pluginID > 0, "Plugin ID must be greater than 0");
-        Preconditions.checkArgument(versionScheme != null, "null version schemes are unsupported");
-
-        return (instance == null) ? instance = new UpdateChecker(plugin, pluginID, versionScheme) : instance;
-    }
-
-    /**
-     * Initialize this update checker with the specified values and return its instance.
-     * If an instance of UpdateChecker has already been initialized, this method will act
-     * similarly to {@link #get()} (which is recommended after initialization).
-     *
-     * @param plugin the plugin for which to check updates. Cannot be null
-     * @param pluginID the ID of the plugin as identified in the SpigotMC resource link.
-     * For example, "https://www.spigotmc.org/resources/veinminer.<b>12038</b>/" would
-     * expect "12038" as a value. The value must be greater than 0
-     *
-     * @return the UpdateChecker instance
-     */
-    @NotNull
-    public static UpdateChecker init(@NotNull JavaPlugin plugin, int pluginID) {
-        return init(plugin, pluginID, VERSION_SCHEME_DECIMAL);
-    }
-
-    /**
-     * Get the initialized instance of UpdateChecker. If {@link #init(JavaPlugin, int)}
-     * has not yet been invoked, this method will throw an exception.
-     *
-     * @return the UpdateChecker instance
-     */
-    @NotNull
-    public static UpdateChecker get() {
-        Preconditions.checkState(instance != null, "Instance has not yet been initialized. Be sure #init() has been invoked");
-        return instance;
-    }
-
-    /**
-     * Check whether the UpdateChecker has been initialized or not (if
-     * {@link #init(JavaPlugin, int)} has been invoked) and {@link #get()} is safe to use.
-     *
-     * @return true if initialized, false otherwise
-     */
-    public static boolean isInitialized() {
-        return instance != null;
-    }
-
-
-    /**
-     * A functional interface to compare two version Strings with similar version schemes.
-     */
-    @FunctionalInterface
-    public static interface VersionScheme {
-
-        /**
-         * Compare two versions and return the higher of the two. If null is returned, it
-         * is assumed that at least one of the two versions are unsupported by this
-         * version scheme parser.
-         *
-         * @param first the first version to check
-         * @param second the second version to check
-         *
-         * @return the greater of the two versions. null if unsupported version schemes
-         */
-        @Nullable
-        public String compareVersions(@NotNull String first, @NotNull String second);
-
-    }
 
     /**
      * A constant reason for the result of {@link UpdateResult}.
@@ -286,6 +259,26 @@ public final class UpdateChecker {
          * section.
          */
         UP_TO_DATE;
+
+    }
+
+    /**
+     * A functional interface to compare two version Strings with similar version schemes.
+     */
+    @FunctionalInterface
+    public static interface VersionScheme {
+
+        /**
+         * Compare two versions and return the higher of the two. If null is returned, it
+         * is assumed that at least one of the two versions are unsupported by this
+         * version scheme parser.
+         *
+         * @param first  the first version to check
+         * @param second the second version to check
+         * @return the greater of the two versions. null if unsupported version schemes
+         */
+        @Nullable
+        public String compareVersions(@NotNull String first, @NotNull String second);
 
     }
 

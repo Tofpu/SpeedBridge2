@@ -8,8 +8,8 @@ import io.tofpu.speedbridge2.model.common.database.wrapper.DatabaseSet;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
 import io.tofpu.speedbridge2.model.leaderboard.object.BoardPlayer;
 import io.tofpu.speedbridge2.model.player.PlayerService;
-import io.tofpu.speedbridge2.model.player.object.score.Score;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
+import io.tofpu.speedbridge2.model.player.object.score.Score;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public final class PlayerPositionLoader implements CacheLoader<UUID, BoardPlayer>, BoardLoader<BoardPlayer> {
     private static final String GLOBAL_POSITION = "SELECT DISTINCT 1 + COUNT(*) AS " +
-                                                  "position FROM scores WHERE score < (SELECT score FROM scores WHERE uid = ?)";
+            "position FROM scores WHERE score < (SELECT score FROM scores WHERE uid = ?)";
 
     private final PlayerService playerService;
 
@@ -61,7 +61,7 @@ public final class PlayerPositionLoader implements CacheLoader<UUID, BoardPlayer
 
     @Override
     public @NotNull CompletableFuture<BoardPlayer> retrieveAsync(final @NotNull UUID key,
-            final @NotNull Executor executor) {
+                                                                 final @NotNull Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
             BridgeUtil.debug("PersonalBoardLoader#retrieve(): key: " + key);
             try (final DatabaseQuery databaseQuery = DatabaseQuery.query(GLOBAL_POSITION)) {

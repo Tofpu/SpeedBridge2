@@ -42,7 +42,7 @@ public final class PlayerLoader implements BoardLoader<BridgePlayer>, CacheLoade
 
         try {
             BridgeUtil.debug("PlayerLoader#retrieve: Attempting to load " + uniqueId +
-                             " player data!");
+                    " player data!");
 
             bridgePlayer = retrieveAsync(uniqueId, PluginExecutor.INSTANCE).get();
         } catch (InterruptedException | ExecutionException e) {
@@ -56,16 +56,15 @@ public final class PlayerLoader implements BoardLoader<BridgePlayer>, CacheLoade
 
     @Override
     public CompletableFuture<BridgePlayer> retrieveAsync(final @NotNull UUID uniqueId,
-            final @NotNull Executor executor) {
+                                                         final @NotNull Executor executor) {
         BridgeUtil.debug("attempting to load " + uniqueId + " player's data!");
         return Databases.PLAYER_DATABASE.getStoredPlayer(uniqueId);
     }
 
     public static final class PlayerRemovalListener implements Expiry<UUID, BridgePlayer> {
+        public static final PlayerRemovalListener INSTANCE = new PlayerRemovalListener();
         private static final long EXPIRY_DURATION = TimeUnit.MINUTES.toNanos(5);
         private static final long INFINITE_DURATION = Long.MAX_VALUE;
-
-        public static final PlayerRemovalListener INSTANCE = new PlayerRemovalListener();
 
         private PlayerRemovalListener() {
             // prevent instantiation
@@ -78,11 +77,11 @@ public final class PlayerLoader implements BoardLoader<BridgePlayer>, CacheLoade
 
         @Override
         public long expireAfterUpdate(final UUID key, final BridgePlayer value, final long currentTime,
-                @NonNegative final long currentDuration) {
+                                      @NonNegative final long currentDuration) {
             final long elapse = Duration.ofNanos(currentDuration)
                     .getSeconds();
             BridgeUtil.debug("PlayerRemovalListener#expireAfterUpdate: Start: current " +
-                             "duration is " + elapse + " seconds!");
+                    "duration is " + elapse + " seconds!");
 
             if (value.getPlayer() == null) {
                 BridgeUtil.debug("PlayerRemovalListener#expireAfterUpdate: Expiring " + key + " player data after " + elapse + " seconds!");
@@ -95,7 +94,7 @@ public final class PlayerLoader implements BoardLoader<BridgePlayer>, CacheLoade
 
         @Override
         public long expireAfterRead(final UUID key, final BridgePlayer value, final long currentTime,
-                @NonNegative final long currentDuration) {
+                                    @NonNegative final long currentDuration) {
             final long elapse = Duration.ofNanos(currentDuration)
                     .getSeconds();
             BridgeUtil.debug("PlayerRemovalListener#expireAfterRead: Expiring " + key + " player data after " + elapse + " seconds!");

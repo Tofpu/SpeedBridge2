@@ -3,8 +3,8 @@ package io.tofpu.speedbridge2.model.island.arena;
 import com.sk89q.worldedit.WorldEditException;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.GameIsland;
+import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
 import io.tofpu.speedbridge2.model.support.worldedit.Vector;
 import org.apache.commons.io.FileUtils;
@@ -30,10 +30,15 @@ public final class ArenaManager {
     private File worldDirectory;
     private World world;
 
+    @NotNull
+    private static String serializeVector(Vector vector) {
+        return String.format("%s, %s, %s", vector.getX(), vector.getY(), vector.getZ());
+    }
+
     public void load() {
         this.world = Bukkit.createWorld(WorldCreator.name("speedbridge2")
                 .generator(new EmptyChunkGenerator()));
-        this.worldDirectory = new File( "speedbridge2");
+        this.worldDirectory = new File("speedbridge2");
 
         protectWorld(world);
     }
@@ -105,8 +110,12 @@ public final class ArenaManager {
         return islandLand;
     }
 
+//    private IslandLand getNewPlot(final Island target) {
+//        return getNewPlot(target, getPositions());
+//    }
+
     private IslandLand getAvailablePlot(final Collection<IslandLand> islandLands,
-            final int slot) {
+                                        final int slot) {
         for (final IslandLand islandLand : islandLands) {
             // if it's not the same island plot, or the plot is not free; continue
             if (islandLand.getIsland().getSlot() != slot || !islandLand.isFree()) {
@@ -118,10 +127,6 @@ public final class ArenaManager {
         }
         return null;
     }
-
-//    private IslandLand getNewPlot(final Island target) {
-//        return getNewPlot(target, getPositions());
-//    }
 
     private IslandLand getNewPlot(final Island target, double[] positions) {
         return new IslandLand(target, world, positions);
@@ -199,11 +204,6 @@ public final class ArenaManager {
         return new double[]{COUNTER.get(), 100, 100};
     }
 
-    @NotNull
-    private static String serializeVector(Vector vector) {
-        return String.format("%s, %s, %s", vector.getX(), vector.getY(), vector.getZ());
-    }
-
     public void resetWorld() {
         final File worldFile = getWorldDirectory();
         if (worldFile != null && worldFile.exists()) {
@@ -259,7 +259,6 @@ public final class ArenaManager {
     public World getWorld() {
         return this.world;
     }
-
 
 
     private static final class EmptyChunkGenerator extends ChunkGenerator {

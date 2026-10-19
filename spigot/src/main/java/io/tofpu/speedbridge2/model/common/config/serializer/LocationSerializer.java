@@ -16,7 +16,8 @@ import java.util.Arrays;
 public final class LocationSerializer implements TypeSerializer<Location> {
     public static final LocationSerializer INSTANCE = new LocationSerializer();
 
-    private LocationSerializer() {}
+    private LocationSerializer() {
+    }
 
     @Override
     public Location deserialize(final Type type, final ConfigurationNode node) throws SerializationException {
@@ -62,7 +63,7 @@ public final class LocationSerializer implements TypeSerializer<Location> {
     private ConfigurationNode nonVirtualNode(final ConfigurationNode source, final Object... path) throws SerializationException {
         if (!source.hasChild(path)) {
             throw new SerializationException("Required field " + Arrays.toString(path) +
-                                             " was not present in node");
+                    " was not present in node");
         }
         return source.node(path);
     }

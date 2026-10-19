@@ -7,6 +7,7 @@ public abstract class MessagePresenterBase {
 
     public abstract static class Builder {
         public abstract Builder append(final String message);
+
         public abstract MessagePresenterBase build();
     }
 }

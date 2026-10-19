@@ -5,7 +5,6 @@ import io.tofpu.speedbridge2.model.island.IslandFactory;
 import io.tofpu.speedbridge2.model.island.arena.ArenaManager;
 import io.tofpu.speedbridge2.model.island.object.GameIsland;
 import io.tofpu.speedbridge2.model.island.object.Island;
-import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
 import io.tofpu.speedbridge2.model.player.object.GamePlayer;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

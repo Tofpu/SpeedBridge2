@@ -3,8 +3,10 @@ package io.tofpu.speedbridge2.command;
 import io.tofpu.dynamicclass.DynamicClass;
 import io.tofpu.speedbridge2.command.condition.AbstractCommandConditionWrapper;
 import io.tofpu.speedbridge2.command.condition.LampConditionRegistry;
+import io.tofpu.speedbridge2.command.condition.annotation.OptionalPermission;
 import io.tofpu.speedbridge2.command.context.AbstractLampContext;
 import io.tofpu.speedbridge2.command.context.LampContextRegistry;
+import io.tofpu.speedbridge2.command.help.HelpGenerator;
 import io.tofpu.speedbridge2.command.parser.AbstractLampParser;
 import io.tofpu.speedbridge2.command.parser.LampParseRegistry;
 import io.tofpu.speedbridge2.command.subcommand.CommandCompletion;
@@ -19,6 +21,7 @@ import io.tofpu.speedbridge2.model.player.PlayerService;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.CommonBridgePlayer;
 import io.tofpu.speedbridge2.model.player.object.SenderBridgePlayer;
+import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import revxrsal.commands.bukkit.BukkitCommandActor;
@@ -29,7 +32,10 @@ import revxrsal.commands.process.SenderResolver;
 
 import java.util.UUID;
 
+import static io.tofpu.speedbridge2.model.common.util.BridgeUtil.log;
+
 public final class CommandManager {
+    private static final HelpGenerator helpGenerator = new HelpGenerator();
     private static BukkitCommandHandler commandHandler;
 
     public static void load(final @NotNull Plugin plugin,
@@ -84,16 +90,25 @@ public final class CommandManager {
         constructTabCompleter(islandService);
         constructCommandConditions();
 
-        commandHandler.register(new SpeedBridgeCommand(playerService, islandService));
+        commandHandler.registerAnnotationReplacer(OptionalPermission.class, OptionalPermission.AnnotationReplacerImpl.INSTANCE);
+        commandHandler.registerPermissionReader(OptionalPermission.PermissionReaderImpl.INSTANCE);
+
+        commandHandler.accept(new SpeedBridgeCommand(helpGenerator, playerService, islandService));
         commandHandler.register(new SpeedBridgeDebugCommand(arenaManager));
+
+        log("Generating `/sb help` message...");
+        helpGenerator.generate(plugin, commandHandler);
+
+        commandHandler.registerBrigadier();
     }
 
     private static void constructTabCompleter(final @NotNull IslandService islandService) {
         BridgeUtil.debug("Constructing tab completer...");
 
-        commandHandler.getAutoCompleter()
-                .registerParameterSuggestions(Island.class,
-                        new CommandCompletion(islandService)::islands);
+        CommandCompletion commandCompletion = new CommandCompletion(islandService);
+        commandHandler.getAutoCompleter().registerParameterSuggestions(Island.class, commandCompletion::islands);
+        commandHandler.getAutoCompleter().registerParameterSuggestions(Material.class, commandCompletion::materials);
+        commandHandler.getAutoCompleter().registerParameterSuggestions(BridgePlayer.class, commandCompletion::players);
     }
 
     private static void constructContext() {

@@ -4,13 +4,14 @@ import io.tofpu.speedbridge2.model.common.Message;
 import io.tofpu.speedbridge2.model.common.config.category.LobbyCategory;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.common.util.BridgeUtil;
-import io.tofpu.speedbridge2.model.island.object.umbrella.GameIslandUmbrella;
-import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
 import io.tofpu.speedbridge2.model.island.arena.ArenaManager;
-import io.tofpu.speedbridge2.model.player.object.stat.PlayerStatType;
+import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
+import io.tofpu.speedbridge2.model.island.object.toolbar.GameIslandToolbarFactory;
 import io.tofpu.speedbridge2.model.player.object.GamePlayer;
+import io.tofpu.speedbridge2.model.player.object.stat.PlayerStatType;
 import io.tofpu.speedbridge2.model.support.worldedit.CuboidRegion;
-import io.tofpu.umbrella.domain.Umbrella;
+import com.tofpu.toolbar.api.ToolbarAPI;
+import com.tofpu.toolbar.api.toolbar.Toolbar;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -18,17 +19,17 @@ import org.bukkit.inventory.ItemStack;
 
 public class GameIsland {
     private final ArenaManager arenaManager;
-    private final Umbrella umbrella;
+    private final Toolbar toolbar;
     private final Island island;
     private final GamePlayer gamePlayer;
 
     private IslandLand islandLand;
 
     public GameIsland(final ArenaManager arenaManager, final Island island,
-            final GamePlayer gamePlayer) {
+                      final GamePlayer gamePlayer) {
         this.arenaManager = arenaManager;
         // todo: memory leak, as this does not get invalidated once done
-        this.umbrella = new GameIslandUmbrella(this).getUmbrella();
+        this.toolbar = new GameIslandToolbarFactory().createAndRegisterToolbar(this);
         this.island = island;
         this.gamePlayer = gamePlayer;
     }
@@ -62,7 +63,7 @@ public class GameIsland {
         player.getInventory().clear();
 
         // active the game umbrella
-        umbrella.activate(player);
+        ToolbarAPI.getInstance().equipService().equip(player, toolbar);
 
         // add the block
         player.getInventory()
@@ -108,7 +109,8 @@ public class GameIsland {
 
             final LobbyCategory lobbyCategory = ConfigurationManager.INSTANCE.getLobbyCategory();
 
-            umbrella.inactivate(player);
+//            toolbar.inactivate(player);
+            ToolbarAPI.getInstance().equipService().unequip(player);
 
             // teleport the player to the lobby location
             final Location location = lobbyCategory.getLobbyLocation();
@@ -147,7 +149,11 @@ public class GameIsland {
         return islandLand;
     }
 
-    public void stopGame() {
-        getIsland().leaveGame(getGamePlayer().getBridgePlayer());
+    public boolean stopGame() {
+        return getIsland().leaveGame(getGamePlayer().getBridgePlayer());
+    }
+
+    public void abortGame() {
+        getIsland().abortGame(getGamePlayer().getBridgePlayer());
     }
 }

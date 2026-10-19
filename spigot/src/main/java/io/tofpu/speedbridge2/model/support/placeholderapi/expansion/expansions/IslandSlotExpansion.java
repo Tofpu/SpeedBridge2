@@ -25,7 +25,7 @@ public final class IslandSlotExpansion extends AbstractExpansion {
 
     @Override
     public String runAction(final BridgePlayer bridgePlayer,
-            final GamePlayer gamePlayer, final String[] args) {
+                            final GamePlayer gamePlayer, final String[] args) {
         final GameIsland currentGame = bridgePlayer.getCurrentGame();
         if (currentGame == null) {
             return "";

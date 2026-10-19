@@ -2,14 +2,15 @@ package io.tofpu.speedbridge2.model.island.object.setup;
 
 import com.sk89q.worldedit.WorldEditException;
 import io.tofpu.multiworldedit.ClipboardWrapper;
-import io.tofpu.multiworldedit.MultiWorldEditAPI;
+import io.tofpu.multiworldedit.MultiWorldEdit;
 import io.tofpu.multiworldedit.VectorWrapper;
 import io.tofpu.speedbridge2.model.common.config.manager.ConfigurationManager;
 import io.tofpu.speedbridge2.model.island.object.Island;
 import io.tofpu.speedbridge2.model.island.object.land.IslandLand;
 import io.tofpu.speedbridge2.model.player.object.BridgePlayer;
 import io.tofpu.speedbridge2.model.support.worldedit.CuboidRegion;
-import io.tofpu.umbrella.domain.Umbrella;
+import com.tofpu.toolbar.api.ToolbarAPI;
+import com.tofpu.toolbar.api.toolbar.Toolbar;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,7 +19,7 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class IslandSetup {
-    private final Umbrella umbrella;
+    private final Toolbar toolbar;
     private final BridgePlayer player;
     private final Island island;
     private final IslandLand islandLand;
@@ -27,8 +28,8 @@ public class IslandSetup {
 
     private boolean removed = false;
 
-    public IslandSetup(final Umbrella umbrella, final BridgePlayer player, final Island island, final IslandLand islandLand) {
-        this.umbrella = umbrella;
+    public IslandSetup(final Toolbar toolbar, final BridgePlayer player, final Island island, final IslandLand islandLand) {
+        this.toolbar = toolbar;
         this.player = player;
         this.island = island;
         this.islandLand = islandLand;
@@ -54,7 +55,7 @@ public class IslandSetup {
                 .teleport(islandLand.getPlotLocation());
 
         // activate the player umbrella
-        umbrella.activate(player.getPlayer());
+        ToolbarAPI.getInstance().equipService().equip(player.getPlayer(), toolbar);
     }
 
     /**
@@ -119,7 +120,7 @@ public class IslandSetup {
      * It resets the plot to air
      */
     private void resetPlot() {
-        final ClipboardWrapper clipboardWrapper = MultiWorldEditAPI.getMultiWorldEdit()
+        final ClipboardWrapper clipboardWrapper = MultiWorldEdit.getInstance()
                 .create(island.getSchematicClipboard());
 
         final VectorWrapper minimumPoint = clipboardWrapper.getMinimumPoint();
@@ -152,7 +153,7 @@ public class IslandSetup {
      * Returns true if the player is not removed and has a player spawn point
      *
      * @return A boolean value.
-    */
+     */
     public boolean isReady() {
         return !isRemoved() && playerSpawnPoint != null;
     }
@@ -184,7 +185,7 @@ public class IslandSetup {
 
         // inactivate the setup umbrella
         Player bukkitPlayer = player.getPlayer();
-        umbrella.inactivate(bukkitPlayer);
+        ToolbarAPI.getInstance().equipService().unequip(bukkitPlayer);
         if (bukkitPlayer != null && bukkitPlayer.isOnline()) {
             // setting the player's gamemode back to survival
             bukkitPlayer.setGameMode(GameMode.SURVIVAL);
@@ -195,7 +196,7 @@ public class IslandSetup {
      * Returns the UUID of the player that is currently editing the island
      *
      * @return The UUID of the player that is currently editing the island.
-    */
+     */
     public UUID getPlayerUid() {
         return player.getPlayerUid();
     }

@@ -38,7 +38,7 @@ public final class PositionExpansion extends AbstractExpansion {
 
     @Override
     public String runAction(final BridgePlayer bridgePlayer,
-            final GamePlayer gamePlayer, final String[] args) {
+                            final GamePlayer gamePlayer, final String[] args) {
         if (args.length == 2) { // returns island-based position
             return getIslandPosition(bridgePlayer, args);
         }

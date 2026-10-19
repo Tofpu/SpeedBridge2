@@ -22,8 +22,7 @@ public final class MaterialSerializer implements TypeSerializer<Material> {
     }
 
     @Override
-    public void serialize(final Type type, @Nullable
-    final Material obj, final ConfigurationNode node) throws SerializationException {
+    public void serialize(final Type type, @Nullable final Material obj, final ConfigurationNode node) throws SerializationException {
         if (obj == null) {
             node.set(Material.AIR.name());
             return;
