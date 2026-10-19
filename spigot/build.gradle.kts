@@ -52,7 +52,7 @@ dependencies {
     }
     implementation("com.tofpu.multiworldedit:multiworldedit-loader:1.2.0")
 
-    implementation("com.tofpu.toolbar:toolbar-core:3.0.0")
+    implementation("com.tofpu.toolbar:toolbar-core:3.0.2")
     implementation("com.github.Tofpu:dynamicclass:1.3") {
         exclude("com.google.guava", "guava")
     }
